@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 class Server {
 
 };
@@ -7,6 +5,6 @@ class Server {
 int main()
 {
 	Server();
-	getchar();
+	
 	return 0;
 }
