@@ -1,9 +1,11 @@
+#include <SFML/Network.hpp>
+
 class Server {
 
 };
 
 int main()
 {
-	Server();
+
 	return 0;
 }
