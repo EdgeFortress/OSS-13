@@ -9,6 +9,7 @@ Object::Object(Tile *tile) {
 	tile->AddObject(this);
 }
 
+
 Tile::Tile(Map *map, int x, int y) {
 	this->map = map;
 	this->x = x;
