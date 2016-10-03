@@ -32,7 +32,7 @@ class Mob : public Object {
 
 class Tile {
 private:
-	list<Object *> *content;
+	list<Object *> content;
 	Map *map;
 	int x, y;
 
@@ -46,7 +46,7 @@ public:
 
 class Map {
 private:
-	vector< vector<Tile *> * > *tiles;
+	vector< vector<Tile *> > tiles;
 	int sizeX;
 	int sizeY;
 
