@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 
+using namespace sf;
+
 class Client {
 
 };
@@ -14,10 +16,8 @@ int main()
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
-		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-		}
 
 		window.clear();
 		window.draw(shape);
