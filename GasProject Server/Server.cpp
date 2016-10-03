@@ -4,8 +4,6 @@ class Server {
 
 };
 
-int main()
-{
-
+int main() {
 	return 0;
 }
