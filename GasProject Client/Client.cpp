@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#include <SFGUI\SFGUI.hpp>
+#include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
 
 class Client {
