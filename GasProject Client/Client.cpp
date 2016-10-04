@@ -1,5 +1,8 @@
 #include <SFML/Graphics.hpp>
 
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Widgets.hpp>
+
 class Client {
 
 };
@@ -7,6 +10,9 @@ class Client {
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+
+	auto m_label = sfg::Label::Create("Hello world!");
+
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 

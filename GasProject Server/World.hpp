@@ -39,7 +39,7 @@ private:
 public:
 	Tile(Map *map, int x, int y);
 	void AddObject(Object *obj);
-	// Removing object from tile content, but not delete it
+	// Removing object from tile content, but not deleting it
 	void RemoveObject(Object *obj);
 	~Tile();
 };
