@@ -133,12 +133,10 @@
   <ItemGroup>
     <ClInclude Include="Client.hpp" />
     <ClInclude Include="Network.hpp" />
+    <ClInclude Include="State.hpp" />
     <ClInclude Include="TileGrid.hpp" />
     <ClInclude Include="UI.hpp" />
     <ClInclude Include="Window.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.hpp"
+#include "State.hpp"
 
 #include <string>
 
@@ -15,12 +16,15 @@ private:
 	But unique_ptr can be just one for it content. So we need to use links. See Get-functions. */
 	uptr<Player> player;
 	uptr<Window> window;
+	uptr<State> state;
 
 public:
 	/* Work of Client processing in his constructor.
 	If error will accident, unique_ptr's will clear memory automatically.
 	Such system allow as awake just 1 function of Client from main. */
-	ClientController() : player(new Player), window(new Window(this)) {
+	ClientController() : player(new Player), 
+		                 window(new Window(this)),
+						 state(new MenuLoginState(this)){
 		sf::Clock clock;
 
 		while (window->isOpen()) {
@@ -35,4 +39,5 @@ public:
 
 	uptr<Player> &GetClient() { return player; }
 	uptr<Window> &GetWindow() { return window; }
+	uptr<State> &GetState() { return state; }
 };

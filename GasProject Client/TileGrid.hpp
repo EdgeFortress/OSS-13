@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "State.hpp"
+
 using namespace std;
 
 class Block;
@@ -51,7 +53,8 @@ public:
 	TileGrid &operator=(const TileGrid &) = delete;
 	~TileGrid() = default;
 
-	void Draw() const {
-
-	}
+	friend void MenuLoginState::DrawTileGrid() const;
+	friend void MenuServerListState::DrawTileGrid() const;
+	friend void GameLobbyState::DrawTileGrid() const;
+	friend void GameProcessState::DrawTileGrid() const;
 };

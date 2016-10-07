@@ -54,22 +54,7 @@ public:
 	Window &operator=(const Window &) = delete;
 	virtual ~Window() = default;
 
-	void Update(sf::Time timeElapsed) {
-		sf::Event event;
-		while (window->pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				window->close();
-		}
-
-		window->clear(sf::Color::Black);
-		tileGrid->Draw();
-		ui->Draw();
-		window->display();
-	}
-
-	void Draw() const {
-
-	}
+	void Update(sf::Time);
 
 	bool isOpen() const { return window->isOpen(); }
 };
