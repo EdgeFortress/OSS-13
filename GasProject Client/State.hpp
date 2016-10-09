@@ -1,5 +1,10 @@
 #pragma once
 
+#include<SFML/Graphics.hpp>
+
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Widgets.hpp>
+
 class ClientController;
 
 /*  Just states, nothing expecial. Each state must have unique realization of functions.
@@ -7,13 +12,13 @@ class ClientController;
 	State has pointer to ClientController for Access main objects, such as Window. */
 
 class State {
-private:
+protected:
 	ClientController *clientController;
 
 public:
 	State(ClientController *clientController) : clientController(clientController) { }
 
-	virtual void DrawUI() const = 0;
+	virtual void DrawUI(sf::RenderWindow *window, sf::Clock clock) const = 0;
 	virtual void DrawTileGrid() const = 0;
 
 	State(const State &) = delete;
@@ -25,7 +30,7 @@ class MenuLoginState : public State {
 public:
 	MenuLoginState(ClientController *clientController) : State(clientController) { }
 
-	virtual void DrawUI() const override;
+	virtual void DrawUI(sf::RenderWindow *window, sf::Clock clock) const override;
 	virtual void DrawTileGrid() const override;
 	
 	MenuLoginState(const MenuLoginState &) = delete;
@@ -37,7 +42,7 @@ class MenuServerListState : public State {
 public:
 	MenuServerListState(ClientController *clientController) : State(clientController) { }
 
-	virtual void DrawUI() const override;
+	virtual void DrawUI(sf::RenderWindow *window, sf::Clock clock) const override;
 	virtual void DrawTileGrid() const override;
 
 	MenuServerListState(const MenuServerListState &) = delete;
@@ -49,7 +54,7 @@ class GameLobbyState : public State {
 public:
 	GameLobbyState(ClientController *clientController) : State(clientController) { }
 
-	virtual void DrawUI() const override;
+	virtual void DrawUI(sf::RenderWindow *window, sf::Clock clock) const override;
 	virtual void DrawTileGrid() const override;
 
 	GameLobbyState(const GameLobbyState &) = delete;
@@ -61,7 +66,7 @@ class GameProcessState : public State {
 public:
 	GameProcessState(ClientController *clientController) : State(clientController) { }
 
-	virtual void DrawUI() const override;
+	virtual void DrawUI(sf::RenderWindow *window, sf::Clock clock) const override;
 	virtual void DrawTileGrid() const override;
 
 	GameProcessState(const GameProcessState &) = delete;

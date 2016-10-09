@@ -129,6 +129,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.hpp" />
