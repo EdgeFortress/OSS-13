@@ -62,6 +62,7 @@ void UI::run_login() {
 		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
 
 	auto window = sfg::Window::Create();
+	reg_window = sfg::Window::Create();
 	window->Add(table);
 
 	desktop = new sfg::Desktop;
@@ -91,8 +92,7 @@ void UI::run_reg() {
 	table->Attach(new_passw_entry, sf::Rect<unsigned>(5, 5, 5, 5), sfg::Table::AttachOption::FILL,
 		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
 
-	auto new_window = sfg::Window::Create();
-	new_window->Add(table);
+	reg_window->Add(table);
 
-	desktop->Add(new_window);
+	desktop->Add(reg_window);
 }
