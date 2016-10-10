@@ -23,7 +23,7 @@ void Window::Update(sf::Time timeElapsed) {
 
 	window->clear(sf::Color::Black);
 	controller->GetState()->DrawTileGrid();
-	controller->GetState()->DrawUI(window.get(), clock);
+	controller->GetState()->DrawUI(window.get(), timeElapsed);
 	window->display();
 }
 
@@ -32,10 +32,10 @@ void MenuServerListState::DrawTileGrid() const { }
 void GameLobbyState::DrawTileGrid() const { }
 void GameProcessState::DrawTileGrid() const { }
 
-void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const {
-	clientController->GetWindow()->ui->desktop->Update(clock.restart().asSeconds());
+void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const {
+	clientController->GetWindow()->ui->desktop->Update(timeElapsed.asSeconds());
 	clientController->GetWindow()->ui->m_sfgui.Display(*window);
 }
-void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const { }
-void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const { }
-void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const { }
+void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
+void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
+void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }

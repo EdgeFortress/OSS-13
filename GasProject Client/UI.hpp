@@ -21,8 +21,8 @@ public:
 	void HandleEvent(sf::Event event);
 	void run_login();
 	void run_reg();
-	friend void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const;
-	friend void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const;
-	friend void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const;
-	friend void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Clock clock) const;
+	friend void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
+	friend void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
+	friend void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
+	friend void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
 };
