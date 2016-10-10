@@ -37,7 +37,7 @@ public:
 	ClientController &operator=(const ClientController &) = delete;
 	virtual ~ClientController() = default;
 
-	uptr<Player> &GetClient() { return player; }
-	uptr<Window> &GetWindow() { return window; }
-	uptr<State> &GetState() { return state; }
+	Player *GetClient() { return player.get(); }
+	Window *GetWindow() { return window.get(); }
+	State *GetState() { return state.get(); }
 };

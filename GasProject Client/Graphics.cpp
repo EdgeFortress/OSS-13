@@ -14,13 +14,13 @@ Block::Block(TileGrid *tileGrid) : tileGrid(tileGrid),
 
 void Window::Update(sf::Time timeElapsed) {
 	sf::Event event;
-	window->resetGLStates();
 	while (window->pollEvent(event)) {
 		ui->HandleEvent(event);
 		if (event.type == sf::Event::Closed)
 			window->close();
 	}
 
+	window->resetGLStates();
 	window->clear(sf::Color::Black);
 	controller->GetState()->DrawTileGrid();
 	controller->GetState()->DrawUI(window.get(), timeElapsed);
@@ -32,9 +32,10 @@ void MenuServerListState::DrawTileGrid() const { }
 void GameLobbyState::DrawTileGrid() const { }
 void GameProcessState::DrawTileGrid() const { }
 
-void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const {
-	clientController->GetWindow()->ui->desktop->Update(timeElapsed.asSeconds());
-	clientController->GetWindow()->ui->m_sfgui.Display(*window);
+void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
+	Window *window = clientController->GetWindow();
+	window->GetUI()->desktop->Update(timeElapsed.asSeconds());
+	window->GetUI()->m_sfgui.Display(*render_window);
 }
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
