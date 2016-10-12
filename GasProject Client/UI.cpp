@@ -1,9 +1,7 @@
-#pragma once
+#include <iostream>
+#include <string>
 
 #include "UI.hpp"
-
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widgets.hpp>
 
 using std::cout;
 using std::endl;
