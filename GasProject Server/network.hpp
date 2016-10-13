@@ -37,12 +37,12 @@ public:
 	static int number_listeners;
 	static int start_port;
 	//list<TcpSocket> threads;
-	static list<thread *> threads;
+	static list<thread> threads;
 	static thread * main_net;
 	static usersDB UBD;
 
 	network(int number_listeners = 50, int start_port = ::start_port);
-	static void start_all_listeners();
-	static void session(int port);
+	static void listen();
+	static void session(sf::TcpSocket *);
 	~network();
 };

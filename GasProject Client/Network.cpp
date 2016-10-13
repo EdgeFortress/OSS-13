@@ -20,11 +20,7 @@ public:
 	}
 	result connect() {
 		sf::Socket::Status status;
-		int i = 0;
-		do {
-			status = socket.connect(ip, port + i, seconds(20));
-		} while (status != sf::Socket::Done && i++ < 100);
-		if (status != sf::Socket::Done)
+		if (socket.connect(ip, port, seconds(20)) != sf::Socket::Done)
 			return connection_error;
 		else return ok;
 	}

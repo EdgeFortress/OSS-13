@@ -39,6 +39,8 @@ result netclient::login(string &s) {
 	string login, pass;
 	ss >> login;
 	ss >> pass;
+	//cout << login << endl;
+	//cout << pass << endl;
 	if (network::UBD.content(login, pass))
 		return ok;
 	else
@@ -82,61 +84,48 @@ result netclient::parse(sf::Packet & pac) {
 network::network(int number_listeners, int start_port) {
 	network::start_port = start_port;
 	network::number_listeners = number_listeners;
-	network::main_net = new thread(&network::start_all_listeners);
+	network::main_net = new thread(&network::listen);
 
 }
-void network::start_all_listeners() {
+void network::listen() {
 
-	for (int i = 0; i < number_listeners; i++)
-	{
-		thread *  my_th = new thread(&network::session, start_port + i);
-		threads.push_back(my_th);
-	}
-	for (auto i = threads.begin(); i != threads.end(); i++) {
-		(*i)->join();
-	}
-}
-
-void network::session(int port) {
-	//cout << client -> getRemoteAddress() << ":" << client -> getRemotePort() << endl;
-	sf::Packet pac;
 	sf::TcpListener listener;
-	if (listener.listen(port) != sf::Socket::Done)
-	{
-		// error...
-		cout << "error listen on port " << port;
-	}
-
-	sf::TcpSocket client;
-	if (listener.accept(client) != sf::Socket::Done)
-	{
-		cout << "error accept on port " << port;
-	}
-	bool logged_in = false;
-
-	netclient cl(&client);
+	listener.listen(start_port);
+	sf::TcpSocket* client = new sf::TcpSocket;
 	while (true) {
-		sleep(seconds(0.01f));
-		client.receive(pac);
-		if (pac.getDataSize() != 0) {
+		sleep(seconds(0.1f));
+		if (listener.accept(*client) == sf::TcpSocket::Done) {
+			threads.push_back(thread(session, client));
+			client = new sf::TcpSocket;
+		}
+	}
+}
+
+void network::session(sf::TcpSocket * client) {
+	sf::Packet pac;
+	netclient cl(client);
+	while (true) {
+		client->receive(pac);
+		if (pac.getDataSize() > 0) {
 			result rs = cl.parse(pac);
 			pac.clear();
 			pac << string{ (char)rs };
-			client.send(pac);
+			client -> send(pac);
 			pac.clear();
 		}
+		sleep(seconds(0.1f));
 	}
 }
 
 network::~network() {
 	for (auto i = threads.begin(); i != threads.end(); i++)
-		(*i)->~thread();
-	main_net ->~thread();
+		i->~thread();
+	main_net->~thread();
 }
 
 int network::number_listeners;
 int network::start_port;
-list<thread *> network::threads;
+list<thread> network::threads;
 thread * network::main_net;
 usersDB network::UBD("usersDB");
 /*

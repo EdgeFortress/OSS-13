@@ -14,7 +14,9 @@ Server::Server()
 }
 
 int main() {
-	Server LoH;
+	//Server LoH;
+	network s;
+	s.main_net->join();
 
 	return 0;
 }
