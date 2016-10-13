@@ -1,4 +1,5 @@
 #include <SFML/Network.hpp>
+#include "network.hpp"
 #include "World.hpp"
 
 class Server {

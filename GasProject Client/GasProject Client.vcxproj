@@ -127,13 +127,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="network.cpp" />
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Network.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.hpp" />
-    <ClInclude Include="Network.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="TileGrid.hpp" />
     <ClInclude Include="UI.hpp" />
