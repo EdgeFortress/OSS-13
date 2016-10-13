@@ -4,7 +4,7 @@
 int main() {
 	network nt;
 	nt.connect();
-	nt.send_command(login_code, { "login", "pass" });
+	nt.send_command(LOGIN_CODE, { "login", "pass" });
 	ClientController clientController;
 	
 	return 0;

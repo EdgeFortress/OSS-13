@@ -14,15 +14,14 @@ class network {
 	int port;
 	sf::TcpSocket socket;
 public:
-	network(string ip = "127.0.0.1", int port = start_port) {
+	network(string ip = "127.0.0.1", int port = PORT) {
 		this->ip = ip;
 		this->port = port;
 	}
 	result connect() {
-		sf::Socket::Status status;
 		if (socket.connect(ip, port, seconds(20)) != sf::Socket::Done)
-			return connection_error;
-		else return ok;
+			return CONNECTION_ERROR;
+		else return OK;
 	}
 
 	result send_command(comand_code cc, list<string> args) {
@@ -43,7 +42,7 @@ public:
 				return (result)s[0];
 			}
 		}
-		return connection_error;
+		return CONNECTION_ERROR;
 	}
 };
 /*
@@ -52,7 +51,7 @@ int main()
 	network nt;
 	int a;
 	cout << nt.connect() << endl;
-	cout << nt.send_command(login_code, {"login", "pass"}) << endl;
+	cout << nt.send_command(LOGIN_CODE, {"login", "pass"}) << endl;
 	cin >> a;
 
 	return 0;

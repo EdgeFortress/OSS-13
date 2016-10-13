@@ -22,7 +22,8 @@ public:
 	bool content(string &login, string &pass);
 	bool add(string login, string pass);
 };
-struct netclient {
+class netclient {
+public:
 	bool logedin = false;
 	sf::TcpSocket* socket;
 	netclient(sf::TcpSocket* soc);
@@ -35,13 +36,13 @@ class network {
 public:
 
 	static int number_listeners;
-	static int start_port;
+	static int port;
 	//list<TcpSocket> threads;
 	static list<thread> threads;
 	static thread * main_net;
 	static usersDB UBD;
 
-	network(int number_listeners = 50, int start_port = ::start_port);
+	network(int port = ::PORT);
 	static void listen();
 	static void session(sf::TcpSocket *);
 	~network();

@@ -42,9 +42,9 @@ result netclient::login(string &s) {
 	//cout << login << endl;
 	//cout << pass << endl;
 	if (network::UBD.content(login, pass))
-		return ok;
+		return OK;
 	else
-		return login_error;
+		return LOGIN_ERROR;
 }
 
 result netclient::signin(string &s) {
@@ -53,9 +53,9 @@ result netclient::signin(string &s) {
 	ss >> login;
 	ss >> pass;
 	if (network::UBD.add(login, pass))
-		return ok;
+		return OK;
 	else
-		return signin_error;
+		return SIGNIN_ERROR;
 }
 
 
@@ -67,22 +67,22 @@ result netclient::parse(sf::Packet & pac) {
 	result res;
 	switch (code)
 	{
-	case login_code:
+	case LOGIN_CODE:
 		res = login(s);
-		if (res == ok)
+		if (res == OK)
 			logedin = true;
 		else
 			logedin = false;
 		return res;
-	case singin_code:
+	case SIGNIN_CODE:
 		return signin(s);
 	}
-	return command_code_error;
+	return COMMAND_CODE_ERROR;
 }
 
 
-network::network(int number_listeners, int start_port) {
-	network::start_port = start_port;
+network::network(int port) {
+	network::port = port;
 	network::number_listeners = number_listeners;
 	network::main_net = new thread(&network::listen);
 
@@ -90,7 +90,7 @@ network::network(int number_listeners, int start_port) {
 void network::listen() {
 
 	sf::TcpListener listener;
-	listener.listen(start_port);
+	listener.listen(port);
 	sf::TcpSocket* client = new sf::TcpSocket;
 	while (true) {
 		sleep(seconds(0.1f));
@@ -124,7 +124,7 @@ network::~network() {
 }
 
 int network::number_listeners;
-int network::start_port;
+int network::port;
 list<thread> network::threads;
 thread * network::main_net;
 usersDB network::UBD("usersDB");
