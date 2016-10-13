@@ -2,7 +2,7 @@
 #include "network.cpp"
 
 int main() {
-	network nt;
+	Network nt;
 	nt.connect();
 	nt.send_command(LOGIN_CODE, { "login", "pass" });
 	ClientController clientController;

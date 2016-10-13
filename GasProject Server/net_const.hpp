@@ -1,10 +1,10 @@
 #pragma once
-enum comand_code
+enum Comand_code
 {
 	LOGIN_CODE = 1,
 	SIGNIN_CODE = 2
 };
-enum result
+enum Result
 {
 	OK = 0, 
 	LOGIN_ERROR = 1, 

@@ -13,37 +13,36 @@ using namespace std;
 using namespace sf;
 
 
-class usersDB
+class UsersDB
 {
 	string adr;
 	map <string, string> all;
 public:
-	usersDB(string adr);
+	UsersDB(string adr);
 	bool content(string &login, string &pass);
 	bool add(string login, string pass);
 };
-class netclient {
+
+class Netclient {
 public:
 	bool logedin = false;
 	sf::TcpSocket* socket;
-	netclient(sf::TcpSocket* soc);
-	result login(string &s);
-	result signin(string &s);
-	result parse(sf::Packet & pac);
+	Netclient(sf::TcpSocket* soc);
+	Result login(string &s);
+	Result signin(string &s);
+	Result parse(sf::Packet & pac);
 };
 
-class network {
+class Network {
 public:
 
-	static int number_listeners;
 	static int port;
-	//list<TcpSocket> threads;
-	static list<thread> threads;
+	static list<thread *> threads;
 	static thread * main_net;
-	static usersDB UBD;
+	static UsersDB UBD;
 
-	network(int port = ::PORT);
+	Network(int port = ::PORT);
 	static void listen();
 	static void session(sf::TcpSocket *);
-	~network();
+	~Network();
 };

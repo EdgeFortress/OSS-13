@@ -9,22 +9,22 @@ using namespace std;
 using namespace sf;
 
 
-class network {
+class Network {
 	string ip;
 	int port;
 	sf::TcpSocket socket;
 public:
-	network(string ip = "127.0.0.1", int port = PORT) {
+	Network(string ip = "127.0.0.1", int port = PORT) {
 		this->ip = ip;
 		this->port = port;
 	}
-	result connect() {
+	Result connect() {
 		if (socket.connect(ip, port, seconds(20)) != sf::Socket::Done)
 			return CONNECTION_ERROR;
 		else return OK;
 	}
 
-	result send_command(comand_code cc, list<string> args) {
+	Result send_command(Comand_code cc, list<string> args) {
 		sf::Packet pac;
 		string s = string{ (char)cc };
 		for (auto arg = args.begin(); arg != args.end(); arg++)
@@ -39,7 +39,7 @@ public:
 			socket.receive(pac);
 			if (pac.getDataSize() != 0) {
 				pac >> s;
-				return (result)s[0];
+				return (Result)s[0];
 			}
 		}
 		return CONNECTION_ERROR;
@@ -48,7 +48,7 @@ public:
 /*
 int main()
 {
-	network nt;
+	Network nt;
 	int a;
 	cout << nt.connect() << endl;
 	cout << nt.send_command(LOGIN_CODE, {"login", "pass"}) << endl;
