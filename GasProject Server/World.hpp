@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 
 #include <list>
 #include <vector>
@@ -10,9 +11,8 @@ class Tile;
 class Map;
 
 class Object {
-private:
+protected:
 	Tile *tile;
-
 public:
 	Object();
 	Object(Tile *tile);
@@ -23,10 +23,38 @@ class Item : public Object {
 };
 
 class Block : public Object {
-
+protected:
+	bool density;
+public:
+	Block(bool density) : density(density){}
 };
 
 class Mob : public Object {
+
+};
+
+class Wall : public Block {
+public:
+	Wall(bool density = true) : Block(density){}
+	Wall(const Wall &object);
+
+	~Wall();
+};
+
+class Floor : public Block {
+public:
+	Floor(bool density = false) : Block(density) {}
+	Floor(const Floor &object);
+
+	~Floor();
+};
+
+class Gate : public Block {
+public:
+	Gate(bool density = true) : Block(density) {}
+	Gate(const Gate &object);
+
+	~Gate();
 
 };
 
@@ -38,6 +66,7 @@ private:
 
 public:
 	Tile(Map *map, int x, int y);
+	//add object to map
 	void AddObject(Object *obj);
 	// Removing object from tile content, but not deleting it
 	void RemoveObject(Object *obj);
@@ -51,7 +80,7 @@ private:
 	int sizeY;
 
 public:
-	Map();
+	Map(int x = 100, int y = 100);
 	Tile *GetTile(int x, int y);
 	~Map();
 };
@@ -64,7 +93,8 @@ public:
 	World() {
 		map = new Map();
 	}
-
+	//filling the world
+	void FillingWorld();
 	~World() {
 		delete map;
 	}
