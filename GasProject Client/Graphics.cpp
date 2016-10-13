@@ -34,7 +34,7 @@ void GameProcessState::DrawTileGrid() const { }
 
 void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
 	Window *window = clientController->GetWindow();
-	window->GetUI()->desktop->Update(timeElapsed.asSeconds());
+	window->GetUI()->desktop.Update(timeElapsed.asSeconds());
 	window->GetUI()->m_sfgui.Display(*render_window);
 }
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
