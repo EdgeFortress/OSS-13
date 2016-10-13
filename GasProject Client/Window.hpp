@@ -41,13 +41,13 @@ private:
 
 public:
 	Window(ClientController *controller) : tileGrid(new TileGrid),
-										   ui(new UI),
 										   controller(controller), 
-										   cur_FPS(0){
+										   cur_FPS(0) {
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
 		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProject Client"));
+		ui.reset(new UI(window.get()));
 	}
 
 	Window(const Window &) = delete;
