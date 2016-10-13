@@ -144,8 +144,6 @@ int main()
 {
 	network s;
 	s.main_net->join();
-	int a;
-	cin >> a;
 	return 0;
 }
 */
