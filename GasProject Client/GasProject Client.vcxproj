@@ -127,10 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Network.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Network.hpp" />
+    <ClCompile Include="network.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

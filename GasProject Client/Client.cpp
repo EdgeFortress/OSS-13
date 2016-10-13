@@ -2,6 +2,7 @@
 
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
+#include "network.cpp"
 
 class Client {
 
@@ -9,12 +10,14 @@ class Client {
 
 int main()
 {
+
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
 
 	auto m_label = sfg::Label::Create("Hello world!");
 
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
+
 
 	while (window.isOpen())
 	{
