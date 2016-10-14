@@ -1,48 +1,54 @@
 #pragma once
-#include <SFML\Network.hpp>
+
 #include <list>
 #include <iostream>
 #include <fstream>
 #include <thread>
-#include <atomic>
 #include <map>
 #include <sstream>
+
+#include <SFML\Network.hpp>
+
 #include "net_const.hpp"
 
 using namespace std;
 using namespace sf;
 
-
-class UsersDB
-{
+class UsersDB {
 	string adr;
 	map <string, string> all;
 public:
 	UsersDB(string adr);
-	bool content(string &login, string &pass);
+	bool contain(string &login, string &pass);
 	bool add(string login, string pass);
 };
 
 class Netclient {
-public:
+private:
 	bool logedin = false;
-	sf::TcpSocket* socket;
-	Netclient(sf::TcpSocket* soc);
-	Result login(string &s);
-	Result signin(string &s);
+	uptr<sf::TcpSocket> &socket;
+
+public:
+	Netclient(uptr<sf::TcpSocket> &socket);
+	Result Authorization(string &s);
+	Result Registration(string &s);
 	Result parse(sf::Packet & pac);
 };
 
 class Network {
-public:
-
+private:
+	static bool inProcess;
 	static int port;
-	static list<thread *> threads;
-	static thread * main_net;
-	static UsersDB UBD;
+	static uptr<thread> listeningThread;
 
-	Network(int port = ::PORT);
+	static list<thread *> threads;
+
+	static void session(sf::TcpSocket *client);
 	static void listen();
-	static void session(sf::TcpSocket *);
-	~Network();
+
+public:
+	static UsersDB UDB;
+
+	static void Initialize(const int port);
+	static void WIP_Wait();
 };

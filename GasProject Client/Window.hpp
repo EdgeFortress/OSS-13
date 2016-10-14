@@ -10,8 +10,8 @@
 
 /* A piece of C++11. uptr - synonym of unique_ptr
 uptr<Class> == std::unique_ptr<Class> now */
-template<class T>
-using uptr = std::unique_ptr<T>;
+//template<class T>
+//using uptr = std::unique_ptr<T>;
 
 class ClientController;
 

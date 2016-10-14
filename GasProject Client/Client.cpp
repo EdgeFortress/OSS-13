@@ -1,8 +1,7 @@
 #include "Client.hpp"
 
 int main() {
-	Network::Network();
-	Network::connect();
+	Network::Connect("localhost", PORT);
 	ClientController clientController;
 	
 	return 0;

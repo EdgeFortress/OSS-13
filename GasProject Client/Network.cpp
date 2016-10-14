@@ -1,21 +1,20 @@
+#include <iostream>
+
 #include "network.hpp"
+
 using namespace std;
 using namespace sf;
-string Network::ip;
-int Network::port;
-sf::TcpSocket Network::socket;
 
-Network::Network(string ip, int port) {
+Result Network::Connect(string ip, int port) {
 	Network::ip = ip;
 	Network::port = port;
-}
-Result Network::connect() {
-	if (socket.connect(ip, port, seconds(20)) != sf::Socket::Done)
+	if (socket.connect(ip, port, seconds(1)) != sf::Socket::Done) {
 		return CONNECTION_ERROR;
+	}
 	else return OK;
 }
 
-Result Network::send_command(Comand_code cc, list<string> args) {
+Result Network::SendCommand(Comand_code cc, std::list<string> args) {
 	sf::Packet pac;
 	string s = string{ (char)cc };
 	for (auto arg = args.begin(); arg != args.end(); arg++)
@@ -27,11 +26,14 @@ Result Network::send_command(Comand_code cc, list<string> args) {
 	//string s;
 	while (i++ < 150) {
 		sleep(seconds(0.01f));
-		socket.receive(pac);
-		if (pac.getDataSize() != 0) {
-			pac >> s;
-			return (Result)s[0];
-		}
+		if (socket.receive(pac)) return CONNECTION_ERROR;
+		pac >> s;
+		return (Result)s[0];
 	}
 	return CONNECTION_ERROR;
 }
+
+string Network::ip;
+int Network::port;
+uptr<std::thread> thread;
+sf::TcpSocket Network::socket;

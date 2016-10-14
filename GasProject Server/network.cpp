@@ -1,3 +1,4 @@
+#include "Server.hpp"
 #include "network.hpp"
 
 using namespace std;
@@ -14,13 +15,13 @@ UsersDB::UsersDB(string adr) {
 		all[login] = pass;
 	}
 }
-bool UsersDB::content(string &login, string &pass) {
+bool UsersDB::contain(string &login, string &pass) {
 	if (login == "") return false;
 	return (all.count(login) == 1) && (all[login] == pass);
 }
 bool UsersDB::add(string login, string pass) {
 	ofstream file;
-	file.open(adr, ios::app);
+	file.open(adr, ios::ate);
 	if (all.count(login) == 0) {
 		all[login] = pass;
 		file << login << " " << pass << endl;
@@ -31,107 +32,95 @@ bool UsersDB::add(string login, string pass) {
 }
 
 
-Netclient::Netclient(sf::TcpSocket* soc) {
-	socket = soc;
+Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {
+	
 }
-Result Netclient::login(string &s) {
+
+Result Netclient::Authorization(string &s) {
 	std::istringstream ss(s);
 	string login, pass;
 	ss >> login;
 	ss >> pass;
 	cout << login << endl;
 	cout << pass << endl;
-	if (Network::UBD.content(login, pass))
+	if (Network::UDB.contain(login, pass))
 		return OK;
 	else
-		return LOGIN_ERROR;
+		return AUTH_ERROR;
 }
 
-Result Netclient::signin(string &s) {
+Result Netclient::Registration(string &s) {
 	std::istringstream ss(s);
 	string login, pass;
 	ss >> login;
 	ss >> pass;
-	if (Network::UBD.add(login, pass))
+	if (Network::UDB.add(login, pass))
 		return OK;
 	else
-		return SIGNIN_ERROR;
+		return REG_ERROR;
 }
 
 
-Result Netclient::parse(sf::Packet & pac) {
+Result Netclient::parse(sf::Packet &pac) {
 	string s;
 	pac >> s;
 	char code = s[0];
 	s = &(s[1]);
 	Result res;
-	switch (code)
-	{
-	case LOGIN_CODE:
-		res = login(s);
+	switch (code) {
+	case AUTH_CODE:
+		res = Authorization(s);
 		if (res == OK)
 			logedin = true;
 		else
 			logedin = false;
 		return res;
-	case SIGNIN_CODE:
-		return signin(s);
+	case REG_CODE:
+		return Registration(s);
 	}
 	return COMMAND_CODE_ERROR;
 }
 
-
-Network::Network(int port) {
-	Network::port = port;
-	Network::main_net = new thread(&Network::listen);
-
+void Network::Initialize(const int port) {
+	if (!inProcess) {
+		Network::port = port;
+		Network::listeningThread.reset(new thread(&Network::listen));
+		inProcess = true;
+	}
 }
-void Network::listen() {
 
+void Network::WIP_Wait() {
+	listeningThread->join();
+}
+
+void Network::listen() {
 	sf::TcpListener listener;
 	listener.listen(port);
-	sf::TcpSocket* client = new sf::TcpSocket;
+	sf::TcpSocket *socket = new sf::TcpSocket;
 	while (true) {
-		sleep(seconds(0.1f));
-		if (listener.accept(*client) == sf::TcpSocket::Done) {
-			threads.push_back(new thread(session, client));
-			client = new sf::TcpSocket;
+		if (listener.accept(*socket) == sf::TcpSocket::Done) {
+			threads.push_back(new thread(session, socket));
+			socket = new sf::TcpSocket;
 		}
 	}
 }
 
-void Network::session(sf::TcpSocket * client) {
+void Network::session(sf::TcpSocket *raw_pointer_socket) {
+	uptr<sf::TcpSocket> socket(raw_pointer_socket);
 	sf::Packet pac;
-	Netclient cl(client);
+	Netclient cl(socket);
 	while (true) {
-		client->receive(pac);
-		if (pac.getDataSize() > 0) {
-			Result rs = cl.parse(pac);
-			pac.clear();
-			pac << string{ (char)rs };
-			client -> send(pac);
-			pac.clear();
-		}
-		sleep(seconds(0.1f));
+		socket->receive(pac);
+		Result rs = cl.parse(pac);
+		pac.clear();
+		pac << string{ (char)rs };
+		socket->send(pac);
+		pac.clear();
 	}
 }
 
-Network::~Network() {
-	for (auto i = threads.begin(); i != threads.end(); i++)
-		delete(*i);
-	delete(main_net);
-}
-
+bool Network::inProcess = false;
 int Network::port;
-list<thread*> Network::threads;
-thread * Network::main_net;
-UsersDB Network::UBD("usersDB");
-/*
-int main()
-{
-	Network s;
-	s.main_net->join();
-	return 0;
-}
-*/
-
+list<thread *> Network::threads;
+uptr<thread> Network::listeningThread;
+UsersDB Network::UDB("usersDB");

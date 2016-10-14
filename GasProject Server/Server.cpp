@@ -11,13 +11,13 @@ Game::Game(Server *server) : server(server),
 }
 
 Server::Server() {
-	games.push_back(uptr<Game>(new Game(this)));
+	//games.push_back(uptr<Game>(new Game(this)));
+	Network::Initialize(PORT);
+	Network::WIP_Wait();
 }
 
 int main() {
 	Server server;
-	Network s;
-	s.main_net->join();
 
 	return 0;
 }

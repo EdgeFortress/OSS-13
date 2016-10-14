@@ -22,7 +22,7 @@ void AuthUI::generateLoginWindow() {
 	reg_label->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&AuthUI::openReg, this));
 
 	auto enter_button = sfg::Button::Create("Enter");
-	enter_button->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&AuthUI::enter, this));
+	enter_button->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&AuthUI::login, this));
 
 	login_entry = sfg::Entry::Create();
 	passw_entry = sfg::Entry::Create();
@@ -93,12 +93,11 @@ void AuthUI::openReg() {
 	regWindow->Show(true);
 }
 
-void AuthUI::enter() {
-
+void AuthUI::login() {
 	cout << string(login_entry->GetText()) << endl;
 	cout << string(passw_entry->GetText()) << endl;
 
-	Result enter = Network::send_command(LOGIN_CODE, {login_entry->GetText(), passw_entry->GetText()});
+	Result enter = Network::SendCommand(AUTH_CODE, {login_entry->GetText(), passw_entry->GetText()});
 
 	if (enter == OK)
 		cout << "Enter succeeded!" << endl;
@@ -111,11 +110,11 @@ void AuthUI::registration() {
 	cout << string(new_login_entry->GetText()) << endl;
 	cout << string(new_passw_entry->GetText()) << endl;
 
-	Result reg = Network::send_command(SIGNIN_CODE, { new_login_entry->GetText(), new_passw_entry->GetText() });
+	Result reg = Network::SendCommand(REG_CODE, { new_login_entry->GetText(), new_passw_entry->GetText() });
 	if (reg == OK)
-		cout << "Signin succeeded!" << endl;
+		cout << "Registration succeeded!" << endl;
 	else
-		cout << "Sgnin failed!" << endl;
+		cout << "Registration failed!" << endl;
 
 	openLogin();
 }

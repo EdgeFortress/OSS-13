@@ -3,8 +3,10 @@
 #include <list>
 #include <memory>
 
-template<class T>
-using uptr = std::unique_ptr<T>;
+#include "net_const.hpp"
+
+//template<class T>
+//using uptr = std::unique_ptr<T>;
 
 class Server;
 class World;
