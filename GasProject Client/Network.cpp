@@ -35,16 +35,3 @@ Result Network::send_command(Comand_code cc, list<string> args) {
 	}
 	return CONNECTION_ERROR;
 }
-/*
-int main()
-{
-	Network nt;
-	int a;
-	cout << nt.connect() << endl;
-	cout << nt.send_command(LOGIN_CODE, {"login", "pass"}) << endl;
-	cin >> a;
-
-	return 0;
-}
-
-*/

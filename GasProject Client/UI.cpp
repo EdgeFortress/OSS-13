@@ -94,16 +94,11 @@ void AuthUI::openReg() {
 }
 
 void AuthUI::enter() {
-	//bool enter;
 
 	cout << string(login_entry->GetText()) << endl;
 	cout << string(passw_entry->GetText()) << endl;
 
 	Result enter = Network::send_command(LOGIN_CODE, {login_entry->GetText(), passw_entry->GetText()});
-	/*if (login_entry->GetText() == "abc" && passw_entry->GetText() == "123")
-		enter = true;
-	else
-		enter = false;*/
 
 	if (enter == OK)
 		cout << "Enter succeeded!" << endl;
