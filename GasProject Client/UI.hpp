@@ -17,6 +17,7 @@ private:
 	void generateRegistrationWindow();
 	void openLogin();
 	void openReg();
+	void closeReg();
 	void login();
 	void registration();
 
