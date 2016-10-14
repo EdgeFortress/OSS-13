@@ -32,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Network.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Client.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
       <Filter>Заголовочные файлы\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="State.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="network.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

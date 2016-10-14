@@ -1,10 +1,9 @@
 #pragma once
 
 #include "State.hpp"
-
+#include "network.hpp"
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
-
 class UI;
 
 class AuthUI {

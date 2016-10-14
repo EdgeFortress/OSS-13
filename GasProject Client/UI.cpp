@@ -8,7 +8,7 @@
 
 using std::cout;
 using std::endl;
-using std::string;
+using std::string; 
 
 AuthUI::AuthUI(UI *ui) : ui(ui) {
 	generateLoginWindow();
@@ -94,17 +94,18 @@ void AuthUI::openReg() {
 }
 
 void AuthUI::enter() {
-	bool enter;
+	//bool enter;
 
 	cout << string(login_entry->GetText()) << endl;
 	cout << string(passw_entry->GetText()) << endl;
 
-	if (login_entry->GetText() == "abc" && passw_entry->GetText() == "123")
+	Result enter = Network::send_command(LOGIN_CODE, {login_entry->GetText(), passw_entry->GetText()});
+	/*if (login_entry->GetText() == "abc" && passw_entry->GetText() == "123")
 		enter = true;
 	else
-		enter = false;
+		enter = false;*/
 
-	if (enter)
+	if (enter == OK)
 		cout << "Enter succeeded!" << endl;
 	else
 		cout << "Enter failed!" << endl;
@@ -114,6 +115,13 @@ void AuthUI::registration() {
 	cout << "You have just created new login data:" << endl;
 	cout << string(new_login_entry->GetText()) << endl;
 	cout << string(new_passw_entry->GetText()) << endl;
+
+	Result reg = Network::send_command(SIGNIN_CODE, { new_login_entry->GetText(), new_passw_entry->GetText() });
+	if (reg == OK)
+		cout << "Signin succeeded!" << endl;
+	else
+		cout << "Sgnin failed!" << endl;
+
 	openLogin();
 }
 

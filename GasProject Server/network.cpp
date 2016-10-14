@@ -39,8 +39,8 @@ Result Netclient::login(string &s) {
 	string login, pass;
 	ss >> login;
 	ss >> pass;
-	//cout << login << endl;
-	//cout << pass << endl;
+	cout << login << endl;
+	cout << pass << endl;
 	if (Network::UBD.content(login, pass))
 		return OK;
 	else

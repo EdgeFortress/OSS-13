@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.hpp" />
+    <ClInclude Include="network.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="TileGrid.hpp" />
     <ClInclude Include="UI.hpp" />

@@ -1,8 +1,6 @@
 #pragma once
-
 #include "Window.hpp"
 #include "State.hpp"
-
 #include <string>
 
 class Player {
