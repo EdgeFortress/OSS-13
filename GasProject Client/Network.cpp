@@ -14,7 +14,7 @@ Result Network::Connect(string ip, int port) {
 	else return OK;
 }
 
-Result Network::SendCommand(Comand_code cc, std::list<string> args) {
+Result Network::SendCommand(Command_code cc, std::list<string> args) {
 	sf::Packet pac;
 	string s = string{ (char)cc };
 	for (auto arg = args.begin(); arg != args.end(); arg++)

@@ -42,6 +42,7 @@ private:
 	static uptr<thread> listeningThread;
 
 	static list<thread *> threads;
+	static ThreadSafeStack<ServerCommand> commandStack;
 
 	static void session(sf::TcpSocket *client);
 	static void listen();

@@ -16,7 +16,9 @@ class Network {
 	static uptr<std::thread> thread;
 	static sf::TcpSocket socket;
 
+	static ThreadSafeStack<ClientCommand> commandStack;
+
 public:
 	static Result Connect(const string ip, const int port);
-	static Result SendCommand(Comand_code cc, std::list<string> args);
+	static Result SendCommand(Command_code cc, std::list<string> args);
 };
