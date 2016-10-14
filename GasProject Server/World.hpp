@@ -92,6 +92,7 @@ private:
 public:
 	World() {
 		map = new Map();
+		FillingWorld();
 	}
 	//filling the world
 	void FillingWorld();

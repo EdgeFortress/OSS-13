@@ -1,20 +1,21 @@
+#include <list>
 #include <SFML/Network.hpp>
+
+#include "Server.hpp"
 #include "network.hpp"
 #include "World.hpp"
 
-class Server {
-public:
-	Server();
-};
+Game::Game(Server *server) : server(server),
+						     world(new World()) {
 
-Server::Server()
-{
-	World world;
-	world.FillingWorld();	
+}
+
+Server::Server() {
+	games.push_back(uptr<Game>(new Game(this)));
 }
 
 int main() {
-	//Server LoH;
+	Server server;
 	Network s;
 	s.main_net->join();
 

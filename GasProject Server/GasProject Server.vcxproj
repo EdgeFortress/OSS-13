@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="network.hpp" />
     <ClInclude Include="net_const.hpp" />
+    <ClInclude Include="Server.hpp" />
     <ClInclude Include="World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
