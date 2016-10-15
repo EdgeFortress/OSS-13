@@ -19,8 +19,8 @@ class UsersDB {
 	map <string, string> all;
 public:
 	UsersDB(string adr);
-	bool contain(string &login, string &pass);
-	bool add(string login, string pass);
+	bool Contain(string &login, string &pass);
+	bool Add(string login, string pass);
 };
 
 class Netclient {
@@ -30,9 +30,9 @@ private:
 
 public:
 	Netclient(uptr<sf::TcpSocket> &socket);
-	void Authorization(string &login, string &password);
-	void Registration(string &login, string &password);
-	void parse(sf::Packet & pac);
+	bool Authorization(string &login, string &password);
+	bool Registration(string &login, string &password);
+	void Parse(sf::Packet & pac);
 };
 
 class Network {
@@ -43,7 +43,7 @@ private:
 
 	static list<thread *> threads;
 
-	static void session(sf::TcpSocket *client);
+	static void clientSession(sf::TcpSocket *client);
 	static void listen();
 
 public:

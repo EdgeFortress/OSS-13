@@ -23,6 +23,7 @@ public:
 	ClientController() : player(new Player), 
 		                 window(new Window(this)),
 						 state(new MenuLoginState(this)){
+        Network::Connect("localhost", PORT);
 		sf::Clock clock;
 
 		while (window->isOpen()) {

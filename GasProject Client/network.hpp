@@ -22,6 +22,6 @@ public:
 	static ThreadSafeQueue<ClientCommand *> commandQueue;
 	static ThreadSafeQueue<ServerCommand::Code> answerQueue;
 
-	static Result Connect(const string ip, const int port);
+	static bool Connect(const string ip, const int port);
 	static void SendCommand();
 };

@@ -15,64 +15,67 @@ UsersDB::UsersDB(string adr) {
 		all[login] = pass;
 	}
 }
-bool UsersDB::contain(string &login, string &pass) {
+
+bool UsersDB::Contain(string &login, string &pass) {
 	if (login == "") return false;
 	return (all.count(login) == 1) && (all[login] == pass);
 }
-bool UsersDB::add(string login, string pass) {
+
+bool UsersDB::Add(string login, string pass) {
 	ofstream file;
 	file.open(adr, ios::ate);
 	if (all.count(login) == 0) {
 		all[login] = pass;
 		file << login << " " << pass << endl;
 		return true;
-	}
-	else
+	} else
 		return false;
 }
-
 
 Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {
 	
 }
 
-void Netclient::Authorization(string &login, string &password) {
+bool Netclient::Authorization(string &login, string &password) {
 	cout << login << endl;
 	cout << password << endl;
-	if (Network::UDB.contain(login, password))
-		Network::commandQueue.Push(new SuccessServerCommand());
-	else
-		Network::commandQueue.Push(new AuthErrorServerCommand());
+	if (Network::UDB.Contain(login, password))
+		return true;
+	return false;
 }
 
-void Netclient::Registration(string &login, string &password) {
-	if (Network::UDB.add(login, password))
-		Network::commandQueue.Push(new SuccessServerCommand());
-	else
-		Network::commandQueue.Push(new RegErrorServerCommand());
+bool Netclient::Registration(string &login, string &password) {
+	if (Network::UDB.Add(login, password))
+		return true;
+	return false;
 }
 
-void Netclient::parse(sf::Packet &pac) {
+void Netclient::Parse(sf::Packet &pac) {
 	int code;
 	pac >> code;
-	Result res;
-	string login, password;
-	switch (code) {
-	case ClientCommand::AUTH_REQ:
-		pac >> login >> password;
-		Authorization(login, password);
-		if (!(Network::commandQueue.Front()->GetCode()))
-			logedin = true;
-		else
-			logedin = false;
-		return;
-	case ClientCommand::REG_REQ:
-		pac >> login >> password;
-		Registration(login, password);
-		return;
-	}
-	Network::commandQueue.Push(new CommandCodeErrorServerCommand());
-	return;
+	
+    switch (code) {
+        case ClientCommand::AUTH_REQ: {
+            string login, password;
+            pac >> login >> password;
+            if (logedin = Authorization(login, password))
+                Network::commandQueue.Push(new SuccessServerCommand());
+            else
+                Network::commandQueue.Push(new AuthErrorServerCommand());
+            break;
+        }
+        case ClientCommand::REG_REQ: {
+            string login, password;
+            pac >> login >> password;
+            if (Registration(login, password))
+                Network::commandQueue.Push(new SuccessServerCommand());
+            else
+                Network::commandQueue.Push(new RegErrorServerCommand());
+            break;
+        }
+        default:
+            Network::commandQueue.Push(new CommandCodeErrorServerCommand());
+    }
 }
 
 void Network::Initialize(const int port) {
@@ -84,7 +87,8 @@ void Network::Initialize(const int port) {
 }
 
 void Network::WIP_Wait() {
-	listeningThread->join();
+	if (listeningThread)
+		listeningThread->join();
 }
 
 void Network::listen() {
@@ -93,25 +97,28 @@ void Network::listen() {
 	sf::TcpSocket *socket = new sf::TcpSocket;
 	while (true) {
 		if (listener.accept(*socket) == sf::TcpSocket::Done) {
-			threads.push_back(new thread(session, socket));
+			threads.push_back(new thread(clientSession, socket));
 			socket = new sf::TcpSocket;
+		} else {
+			break;
 		}
 	}
+	delete socket;
 }
 
-void Network::session(sf::TcpSocket *raw_pointer_socket) {
+void Network::clientSession(sf::TcpSocket *raw_pointer_socket) {
 	uptr<sf::TcpSocket> socket(raw_pointer_socket);
-	sf::Packet pac;
-	Netclient cl(socket);
+	sf::Packet packet;
+	Netclient client(socket);
 	while (true) {
-		socket->receive(pac);
-		cl.parse(pac);
-		pac.clear();
+		socket->receive(packet);
+		client.Parse(packet);
+		packet.clear();
 		while (!commandQueue.Empty()) {
-			pac << commandQueue.Front()->GetCode();
-			socket->send(pac);
+			packet << commandQueue.Front()->GetCode();
+			socket->send(packet);
 			commandQueue.Pop();
-			pac.clear();
+			packet.clear();
 		}
 	}
 }

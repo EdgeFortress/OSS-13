@@ -5,24 +5,24 @@
 using namespace std;
 using namespace sf;
 
-Result Network::Connect(string ip, int port) {
+bool Network::Connect(string ip, int port) {
 	Network::ip = ip;
 	Network::port = port;
 	if (socket.connect(ip, port, seconds(1)) != sf::Socket::Done) {
-		return CONNECTION_ERROR;
+		return true;
 	}
-	else return OK;
+	return false;
 }
 
 void Network::SendCommand() {
 	while (!commandQueue.Empty()) {
 		sf::Packet pac;
-		switch (commandQueue.Front()->GetCode()) {
-		case ClientCommand::AUTH_REQ:
-			pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
-		case ClientCommand::REG_REQ:
-			pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
-		}
+        switch (commandQueue.Front()->GetCode()) {
+            case ClientCommand::AUTH_REQ:
+                pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
+            case ClientCommand::REG_REQ:
+                pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
+        }
 		socket.send(pac);
 		commandQueue.Pop();
 
