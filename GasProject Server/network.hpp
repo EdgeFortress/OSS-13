@@ -30,9 +30,9 @@ private:
 
 public:
 	Netclient(uptr<sf::TcpSocket> &socket);
-	Result Authorization(string &s);
-	Result Registration(string &s);
-	Result parse(sf::Packet & pac);
+	void Authorization(string &login, string &password);
+	void Registration(string &login, string &password);
+	void parse(sf::Packet & pac);
 };
 
 class Network {
@@ -42,13 +42,13 @@ private:
 	static uptr<thread> listeningThread;
 
 	static list<thread *> threads;
-	static ThreadSafeStack<ServerCommand> commandStack;
 
 	static void session(sf::TcpSocket *client);
 	static void listen();
 
 public:
 	static UsersDB UDB;
+	static ThreadSafeQueue<ServerCommand *> commandQueue;
 
 	static void Initialize(const int port);
 	static void WIP_Wait();

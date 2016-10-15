@@ -97,9 +97,14 @@ void AuthUI::login() {
 	cout << string(login_entry->GetText()) << endl;
 	cout << string(passw_entry->GetText()) << endl;
 
-	Result enter = Network::SendCommand(AUTH_CODE, {login_entry->GetText(), passw_entry->GetText()});
+	Network::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
 
-	if (enter == OK)
+	Network::SendCommand();
+	//Network::thread.reset(new std::thread(&Network::SendCommand));
+	ServerCommand::Code enter = Network::answerQueue.Front();
+	Network::answerQueue.Pop();
+
+	if (!enter)
 		cout << "Enter succeeded!" << endl;
 	else
 		cout << "Enter failed!" << endl;
@@ -110,8 +115,14 @@ void AuthUI::registration() {
 	cout << string(new_login_entry->GetText()) << endl;
 	cout << string(new_passw_entry->GetText()) << endl;
 
-	Result reg = Network::SendCommand(REG_CODE, { new_login_entry->GetText(), new_passw_entry->GetText() });
-	if (reg == OK)
+	Network::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
+
+	Network::SendCommand();
+	//Network::thread.reset(new std::thread(&Network::SendCommand));
+	ServerCommand::Code reg = Network::answerQueue.Front();
+	Network::answerQueue.Pop();
+
+	if (!reg)
 		cout << "Registration succeeded!" << endl;
 	else
 		cout << "Registration failed!" << endl;

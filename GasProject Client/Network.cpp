@@ -14,26 +14,32 @@ Result Network::Connect(string ip, int port) {
 	else return OK;
 }
 
-Result Network::SendCommand(Command_code cc, std::list<string> args) {
-	sf::Packet pac;
-	string s = string{ (char)cc };
-	for (auto arg = args.begin(); arg != args.end(); arg++)
-		s += " " + *arg;
+void Network::SendCommand() {
+	while (!commandQueue.Empty()) {
+		sf::Packet pac;
+		switch (commandQueue.Front()->GetCode()) {
+		case ClientCommand::AUTH_REQ:
+			pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
+		case ClientCommand::REG_REQ:
+			pac << commandQueue.Front()->GetCode() << commandQueue.Front()->login << commandQueue.Front()->password;
+		}
+		socket.send(pac);
+		commandQueue.Pop();
 
-	pac << s;
-	socket.send(pac);
-	int i = 0;
-	//string s;
-	while (i++ < 150) {
 		sleep(seconds(0.01f));
-		if (socket.receive(pac)) return CONNECTION_ERROR;
-		pac >> s;
-		return (Result)s[0];
+		if (socket.receive(pac)) {
+			answerQueue.Push(ServerCommand::CONNECTION_ERROR);
+			break;
+		}
+		int res;
+		pac >> res;
+		answerQueue.Push((ServerCommand::Code)res);
 	}
-	return CONNECTION_ERROR;
 }
 
 string Network::ip;
 int Network::port;
-uptr<std::thread> thread;
+uptr<std::thread> Network::thread;
 sf::TcpSocket Network::socket;
+ThreadSafeQueue<ClientCommand *> Network::commandQueue;
+ThreadSafeQueue<ServerCommand::Code> Network::answerQueue;

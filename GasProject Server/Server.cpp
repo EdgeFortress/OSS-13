@@ -11,9 +11,9 @@ Game::Game(Server *server) : server(server),
 }
 
 Server::Server() {
-	//games.push_back(uptr<Game>(new Game(this)));
 	Network::Initialize(PORT);
 	Network::WIP_Wait();
+	games.push_back(uptr<Game>(new Game(this)));
 }
 
 int main() {

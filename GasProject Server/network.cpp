@@ -36,49 +36,43 @@ Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {
 	
 }
 
-Result Netclient::Authorization(string &s) {
-	std::istringstream ss(s);
-	string login, pass;
-	ss >> login;
-	ss >> pass;
+void Netclient::Authorization(string &login, string &password) {
 	cout << login << endl;
-	cout << pass << endl;
-	if (Network::UDB.contain(login, pass))
-		return OK;
+	cout << password << endl;
+	if (Network::UDB.contain(login, password))
+		Network::commandQueue.Push(new SuccessServerCommand());
 	else
-		return AUTH_ERROR;
+		Network::commandQueue.Push(new AuthErrorServerCommand());
 }
 
-Result Netclient::Registration(string &s) {
-	std::istringstream ss(s);
-	string login, pass;
-	ss >> login;
-	ss >> pass;
-	if (Network::UDB.add(login, pass))
-		return OK;
+void Netclient::Registration(string &login, string &password) {
+	if (Network::UDB.add(login, password))
+		Network::commandQueue.Push(new SuccessServerCommand());
 	else
-		return REG_ERROR;
+		Network::commandQueue.Push(new RegErrorServerCommand());
 }
 
-
-Result Netclient::parse(sf::Packet &pac) {
-	string s;
-	pac >> s;
-	char code = s[0];
-	s = &(s[1]);
+void Netclient::parse(sf::Packet &pac) {
+	int code;
+	pac >> code;
 	Result res;
+	string login, password;
 	switch (code) {
-	case AUTH_CODE:
-		res = Authorization(s);
-		if (res == OK)
+	case ClientCommand::AUTH_REQ:
+		pac >> login >> password;
+		Authorization(login, password);
+		if (!(Network::commandQueue.Front()->GetCode()))
 			logedin = true;
 		else
 			logedin = false;
-		return res;
-	case REG_CODE:
-		return Registration(s);
+		return;
+	case ClientCommand::REG_REQ:
+		pac >> login >> password;
+		Registration(login, password);
+		return;
 	}
-	return COMMAND_CODE_ERROR;
+	Network::commandQueue.Push(new CommandCodeErrorServerCommand());
+	return;
 }
 
 void Network::Initialize(const int port) {
@@ -111,11 +105,14 @@ void Network::session(sf::TcpSocket *raw_pointer_socket) {
 	Netclient cl(socket);
 	while (true) {
 		socket->receive(pac);
-		Result rs = cl.parse(pac);
+		cl.parse(pac);
 		pac.clear();
-		pac << string{ (char)rs };
-		socket->send(pac);
-		pac.clear();
+		while (!commandQueue.Empty()) {
+			pac << commandQueue.Front()->GetCode();
+			socket->send(pac);
+			commandQueue.Pop();
+			pac.clear();
+		}
 	}
 }
 
@@ -124,3 +121,4 @@ int Network::port;
 list<thread *> Network::threads;
 uptr<thread> Network::listeningThread;
 UsersDB Network::UDB("usersDB");
+ThreadSafeQueue<ServerCommand *> Network::commandQueue;
