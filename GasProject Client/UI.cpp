@@ -99,8 +99,9 @@ void AuthUI::login() {
 
 	Network::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
 
-	Network::SendCommand();
-	//Network::thread.reset(new std::thread(&Network::SendCommand));
+	//Network::SendCommand();
+	Network::thread.reset(new std::thread(&Network::SendCommand));
+	Network::thread->join();
 	ServerCommand::Code enter = Network::answerQueue.Front();
 	Network::answerQueue.Pop();
 
@@ -117,8 +118,9 @@ void AuthUI::registration() {
 
 	Network::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
 
-	Network::SendCommand();
-	//Network::thread.reset(new std::thread(&Network::SendCommand));
+	//Network::SendCommand();
+	Network::thread.reset(new std::thread(&Network::SendCommand));
+	Network::thread->join();
 	ServerCommand::Code reg = Network::answerQueue.Front();
 	Network::answerQueue.Pop();
 
