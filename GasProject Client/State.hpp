@@ -38,6 +38,24 @@ public:
 	virtual ~MenuLoginState() = default;
 };
 
+class MenuLoginWaitingState : public State {
+private:
+    bool loginWaiting;
+    bool regWaiting;
+
+public:
+    MenuLoginWaitingState(ClientController *clientController, bool loginWaiting, bool regWaiting) : State(clientController),
+                                                                                                    loginWaiting(loginWaiting),
+                                                                                                    regWaiting(regWaiting) { }
+
+    virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
+    virtual void DrawTileGrid() const override;
+
+    MenuLoginWaitingState(const MenuLoginWaitingState &) = delete;
+    MenuLoginWaitingState &operator=(const MenuLoginWaitingState &) = delete;
+    virtual ~MenuLoginWaitingState() = default;
+};
+
 class MenuServerListState : public State {
 public:
 	MenuServerListState(ClientController *clientController) : State(clientController) { }

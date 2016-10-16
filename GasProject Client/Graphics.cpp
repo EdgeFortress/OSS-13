@@ -28,6 +28,7 @@ void Window::Update(sf::Time timeElapsed) {
 }
 
 void MenuLoginState::DrawTileGrid() const { }
+void MenuLoginWaitingState::DrawTileGrid() const { }
 void MenuServerListState::DrawTileGrid() const { }
 void GameLobbyState::DrawTileGrid() const { }
 void GameProcessState::DrawTileGrid() const { }
@@ -37,6 +38,34 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
 	window->GetUI()->desktop.Update(timeElapsed.asSeconds());
 	window->GetUI()->m_sfgui.Display(*render_window);
 }
+
+void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
+    Window *window = clientController->GetWindow();
+
+    bool endWaiting = true;
+    if (loginWaiting) {
+        if (window->GetUI()->GetAuthUI()->serverAnswer) {
+             bool result = window->GetUI()->GetAuthUI()->result;
+             window->GetUI()->GetAuthUI()->openLogin();
+        } else {
+            endWaiting = false;
+        }
+    }
+    if (regWaiting) {
+        if (window->GetUI()->GetAuthUI()->serverAnswer) {
+            bool result = window->GetUI()->GetAuthUI()->result;
+            window->GetUI()->GetAuthUI()->openLogin();
+        } else {
+            endWaiting = false;
+        }
+    }
+
+    window->GetUI()->desktop.Update(timeElapsed.asSeconds());
+    window->GetUI()->m_sfgui.Display(*render_window);
+
+    if (endWaiting) cout << "End Waiting" << endl, clientController->SetState(new MenuLoginState(clientController));
+}
+
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }

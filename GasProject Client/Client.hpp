@@ -1,11 +1,21 @@
 #pragma once
-#include "Window.hpp"
-#include "State.hpp"
+
 #include <string>
+
+#include "../GasProject Server/net_const.hpp"
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+using std::string;
+
+class Window;
+class State;
 
 class Player {
 private:
-	std::string pkey;
+	string pkey;
 };
 
 class ClientController {
@@ -15,26 +25,19 @@ private:
 	uptr<Player> player;
 	uptr<Window> window;
 	uptr<State> state;
+    State *newState;
 
 public:
-	/* Work of Client processing in his constructor.
-	If error will accident, unique_ptr's will clear memory automatically.
+	/* Work of Client processing in this constructor.
 	Such system allow as awake just 1 function of Client from main. */
-	ClientController() : player(new Player), 
-		                 window(new Window(this)),
-						 state(new MenuLoginState(this)){
-        Network::Connect("localhost", PORT);
-		sf::Clock clock;
-
-		while (window->isOpen()) {
-			sf::Time timeElapsed = clock.restart();
-			window->Update(timeElapsed);
-		}
-	}
+    ClientController();
+    void Run();
 
 	ClientController(const ClientController &) = delete;
 	ClientController &operator=(const ClientController &) = delete;
 	virtual ~ClientController() = default;
+
+    void SetState(State *state) { newState = state; }
 
 	Player *GetClient() { return player.get(); }
 	Window *GetWindow() { return window.get(); }

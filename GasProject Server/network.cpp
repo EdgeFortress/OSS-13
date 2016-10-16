@@ -59,7 +59,7 @@ void Netclient::Parse(sf::Packet &pac) {
             string login, password;
             pac >> login >> password;
             if (logedin = Authorization(login, password))
-                Network::commandQueue.Push(new SuccessServerCommand());
+                Network::commandQueue.Push(new AuthSuccessServerCommand());
             else
                 Network::commandQueue.Push(new AuthErrorServerCommand());
             break;
@@ -68,7 +68,7 @@ void Netclient::Parse(sf::Packet &pac) {
             string login, password;
             pac >> login >> password;
             if (Registration(login, password))
-                Network::commandQueue.Push(new SuccessServerCommand());
+                Network::commandQueue.Push(new RegSuccessServerCommand());
             else
                 Network::commandQueue.Push(new RegErrorServerCommand());
             break;

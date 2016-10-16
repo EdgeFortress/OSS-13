@@ -8,11 +8,6 @@
 #include "TileGrid.hpp"
 #include "UI.hpp"
 
-/* A piece of C++11. uptr - synonym of unique_ptr
-uptr<Class> == std::unique_ptr<Class> now */
-//template<class T>
-//using uptr = std::unique_ptr<T>;
-
 class ClientController;
 
 using sf::RenderWindow;
@@ -47,7 +42,7 @@ public:
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
 		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProject Client"));
-		ui.reset(new UI(window.get()));
+		ui.reset(new UI(controller, window.get()));
 	}
 
 	Window(const Window &) = delete;

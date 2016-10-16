@@ -4,13 +4,15 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "Client.hpp"
 #include "UI.hpp"
 
 using std::cout;
 using std::endl;
 using std::string; 
 
-AuthUI::AuthUI(UI *ui) : ui(ui) {
+AuthUI::AuthUI(UI *ui) : ui(ui),
+                         serverAnswer(false) {
 	generateLoginWindow();
 	generateRegistrationWindow();
 }
@@ -98,17 +100,8 @@ void AuthUI::login() {
 	cout << string(passw_entry->GetText()) << endl;
 
 	Network::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
-
-	//Network::SendCommand();
-	Network::thread.reset(new std::thread(&Network::SendCommand));
-	Network::thread->join();
-	ServerCommand::Code enter = Network::answerQueue.Front();
-	Network::answerQueue.Pop();
-
-	if (!enter)
-		cout << "Enter succeeded!" << endl;
-	else
-		cout << "Enter failed!" << endl;
+    ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), true, false));
+    Network::needReceive = true;
 }
 
 void AuthUI::registration() {
@@ -117,23 +110,13 @@ void AuthUI::registration() {
 	cout << string(new_passw_entry->GetText()) << endl;
 
 	Network::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
-
-	//Network::SendCommand();
-	Network::thread.reset(new std::thread(&Network::SendCommand));
-	Network::thread->join();
-	ServerCommand::Code reg = Network::answerQueue.Front();
-	Network::answerQueue.Pop();
-
-	if (!reg)
-		cout << "Registration succeeded!" << endl;
-	else
-		cout << "Registration failed!" << endl;
-
-	openLogin();
+    ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), false, true));
+    Network::needReceive = true;
 }
 
-UI::UI(sf::RenderWindow *rendWindow) : rendWindow(rendWindow),
-									   authUI(this) {
+UI::UI(ClientController *clientController, sf::RenderWindow *rendWindow) : clientController(clientController),
+                                                                           rendWindow(rendWindow),
+									                                       authUI(this) {
 	
 }
 

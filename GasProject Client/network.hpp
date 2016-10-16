@@ -1,27 +1,41 @@
 #pragma once
 
 #include <string>
-#include <thread>
 #include <list>
 
-#include <SFML/Network.hpp>
-
 #include "../GasProject Server/net_const.hpp"
+
+class std::thread;
+class sf::TcpSocket;
+class sf::Packet;
+class ClientController;
 
 using std::string;
 
 class Network {
 	static string ip;
 	static int port;
+    static bool connected;
+    static ClientController *clientController;
 
 	static sf::TcpSocket socket;
 
+    static void session();
+    static void sendCommands();
+    static void parsePacket(sf::Packet &);
+
 public:
+    static bool needReceive;
+
 	static uptr<std::thread> thread;
 
 	static ThreadSafeQueue<ClientCommand *> commandQueue;
-	static ThreadSafeQueue<ServerCommand::Code> answerQueue;
+	//static ThreadSafeQueue<ServerCommand::Code> answerQueue;
 
-	static bool Connect(const string ip, const int port);
-	static void SendCommand();
+	static bool Connect(const string ip, const int port, ClientController *);
 };
+
+sf::Packet &operator<<(sf::Packet &, ClientCommand *);
+
+
+

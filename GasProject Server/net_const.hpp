@@ -46,43 +46,53 @@ public:
 };
 
 struct ClientCommand {
-	string login;
-	string password;
-
-	enum Code {
-		AUTH_REQ = 0,
-		REG_REQ = 1
+    enum Code {
+		AUTH_REQ = 1,
+		REG_REQ = 2
 	};
-	virtual const Code GetCode() const = 0;
 
-	ClientCommand(string login, string password) : login(login), password(password) {}
+	virtual const Code GetCode() const = 0;
 };
 
 struct AuthorizationClientCommand : public ClientCommand {
+    string login;
+    string password;
+
 	virtual const Code GetCode() const override { return AUTH_REQ; }
 
-	AuthorizationClientCommand(string login, string password) : ClientCommand(login, password) {}
+	AuthorizationClientCommand(string login, string password) : login(login),
+                                                                password(password) { }
 };
 
 struct RegistrationClientCommand : public ClientCommand {
+    string login;
+    string password;
+
 	virtual const Code GetCode() const override { return REG_REQ; }
 
-	RegistrationClientCommand(string login, string password) : ClientCommand(login, password) {}
+	RegistrationClientCommand(string login, string password) : login(login),
+                                                               password(password) { }
 };
 
 struct ServerCommand {
 	enum Code {
-		COMMAND_SUCCESS = 0,
-		AUTH_ERROR = 1,
-		REG_ERROR = 2,
-		CONNECTION_ERROR = 3,
-		COMMAND_CODE_ERROR = 4
+		AUTH_SUCCESS = 1,
+        REG_SUCCESS,
+		AUTH_ERROR,
+		REG_ERROR,
+		CONNECTION_ERROR,
+		COMMAND_CODE_ERROR
 	};
+
 	virtual const Code GetCode() const = 0;
 };
 
-struct SuccessServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return COMMAND_SUCCESS; }
+struct AuthSuccessServerCommand : public ServerCommand {
+	virtual const Code GetCode() const override { return AUTH_SUCCESS; }
+};
+
+struct RegSuccessServerCommand : public ServerCommand {
+    virtual const Code GetCode() const override { return AUTH_SUCCESS; }
 };
 
 struct AuthErrorServerCommand : public ServerCommand {
@@ -106,12 +116,12 @@ struct CommandCodeErrorServerCommand : public ServerCommand {
 	REG_CODE = 1
 };*/
 
-enum Result {
-	OK = 0, 
-	AUTH_ERROR = 1, 
-	REG_ERROR = 2,
-	CONNECTION_ERROR = 3, 
-	COMMAND_CODE_ERROR = 4
-};
+//enum Result {
+//	OK = 0, 
+//	AUTH_ERROR = 1, 
+//	REG_ERROR = 2,
+//	CONNECTION_ERROR = 3, 
+//	COMMAND_CODE_ERROR = 4
+//};
 
 const int PORT = 55678;
