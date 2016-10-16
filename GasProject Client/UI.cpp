@@ -33,12 +33,36 @@ void AuthUI::generateLoginWindow() {
 
 	auto table = sfg::Table::Create();
 
-	table->Attach(login_label,  sf::Rect<unsigned>(0, 0, 2, 1), NULL, sfg::Table::AttachOption::FILL,							sf::Vector2f(5, 0));
-	table->Attach(passw_label,  sf::Rect<unsigned>(0, 2, 2, 1), NULL, sfg::Table::AttachOption::FILL,							sf::Vector2f(5, 0));
-	table->Attach(login_entry,  sf::Rect<unsigned>(2, 0, 3, 1), sfg::Table::AttachOption::FILL, NULL,							sf::Vector2f(5, 2));
-	table->Attach(passw_entry,  sf::Rect<unsigned>(2, 2, 3, 1), sfg::Table::AttachOption::FILL, NULL,							sf::Vector2f(5, 2));
-	table->Attach(enter_button, sf::Rect<unsigned>(3, 3, 2, 1), sfg::Table::AttachOption::FILL, NULL,                           sf::Vector2f(0, 0));
-	table->Attach(reg_label,    sf::Rect<unsigned>(5, 3, 1, 1), sfg::Table::AttachOption::FILL, sfg::Table::AttachOption::FILL, sf::Vector2f(5, 0));
+	table->Attach(login_label,  
+				  sf::Rect<unsigned>(0, 0, 2, 1), 
+				  NULL, 
+		          sfg::Table::AttachOption::FILL,							
+		          sf::Vector2f(5, 0));
+	table->Attach(passw_label,  
+				  sf::Rect<unsigned>(0, 2, 2, 1), 
+		          NULL, 
+		          sfg::Table::AttachOption::FILL,							
+				  sf::Vector2f(5, 0));
+	table->Attach(login_entry,  
+		          sf::Rect<unsigned>(2, 0, 3, 1), 
+		          sfg::Table::AttachOption::FILL, 
+		          NULL,							
+		          sf::Vector2f(5, 2));
+	table->Attach(passw_entry,  
+		          sf::Rect<unsigned>(2, 2, 3, 1), 
+		          sfg::Table::AttachOption::FILL, 
+		          NULL,							
+		          sf::Vector2f(5, 2));
+	table->Attach(enter_button, 
+		          sf::Rect<unsigned>(3, 3, 2, 1), 
+		          sfg::Table::AttachOption::FILL, 
+		          NULL,                           
+		          sf::Vector2f(0, 0));
+	table->Attach(reg_label,    
+		          sf::Rect<unsigned>(5, 3, 1, 1), 
+		          sfg::Table::AttachOption::FILL, 
+		          sfg::Table::AttachOption::FILL, 
+		          sf::Vector2f(5, 0));
 
 	logWindow = sfg::Window::Create();
 	logWindow->Add(table);
@@ -49,10 +73,11 @@ void AuthUI::generateLoginWindow() {
 }
 
 void AuthUI::generateRegistrationWindow() {
-	auto login_label = sfg::Label::Create("Input login:");
-	auto passw_label = sfg::Label::Create("Input password:");
+	auto designation_label = sfg::Label::Create("Fill the form:");
+	auto login_label = sfg::Label::Create("Login:");
+	auto passw_label = sfg::Label::Create("Password:");
 
-	auto reg_button = sfg::Button::Create("Registration");
+	auto reg_button = sfg::Button::Create("Create new account");
 	reg_button->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&AuthUI::registration, this));
 
 	new_login_entry = sfg::Entry::Create();
@@ -61,22 +86,38 @@ void AuthUI::generateRegistrationWindow() {
 	new_passw_entry->SetRequisition(sf::Vector2f(100.f, 0.f));
 
 	auto table = sfg::Table::Create();
-	table->Attach(login_label, sf::Rect<unsigned>(0, 0, 5, 5), sfg::Table::AttachOption::FILL,
-		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
-	table->Attach(passw_label, sf::Rect<unsigned>(0, 5, 5, 5), sfg::Table::AttachOption::FILL,
-		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
-	table->Attach(reg_button, sf::Rect<unsigned>(3, 10, 5, 5), sfg::Table::AttachOption::FILL,
-		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
-	table->Attach(new_login_entry, sf::Rect<unsigned>(5, 0, 5, 5), sfg::Table::AttachOption::FILL,
-		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
-	table->Attach(new_passw_entry, sf::Rect<unsigned>(5, 5, 5, 5), sfg::Table::AttachOption::FILL,
-		sfg::Table::AttachOption::FILL, sf::Vector2f(5.f, 1.f));
+	table->Attach(login_label, 
+				  sf::Rect<unsigned>(0, 0, 5, 5), 
+		          sfg::Table::AttachOption::FILL,
+				  sfg::Table::AttachOption::FILL, 
+				  sf::Vector2f(5.f, 1.f));
+	table->Attach(passw_label, 
+		          sf::Rect<unsigned>(0, 5, 5, 5), 
+		          sfg::Table::AttachOption::FILL,
+		          sfg::Table::AttachOption::FILL, 
+		          sf::Vector2f(5.f, 1.f));
+	table->Attach(reg_button, 
+		          sf::Rect<unsigned>(3, 10, 5, 5), 
+		          sfg::Table::AttachOption::FILL,
+		          sfg::Table::AttachOption::FILL, 
+		          sf::Vector2f(5.f, 1.f));
+	table->Attach(new_login_entry, 
+		          sf::Rect<unsigned>(5, 0, 5, 5), 
+		          sfg::Table::AttachOption::FILL,
+		          sfg::Table::AttachOption::FILL, 
+		          sf::Vector2f(5.f, 1.f));
+	table->Attach(new_passw_entry, 
+		          sf::Rect<unsigned>(5, 5, 5, 5), 
+		          sfg::Table::AttachOption::FILL,
+		          sfg::Table::AttachOption::FILL, 
+		          sf::Vector2f(5.f, 1.f));
 
 	regWindow = sfg::Window::Create();
 	regWindow->Add(table);
 	regWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - regWindow->GetAllocation().width) / 2,
 		                                (ui->GetRenderWindow()->getSize().y - regWindow->GetAllocation().height) / 2));
-	regWindow->SetStyle(NULL);
+	regWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE);
+	regWindow->SetTitle("Registration of new account");
 	regWindow->Show(false);
 	ui->GetDesktop()->Add(regWindow);
 }
@@ -89,10 +130,13 @@ void AuthUI::openLogin() {
 }
 
 void AuthUI::openReg() {
-	logWindow->Show(false);
 	login_entry->SetText("");
 	passw_entry->SetText("");
 	regWindow->Show(true);
+}
+
+void AuthUI::closeReg() {
+	regWindow->Show(false);
 }
 
 void AuthUI::login() {
