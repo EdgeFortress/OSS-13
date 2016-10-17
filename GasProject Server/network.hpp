@@ -9,7 +9,8 @@
 
 #include <SFML\Network.hpp>
 
-#include "net_const.hpp"
+#include <useful.hpp>
+#include <command.hpp>
 
 using namespace std;
 using namespace sf;

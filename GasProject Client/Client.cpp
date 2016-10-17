@@ -1,8 +1,11 @@
 #include "Client.hpp"
 #include "Window.hpp"
 #include "State.hpp"
+#include <net_const.hpp>
 
 #include <iostream>
+
+
 using std::cout;
 using std::endl;
 

@@ -1,11 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Client", "GasProject Client\GasProject Client.vcxproj", "{8A227764-8BA1-4007-AF4F-B66AA5B36445}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Server", "GasProject Server\GasProject Server.vcxproj", "{D678DA42-ECAA-4A64-99BE-8C7971DAE941}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonRes", "CommonRes", "{BC31589D-AB3F-48B9-AB60-D04FE9E85922}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{182657A6-B283-4D8F-AABE-5DF2BE2A6286}"
+	ProjectSection(SolutionItems) = preProject
+		command.hpp = command.hpp
+		CommonRes\include\net_const.hpp = CommonRes\include\net_const.hpp
+		useful.hpp = useful.hpp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{182657A6-B283-4D8F-AABE-5DF2BE2A6286} = {BC31589D-AB3F-48B9-AB60-D04FE9E85922}
 	EndGlobalSection
 EndGlobal

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../GasProject Server/net_const.hpp"
+#include <useful.hpp>
 
 #include <iostream>
 using std::cout;

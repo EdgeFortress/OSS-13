@@ -3,11 +3,14 @@
 #include <string>
 #include <list>
 
-#include "../GasProject Server/net_const.hpp"
+#include <useful.hpp>
+#include <command.hpp>
 
 class std::thread;
-class sf::TcpSocket;
-class sf::Packet;
+namespace sf {
+    class TcpSocket;
+    class Packet;
+}
 class ClientController;
 
 using std::string;
