@@ -19,17 +19,14 @@ public:
         mutex.unlock();
     }
 
-    T Front() {
+    T Pop() {
         mutex.lock();
-        T t = queue.front();
+		if (queue.empty())
+			return nullptr;
+        T t = queue.front(); 
+		queue.pop();
         mutex.unlock();
         return t;
-    }
-
-    void Pop() {
-        mutex.lock();
-        queue.pop();
-        mutex.unlock();
     }
 
     bool Empty() {

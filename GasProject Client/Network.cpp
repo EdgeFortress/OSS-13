@@ -33,6 +33,7 @@ void Network::session() {
             socket.receive(packet);
             parsePacket(packet);
             working = true;
+			needReceive = false;
         }
         if (!working) sleep(seconds(0.01f));
     }
@@ -41,9 +42,10 @@ void Network::session() {
 void Network::sendCommands() {
 	while (!commandQueue.Empty()) {
 		sf::Packet packet;
-        packet << commandQueue.Front();
+		ClientCommand *temp = commandQueue.Pop();
+		packet << temp;
+		if (temp) delete temp;
 		socket.send(packet);
-		commandQueue.Pop();
 	}
 }
 

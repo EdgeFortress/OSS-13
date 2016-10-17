@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Client", "GasProject Client\GasProject Client.vcxproj", "{8A227764-8BA1-4007-AF4F-B66AA5B36445}"
 EndProject
@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonRes", "CommonRes", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{182657A6-B283-4D8F-AABE-5DF2BE2A6286}"
 	ProjectSection(SolutionItems) = preProject
-		command.hpp = command.hpp
+		CommonRes\include\command.hpp = CommonRes\include\command.hpp
 		CommonRes\include\net_const.hpp = CommonRes\include\net_const.hpp
-		useful.hpp = useful.hpp
+		CommonRes\include\useful.hpp = CommonRes\include\useful.hpp
 	EndProjectSection
 EndProject
 Global

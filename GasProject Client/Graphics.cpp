@@ -45,8 +45,9 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     bool endWaiting = true;
     if (loginWaiting) {
         if (window->GetUI()->GetAuthUI()->serverAnswer) {
-             bool result = window->GetUI()->GetAuthUI()->result;
-             window->GetUI()->GetAuthUI()->openLogin();
+            bool result = window->GetUI()->GetAuthUI()->result;
+			if (result)
+				cout << "You logged in succesfully" << endl;
         } else {
             endWaiting = false;
         }
@@ -54,6 +55,8 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     if (regWaiting) {
         if (window->GetUI()->GetAuthUI()->serverAnswer) {
             bool result = window->GetUI()->GetAuthUI()->result;
+			if (result)
+				cout << "You are succesfully registered" << endl;
             window->GetUI()->GetAuthUI()->openLogin();
         } else {
             endWaiting = false;
@@ -63,7 +66,7 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     window->GetUI()->desktop.Update(timeElapsed.asSeconds());
     window->GetUI()->m_sfgui.Display(*render_window);
 
-    if (endWaiting) cout << "End Waiting" << endl, clientController->SetState(new MenuLoginState(clientController));
+    if (endWaiting) clientController->SetState(new MenuLoginState(clientController));
 }
 
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }

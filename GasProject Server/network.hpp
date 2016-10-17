@@ -54,3 +54,5 @@ public:
 	static void Initialize(const int port);
 	static void WIP_Wait();
 };
+
+Packet &operator<<(Packet &, ServerCommand *);

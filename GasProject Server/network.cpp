@@ -37,16 +37,20 @@ Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {
 }
 
 bool Netclient::Authorization(string &login, string &password) {
-	cout << login << endl;
-	cout << password << endl;
 	if (Network::UDB.Contain(login, password))
+	{
+		cout << "Player is authorized: " << login << ' ' << password << endl;
 		return true;
+	}
+	cout << "Wrong login data received: " << login << ' ' << password << endl;
 	return false;
 }
 
 bool Netclient::Registration(string &login, string &password) {
-	if (Network::UDB.Add(login, password))
+	if (Network::UDB.Add(login, password)) { 
+		cout << "New player is registrated: " << login << ' ' << password << endl;
 		return true;
+	}
 	return false;
 }
 
@@ -108,6 +112,7 @@ void Network::listen() {
 
 void Network::clientSession(sf::TcpSocket *raw_pointer_socket) {
 	uptr<sf::TcpSocket> socket(raw_pointer_socket);
+	cout << "New client is connected" << endl;
 	sf::Packet packet;
 	Netclient client(socket);
 	while (true) {
@@ -115,12 +120,18 @@ void Network::clientSession(sf::TcpSocket *raw_pointer_socket) {
 		client.Parse(packet);
 		packet.clear();
 		while (!commandQueue.Empty()) {
-			packet << commandQueue.Front()->GetCode();
+			ServerCommand *temp = commandQueue.Pop();
+			packet << temp;
+			if (temp) delete temp;
 			socket->send(packet);
-			commandQueue.Pop();
 			packet.clear();
 		}
 	}
+}
+
+Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
+	packet << sf::Int32(serverCommand->GetCode());
+	return packet;
 }
 
 bool Network::inProcess = false;

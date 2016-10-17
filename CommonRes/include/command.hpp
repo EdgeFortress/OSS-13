@@ -51,7 +51,7 @@ struct AuthSuccessServerCommand : public ServerCommand {
 };
 
 struct RegSuccessServerCommand : public ServerCommand {
-    virtual const Code GetCode() const override { return AUTH_SUCCESS; }
+    virtual const Code GetCode() const override { return REG_SUCCESS; }
 };
 
 struct AuthErrorServerCommand : public ServerCommand {
