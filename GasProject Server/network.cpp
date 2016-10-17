@@ -14,6 +14,7 @@ UsersDB::UsersDB(string adr) {
 		file >> pass;
 		all[login] = pass;
 	}
+	file.close();
 }
 
 bool UsersDB::Contain(string &login, string &pass) {
@@ -23,13 +24,14 @@ bool UsersDB::Contain(string &login, string &pass) {
 
 bool UsersDB::Add(string login, string pass) {
 	ofstream file;
-	file.open(adr, ios::ate);
+	file.open(adr, ios::app);
 	if (all.count(login) == 0) {
 		all[login] = pass;
 		file << login << " " << pass << endl;
 		return true;
 	} else
 		return false;
+	file.close();
 }
 
 Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {

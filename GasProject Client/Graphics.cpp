@@ -43,20 +43,23 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     Window *window = clientController->GetWindow();
 
     bool endWaiting = true;
+	AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
     if (loginWaiting) {
-        if (window->GetUI()->GetAuthUI()->serverAnswer) {
-            bool result = window->GetUI()->GetAuthUI()->result;
-			if (result)
+        if (answer.isAnswer) {
+			if (answer.result)
 				cout << "You logged in succesfully" << endl;
+			else
+				cout << "Wrong login data" << endl;
         } else {
             endWaiting = false;
         }
     }
     if (regWaiting) {
-        if (window->GetUI()->GetAuthUI()->serverAnswer) {
-            bool result = window->GetUI()->GetAuthUI()->result;
-			if (result)
+        if (answer.isAnswer) {
+			if (answer.result)
 				cout << "You are succesfully registered" << endl;
+			else
+				cout << "Problems with registration" << endl;
             window->GetUI()->GetAuthUI()->openLogin();
         } else {
             endWaiting = false;

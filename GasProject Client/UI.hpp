@@ -7,14 +7,25 @@
 class UI;
 
 class AuthUI {
+
+	struct ServerAnswer{
+		bool isAnswer;
+		bool result;
+
+		explicit ServerAnswer(bool result) : isAnswer(true), result(result) {}
+		ServerAnswer() : isAnswer(false) {}
+		ServerAnswer(const ServerAnswer &serverAnswer) = default;
+		ServerAnswer &operator=(const ServerAnswer &serverAnswer) = default;
+	};
+
 private:
 	UI *ui;
 
 	sfg::Window::Ptr logWindow, regWindow;
 	sfg::Entry::Ptr login_entry, passw_entry, new_login_entry, new_passw_entry;
 
-    bool serverAnswer;
-    bool result;
+	ServerAnswer serverAnswer;
+	std::mutex mutex;
 
 	void generateLoginWindow();
 	void generateRegistrationWindow();
@@ -31,9 +42,21 @@ public:
 	virtual ~AuthUI() = default;
 
     void SetServerAnswer(bool result) {
-        serverAnswer = true;
-        this->result = result;
+		mutex.lock();
+		//cout << "SetAnswer: " << result << endl;
+		serverAnswer = ServerAnswer(result);
+		mutex.unlock();
     }
+
+	ServerAnswer GetAnswer() {
+		mutex.lock();
+		//cout << "GetAnswer: ";
+		ServerAnswer temp = serverAnswer;
+		//cout << temp.isAnswer << ' ' << temp.result << endl;
+		serverAnswer.isAnswer = false;
+		mutex.unlock();
+		return temp;
+	}
 
     friend void MenuLoginWaitingState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
 };

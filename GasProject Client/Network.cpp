@@ -60,7 +60,7 @@ void Network::parsePacket(Packet &packet) {
             clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
             break;
         case ServerCommand::AUTH_ERROR: 
-            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);	
             break;
         case ServerCommand::REG_ERROR:
             clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);

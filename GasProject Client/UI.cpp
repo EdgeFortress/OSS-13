@@ -11,8 +11,7 @@ using std::cout;
 using std::endl;
 using std::string; 
 
-AuthUI::AuthUI(UI *ui) : ui(ui),
-                         serverAnswer(false) {
+AuthUI::AuthUI(UI *ui) : ui(ui) {
 	generateLoginWindow();
 	generateRegistrationWindow();
 }
