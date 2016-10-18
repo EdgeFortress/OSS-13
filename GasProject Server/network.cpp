@@ -1,41 +1,14 @@
+#include <iostream>
+
 #include "network.hpp"
 #include "Server.hpp"
 #include "player.hpp"
+#include "users_database.hpp"
 
 #include <net_const.hpp>
 
 using namespace std;
 using namespace sf;
-
-UsersDB::UsersDB(string adr) {
-	this->adr = adr;
-	ifstream file;
-	file.open(adr, ios::in);
-	while (file) {
-		string login, pass;
-		file >> login;
-		file >> pass;
-		all[login] = pass;
-	}
-	file.close();
-}
-
-bool UsersDB::Contain(string &login, string &pass) {
-	if (login == "") return false;
-	return (all.count(login) == 1) && (all[login] == pass);
-}
-
-bool UsersDB::Add(string login, string pass) {
-	ofstream file;
-	file.open(adr, ios::app);
-	if (all.count(login) == 0) {
-		all[login] = pass;
-		file << login << " " << pass << endl;
-		return true;
-	} else
-		return false;
-	file.close();
-}
 
 Player::Player(Server *server, sf::TcpSocket *raw_pointer_socket) : server(server),
                                                                     socket(raw_pointer_socket),
@@ -43,7 +16,7 @@ Player::Player(Server *server, sf::TcpSocket *raw_pointer_socket) : server(serve
 }
 
 bool Player::authorization(string &login, string &password) {
-	if (server->UDB->Contain(login, password)) {
+	if (server->UDB->Check(login, password)) {
 		cout << "Player is authorized: " << login << ' ' << password << endl;
 		return true;
 	}
@@ -60,23 +33,23 @@ bool Player::registration(string &login, string &password) {
 }
 
 void Player::parse(sf::Packet &pac) {
-	int code;
+	sf::Int32 code;
 	pac >> code;
 	
     switch (code) {
         case ClientCommand::AUTH_REQ: {
-            string login, password;
+            sf::String login, password;
             pac >> login >> password;
-            if (logedin = authorization(login, password))
+            if (logedin = authorization(string(login), string(password)))
                 commandQueue.Push(new AuthSuccessServerCommand());
             else
                 commandQueue.Push(new AuthErrorServerCommand());
             break;
         }
         case ClientCommand::REG_REQ: {
-            string login, password;
+            sf::String login, password;
             pac >> login >> password;
-            if (registration(login, password))
+            if (registration(string(login), string(password)))
                 commandQueue.Push(new RegSuccessServerCommand());
             else
                 commandQueue.Push(new RegErrorServerCommand());
@@ -105,12 +78,14 @@ void Network::ListeningSocket::listening() {
 }
 
 void Network::ListeningSocket::Start(Server *server) {
+    if (active) return;
     ListeningSocket::server = server;
     active = true;
     listeningThread.reset(new std::thread(Network::ListeningSocket::listening));
 }
 
 void Network::ListeningSocket::Stop() {
+    if (!active) return;
     active = false;
     listeningThread->join();
 }

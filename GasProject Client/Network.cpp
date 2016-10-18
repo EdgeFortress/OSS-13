@@ -69,16 +69,16 @@ void Network::parsePacket(Packet &packet) {
 }
 
 Packet &operator<<(Packet &packet, ClientCommand *command) {
-    packet << command->GetCode();
+    packet << sf::Int32(command->GetCode());
     switch (command->GetCode()) {
         case ClientCommand::AUTH_REQ: {
             auto c = dynamic_cast<AuthorizationClientCommand *>(command);
-            packet << c->login << c->password;
+            packet << sf::String(c->login) << sf::String(c->password);
             break;
         }
         case ClientCommand::REG_REQ: {
             auto c = dynamic_cast<RegistrationClientCommand *>(command);
-            packet << c->login << c->password;
+            packet << sf::String(c->login) << sf::String(c->password);
             break;
         }
     }

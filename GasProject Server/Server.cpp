@@ -4,6 +4,7 @@
 #include "network.hpp"
 #include "World.hpp"
 #include "Player.hpp"
+#include "users_database.hpp"
 
 #include <net_const.hpp>
 
@@ -14,7 +15,7 @@ Game::Game(Server *server) : server(server),
     }
 }
 
-Server::Server() : UDB(new UsersDB("usersDB")) {
+Server::Server() : UDB(new UsersDB()) {
     Network::ListeningSocket::Start(this);
 	games.push_back(uptr<Game>(new Game(this)));
 }

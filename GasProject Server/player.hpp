@@ -22,7 +22,7 @@ private:
     uptr<sf::TcpSocket> socket;
     uptr<std::thread> thread;
 
-    ThreadSafeQueue<ServerCommand *>  commandQueue;
+    ThreadSafeQueue<ServerCommand *> commandQueue;
 
     void parse(sf::Packet & pac);
     bool authorization(string &login, string &password);

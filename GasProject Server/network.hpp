@@ -1,11 +1,8 @@
 #pragma once
 
 #include <list>
-#include <iostream>
-#include <fstream>
 #include <thread>
-#include <map>
-#include <sstream>
+
 
 #include <SFML\Network.hpp>
 
@@ -17,15 +14,6 @@ class Server;
 
 using namespace std;
 using namespace sf;
-
-class UsersDB {
-	string adr;
-	map <string, string> all;
-public:
-	UsersDB(string adr);
-	bool Contain(string &login, string &pass);
-	bool Add(string login, string pass);
-};
 
 namespace Network {
     class ListeningSocket {
