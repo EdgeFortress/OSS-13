@@ -19,11 +19,9 @@ Tile::Tile(Map *map, int x, int y) {
 }
 
 void Tile::AddObject(Object *obj) {
-	for (auto i : content)
-	{
-		if (typeid(i) == typeid(obj))
-		{
-			std::cout << "this type of object already exists" << std::endl;
+	for (auto i : content) {
+		if (typeid(i) == typeid(obj)) {
+			//std::cout << "this type of object already exists" << std::endl;
 			return;
 		}
 	}
@@ -32,16 +30,14 @@ void Tile::AddObject(Object *obj) {
 
 void Tile::RemoveObject(Object *obj) {
 	bool flag = false;
-	for (auto i : content)
-	{
+	for (auto i : content) {
 		if (typeid(i) == typeid(obj))
 			flag = true;
 	}
-	if (flag)
-	{
-		content.remove(obj);
-	} else {
-		std::cout << "this type of object does not exist in this tile" << std::endl;
+	if (flag) {
+		content.remove(obj); 
+    } else {
+		//std::cout << "this type of object does not exist in this tile" << std::endl;
 		return;
 	}
 }
@@ -78,32 +74,25 @@ Map::~Map() {
 			delete tile;
 }
 
-void World::FillingWorld()
-{
-	if (map == nullptr)
-	{
+void World::FillingWorld() {
+	if (map == nullptr) {
 		std::cout << "map is not created, i wil do it myself :)" << std::endl;
 		map = new Map();
 	}
-	for (int i = 10; i < 90; i++)
-	{
-		for (int j = 10; j < 90; j++)
-		{
+	for (int i = 10; i < 90; i++) {
+		for (int j = 10; j < 90; j++) {
 			Tile *tile = map->GetTile(i, j);
 			tile->AddObject(new Floor());
-			if (j == 90 && i == 10 || i == 20 || i == 45 || i == 85)
-			{
+			if (j == 90 && i == 10 || i == 20 || i == 45 || i == 85) {
 				tile->AddObject(new Gate());
 			}
 		}
 	}
-	for (int j = 10; j < 50; j++)
-	{
+	for (int j = 10; j < 50; j++) {
 		Tile *tile = map->GetTile(50, j);
 		tile->AddObject(new Wall());
 	}
-	for (int i = 50; i < 85; i++)
-	{
+	for (int i = 50; i < 85; i++) {
 		Tile *tile = map->GetTile(i, 60);
 		tile->AddObject(new Wall());
 	}

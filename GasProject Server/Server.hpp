@@ -1,12 +1,13 @@
 #pragma once
 
 #include <list>
-#include <memory>
 
 #include <useful.hpp>
 
+class Player;
 class Server;
 class World;
+class UsersDB;
 
 class Game {
 private:
@@ -19,8 +20,12 @@ public:
 
 class Server {
 private:
+    std::list<uptr<Player>> players;
 	std::list<uptr<Game>> games;
 
 public:
+    uptr<UsersDB> UDB;
+
 	Server();
+    void AddPlayer(Player *player);
 };

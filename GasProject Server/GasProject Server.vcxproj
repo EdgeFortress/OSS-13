@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="network.hpp" />
+    <ClInclude Include="player.hpp" />
     <ClInclude Include="Server.hpp" />
     <ClInclude Include="World.hpp" />
   </ItemGroup>

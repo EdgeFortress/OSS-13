@@ -1,21 +1,26 @@
 #include <list>
-#include <SFML/Network.hpp>
 
 #include "Server.hpp"
 #include "network.hpp"
 #include "World.hpp"
+#include "Player.hpp"
 
 #include <net_const.hpp>
 
 Game::Game(Server *server) : server(server),
 						     world(new World()) {
-
+    while (true) {
+        sleep(seconds(1));
+    }
 }
 
-Server::Server() {
-	Network::Initialize(PORT);
-	Network::WIP_Wait();
+Server::Server() : UDB(new UsersDB("usersDB")) {
+    Network::ListeningSocket::Start(this);
 	games.push_back(uptr<Game>(new Game(this)));
+}
+
+void Server::AddPlayer(Player *player) {
+    players.push_back(uptr<Player>(player));
 }
 
 int main() {

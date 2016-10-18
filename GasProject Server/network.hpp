@@ -12,6 +12,9 @@
 #include <useful.hpp>
 #include <command.hpp>
 
+class Player;
+class Server;
+
 using namespace std;
 using namespace sf;
 
@@ -24,35 +27,23 @@ public:
 	bool Add(string login, string pass);
 };
 
-class Netclient {
-private:
-	bool logedin = false;
-	uptr<sf::TcpSocket> &socket;
+namespace Network {
+    class ListeningSocket {
+    private:
+        static bool active;
+        static Server *server;
+        static int port;
+        static uptr<std::thread> listeningThread;
 
-public:
-	Netclient(uptr<sf::TcpSocket> &socket);
-	bool Authorization(string &login, string &password);
-	bool Registration(string &login, string &password);
-	void Parse(sf::Packet & pac);
-};
+        static void listening();
+        
 
-class Network {
-private:
-	static bool inProcess;
-	static int port;
-	static uptr<thread> listeningThread;
+    public:
+        static void Start(Server *);
+        static void Stop();
+    };
 
-	static list<thread *> threads;
-
-	static void clientSession(sf::TcpSocket *client);
-	static void listen();
-
-public:
-	static UsersDB UDB;
-	static ThreadSafeQueue<ServerCommand *> commandQueue;
-
-	static void Initialize(const int port);
-	static void WIP_Wait();
-};
+    static void clientSession(sf::TcpSocket *, Player *);
+}
 
 Packet &operator<<(Packet &, ServerCommand *);
