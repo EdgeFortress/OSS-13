@@ -10,57 +10,7 @@
 using namespace std;
 using namespace sf;
 
-Player::Player(Server *server, sf::TcpSocket *raw_pointer_socket) : server(server),
-                                                                    socket(raw_pointer_socket),
-                                                                    thread(new std::thread(Network::clientSession, socket.get(), this)) {
-}
-
-bool Player::authorization(string &login, string &password) {
-	if (server->UDB->Check(login, password)) {
-		cout << "Player is authorized: " << login << ' ' << password << endl;
-		return true;
-	}
-	cout << "Wrong login data received: " << login << ' ' << password << endl;
-	return false;
-}
-
-bool Player::registration(string &login, string &password) {
-	if (server->UDB->Add(login, password)) { 
-		cout << "New player is registrated: " << login << ' ' << password << endl;
-		return true;
-	}
-	return false;
-}
-
-void Player::parse(sf::Packet &pac) {
-	sf::Int32 code;
-	pac >> code;
-	
-    switch (code) {
-        case ClientCommand::AUTH_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (logedin = authorization(string(login), string(password)))
-                commandQueue.Push(new AuthSuccessServerCommand());
-            else
-                commandQueue.Push(new AuthErrorServerCommand());
-            break;
-        }
-        case ClientCommand::REG_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (registration(string(login), string(password)))
-                commandQueue.Push(new RegSuccessServerCommand());
-            else
-                commandQueue.Push(new RegErrorServerCommand());
-            break;
-        }
-        default:
-            commandQueue.Push(new CommandCodeErrorServerCommand());
-    }
-}
-
-void Network::ListeningSocket::listening() {
+void ListeningSocket::listening() {
     sf::TcpListener listener;
     listener.listen(PORT);
     sf::TcpSocket *socket = new sf::TcpSocket;
@@ -77,41 +27,83 @@ void Network::ListeningSocket::listening() {
     delete socket;
 }
 
-void Network::ListeningSocket::Start(Server *server) {
+void ListeningSocket::Start(Server *server) {
     if (active) return;
     ListeningSocket::server = server;
     active = true;
-    listeningThread.reset(new std::thread(Network::ListeningSocket::listening));
+    listeningThread.reset(new std::thread(ListeningSocket::listening));
 }
 
-void Network::ListeningSocket::Stop() {
+void ListeningSocket::Stop() {
     if (!active) return;
     active = false;
     listeningThread->join();
 }
 
-void Network::clientSession(sf::TcpSocket *socket, Player *player) {
-	cout << "New client is connected" << endl;
-    socket->setBlocking(false);
-	sf::Packet packet;
+Connection::Connection(sf::TcpSocket *socket, Server *server, Player *player) : socket(socket),
+                                                                                server(server),
+                                                                                player(player),
+                                                                                thread(new std::thread(session, this)) {
+
+}
+
+void Connection::session(Connection *inst) {
+    cout << "New client is connected" << endl;
+    inst->socket->setBlocking(false);
+    sf::Packet packet;
     bool isWorking;
-	while (true) {
+    while (inst->active) {
         packet.clear();
         isWorking = false;
-        if (!(socket->receive(packet) == sf::Socket::NotReady)) {
-            player->parse(packet);
+        if (!(inst->socket->receive(packet) == sf::Socket::NotReady)) {
+            inst->parse(packet);
             isWorking = true;
         }
-		while (!player->commandQueue.Empty()) {
+        while (!inst->player->commandQueue.Empty()) {
             packet.clear();
-			ServerCommand *temp = player->commandQueue.Pop();
-			packet << temp;
-			if (temp) delete temp;
-			while (socket->send(packet) == sf::Socket::Partial);
+            ServerCommand *temp = inst->player->commandQueue.Pop();
+            packet << temp;
+            if (temp) delete temp;
+            while (inst->socket->send(packet) == sf::Socket::Partial);
             isWorking = true;
-		}
+        }
         if (!isWorking) sleep(seconds(0.01f));
-	}
+    }
+}
+
+void Connection::parse(sf::Packet &pac) {
+    sf::Int32 code;
+    pac >> code;
+
+    switch (code) {
+        case ClientCommand::AUTH_REQ: {
+            sf::String login, password;
+            pac >> login >> password;
+            if (server->Authorization(string(login), string(password))) {
+                player->ckey = string(login);
+                player->commandQueue.Push(new AuthSuccessServerCommand());
+            }
+            else
+                player->commandQueue.Push(new AuthErrorServerCommand());
+            break;
+        }
+        case ClientCommand::REG_REQ: {
+            sf::String login, password;
+            pac >> login >> password;
+            if (server->Registration(string(login), string(password)))
+                player->commandQueue.Push(new RegSuccessServerCommand());
+            else
+                player->commandQueue.Push(new RegErrorServerCommand());
+            break;
+        }
+        default:
+            player->commandQueue.Push(new CommandCodeErrorServerCommand());
+    }
+}
+
+void Connection::Stop() {
+    active = false;
+    thread->join();
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
@@ -119,7 +111,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 	return packet;
 }
 
-bool Network::ListeningSocket::active = false;
-Server *Network::ListeningSocket::server;
-int Network::ListeningSocket::port;
-uptr<std::thread> Network::ListeningSocket::listeningThread;
+bool ListeningSocket::active = false;
+Server *ListeningSocket::server;
+int ListeningSocket::port;
+uptr<std::thread> ListeningSocket::listeningThread;

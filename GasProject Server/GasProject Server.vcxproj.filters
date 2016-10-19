@@ -27,7 +27,7 @@
     <ClCompile Include="users_database.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="global.cpp">
+    <ClCompile Include="player.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>

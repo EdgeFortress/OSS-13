@@ -8,28 +8,22 @@ using std::string;
 
 namespace sf {
     class TcpSocket;
-    class Packet;
 }
 
-namespace std {
-    thread;
-}
+class Server;
+class Connection;
+struct ServerCommand;
 
 class Player {
 private:
-    bool logedin = false;
+    string ckey;
     Server *server;
-    uptr<sf::TcpSocket> socket;
-    uptr<std::thread> thread;
+    uptr<Connection> connection;
 
     ThreadSafeQueue<ServerCommand *> commandQueue;
-
-    void parse(sf::Packet & pac);
-    bool authorization(string &login, string &password);
-    bool registration(string &login, string &password);
 
 public:
     Player(Server *server, sf::TcpSocket *socket);
 
-    friend void Network::clientSession(sf::TcpSocket *socket, Player *player);
+    friend Connection;
 };

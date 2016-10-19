@@ -15,23 +15,35 @@ class Server;
 using namespace std;
 using namespace sf;
 
-namespace Network {
-    class ListeningSocket {
-    private:
-        static bool active;
-        static Server *server;
-        static int port;
-        static uptr<std::thread> listeningThread;
+class ListeningSocket {
+private:
+    static bool active;
+    static Server *server;
+    static int port;
+    static uptr<std::thread> listeningThread;
 
-        static void listening();
-        
+    static void listening();
 
-    public:
-        static void Start(Server *);
-        static void Stop();
-    };
 
-    static void clientSession(sf::TcpSocket *, Player *);
-}
+public:
+    static void Start(Server *);
+    static void Stop();
+};
+
+class Connection {
+private:
+    bool active = true;
+    Server *server;
+    Player *player;
+    uptr<sf::TcpSocket> socket;
+    uptr<std::thread> thread;
+
+    static void session(Connection *connection);
+    void parse(sf::Packet &pac);
+
+public:
+    Connection(sf::TcpSocket *, Server *, Player *player);
+    void Stop();
+};
 
 Packet &operator<<(Packet &, ServerCommand *);

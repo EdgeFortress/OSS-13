@@ -126,7 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="global.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="users_database.cpp" />
