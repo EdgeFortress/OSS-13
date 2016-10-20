@@ -23,7 +23,10 @@ private:
     static uptr<std::thread> listeningThread;
 
     static void listening();
-
+    
+    ListeningSocket() = default;
+    ListeningSocket(ListeningSocket &) = delete;
+    ~ListeningSocket() = default;
 
 public:
     static void Start(Server *);

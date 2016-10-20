@@ -12,16 +12,26 @@ using namespace sf;
 
 void ListeningSocket::listening() {
     sf::TcpListener listener;
+    listener.setBlocking(false);
     listener.listen(PORT);
     sf::TcpSocket *socket = new sf::TcpSocket;
     while (active) {
-        if (listener.accept(*socket) == sf::TcpSocket::Done) {
-            server->AddPlayer(new Player(server, socket));
-            socket = new sf::TcpSocket;
-        } else {
-            cout << "New connection accepting error" << endl;
-            active = false;
-            break;
+        sf::TcpSocket::Status status = listener.accept(*socket);
+        switch (status) {
+            case sf::TcpSocket::Done: {
+                server->AddPlayer(new Player(server, socket));
+                socket = new sf::TcpSocket;
+                break;
+            }
+            case sf::TcpSocket::NotReady: {
+                sleep(seconds(0.01));
+                break;
+            }
+            default: {
+                cout << "New connection accepting error" << endl;
+                active = false;
+                break;
+            }
         }
     }
     delete socket;
