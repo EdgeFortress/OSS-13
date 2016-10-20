@@ -24,7 +24,7 @@ void ListeningSocket::listening() {
                 break;
             }
             case sf::TcpSocket::NotReady: {
-                sleep(seconds(0.01));
+                sleep(seconds(0.01f));
                 break;
             }
             default: {
@@ -106,6 +106,17 @@ void Connection::parse(sf::Packet &pac) {
                 player->commandQueue.Push(new RegErrorServerCommand());
             break;
         }
+        case ClientCommand::CREATE_GAME: {
+            sf::String title;
+            pac >> title;
+            if (server->CreateGame(title))
+                player->commandQueue.Push(new GameCreateSuccessServerCommand());
+            else
+                player->commandQueue.Push(new GameCreateSuccessServerCommand());
+        }
+        case ClientCommand::SERVER_LIST_REQ: {
+            player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
+        }
         default:
             player->commandQueue.Push(new CommandCodeErrorServerCommand());
     }
@@ -117,8 +128,25 @@ void Connection::Stop() {
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
-	packet << sf::Int32(serverCommand->GetCode());
+    int code = serverCommand->GetCode();
+	packet << sf::Int32(code);
+    switch (code) {
+        case ServerCommand::GAME_LIST: {
+            GameListServerCommand *command = dynamic_cast<GameListServerCommand *>(serverCommand);
+            packet << command->games->size();
+            for (auto &game : *(command->games)) {
+                packet << game.get();
+            }
+        }
+    }
+
 	return packet;
+}
+
+Packet &operator<<(Packet &packet, Game *game) {
+    packet << sf::String(game->title);
+    packet << sf::Int32(game->players.size());
+    return packet;
 }
 
 bool ListeningSocket::active = false;

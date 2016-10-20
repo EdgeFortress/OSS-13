@@ -1,19 +1,14 @@
 #pragma once
 
-#include <list>
 #include <thread>
 
-
-#include <SFML\Network.hpp>
+#include <SFML/Network.hpp>
 
 #include <useful.hpp>
 #include <command.hpp>
 
 class Player;
 class Server;
-
-using namespace std;
-using namespace sf;
 
 class ListeningSocket {
 private:
@@ -49,4 +44,4 @@ public:
     void Stop();
 };
 
-Packet &operator<<(Packet &, ServerCommand *);
+sf::Packet &operator<<(sf::Packet &, ServerCommand *);
