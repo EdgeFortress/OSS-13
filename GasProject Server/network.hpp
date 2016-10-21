@@ -1,58 +1,52 @@
 #pragma once
 
 #include <list>
-#include <iostream>
-#include <fstream>
 #include <thread>
-#include <map>
-#include <sstream>
+
 
 #include <SFML\Network.hpp>
 
 #include <useful.hpp>
 #include <command.hpp>
 
+class Player;
+class Server;
+
 using namespace std;
 using namespace sf;
 
-class UsersDB {
-	string adr;
-	map <string, string> all;
+class ListeningSocket {
+private:
+    static bool active;
+    static Server *server;
+    static int port;
+    static uptr<std::thread> listeningThread;
+
+    static void listening();
+    
+    ListeningSocket() = default;
+    ListeningSocket(ListeningSocket &) = delete;
+    ~ListeningSocket() = default;
+
 public:
-	UsersDB(string adr);
-	bool Contain(string &login, string &pass);
-	bool Add(string login, string pass);
+    static void Start(Server *);
+    static void Stop();
 };
 
-class Netclient {
+class Connection {
 private:
-	bool logedin = false;
-	uptr<sf::TcpSocket> &socket;
+    bool active = true;
+    Server *server;
+    Player *player;
+    uptr<sf::TcpSocket> socket;
+    uptr<std::thread> thread;
+
+    static void session(Connection *connection);
+    void parse(sf::Packet &pac);
 
 public:
-	Netclient(uptr<sf::TcpSocket> &socket);
-	bool Authorization(string &login, string &password);
-	bool Registration(string &login, string &password);
-	void Parse(sf::Packet & pac);
-};
-
-class Network {
-private:
-	static bool inProcess;
-	static int port;
-	static uptr<thread> listeningThread;
-
-	static list<thread *> threads;
-
-	static void clientSession(sf::TcpSocket *client);
-	static void listen();
-
-public:
-	static UsersDB UDB;
-	static ThreadSafeQueue<ServerCommand *> commandQueue;
-
-	static void Initialize(const int port);
-	static void WIP_Wait();
+    Connection(sf::TcpSocket *, Server *, Player *player);
+    void Stop();
 };
 
 Packet &operator<<(Packet &, ServerCommand *);

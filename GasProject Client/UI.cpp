@@ -115,7 +115,7 @@ void AuthUI::generateRegistrationWindow() {
 	regWindow->Add(table);
 	regWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - regWindow->GetAllocation().width) / 2,
 		                                (ui->GetRenderWindow()->getSize().y - regWindow->GetAllocation().height) / 2));
-	regWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE);
+	regWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE | sfg::Window::Style::CLOSE);
 	regWindow->SetTitle("Registration of new account");
 	regWindow->Show(false);
 	ui->GetDesktop()->Add(regWindow);
@@ -139,19 +139,12 @@ void AuthUI::closeReg() {
 }
 
 void AuthUI::login() {
-	//cout << string(login_entry->GetText()) << endl;
-	//cout << string(passw_entry->GetText()) << endl;
-
-	Network::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
+    Network::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
     ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), true, false));
     Network::needReceive = true;
 }
 
 void AuthUI::registration() {
-	//cout << "You have just created new login data:" << endl;
-	//cout << string(new_login_entry->GetText()) << endl;
-	//cout << string(new_passw_entry->GetText()) << endl;
-
 	Network::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
     ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), false, true));
     Network::needReceive = true;

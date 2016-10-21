@@ -126,13 +126,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="network.cpp" />
+    <ClCompile Include="users_database.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="global.hpp" />
     <ClInclude Include="network.hpp" />
+    <ClInclude Include="player.hpp" />
     <ClInclude Include="Server.hpp" />
+    <ClInclude Include="users_database.hpp" />
     <ClInclude Include="World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

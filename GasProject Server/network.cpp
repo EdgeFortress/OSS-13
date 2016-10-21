@@ -1,134 +1,119 @@
-#include "Server.hpp"
+#include <iostream>
+
 #include "network.hpp"
+#include "Server.hpp"
+#include "player.hpp"
+#include "users_database.hpp"
+
+#include <net_const.hpp>
 
 using namespace std;
 using namespace sf;
 
-UsersDB::UsersDB(string adr) {
-	this->adr = adr;
-	ifstream file;
-	file.open(adr, ios::in);
-	while (file) {
-		string login, pass;
-		file >> login;
-		file >> pass;
-		all[login] = pass;
-	}
-	file.close();
-}
-
-bool UsersDB::Contain(string &login, string &pass) {
-	if (login == "") return false;
-	return (all.count(login) == 1) && (all[login] == pass);
-}
-
-bool UsersDB::Add(string login, string pass) {
-	ofstream file;
-	file.open(adr, ios::app);
-	if (all.count(login) == 0) {
-		all[login] = pass;
-		file << login << " " << pass << endl;
-		return true;
-	} else
-		return false;
-	file.close();
-}
-
-Netclient::Netclient(uptr<sf::TcpSocket> &socket) : socket(socket) {
-	
-}
-
-bool Netclient::Authorization(string &login, string &password) {
-	if (Network::UDB.Contain(login, password))
-	{
-		cout << "Player is authorized: " << login << ' ' << password << endl;
-		return true;
-	}
-	cout << "Wrong login data received: " << login << ' ' << password << endl;
-	return false;
-}
-
-bool Netclient::Registration(string &login, string &password) {
-	if (Network::UDB.Add(login, password)) { 
-		cout << "New player is registrated: " << login << ' ' << password << endl;
-		return true;
-	}
-	return false;
-}
-
-void Netclient::Parse(sf::Packet &pac) {
-	int code;
-	pac >> code;
-	
-    switch (code) {
-        case ClientCommand::AUTH_REQ: {
-            string login, password;
-            pac >> login >> password;
-            if (logedin = Authorization(login, password))
-                Network::commandQueue.Push(new AuthSuccessServerCommand());
-            else
-                Network::commandQueue.Push(new AuthErrorServerCommand());
-            break;
+void ListeningSocket::listening() {
+    sf::TcpListener listener;
+    listener.setBlocking(false);
+    listener.listen(PORT);
+    sf::TcpSocket *socket = new sf::TcpSocket;
+    while (active) {
+        sf::TcpSocket::Status status = listener.accept(*socket);
+        switch (status) {
+            case sf::TcpSocket::Done: {
+                server->AddPlayer(new Player(server, socket));
+                socket = new sf::TcpSocket;
+                break;
+            }
+            case sf::TcpSocket::NotReady: {
+                sleep(seconds(0.01));
+                break;
+            }
+            default: {
+                cout << "New connection accepting error" << endl;
+                active = false;
+                break;
+            }
         }
-        case ClientCommand::REG_REQ: {
-            string login, password;
-            pac >> login >> password;
-            if (Registration(login, password))
-                Network::commandQueue.Push(new RegSuccessServerCommand());
-            else
-                Network::commandQueue.Push(new RegErrorServerCommand());
-            break;
+    }
+    delete socket;
+}
+
+void ListeningSocket::Start(Server *server) {
+    if (active) return;
+    ListeningSocket::server = server;
+    active = true;
+    listeningThread.reset(new std::thread(ListeningSocket::listening));
+}
+
+void ListeningSocket::Stop() {
+    if (!active) return;
+    active = false;
+    listeningThread->join();
+}
+
+Connection::Connection(sf::TcpSocket *socket, Server *server, Player *player) : socket(socket),
+                                                                                server(server),
+                                                                                player(player),
+                                                                                thread(new std::thread(session, this)) {
+
+}
+
+void Connection::session(Connection *inst) {
+    cout << "New client is connected" << endl;
+    inst->socket->setBlocking(false);
+    sf::Packet packet;
+    bool isWorking;
+    while (inst->active) {
+        packet.clear();
+        isWorking = false;
+        if (!(inst->socket->receive(packet) == sf::Socket::NotReady)) {
+            inst->parse(packet);
+            isWorking = true;
         }
-        default:
-            Network::commandQueue.Push(new CommandCodeErrorServerCommand());
+        while (!inst->player->commandQueue.Empty()) {
+            packet.clear();
+            ServerCommand *temp = inst->player->commandQueue.Pop();
+            packet << temp;
+            if (temp) delete temp;
+            while (inst->socket->send(packet) == sf::Socket::Partial);
+            isWorking = true;
+        }
+        if (!isWorking) sleep(seconds(0.01f));
     }
 }
 
-void Network::Initialize(const int port) {
-	if (!inProcess) {
-		Network::port = port;
-		Network::listeningThread.reset(new thread(&Network::listen));
-		inProcess = true;
-	}
+void Connection::parse(sf::Packet &pac) {
+    sf::Int32 code;
+    pac >> code;
+
+    switch (code) {
+        case ClientCommand::AUTH_REQ: {
+            sf::String login, password;
+            pac >> login >> password;
+            if (server->Authorization(string(login), string(password))) {
+                player->ckey = string(login);
+                player->commandQueue.Push(new AuthSuccessServerCommand());
+            }
+            else
+                player->commandQueue.Push(new AuthErrorServerCommand());
+            break;
+        }
+        case ClientCommand::REG_REQ: {
+            sf::String login, password;
+            pac >> login >> password;
+            if (server->Registration(string(login), string(password)))
+                player->commandQueue.Push(new RegSuccessServerCommand());
+            else
+                player->commandQueue.Push(new RegErrorServerCommand());
+            break;
+        }
+        default:
+            player->commandQueue.Push(new CommandCodeErrorServerCommand());
+    }
 }
 
-void Network::WIP_Wait() {
-	if (listeningThread)
-		listeningThread->join();
-}
-
-void Network::listen() {
-	sf::TcpListener listener;
-	listener.listen(port);
-	sf::TcpSocket *socket = new sf::TcpSocket;
-	while (true) {
-		if (listener.accept(*socket) == sf::TcpSocket::Done) {
-			threads.push_back(new thread(clientSession, socket));
-			socket = new sf::TcpSocket;
-		} else {
-			break;
-		}
-	}
-	delete socket;
-}
-
-void Network::clientSession(sf::TcpSocket *raw_pointer_socket) {
-	uptr<sf::TcpSocket> socket(raw_pointer_socket);
-	cout << "New client is connected" << endl;
-	sf::Packet packet;
-	Netclient client(socket);
-	while (true) {
-		socket->receive(packet);
-		client.Parse(packet);
-		packet.clear();
-		while (!commandQueue.Empty()) {
-			ServerCommand *temp = commandQueue.Pop();
-			packet << temp;
-			if (temp) delete temp;
-			socket->send(packet);
-			packet.clear();
-		}
-	}
+void Connection::Stop() {
+    active = false;
+    thread->join();
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
@@ -136,9 +121,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 	return packet;
 }
 
-bool Network::inProcess = false;
-int Network::port;
-list<thread *> Network::threads;
-uptr<thread> Network::listeningThread;
-UsersDB Network::UDB("usersDB");
-ThreadSafeQueue<ServerCommand *> Network::commandQueue;
+bool ListeningSocket::active = false;
+Server *ListeningSocket::server;
+int ListeningSocket::port;
+uptr<std::thread> ListeningSocket::listeningThread;
