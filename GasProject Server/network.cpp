@@ -113,11 +113,24 @@ void Connection::parse(sf::Packet &pac) {
                 player->commandQueue.Push(new GameCreateSuccessServerCommand());
             else
                 player->commandQueue.Push(new GameCreateSuccessServerCommand());
+            break;
         }
         case ClientCommand::SERVER_LIST_REQ: {
             player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
+            break;
+        }
+        case ClientCommand::JOIN_GAME: {
+            sf::Int32 id;
+            pac >> id;
+            player->game = server->JoinGame(id, player);
+            if (player->game) 
+                player->commandQueue.Push(new GameJoinSuccessServerCommand());
+            else
+                player->commandQueue.Push(new GameJoinErrorServerCommand());
+            break;
         }
         default:
+            cout << "Unknown Command received from " << player->ckey << endl;
             player->commandQueue.Push(new CommandCodeErrorServerCommand());
     }
 }
@@ -144,6 +157,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 }
 
 Packet &operator<<(Packet &packet, Game *game) {
+    packet << sf::Int32(game->id);
     packet << sf::String(game->title);
     packet << sf::Int32(game->players.size());
     return packet;

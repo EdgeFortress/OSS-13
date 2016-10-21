@@ -14,7 +14,8 @@ struct ClientCommand {
         AUTH_REQ = 1,
         REG_REQ,
         SERVER_LIST_REQ,
-        CREATE_GAME
+        CREATE_GAME,
+        JOIN_GAME
     };
 
     virtual const Code GetCode() const = 0;
@@ -52,6 +53,14 @@ struct CreateGameClientCommand : public ClientCommand {
     CreateGameClientCommand(string title) : title(title) { }
 };
 
+struct JoinGameClientCommand : public ClientCommand {
+    int id;
+
+    virtual const Code GetCode() const override { return JOIN_GAME; }
+
+    JoinGameClientCommand(int id) : id(id) { }
+};
+
 struct ServerCommand {
     enum Code {
         AUTH_SUCCESS = 1,
@@ -61,6 +70,8 @@ struct ServerCommand {
         GAME_CREATE_SUCCESS,
         GAME_CREATE_ERROR,
         GAME_LIST,
+        GAME_JOIN_SUCCESS,
+        GAME_JOIN_ERROR,
         CONNECTION_ERROR,
         COMMAND_CODE_ERROR
     };
@@ -90,6 +101,14 @@ struct GameCreateSuccessServerCommand : public ServerCommand {
 
 struct GameCreateErrorServerCommand : public ServerCommand {
     virtual const Code GetCode() const override { return GAME_CREATE_ERROR; }
+};
+
+struct GameJoinSuccessServerCommand : public ServerCommand {
+    virtual const Code GetCode() const override { return GAME_JOIN_SUCCESS; }
+};
+
+struct GameJoinErrorServerCommand : public ServerCommand {
+    virtual const Code GetCode() const override { return GAME_JOIN_ERROR; }
 };
 
 struct GameListServerCommand : public ServerCommand {
