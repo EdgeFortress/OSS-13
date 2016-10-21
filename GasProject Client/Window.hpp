@@ -17,6 +17,8 @@ private:
 	uptr<TileGrid> tileGrid;
 	uptr<UI> ui;
 
+	list<Texture *> textures;
+
 	uptr<RenderWindow> window;
 	ClientController *controller;
 	int width, height;
@@ -36,8 +38,8 @@ private:
 
 public:
 	Window(ClientController *controller) : tileGrid(new TileGrid),
-										   controller(controller), 
-										   cur_FPS(0) {
+		controller(controller),
+		cur_FPS(0) {
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
@@ -52,6 +54,8 @@ public:
 	void Update(sf::Time);
 
 	bool isOpen() const { return window->isOpen(); }
+
+	list<Texture *> getTextures() { return textures;  }
 
 	UI *GetUI() const { return ui.get(); }
 };

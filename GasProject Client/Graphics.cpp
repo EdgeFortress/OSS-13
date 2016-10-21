@@ -22,16 +22,18 @@ void Window::Update(sf::Time timeElapsed) {
 
 	window->resetGLStates();
 	window->clear(sf::Color::Black);
-	controller->GetState()->DrawTileGrid();
+	controller->GetState()->DrawTileGrid(window.get(), tileGrid.get());
 	controller->GetState()->DrawUI(window.get(), timeElapsed);
 	window->display();
 }
 
-void MenuLoginState::DrawTileGrid() const { }
-void MenuLoginWaitingState::DrawTileGrid() const { }
-void MenuServerListState::DrawTileGrid() const { }
-void GameLobbyState::DrawTileGrid() const { }
-void GameProcessState::DrawTileGrid() const { }
+void MenuLoginState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
+void MenuLoginWaitingState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
+void MenuServerListState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
+void GameLobbyState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
+void GameProcessState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const {
+	tileGrid->Draw(render_window);
+}
 
 void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
 	Window *window = clientController->GetWindow();
@@ -46,8 +48,10 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
 	AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
     if (loginWaiting) {
         if (answer.isAnswer) {
-			if (answer.result)
+			if (answer.result) {
 				cout << "You logged in succesfully" << endl;
+				clientController->SetState(new MenuServerListState(clientController));
+			}
 			else
 				cout << "Wrong login data" << endl;
         } else {
@@ -75,3 +79,24 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
+
+void Tile::SetSprite(int textureIndex, int num, int frame) {
+	for (Texture *&texture : clientController->GetWindow()->getTextures())
+		if (texture->GetKey() == textureIndex) {
+			sprite = new Sprite();
+			sprite->SetTexture(texture);
+			sprite->SetSpriteState(num, -1, frame);
+			return;
+		}
+}
+
+void Object::SetSprite(int textureIndex, int num, int direction, int frame)
+{
+	for (Texture *&texture : clientController->GetWindow()->getTextures())
+		if (texture->GetKey() == textureIndex)
+		{
+			sprite->SetTexture(texture);
+			sprite->SetSpriteState(num, direction, frame);
+			return;
+		}
+}

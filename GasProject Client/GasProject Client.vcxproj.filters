@@ -30,6 +30,9 @@
     <ClCompile Include="UI.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
+    <ClCompile Include="TileGrid.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.hpp">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="network.hpp">
       <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.hpp">
+      <Filter>Заголовочные файлы\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
