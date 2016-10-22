@@ -11,7 +11,7 @@ using std::endl;
 
 ClientController::ClientController() : player(new Player),
                                        window(new Window(this)),
-                                       state(new MenuLoginState(this)),
+                                       state(new GameProcessState(this)),
                                        newState(nullptr) {
 
 }
