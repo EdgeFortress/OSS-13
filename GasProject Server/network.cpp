@@ -85,50 +85,53 @@ void Connection::parse(sf::Packet &pac) {
     sf::Int32 code;
     pac >> code;
 
-    switch (code) {
-        case ClientCommand::AUTH_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (server->Authorization(string(login), string(password))) {
-                player->ckey = string(login);
-                player->commandQueue.Push(new AuthSuccessServerCommand());
-            }
-            else
-                player->commandQueue.Push(new AuthErrorServerCommand());
-            break;
-        }
-        case ClientCommand::REG_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (server->Registration(string(login), string(password)))
-                player->commandQueue.Push(new RegSuccessServerCommand());
-            else
-                player->commandQueue.Push(new RegErrorServerCommand());
-            break;
-        }
-        case ClientCommand::CREATE_GAME: {
-            sf::String title;
-            pac >> title;
-            if (server->CreateGame(title))
-                player->commandQueue.Push(new GameCreateSuccessServerCommand());
-            else
-                player->commandQueue.Push(new GameCreateSuccessServerCommand());
-            break;
-        }
-        case ClientCommand::SERVER_LIST_REQ: {
-            player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
-            break;
-        }
-        case ClientCommand::JOIN_GAME: {
-            sf::Int32 id;
-            pac >> id;
-            player->game = server->JoinGame(id, player);
-            if (player->game) 
-                player->commandQueue.Push(new GameJoinSuccessServerCommand());
-            else
-                player->commandQueue.Push(new GameJoinErrorServerCommand());
-            break;
-        }
+	switch (code) {
+	case ClientCommand::AUTH_REQ: {
+		sf::String login, password;
+		pac >> login >> password;
+		if (server->Authorization(string(login), string(password))) {
+			player->ckey = string(login);
+			player->commandQueue.Push(new AuthSuccessServerCommand());
+		}
+		else
+			player->commandQueue.Push(new AuthErrorServerCommand());
+		break;
+	}
+	case ClientCommand::REG_REQ: {
+		sf::String login, password;
+		pac >> login >> password;
+		if (server->Registration(string(login), string(password)))
+			player->commandQueue.Push(new RegSuccessServerCommand());
+		else
+			player->commandQueue.Push(new RegErrorServerCommand());
+		break;
+	}
+	case ClientCommand::CREATE_GAME: {
+		sf::String title;
+		pac >> title;
+		if (server->CreateGame(title))
+			player->commandQueue.Push(new GameCreateSuccessServerCommand());
+		else
+			player->commandQueue.Push(new GameCreateSuccessServerCommand());
+		break;
+	}
+	case ClientCommand::SERVER_LIST_REQ: {
+		player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
+		break;
+	}
+	case ClientCommand::JOIN_GAME: {
+		sf::Int32 id;
+		pac >> id;
+		player->game = server->JoinGame(id, player);
+		if (player->game)
+			player->commandQueue.Push(new GameJoinSuccessServerCommand());
+		else
+			player->commandQueue.Push(new GameJoinErrorServerCommand());
+		break;
+	}
+	case ClientCommand::DISCON: {
+		active = false;
+	}
         default:
             cout << "Unknown Command received from " << player->ckey << endl;
             player->commandQueue.Push(new CommandCodeErrorServerCommand());
