@@ -41,7 +41,9 @@ public:
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
-		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProject Client"));
+		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
+		window->clear(sf::Color::Black);
+		window->display();
 		ui.reset(new UI(controller, window.get()));
 	}
 

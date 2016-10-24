@@ -24,6 +24,7 @@ void ClientController::Run() {
     };
     sf::Clock clock;
 
+	
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
         window->Update(timeElapsed);
