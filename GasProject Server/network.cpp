@@ -65,10 +65,15 @@ void Connection::session(Connection *inst) {
     while (inst->active) {
         packet.clear();
         isWorking = false;
-        if (!(inst->socket->receive(packet) == sf::Socket::NotReady)) {
+		sf::Socket::Status status = inst->socket->receive(packet);
+        if (status == sf::Socket::Done) {
             inst->parse(packet);
             isWorking = true;
         }
+		if (status == sf::Socket::Disconnected) {
+			inst->active = false;
+			cout << "Lost client " << inst->player->ckey << " signal" << endl;
+		}
         while (!inst->player->commandQueue.Empty()) {
             packet.clear();
             ServerCommand *temp = inst->player->commandQueue.Pop();

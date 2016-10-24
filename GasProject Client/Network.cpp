@@ -10,46 +10,65 @@
 using namespace std;
 using namespace sf;
 
-bool Network::Connect(string ip, int port, ClientController *clientController) {
-    Network::ip = ip;
-    Network::port = port;
-    Network::clientController = clientController;
-    if (connected = (socket.connect(ip, port, seconds(1)) != sf::Socket::Done)) {
-        return false;
-    }
-    Network::thread.reset(new std::thread(&session));
-    return true;
+bool Connection::Start(string ip, int port, ClientController *clientController) {
+	status = WAITING;
+
+    serverIp = ip;
+    serverPort = port;
+    Connection::clientController = clientController;
+	Connection::thread.reset(new std::thread(&session));
+
+	while (GetStatus() == WAITING) {
+		sleep(seconds(0.01f));
+	}
+	if (GetStatus() == CONNECTED)
+		return true;
+	if (GetStatus() == NOT_CONNECTED)
+		return false;
 }
 
-void Network::session() {
-    while (true) {
+void Connection::Stop() {
+	Connection::commandQueue.Push(new DisconnectionClientCommand());
+	status = NOT_CONNECTED;
+	thread->join();
+}
+
+void Connection::session() {
+	if (socket.connect(serverIp, serverPort, seconds(5)) != sf::Socket::Done)
+		status = NOT_CONNECTED;
+	else
+		status = CONNECTED;
+
+	socket.setBlocking(false);
+
+    while (status == CONNECTED) {
         bool working = false;
         if (!commandQueue.Empty()) {
             sendCommands();
             working = true;
         }
-        if (needReceive && commandQueue.Empty()) {
-            sf::Packet packet;
-            socket.receive(packet);
-            parsePacket(packet);
-            working = true;
-			needReceive = false;
-        }
+        sf::Packet packet;
+		if (socket.receive(packet) == sf::Socket::Done) {
+			parsePacket(packet);
+			working = true;
+		}
         if (!working) sleep(seconds(0.01f));
     }
+	if (!commandQueue.Empty())
+		sendCommands();
 }
 
-void Network::sendCommands() {
+void Connection::sendCommands() {
 	while (!commandQueue.Empty()) {
 		sf::Packet packet;
 		ClientCommand *temp = commandQueue.Pop();
 		packet << temp;
 		if (temp) delete temp;
-		socket.send(packet);
+		while (socket.send(packet) == sf::Socket::Partial);
 	}
 }
 
-void Network::parsePacket(Packet &packet) {
+void Connection::parsePacket(Packet &packet) {
     sf::Int32 code;
     packet >> code;
     switch (code) {
@@ -85,11 +104,11 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
     return packet;
 }
 
-string Network::ip;
-int Network::port;
-ClientController *Network::clientController;
-bool Network::connected = false;
-bool Network::needReceive = false;
-uptr<std::thread> Network::thread;
-sf::TcpSocket Network::socket;
-ThreadSafeQueue<ClientCommand *> Network::commandQueue;
+sf::IpAddress Connection::serverIp;
+int Connection::serverPort;
+Connection::Status Connection::status = INACTIVE;
+ClientController *Connection::clientController;
+//bool Connection::needReceive = false;
+uptr<std::thread> Connection::thread;
+sf::TcpSocket Connection::socket;
+ThreadSafeQueue<ClientCommand *> Connection::commandQueue;
