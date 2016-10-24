@@ -17,7 +17,7 @@ ClientController::ClientController() : player(new Player),
 }
 
 void ClientController::Run() {
-    if (!Network::Connect("localhost", PORT, this)) {
+    if (!Connection::Start("localhost", PORT, this)) {
         cout << "Connection error!" << endl;
     } else {
         cout << "Connected" << endl;
@@ -32,9 +32,7 @@ void ClientController::Run() {
             newState = nullptr;
         }
     }
-	Network::commandQueue.Push(new DisconnectionClientCommand());
-	Network::needReceive = true;
-	sf::sleep(sf::seconds(0.01f));
+	Connection::Stop();
 }
 
 int main() {

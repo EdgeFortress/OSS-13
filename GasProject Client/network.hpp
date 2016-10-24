@@ -3,6 +3,8 @@
 #include <string>
 #include <list>
 
+#include <SFML/Network.hpp>
+
 #include <useful.hpp>
 #include <command.hpp>
 
@@ -15,12 +17,20 @@ class ClientController;
 
 using std::string;
 
-class Network {
-	static string ip;
-	static int port;
-    static bool connected;
-    static ClientController *clientController;
+class Connection {
+	enum Status {
+		INACTIVE = 0,
+		WAITING,
+		CONNECTED,
+		NOT_CONNECTED,
+	};
+	static Status status;
 
+	static sf::IpAddress serverIp;
+	static int serverPort;
+    static ClientController *clientController;
+	static uptr<std::thread> thread;
+	
 	static sf::TcpSocket socket;
 
     static void session();
@@ -28,14 +38,14 @@ class Network {
     static void parsePacket(sf::Packet &);
 
 public:
-    static bool needReceive;
-
-	static uptr<std::thread> thread;
+    //static bool needReceive;
 
 	static ThreadSafeQueue<ClientCommand *> commandQueue;
-	//static ThreadSafeQueue<ServerCommand::Code> answerQueue;
 
-	static bool Connect(const string ip, const int port, ClientController *);
+	static bool Start(const string ip, const int port, ClientController *);
+	static void Stop();
+
+	static Status GetStatus() { return status; }
 };
 
 sf::Packet &operator<<(sf::Packet &, ClientCommand *);
