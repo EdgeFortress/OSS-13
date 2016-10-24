@@ -32,6 +32,7 @@ void ClientController::Run() {
             newState = nullptr;
         }
     }
+
 }
 
 int main() {

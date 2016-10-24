@@ -15,7 +15,8 @@ struct ClientCommand {
         REG_REQ,
         SERVER_LIST_REQ,
         CREATE_GAME,
-        JOIN_GAME
+        JOIN_GAME,
+		DISCON
     };
 
     virtual const Code GetCode() const = 0;
