@@ -32,6 +32,8 @@ void ClientController::Run() {
             newState = nullptr;
         }
     }
+	Network::commandQueue.Push(new DisconnectionClientCommand());
+	Network::needReceive = true;
 }
 
 int main() {
