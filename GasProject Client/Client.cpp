@@ -34,6 +34,7 @@ void ClientController::Run() {
     }
 	Network::commandQueue.Push(new DisconnectionClientCommand());
 	Network::needReceive = true;
+	sf::sleep(sf::seconds(0.01f));
 }
 
 int main() {

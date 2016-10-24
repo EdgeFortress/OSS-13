@@ -131,6 +131,8 @@ void Connection::parse(sf::Packet &pac) {
 	}
 	case ClientCommand::DISCON: {
 		active = false;
+		cout << "Client " << player->ckey << " disconnected" << endl;
+		break;
 	}
         default:
             cout << "Unknown Command received from " << player->ckey << endl;
