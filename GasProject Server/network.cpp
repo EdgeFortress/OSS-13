@@ -65,7 +65,6 @@ void Connection::session(Connection *inst) {
     while (inst->active) {
         packet.clear();
         isWorking = false;
-
         if (!(inst->socket->receive(packet) == sf::Socket::NotReady)) {
             inst->parse(packet);
             isWorking = true;
