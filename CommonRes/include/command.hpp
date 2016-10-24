@@ -16,7 +16,7 @@ struct ClientCommand {
         SERVER_LIST_REQ,
         CREATE_GAME,
         JOIN_GAME,
-		DISCON
+		DISCONNECT
     };
 
     virtual const Code GetCode() const = 0;
@@ -63,7 +63,7 @@ struct JoinGameClientCommand : public ClientCommand {
 };
 
 struct DisconnectionClientCommand : public ClientCommand {
-	virtual const Code GetCode() const override { return DISCON; }
+	virtual const Code GetCode() const override { return DISCONNECT; }
 
 	DisconnectionClientCommand() { }
 };

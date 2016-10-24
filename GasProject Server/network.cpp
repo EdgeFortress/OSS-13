@@ -129,7 +129,7 @@ void Connection::parse(sf::Packet &pac) {
 			player->commandQueue.Push(new GameJoinErrorServerCommand());
 		break;
 	}
-	case ClientCommand::DISCON: {
+	case ClientCommand::DISCONNECT: {
 		active = false;
 		cout << "Client " << player->ckey << " disconnected" << endl;
 		break;
