@@ -94,7 +94,7 @@ public:
 		map = new Map();
 		FillingWorld();
 	}
-	//filling the world
+    void Update() { }
 	void FillingWorld();
 	~World() {
 		delete map;

@@ -11,6 +11,7 @@ namespace sf {
 }
 
 class Server;
+class Game;
 class Connection;
 struct ServerCommand;
 
@@ -18,6 +19,7 @@ class Player {
 private:
     string ckey;
     Server *server;
+    Game *game;
     uptr<Connection> connection;
 
     ThreadSafeQueue<ServerCommand *> commandQueue;

@@ -24,7 +24,7 @@ void ListeningSocket::listening() {
                 break;
             }
             case sf::TcpSocket::NotReady: {
-                sleep(seconds(0.01));
+                sleep(seconds(0.01f));
                 break;
             }
             default: {
@@ -65,10 +65,15 @@ void Connection::session(Connection *inst) {
     while (inst->active) {
         packet.clear();
         isWorking = false;
-        if (!(inst->socket->receive(packet) == sf::Socket::NotReady)) {
+		sf::Socket::Status status = inst->socket->receive(packet);
+        if (status == sf::Socket::Done) {
             inst->parse(packet);
             isWorking = true;
         }
+		if (status == sf::Socket::Disconnected) {
+			inst->active = false;
+			cout << "Lost client " << inst->player->ckey << " signal" << endl;
+		}
         while (!inst->player->commandQueue.Empty()) {
             packet.clear();
             ServerCommand *temp = inst->player->commandQueue.Pop();
@@ -85,28 +90,57 @@ void Connection::parse(sf::Packet &pac) {
     sf::Int32 code;
     pac >> code;
 
-    switch (code) {
-        case ClientCommand::AUTH_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (server->Authorization(string(login), string(password))) {
-                player->ckey = string(login);
-                player->commandQueue.Push(new AuthSuccessServerCommand());
-            }
-            else
-                player->commandQueue.Push(new AuthErrorServerCommand());
-            break;
-        }
-        case ClientCommand::REG_REQ: {
-            sf::String login, password;
-            pac >> login >> password;
-            if (server->Registration(string(login), string(password)))
-                player->commandQueue.Push(new RegSuccessServerCommand());
-            else
-                player->commandQueue.Push(new RegErrorServerCommand());
-            break;
-        }
+	switch (code) {
+	case ClientCommand::AUTH_REQ: {
+		sf::String login, password;
+		pac >> login >> password;
+		if (server->Authorization(string(login), string(password))) {
+			player->ckey = string(login);
+			player->commandQueue.Push(new AuthSuccessServerCommand());
+		}
+		else
+			player->commandQueue.Push(new AuthErrorServerCommand());
+		break;
+	}
+	case ClientCommand::REG_REQ: {
+		sf::String login, password;
+		pac >> login >> password;
+		if (server->Registration(string(login), string(password)))
+			player->commandQueue.Push(new RegSuccessServerCommand());
+		else
+			player->commandQueue.Push(new RegErrorServerCommand());
+		break;
+	}
+	case ClientCommand::CREATE_GAME: {
+		sf::String title;
+		pac >> title;
+		if (server->CreateGame(title))
+			player->commandQueue.Push(new GameCreateSuccessServerCommand());
+		else
+			player->commandQueue.Push(new GameCreateSuccessServerCommand());
+		break;
+	}
+	case ClientCommand::SERVER_LIST_REQ: {
+		player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
+		break;
+	}
+	case ClientCommand::JOIN_GAME: {
+		sf::Int32 id;
+		pac >> id;
+		player->game = server->JoinGame(id, player);
+		if (player->game)
+			player->commandQueue.Push(new GameJoinSuccessServerCommand());
+		else
+			player->commandQueue.Push(new GameJoinErrorServerCommand());
+		break;
+	}
+	case ClientCommand::DISCONNECT: {
+		active = false;
+		cout << "Client " << player->ckey << " disconnected" << endl;
+		break;
+	}
         default:
+            cout << "Unknown Command received from " << player->ckey << endl;
             player->commandQueue.Push(new CommandCodeErrorServerCommand());
     }
 }
@@ -117,8 +151,26 @@ void Connection::Stop() {
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
-	packet << sf::Int32(serverCommand->GetCode());
+    int code = serverCommand->GetCode();
+	packet << sf::Int32(code);
+    switch (code) {
+        case ServerCommand::GAME_LIST: {
+            GameListServerCommand *command = dynamic_cast<GameListServerCommand *>(serverCommand);
+            packet << command->games->size();
+            for (auto &game : *(command->games)) {
+                packet << game.get();
+            }
+        }
+    }
+
 	return packet;
+}
+
+Packet &operator<<(Packet &packet, Game *game) {
+    packet << sf::Int32(game->id);
+    packet << sf::String(game->title);
+    packet << sf::Int32(game->players.size());
+    return packet;
 }
 
 bool ListeningSocket::active = false;

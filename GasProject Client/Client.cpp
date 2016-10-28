@@ -16,13 +16,14 @@ ClientController::ClientController() : player(new Player),
 }
 
 void ClientController::Run() {
-    if (!Network::Connect("localhost", PORT, this)) {
+    if (!Connection::Start("localhost", PORT, this)) {
         cout << "Connection error!" << endl;
     } else {
         cout << "Connected" << endl;
     };
     sf::Clock clock;
 
+	
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
         window->Update(timeElapsed);
@@ -31,6 +32,7 @@ void ClientController::Run() {
             newState = nullptr;
         }
     }
+	Connection::Stop();
 }
 
 int main() {
