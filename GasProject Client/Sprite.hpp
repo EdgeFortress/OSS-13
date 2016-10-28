@@ -48,7 +48,7 @@ public:
 		spritesInfo[num].frames = frames;
 	}
 
-	bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const {
+	/*bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const {
 		int realState = spritesInfo[sprite].firstFrame;
 		if (spritesInfo[sprite].directed > 0) realState += direction * spritesInfo[sprite].frames;
 		if (spritesInfo[sprite].frames > 1) realState += frame;
@@ -60,7 +60,7 @@ public:
 		if (texture->copyToImage().getPixel(x, y).a == 0) return true;
 
 		return false;
-	}
+	}*/
 
 	int GetKey() const { return key; }
 
@@ -68,8 +68,9 @@ public:
 
 	sf::IntRect GetSpriteRect(int sprite, int direction, int frame) const {
 		int realState = spritesInfo[sprite].firstFrame;
-		if (spritesInfo[sprite].directed > 0) realState += direction * spritesInfo[sprite].frames;
+		if (spritesInfo[sprite].directed) realState += direction * spritesInfo[sprite].frames;
 		if (spritesInfo[sprite].frames > 1) realState += frame;
+
 		IntRect rect;
 		rect.left = realState % xNumOfTiles * sizeOfTile;
 		rect.top = realState / xNumOfTiles * sizeOfTile;
@@ -83,23 +84,21 @@ public:
 class Sprite
 {
 private:
-	const Texture * texture;
+	const Texture *texture;
 	int num;
-	sf::Sprite *sprite;
+	uptr<sf::Sprite> sprite;
 	float scale;
 	int animated;
 	int directed;
 
 public:
-	Sprite() {
+	Sprite() : sprite(new sf::Sprite()) {
 		texture = nullptr;
 		num = 0;
 		directed = animated = -1;
-		sprite = new sf::Sprite();
 	}
 
-	Sprite(Texture *t, int num, int direction, int frame) {
-		sprite = new sf::Sprite();
+	Sprite(Texture *t, int num, int direction, int frame) : sprite(new sf::Sprite()) {
 		SetTexture(t);
 		SetSpriteState(num, direction, frame);
 	}
@@ -118,25 +117,19 @@ public:
 	}
 
 	void SetSize(int size) {
-		scale = size / texture->GetSizeOfTile();
+		scale = size / static_cast<float>(texture->GetSizeOfTile());
 		sprite->setScale(sf::Vector2f(scale, scale));
 	}
 
-	void Draw(sf::RenderWindow *window, int x, int y) const
-	{
-		sprite->setPosition(x, y);
+	void Draw(sf::RenderWindow *window, int x, int y) const {
+		sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
 		window->draw(*sprite);
 	}
 
-	bool PixelTransparent(int x, int y) const
+	/*bool PixelTransparent(int x, int y) const
 	{
 		x /= scale; y /= scale;
 		if (texture->PixelTransparent(x, y, num, directed, animated)) return true;
 		return false;
-	}
-
-	~Sprite()
-	{
-		if (sprite) delete sprite;
-	}
+	}*/
 };
