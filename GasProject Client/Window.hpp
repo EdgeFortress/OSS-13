@@ -17,7 +17,7 @@ private:
 	uptr<TileGrid> tileGrid;
 	uptr<UI> ui;
 
-	list<Texture *> textures;
+	list<uptr<Texture>> textures;
 
 	uptr<RenderWindow> window;
 	ClientController *controller;
@@ -26,6 +26,7 @@ private:
 	const int req_FPS = 100;
 	sf::Clock clock;
 	int cur_FPS;
+	void loadTextures();
 
 	bool fps_exceed() {
 		if (clock.getElapsedTime() >= sf::milliseconds(100)) {
@@ -38,10 +39,11 @@ private:
 
 public:
 	Window(ClientController *controller) : 
-		tileGrid(new TileGrid),
+		tileGrid(new TileGrid(textures)),
 		controller(controller),
 		cur_FPS(0) 
 	{
+		loadTextures();
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
@@ -57,7 +59,7 @@ public:
 
 	bool isOpen() const { return window->isOpen(); }
 
-	list<Texture *> getTextures() { return textures;  }
+	list<uptr<Texture>> &GetTextures() { return textures;  }
 
 	UI *GetUI() const { return ui.get(); }
 };

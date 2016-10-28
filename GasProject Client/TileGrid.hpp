@@ -20,9 +20,7 @@ private:
 	ClientController *clientController;
 
 public:
-	explicit Tile(Block *block) : block(block) {
-		sprite = nullptr;
-	};
+	explicit Tile(Block *block);
 
 	Tile(const Tile &) = delete;
 	Tile &operator=(const Tile &) = delete;
@@ -64,16 +62,18 @@ private:
 	int xNumOfTiles, yNumOfTiles;
 	int xZero, yZero;
 	int xPos, yPos;
-
+	list<uptr<Texture>> &textures;
 	vector< vector<Block *> > blocks;
 
 public:
 	static const int BlockSize = 8;
 	static const int NumOfBlocks = 4;//non static is non visible for constructor
 	static const int SpriteRes = 64;
-	int i;
 
-	explicit TileGrid() : blocks(NumOfBlocks, vector<Block *>(NumOfBlocks)) {
+	explicit TileGrid(list<uptr<Texture>> &textures) :
+		textures(textures),
+		blocks(NumOfBlocks, vector<Block *>(NumOfBlocks)) 
+	{
 		for (auto &vect : blocks)
 			for (auto &block : vect)
 				block = new Block(this);
@@ -103,7 +103,7 @@ private:
 public:
 	Object() { sprite = new Sprite(); }
 
-	void SetSprite(int, int, int, int);
+	void SetSprite(int textureIndex, int num, int direction, int frame);
 	Sprite *GetSprite() { return sprite; }
 	~Object()
 	{

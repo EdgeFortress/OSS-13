@@ -22,22 +22,24 @@ struct TextureSpriteInfo{
 
 class Texture {
 private:
-	sf::Texture *texture;
+	uptr<sf::Texture> texture;
 	int key;
 	int sizeOfTile;
 	int xNumOfTiles, yNumOfTiles;
-	IntRect rect;
+	//IntRect rect;
 	vector<TextureSpriteInfo> spritesInfo;
 
 public:
-	Texture(int key, string path, int sizeOfTile, list<Texture *> textures, int numOfSprites) : key(key), sizeOfTile(sizeOfTile), spritesInfo(numOfSprites) {
-		texture = new sf::Texture();
+	Texture(int key, string path, int sizeOfTile, list<uptr<Texture>> &textures, int numOfSprites) : 
+		texture(new sf::Texture),
+		key(key),
+		sizeOfTile(sizeOfTile),
+		spritesInfo(numOfSprites)
+	{
 		texture->loadFromFile(path);
-
 		xNumOfTiles = texture->getSize().x / sizeOfTile;
 		yNumOfTiles = texture->getSize().y / sizeOfTile;
-
-		textures.push_back(this);
+		textures.push_back(uptr<Texture>(this));
 	}
 
 	void SetInfo(int num, int firstFrame, bool directed, int frames) {
@@ -46,7 +48,7 @@ public:
 		spritesInfo[num].frames = frames;
 	}
 
-	bool PixelTransparent(int x, int y, int sprite, int direction, int frame) {
+	bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const {
 		int realState = spritesInfo[sprite].firstFrame;
 		if (spritesInfo[sprite].directed > 0) realState += direction * spritesInfo[sprite].frames;
 		if (spritesInfo[sprite].frames > 1) realState += frame;
@@ -60,30 +62,28 @@ public:
 		return false;
 	}
 
-	int GetKey() { return key; }
+	int GetKey() const { return key; }
 
-	sf::Texture *GetSFMLTexture() { return texture; }
+	sf::Texture *GetSFMLTexture() const { return texture.get(); }
 
-	sf::IntRect GetSpriteRect(int sprite, int direction, int frame) {
+	sf::IntRect GetSpriteRect(int sprite, int direction, int frame) const {
 		int realState = spritesInfo[sprite].firstFrame;
 		if (spritesInfo[sprite].directed > 0) realState += direction * spritesInfo[sprite].frames;
 		if (spritesInfo[sprite].frames > 1) realState += frame;
-
+		IntRect rect;
 		rect.left = realState % xNumOfTiles * sizeOfTile;
 		rect.top = realState / xNumOfTiles * sizeOfTile;
 		rect.width = rect.height = sizeOfTile;
 		return rect;
 	}
 
-	int GetSizeOfTile() { return sizeOfTile; }
-
-	~Texture() { if (texture) delete texture; }
+	int GetSizeOfTile() const { return sizeOfTile; }
 };
 
 class Sprite
 {
 private:
-	Texture *texture;
+	const Texture * texture;
 	int num;
 	sf::Sprite *sprite;
 	float scale;
@@ -104,7 +104,7 @@ public:
 		SetSpriteState(num, direction, frame);
 	}
 
-	void SetTexture(Texture *t) {
+	void SetTexture(const Texture * const t) {
 		texture = t;
 		sprite->setTexture(*texture->GetSFMLTexture());
 		scale = 1;
@@ -122,13 +122,13 @@ public:
 		sprite->setScale(sf::Vector2f(scale, scale));
 	}
 
-	void Draw(sf::RenderWindow *window, int x, int y)
+	void Draw(sf::RenderWindow *window, int x, int y) const
 	{
 		sprite->setPosition(x, y);
 		window->draw(*sprite);
 	}
 
-	bool PixelTransparent(int x, int y)
+	bool PixelTransparent(int x, int y) const
 	{
 		x /= scale; y /= scale;
 		if (texture->PixelTransparent(x, y, num, directed, animated)) return true;

@@ -141,6 +141,9 @@
     <ClInclude Include="UI.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\Human.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

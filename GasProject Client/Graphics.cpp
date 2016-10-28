@@ -12,6 +12,10 @@ Block::Block(TileGrid *tileGrid) : tileGrid(tileGrid),
 			tile = new Tile(this);
 }
 
+void Window::loadTextures() {
+	new Texture(1, "Images/Human.png", 32, textures, 1);
+}
+
 void Window::Update(sf::Time timeElapsed) {
 	sf::Event event;
 	while (window->pollEvent(event)) {
@@ -81,10 +85,10 @@ void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) cons
 void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 
 void Tile::SetSprite(int textureIndex, int num, int frame) {
-	for (Texture *&texture : clientController->GetWindow()->getTextures())
+	for (const uptr<Texture> &texture : clientController->GetWindow()->GetTextures())
 		if (texture->GetKey() == textureIndex) {
 			sprite = new Sprite();
-			sprite->SetTexture(texture);
+			sprite->SetTexture(texture.get());
 			sprite->SetSpriteState(num, -1, frame);
 			return;
 		}
@@ -92,10 +96,9 @@ void Tile::SetSprite(int textureIndex, int num, int frame) {
 
 void Object::SetSprite(int textureIndex, int num, int direction, int frame)
 {
-	for (Texture *&texture : clientController->GetWindow()->getTextures())
-		if (texture->GetKey() == textureIndex)
-		{
-			sprite->SetTexture(texture);
+	for (const uptr<Texture> &texture : clientController->GetWindow()->GetTextures())
+		if (texture->GetKey() == textureIndex) {
+			sprite->SetTexture(texture.get());
 			sprite->SetSpriteState(num, direction, frame);
 			return;
 		}
