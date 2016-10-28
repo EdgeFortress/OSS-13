@@ -37,9 +37,11 @@ private:
 	}
 
 public:
-	Window(ClientController *controller) : tileGrid(new TileGrid),
+	Window(ClientController *controller) : 
+		tileGrid(new TileGrid),
 		controller(controller),
-		cur_FPS(0) {
+		cur_FPS(0) 
+	{
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);

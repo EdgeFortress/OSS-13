@@ -30,8 +30,10 @@ public:
 
 	Sprite *GetSprite() { return sprite;  }
 	void SetSprite(int, int, int);
+	void Draw(sf::RenderWindow *);
 
 	list<Object *> GetContent() { return content; }
+
 
 	void Clean()
 	{
@@ -66,9 +68,10 @@ private:
 	vector< vector<Block *> > blocks;
 
 public:
-	const int BlockSize = 8;
-	const int NumOfBlocks = 4;
-	const int SpriteRes = 64;
+	static const int BlockSize = 8;
+	static const int NumOfBlocks = 4;//non static is non visible for constructor
+	static const int SpriteRes = 64;
+	int i;
 
 	explicit TileGrid() : blocks(NumOfBlocks, vector<Block *>(NumOfBlocks)) {
 		for (auto &vect : blocks)
@@ -82,7 +85,9 @@ public:
 
 	Tile *GetTile(int x, int y)
 	{
-		if (x >= 0 && x < NumOfBlocks * BlockSize && y >= 0 && y < NumOfBlocks * BlockSize) return blocks[y / BlockSize][x / BlockSize]->GetTile(x % BlockSize, y % BlockSize);
+
+		if (x >= 0 && x < NumOfBlocks * BlockSize && y >= 0 && y < NumOfBlocks * BlockSize)
+			return blocks[y / BlockSize][x / BlockSize]->GetTile(x % BlockSize, y % BlockSize);
 		cout << "Can't return block " << x << ", " << y << endl;
 		return nullptr;
 	}
