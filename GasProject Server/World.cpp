@@ -23,8 +23,7 @@ Tile::Tile(Map *map, int x, int y) {
 void Tile::AddObject(Object *obj) {
 	for (auto i : content) {
 		if (typeid(i) == typeid(obj)) {
-			Log log;
-			//log << "this type of object already exists" << std::endl;
+			Log::log << "this type of object already exists" << std::endl;
 			return;
 		}
 	}
@@ -40,8 +39,7 @@ void Tile::RemoveObject(Object *obj) {
 	if (flag) {
 		content.remove(obj); 
     } else {
-		Log log;
-		log << "this type of object does not exist in this tile" << std::endl;
+		Log::log << "this type of object does not exist in this tile" << std::endl;
 		return;
 	}
 }
@@ -79,9 +77,8 @@ Map::~Map() {
 }
 
 void World::FillingWorld() {
-	Log log;
 	if (map == nullptr) {
-		log << "map is not created, i wil do it myself :)" << std::endl;
+		Log::log << "map is not created, I wil do it myself :)" << std::endl;
 		map = new Map();
 	}
 	for (int i = 10; i < 90; i++) {

@@ -40,7 +40,14 @@ public:
 };
 
 class Log {
+private:
+	explicit Log() {}
+	explicit Log(const Log& log);
+	Log& operator=(const Log&);
+
 public:
+	static Log log;
+
 	Log& operator<<(char c) {
 		std::cout << c << ' ';
 		return *this;

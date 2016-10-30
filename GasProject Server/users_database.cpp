@@ -9,10 +9,9 @@ using namespace std;
 
 UsersDB::UsersDB() : adr(Global::DatabaseName),
                      loaded(false) {
-	Log log;
     adr = Global::DatabaseName;
     loaded = load();
-    if (!loaded) log << "Database reading error!" << endl;
+    if (!loaded) Log::log << "Database reading error!" << endl;
 }
 
 bool UsersDB::load() {

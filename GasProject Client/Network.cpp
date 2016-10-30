@@ -108,7 +108,6 @@ sf::IpAddress Connection::serverIp;
 int Connection::serverPort;
 Connection::Status Connection::status = INACTIVE;
 ClientController *Connection::clientController;
-//bool Connection::needReceive = false;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
 ThreadSafeQueue<ClientCommand *> Connection::commandQueue;
