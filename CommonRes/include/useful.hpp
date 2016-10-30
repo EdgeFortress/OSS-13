@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <queue>
 
 template<class T>
@@ -35,4 +37,27 @@ public:
         mutex.unlock();
         return empty;
     }
+};
+
+class Log {
+public:
+	Log& operator<<(char c) {
+		std::cout << c << ' ';
+		return *this;
+	}
+
+	Log& operator<<(long long int a) {
+		std::cout << a << ' ';
+		return *this;
+	}
+
+	Log& operator<<(std::string str) {
+		std::cout << str << ' ';
+		return *this;
+	}
+
+	Log& operator<<(std::ostream& f(std::ostream &os)) {
+		std::cout << std::endl;
+		return *this;
+	}
 };

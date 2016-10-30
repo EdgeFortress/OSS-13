@@ -43,16 +43,18 @@ public:
 
     void SetServerAnswer(bool result) {
 		mutex.lock();
-		//cout << "SetAnswer: " << result << endl;
+		//Log log;
+		//log << "SetAnswer:" << result << endl;
 		serverAnswer = ServerAnswer(result);
 		mutex.unlock();
     }
 
 	ServerAnswer GetAnswer() {
 		mutex.lock();
-		//cout << "GetAnswer: ";
+		//Log log;
+		//log << "GetAnswer:";
 		ServerAnswer temp = serverAnswer;
-		//cout << temp.isAnswer << ' ' << temp.result << endl;
+		//log << temp.isAnswer << temp.result << endl;
 		serverAnswer.isAnswer = false;
 		mutex.unlock();
 		return temp;

@@ -3,12 +3,6 @@
 #include "State.hpp"
 #include <net_const.hpp>
 
-#include <iostream>
-
-
-using std::cout;
-using std::endl;
-
 ClientController::ClientController() : player(new Player),
                                        window(new Window(this)),
                                        state(new MenuLoginState(this)),
@@ -18,9 +12,11 @@ ClientController::ClientController() : player(new Player),
 
 void ClientController::Run() {
     if (!Connection::Start("localhost", PORT, this)) {
-        cout << "Connection error!" << endl;
+		Log log;
+        log << "Connection error!" << endl;
     } else {
-        cout << "Connected" << endl;
+		Log log;
+		log << "Connected" << endl;
     };
     sf::Clock clock;
 

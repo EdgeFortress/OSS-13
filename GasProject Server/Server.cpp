@@ -49,17 +49,19 @@ Server::Server() : UDB(new UsersDB()),
 }
 
 bool Server::Authorization(string &login, string &password) const {
+	Log log;
     if (UDB->Check(login, password)) {
-        cout << "Player is authorized: " << login << ' ' << password << endl;
+        log << "Player is authorized:" << login << password << endl;
         return true;
     }
-    cout << "Wrong login data received: " << login << ' ' << password << endl;
+    log << "Wrong login data received:" << login << password << endl;
     return false;
 }
 
 bool Server::Registration(string &login, string &password) const {
+	Log log;
     if (UDB->Add(login, password)) {
-        cout << "New player is registrated: " << login << ' ' << password << endl;
+		log << "New player is registrated:" << login << password << endl;
         return true;
     }
     return false;
