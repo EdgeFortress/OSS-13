@@ -63,7 +63,6 @@ public:
 
 class UI {
 private:
-    ClientController *clientController;
 	sf::RenderWindow *rendWindow;
 
 	sfg::SFGUI m_sfgui;
@@ -72,14 +71,13 @@ private:
 	AuthUI authUI;
 
 public:
-	UI(ClientController *clientController, sf::RenderWindow *window);
+	UI(sf::RenderWindow *window);
 	UI(const UI &) = delete;
 	UI &operator=(const UI &) = delete;
 	virtual ~UI() = default;
 
 	void HandleEvent(sf::Event event);
 
-    ClientController *GetClientController() const { return clientController; }
 	sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
 	sfg::Desktop *GetDesktop() { return &desktop; }
     AuthUI *GetAuthUI() { return &authUI; }

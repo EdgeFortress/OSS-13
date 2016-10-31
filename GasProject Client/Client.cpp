@@ -8,22 +8,23 @@
 using std::cout;
 using std::endl;
 
-ClientController::ClientController() : player(new Player),
-                                       window(new Window(this)),
-                                       state(new GameProcessState(this)),
-                                       newState(nullptr) {
-
+ClientController::ClientController() : 
+	player(new Player),
+	window(new Window()),
+	state(new GameProcessState()),
+	newState(nullptr) 
+{
+	instance = this;
 }
 
 void ClientController::Run() {
-    if (!Connection::Start("localhost", PORT, this)) {
+    if (!Connection::Start("localhost", PORT)) {
         cout << "Connection error!" << endl;
     } else {
         cout << "Connected" << endl;
     };
     sf::Clock clock;
 
-	
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
         window->Update(timeElapsed);
@@ -35,9 +36,12 @@ void ClientController::Run() {
 	Connection::Stop();
 }
 
+
 int main() {
 	ClientController clientController;
     clientController.Run();
 	
 	return 0;
 }
+
+ClientController *ClientController::instance;

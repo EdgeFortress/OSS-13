@@ -66,12 +66,12 @@ public:
 
 	sf::Texture *GetSFMLTexture() const { return texture.get(); }
 
-	sf::IntRect GetSpriteRect(int sprite, int direction, int frame) const {
+	sf::IntRect GetSpriteRect(int sprite, int direction, int frame)
+	{
 		int realState = spritesInfo[sprite].firstFrame;
 		if (spritesInfo[sprite].directed) realState += direction * spritesInfo[sprite].frames;
 		if (spritesInfo[sprite].frames > 1) realState += frame;
 
-		IntRect rect;
 		rect.left = realState % xNumOfTiles * sizeOfTile;
 		rect.top = realState / xNumOfTiles * sizeOfTile;
 		rect.width = rect.height = sizeOfTile;
@@ -84,7 +84,7 @@ public:
 class Sprite
 {
 private:
-	const Texture *texture;
+	Texture *texture;
 	int num;
 	uptr<sf::Sprite> sprite;
 	float scale;
@@ -103,7 +103,7 @@ public:
 		SetSpriteState(num, direction, frame);
 	}
 
-	void SetTexture(const Texture * const t) {
+	void SetTexture(Texture * t) {
 		texture = t;
 		sprite->setTexture(*(texture->GetSFMLTexture()));
 		scale = 1;

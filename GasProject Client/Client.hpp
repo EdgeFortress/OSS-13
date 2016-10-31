@@ -10,6 +10,7 @@ using std::endl;
 
 using std::string;
 
+
 class Window;
 class State;
 
@@ -26,13 +27,14 @@ private:
 	uptr<Window> window;
 	uptr<State> state;
     State *newState;
+	static ClientController * instance;
 
 public:
 	/* Work of Client processing in this constructor.
 	Such system allow as awake just 1 function of Client from main. */
     ClientController();
     void Run();
-
+	
 	ClientController(const ClientController &) = delete;
 	ClientController &operator=(const ClientController &) = delete;
 	virtual ~ClientController() = default;
@@ -42,4 +44,8 @@ public:
 	Player *GetClient() { return player.get(); }
 	Window *GetWindow() { return window.get(); }
 	State *GetState() { return state.get(); }
+	
+	static ClientController * const Get() {
+		return instance;
+	}
 };

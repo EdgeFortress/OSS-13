@@ -7,7 +7,6 @@
 
 #include "TileGrid.hpp"
 
-class ClientController;
 class TileGrid;
 
 /*  Just states, nothing expecial. Each state must have unique realization of functions.
@@ -15,15 +14,11 @@ class TileGrid;
 	State has pointer to ClientController for Access main objects, such as Window. */
 
 class State {
-protected:
-	ClientController *clientController;
-
 public:
-	State(ClientController *clientController) : clientController(clientController) { }
-
 	virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const = 0;
 	virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const = 0;
 
+	State() = default;
 	State(const State &) = delete;
 	State &operator=(const State &) = delete;
 	virtual ~State() = default;
@@ -31,11 +26,10 @@ public:
 
 class MenuLoginState : public State {
 public:
-	MenuLoginState(ClientController *clientController) : State(clientController) { }
-
 	virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
 	virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const override;
 	
+	MenuLoginState() = default;
 	MenuLoginState(const MenuLoginState &) = delete;
 	MenuLoginState &operator=(const MenuLoginState &) = delete;
 	virtual ~MenuLoginState() = default;
@@ -47,13 +41,14 @@ private:
     bool regWaiting;
 
 public:
-    MenuLoginWaitingState(ClientController *clientController, bool loginWaiting, bool regWaiting) : State(clientController),
-                                                                                                    loginWaiting(loginWaiting),
-                                                                                                    regWaiting(regWaiting) { }
+    MenuLoginWaitingState(bool loginWaiting, bool regWaiting) :
+		loginWaiting(loginWaiting),
+		regWaiting(regWaiting) { }
 
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const override;
 
+	MenuLoginWaitingState() = default;
     MenuLoginWaitingState(const MenuLoginWaitingState &) = delete;
     MenuLoginWaitingState &operator=(const MenuLoginWaitingState &) = delete;
     virtual ~MenuLoginWaitingState() = default;
@@ -61,11 +56,10 @@ public:
 
 class MenuServerListState : public State {
 public:
-	MenuServerListState(ClientController *clientController) : State(clientController) { }
-
 	virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
 	virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const override;
 
+	MenuServerListState() = default;
 	MenuServerListState(const MenuServerListState &) = delete;
 	MenuServerListState &operator=(const MenuServerListState &) = delete;
 	virtual ~MenuServerListState() = default;
@@ -73,11 +67,10 @@ public:
 
 class GameLobbyState : public State {
 public:
-	GameLobbyState(ClientController *clientController) : State(clientController) { }
-
 	virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
 	virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const override;
 
+	GameLobbyState() = default;
 	GameLobbyState(const GameLobbyState &) = delete;
 	GameLobbyState &operator=(const GameLobbyState &) = delete;
 	virtual ~GameLobbyState() = default;
@@ -85,11 +78,10 @@ public:
 
 class GameProcessState : public State {
 public:
-	GameProcessState(ClientController *clientController) : State(clientController) { }
-
 	virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const override;
 	virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const override;
 
+	GameProcessState() = default;
 	GameProcessState(const GameProcessState &) = delete;
 	GameProcessState &operator=(const GameProcessState &) = delete;
 	virtual ~GameProcessState() = default;

@@ -8,8 +8,6 @@
 #include "TileGrid.hpp"
 #include "UI.hpp"
 
-class ClientController;
-
 using sf::RenderWindow;
 
 class Window {
@@ -20,7 +18,6 @@ private:
 	list<uptr<Texture>> textures;
 
 	uptr<RenderWindow> window;
-	ClientController *controller;
 	int width, height;
 
 	const int req_FPS = 100;
@@ -38,9 +35,8 @@ private:
 	}
 
 public:
-	Window(ClientController *controller) : 
+	Window() : 
 		tileGrid(new TileGrid(textures)),
-		controller(controller),
 		cur_FPS(0) 
 	{
 		loadTextures();
@@ -50,7 +46,7 @@ public:
 		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
 		window->clear(sf::Color::Black);
 		window->display();
-		ui.reset(new UI(controller, window.get()));
+		ui.reset(new UI(window.get()));
 	}
 
 	Window(const Window &) = delete;

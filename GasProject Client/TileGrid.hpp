@@ -17,7 +17,6 @@ private:
 	Block *block;
 	Sprite *sprite;
 	list<Object *> content;
-	ClientController *clientController;
 
 public:
 	explicit Tile(Block *block);
@@ -98,7 +97,6 @@ public:
 class Object {
 private:
 	Sprite *sprite;
-	ClientController *clientController;
 
 public:
 	Object() { sprite = new Sprite(); }

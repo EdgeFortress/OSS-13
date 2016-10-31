@@ -10,12 +10,11 @@
 using namespace std;
 using namespace sf;
 
-bool Connection::Start(string ip, int port, ClientController *clientController) {
+bool Connection::Start(string ip, int port) {
 	status = WAITING;
 
     serverIp = ip;
     serverPort = port;
-    Connection::clientController = clientController;
 	Connection::thread.reset(new std::thread(&session));
 
 	while (GetStatus() == WAITING) {
@@ -73,16 +72,16 @@ void Connection::parsePacket(Packet &packet) {
     packet >> code;
     switch (code) {
         case ServerCommand::AUTH_SUCCESS:
-            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
             break;
         case ServerCommand::REG_SUCCESS: 
-            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
             break;
         case ServerCommand::AUTH_ERROR: 
-            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);	
+			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
             break;
         case ServerCommand::REG_ERROR:
-            clientController->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
             break;
     };
 }
@@ -107,7 +106,6 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 sf::IpAddress Connection::serverIp;
 int Connection::serverPort;
 Connection::Status Connection::status = INACTIVE;
-ClientController *Connection::clientController;
 //bool Connection::needReceive = false;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;

@@ -26,8 +26,8 @@ void Window::Update(sf::Time timeElapsed) {
 
 	window->resetGLStates();
 	window->clear(sf::Color::Black);
-	controller->GetState()->DrawTileGrid(window.get(), tileGrid.get());
-	controller->GetState()->DrawUI(window.get(), timeElapsed);
+	ClientController::Get()->GetState()->DrawTileGrid(window.get(), tileGrid.get());
+	ClientController::Get()->GetState()->DrawUI(window.get(), timeElapsed);
 	window->display();
 }
 
@@ -40,13 +40,13 @@ void GameProcessState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *t
 }
 
 void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
-	Window *window = clientController->GetWindow();
+	Window *window = ClientController::Get()->GetWindow();
 	window->GetUI()->desktop.Update(timeElapsed.asSeconds());
 	window->GetUI()->m_sfgui.Display(*render_window);
 }
 
 void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
-    Window *window = clientController->GetWindow();
+    Window *window = ClientController::Get()->GetWindow();
 
     bool endWaiting = true;
 	AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
@@ -54,7 +54,7 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
         if (answer.isAnswer) {
 			if (answer.result) {
 				cout << "You logged in succesfully" << endl;
-				clientController->SetState(new MenuServerListState(clientController));
+				ClientController::Get()->SetState(new MenuServerListState());
 			}
 			else
 				cout << "Wrong login data" << endl;
@@ -77,7 +77,7 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     window->GetUI()->desktop.Update(timeElapsed.asSeconds());
     window->GetUI()->m_sfgui.Display(*render_window);
 
-    if (endWaiting) clientController->SetState(new MenuLoginState(clientController));
+    if (endWaiting) ClientController::Get()->SetState(new MenuLoginState());
 }
 
 void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
@@ -85,7 +85,7 @@ void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) cons
 void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
 
 void Tile::SetSprite(int textureIndex, int num, int frame) {
-	for (const uptr<Texture> &texture : clientController->GetWindow()->GetTextures())
+	for (const uptr<Texture> &texture : ClientController::Get()->GetWindow()->GetTextures())
 		if (texture->GetKey() == textureIndex) {
 			sprite = new Sprite();
 			sprite->SetTexture(texture.get());
@@ -96,7 +96,7 @@ void Tile::SetSprite(int textureIndex, int num, int frame) {
 
 void Object::SetSprite(int textureIndex, int num, int direction, int frame)
 {
-	for (const uptr<Texture> &texture : clientController->GetWindow()->GetTextures())
+	for (const uptr<Texture> &texture : ClientController::Get()->GetWindow()->GetTextures())
 		if (texture->GetKey() == textureIndex) {
 			sprite->SetTexture(texture.get());
 			sprite->SetSpriteState(num, direction, frame);

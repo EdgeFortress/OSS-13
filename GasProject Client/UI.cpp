@@ -140,17 +140,17 @@ void AuthUI::closeReg() {
 
 void AuthUI::login() {
     Connection::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
-    ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), true, false));
+	ClientController::Get()->SetState(new MenuLoginWaitingState(true, false));
 }
 
 void AuthUI::registration() {
 	Connection::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
-    ui->GetClientController()->SetState(new MenuLoginWaitingState(ui->GetClientController(), false, true));
+	ClientController::Get()->SetState(new MenuLoginWaitingState(false, true));
 }
 
-UI::UI(ClientController *clientController, sf::RenderWindow *rendWindow) : clientController(clientController),
-                                                                           rendWindow(rendWindow),
-									                                       authUI(this) {
+UI::UI(sf::RenderWindow *rendWindow) :
+	rendWindow(rendWindow),
+	authUI(this) {
 	
 }
 

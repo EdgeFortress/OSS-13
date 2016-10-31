@@ -13,7 +13,6 @@ namespace sf {
     class TcpSocket;
     class Packet;
 }
-class ClientController;
 
 using std::string;
 
@@ -28,7 +27,6 @@ class Connection {
 
 	static sf::IpAddress serverIp;
 	static int serverPort;
-    static ClientController *clientController;
 	static uptr<std::thread> thread;
 	
 	static sf::TcpSocket socket;
@@ -42,7 +40,7 @@ public:
 
 	static ThreadSafeQueue<ClientCommand *> commandQueue;
 
-	static bool Start(const string ip, const int port, ClientController *);
+	static bool Start(const string ip, const int port);
 	static void Stop();
 
 	static Status GetStatus() { return status; }
