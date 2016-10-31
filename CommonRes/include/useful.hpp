@@ -41,29 +41,28 @@ public:
 
 class Log {
 private:
-	explicit Log() {}
 	explicit Log(const Log& log);
 	Log& operator=(const Log&);
 
 public:
-	static Log log;
+	explicit Log() {}
 
-	Log& operator<<(char c) {
+	const Log& operator<<(char c) const {
 		std::cout << c << ' ';
 		return *this;
 	}
 
-	Log& operator<<(long long int a) {
+	const Log& operator<<(long long int a) const {
 		std::cout << a << ' ';
 		return *this;
 	}
 
-	Log& operator<<(std::string str) {
+	const Log& operator<<(std::string str) const {
 		std::cout << str << ' ';
 		return *this;
 	}
 
-	Log& operator<<(std::ostream& f(std::ostream &os)) {
+	const Log& operator<<(std::ostream& f(std::ostream &os)) const {
 		std::cout << std::endl;
 		return *this;
 	}

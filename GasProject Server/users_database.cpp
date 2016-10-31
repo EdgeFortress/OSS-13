@@ -4,6 +4,7 @@
 #include "users_database.hpp"
 #include "global.hpp"
 #include "useful.hpp"
+#include "Server.hpp"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ UsersDB::UsersDB() : adr(Global::DatabaseName),
                      loaded(false) {
     adr = Global::DatabaseName;
     loaded = load();
-    if (!loaded) Log::log << "Database reading error!" << endl;
+    if (!loaded) Server::log << "Database reading error!" << endl;
 }
 
 bool UsersDB::load() {

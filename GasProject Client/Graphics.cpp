@@ -47,9 +47,9 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     if (loginWaiting) {
         if (answer.isAnswer) {
 			if (answer.result)
-				Log::log << "You logged in succesfully" << endl;
+				ClientController::log << "You logged in succesfully" << endl;
 			else
-				Log::log << "Wrong login data" << endl;
+				ClientController::log << "Wrong login data" << endl;
         } else {
             endWaiting = false;
         }
@@ -57,9 +57,9 @@ void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time tim
     if (regWaiting) {
         if (answer.isAnswer) {
 			if (answer.result)
-				Log::log << "You are succesfully registered" << endl;
+				ClientController::log << "You are succesfully registered" << endl;
 			else
-				Log::log << "Problems with registration" << endl;
+				ClientController::log << "Problems with registration" << endl;
             window->GetUI()->GetAuthUI()->openLogin();
         } else {
             endWaiting = false;

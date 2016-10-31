@@ -38,4 +38,6 @@ public:
 	Player *GetClient() { return player.get(); }
 	Window *GetWindow() { return window.get(); }
 	State *GetState() { return state.get(); }
+
+	static const Log log;
 };
