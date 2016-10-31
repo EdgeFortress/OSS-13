@@ -57,4 +57,6 @@ public:
     const std::list<uptr<Game>> * const GetGamesList() const;
     Game *JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
+
+	static const Log log;
 };

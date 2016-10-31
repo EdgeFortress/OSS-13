@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 
 #include <SFML/System.hpp>
@@ -7,8 +6,6 @@
 #include "Client.hpp"
 #include "UI.hpp"
 
-using std::cout;
-using std::endl;
 using std::string; 
 
 AuthUI::AuthUI(UI *ui) : ui(ui) {

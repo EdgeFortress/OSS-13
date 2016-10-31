@@ -4,10 +4,6 @@
 
 #include <useful.hpp>
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 using std::string;
 
 
@@ -44,8 +40,9 @@ public:
 	Player *GetClient() { return player.get(); }
 	Window *GetWindow() { return window.get(); }
 	State *GetState() { return state.get(); }
-	
-	static ClientController * const Get() {
-		return instance;
-	}
+	static ClientController * const Get() { return instance; }
+
+	static const Log log;
 };
+
+using CC = ClientController;

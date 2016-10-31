@@ -106,7 +106,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 sf::IpAddress Connection::serverIp;
 int Connection::serverPort;
 Connection::Status Connection::status = INACTIVE;
-//bool Connection::needReceive = false;
+ClientController *Connection::clientController;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
 ThreadSafeQueue<ClientCommand *> Connection::commandQueue;

@@ -28,7 +28,7 @@ void ListeningSocket::listening() {
                 break;
             }
             default: {
-                cout << "New connection accepting error" << endl;
+				Server::log << "New connection accepting error" << endl;
                 active = false;
                 break;
             }
@@ -58,7 +58,7 @@ Connection::Connection(sf::TcpSocket *socket, Server *server, Player *player) : 
 }
 
 void Connection::session(Connection *inst) {
-    cout << "New client is connected" << endl;
+	Server::log << "New client is connected" << endl;
     inst->socket->setBlocking(false);
     sf::Packet packet;
     bool isWorking;
@@ -72,7 +72,7 @@ void Connection::session(Connection *inst) {
         }
 		if (status == sf::Socket::Disconnected) {
 			inst->active = false;
-			cout << "Lost client " << inst->player->ckey << " signal" << endl;
+			Server::log << "Lost client" << inst->player->ckey << "signal" << endl;
 		}
         while (!inst->player->commandQueue.Empty()) {
             packet.clear();
@@ -136,11 +136,11 @@ void Connection::parse(sf::Packet &pac) {
 	}
 	case ClientCommand::DISCONNECT: {
 		active = false;
-		cout << "Client " << player->ckey << " disconnected" << endl;
+		Server::log << "Client" << player->ckey << "disconnected" << endl;
 		break;
 	}
         default:
-            cout << "Unknown Command received from " << player->ckey << endl;
+			Server::log << "Unknown Command received from" << player->ckey << endl;
             player->commandQueue.Push(new CommandCodeErrorServerCommand());
     }
 }
