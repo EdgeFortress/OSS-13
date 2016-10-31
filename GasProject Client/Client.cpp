@@ -20,9 +20,9 @@ ClientController::ClientController() :
 void ClientController::Run() {
 	window->Initilize();
     if (!Connection::Start("localhost", PORT)) {
-        cout << "Connection error!" << endl;
+        CC::log << "Connection error!" << endl;
     } else {
-        cout << "Connected" << endl;
+		CC::log << "Connected" << endl;
     };
     sf::Clock clock;
 
@@ -45,4 +45,5 @@ int main() {
 	return 0;
 }
 
+const Log CC::log;
 ClientController *ClientController::instance;

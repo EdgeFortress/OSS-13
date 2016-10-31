@@ -36,8 +36,6 @@ class Connection {
     static void parsePacket(sf::Packet &);
 
 public:
-    //static bool needReceive;
-
 	static ThreadSafeQueue<ClientCommand *> commandQueue;
 
 	static bool Start(const string ip, const int port);

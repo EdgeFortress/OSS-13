@@ -50,16 +50,16 @@ Server::Server() : UDB(new UsersDB()),
 
 bool Server::Authorization(string &login, string &password) const {
     if (UDB->Check(login, password)) {
-        cout << "Player is authorized: " << login << ' ' << password << endl;
+		Server::log << "Player is authorized:" << login << password << endl;
         return true;
     }
-    cout << "Wrong login data received: " << login << ' ' << password << endl;
+	Server::log << "Wrong login data received:" << login << password << endl;
     return false;
 }
 
 bool Server::Registration(string &login, string &password) const {
     if (UDB->Add(login, password)) {
-        cout << "New player is registrated: " << login << ' ' << password << endl;
+		Server::log << "New player is registrated:" << login << password << endl;
         return true;
     }
     return false;
@@ -87,6 +87,8 @@ Game *Server::JoinGame(const int id, Player *player) const{
 void Server::AddPlayer(Player *player) {
     players.push_back(uptr<Player>(player));
 }
+
+const Log Server::log;
 
 int main() {
 	Server server;
