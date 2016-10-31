@@ -89,7 +89,7 @@ void Tile::SetSprite(int textureIndex, int num, int frame) {
 		if (texture->GetKey() == textureIndex) {
 			sprite = new Sprite();
 			sprite->SetTexture(texture.get());
-			sprite->SetSpriteState(num, -1, frame);
+			sprite->SetSpriteState(num, 0, frame);
 			return;
 		}
 }
