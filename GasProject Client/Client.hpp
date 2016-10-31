@@ -41,3 +41,5 @@ public:
 
 	static const Log log;
 };
+
+using CC = ClientController;

@@ -12,9 +12,9 @@ ClientController::ClientController() : player(new Player),
 
 void ClientController::Run() {
     if (!Connection::Start("localhost", PORT, this)) {
-		ClientController::log << "Connection error!" << endl;
+		CC::log << "Connection error!" << endl;
     } else {
-		ClientController::log << "Connected" << endl;
+		CC::log << "Connected" << endl;
     };
     sf::Clock clock;
 	
@@ -36,4 +36,4 @@ int main() {
 	return 0;
 }
 
-const Log ClientController::log;
+const Log CC::log;
