@@ -78,7 +78,7 @@ public:
 
 		if (x >= 0 && x < NumOfBlocks * BlockSize && y >= 0 && y < NumOfBlocks * BlockSize)
 			return blocks[y / BlockSize][x / BlockSize]->GetTile(x % BlockSize, y % BlockSize);
-		cout << "Can't return block " << x << ", " << y << endl;
+		CC::log << "Can't return block " << x << ", " << y << endl;
 		return nullptr;
 	}
 

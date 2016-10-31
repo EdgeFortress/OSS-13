@@ -47,11 +47,6 @@ private:
 public:
 	explicit Log() {}
 
-	const Log& operator<<(char c) const {
-		std::cout << c << ' ';
-		return *this;
-	}
-
 	const Log& operator<<(long long int a) const {
 		std::cout << a << ' ';
 		return *this;

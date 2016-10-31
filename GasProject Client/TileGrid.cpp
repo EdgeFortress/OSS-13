@@ -43,14 +43,12 @@ void Tile::Draw(sf::RenderWindow *window)
 	int i = 0;
 	for (auto &object : content) {
 		object.get()->GetSprite()->Draw(window, 100, 100);
-		cout << i << endl;
-
 	}
 }
 
 Tile* Block::GetTile(int x, int y) {
 	if (x >= 0 && x < tileGrid->BlockSize && y >= 0 && y < tileGrid->BlockSize) 
 		return tiles[y][x];
-	cout << "Can't return tile " << x << ", " << y << endl;
+	CC::log << "Can't return tile " << x << ", " << y << endl;
 	return nullptr;
 }
