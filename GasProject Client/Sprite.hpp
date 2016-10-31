@@ -26,7 +26,7 @@ private:
 	int key;
 	int sizeOfTile;
 	int xNumOfTiles, yNumOfTiles;
-	//IntRect rect;
+	IntRect rect;
 	vector<TextureSpriteInfo> spritesInfo;
 
 public:
@@ -105,7 +105,7 @@ public:
 
 	void SetTexture(const Texture * const t) {
 		texture = t;
-		sprite->setTexture(*texture->GetSFMLTexture());
+		sprite->setTexture(*(texture->GetSFMLTexture()));
 		scale = 1;
 	}
 

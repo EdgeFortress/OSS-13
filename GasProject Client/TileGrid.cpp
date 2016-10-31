@@ -11,9 +11,11 @@ Tile::Tile(Block *block) : block(block) {
 
 void TileGrid::Draw(sf::RenderWindow *window)
 {
-	sf::Sprite sprite;
-	sprite.setTexture(*(textures.begin()->get()->GetSFMLTexture()));
-	window->draw(sprite);
+	Texture *t = textures.begin()->get();
+	t->SetInfo(0, 0, 0, 0);
+	Sprite spr(textures.begin()->get(), 0, 3, 0);
+
+	spr.Draw(window, 0, 0);
 	/*Tile * firstTile = this->GetTile(1, 1);
 	firstTile -> Draw(window);*/
 
