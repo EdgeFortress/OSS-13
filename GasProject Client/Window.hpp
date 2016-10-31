@@ -49,6 +49,10 @@ public:
 		ui.reset(new UI(window.get()));
 	}
 
+	void Initilize() {
+		tileGrid->Initialize();
+	}
+
 	Window(const Window &) = delete;
 	Window &operator=(const Window &) = delete;
 	virtual ~Window() = default;

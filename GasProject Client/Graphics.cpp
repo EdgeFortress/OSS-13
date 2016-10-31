@@ -13,7 +13,8 @@ Block::Block(TileGrid *tileGrid) : tileGrid(tileGrid),
 }
 
 void Window::loadTextures() {
-	new Texture(1, "Images/Human.png", 32, textures, 1);
+	Texture * human = new Texture(1, "Images/Human.png", 32, textures, 1);
+	human->SetInfo(0, 0, true, 1);
 }
 
 void Window::Update(sf::Time timeElapsed) {

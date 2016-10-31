@@ -10,7 +10,7 @@ using std::endl;
 
 ClientController::ClientController() : 
 	player(new Player),
-	window(new Window()),
+	window(new Window),
 	state(new GameProcessState()),
 	newState(nullptr) 
 {
@@ -18,6 +18,7 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
+	window->Initilize();
     if (!Connection::Start("localhost", PORT)) {
         cout << "Connection error!" << endl;
     } else {

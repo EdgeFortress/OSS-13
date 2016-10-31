@@ -42,7 +42,10 @@ public:
     void SetState(State *state) { newState = state; }
 
 	Player *GetClient() { return player.get(); }
-	Window *GetWindow() { return window.get(); }
+	Window *GetWindow() { 
+		if(this) return window.get();
+		else return nullptr;
+	}
 	State *GetState() { return state.get(); }
 	
 	static ClientController * const Get() {

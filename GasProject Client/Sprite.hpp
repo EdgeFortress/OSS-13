@@ -17,7 +17,7 @@ struct TextureSpriteInfo{
 	int frames;
 	bool directed;
 
-	TextureSpriteInfo() { firstFrame = -1; frames = 0; directed = false; }
+	TextureSpriteInfo() { firstFrame = 0; frames = 0; directed = false; }
 };
 
 class Texture {
