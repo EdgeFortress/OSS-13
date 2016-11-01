@@ -26,61 +26,57 @@ void Window::Update(sf::Time timeElapsed) {
 
 	window->resetGLStates();
 	window->clear(sf::Color::Black);
-	ClientController::Get()->GetState()->DrawTileGrid(window.get(), tileGrid.get());
-	ClientController::Get()->GetState()->DrawUI(window.get(), timeElapsed);
+    State *state = CC::Get()->GetState();
+    if (state) {
+        state->DrawTileGrid(window.get(), tileGrid.get());
+        state->DrawUI(window.get(), timeElapsed);
+    }
 	window->display();
 }
 
 void MenuLoginState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
-void MenuLoginWaitingState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
-void MenuServerListState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
+void MenuGameListState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
 void GameLobbyState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
 void GameProcessState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const {
 	tileGrid->Draw(render_window);
 }
 
 void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
-	Window *window = ClientController::Get()->GetWindow();
+	Window *window = CC::Get()->GetWindow();
+    AuthUI *authUI = window->GetUI()->GetAuthUI();
+
+    if (authUI->comState) {
+        AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
+        if (answer.isAnswer) {
+            if (authUI->comState == AuthUI::LOGIN) {
+                if (answer.result) {
+                    CC::log << "You logged in succesfully" << endl;
+                    CC::Get()->SetState(new MenuGameListState);
+                } else {
+                    CC::log << "Wrong login data" << endl;
+                }
+            }
+            if (authUI->comState == AuthUI::REGISTRATION) {
+                if (answer.result)
+                    CC::log << "You are succesfully registered" << endl;
+                else
+                    CC::log << "Problems with registration" << endl;
+                authUI->openLogin();
+            }
+        }
+    }
+
 	window->GetUI()->desktop.Update(timeElapsed.asSeconds());
 	window->GetUI()->m_sfgui.Display(*render_window);
 }
 
-void MenuLoginWaitingState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
-    Window *window = ClientController::Get()->GetWindow();
-
-    bool endWaiting = true;
-	AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
-    if (loginWaiting) {
-        if (answer.isAnswer) {
-			if (answer.result)
-				CC::log << "You logged in succesfully" << endl;
-			else
-				CC::log << "Wrong login data" << endl;
-        } else {
-            endWaiting = false;
-        }
-    }
-    if (regWaiting) {
-        if (answer.isAnswer) {
-			if (answer.result)
-				CC::log << "You are succesfully registered" << endl;
-			else
-				CC::log << "Problems with registration" << endl;
-            window->GetUI()->GetAuthUI()->openLogin();
-        } else {
-            endWaiting = false;
-        }
-    }
-
+void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { 
+    Window *window = CC::Get()->GetWindow();
     window->GetUI()->desktop.Update(timeElapsed.asSeconds());
     window->GetUI()->m_sfgui.Display(*render_window);
-
-    if (endWaiting) ClientController::Get()->SetState(new MenuLoginState());
 }
-
-void MenuServerListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
-void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
-void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const { }
+void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
+void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 
 void Tile::SetSprite(int textureIndex, int num, int frame) {
 	for (const uptr<Texture> &texture : ClientController::Get()->GetWindow()->GetTextures())

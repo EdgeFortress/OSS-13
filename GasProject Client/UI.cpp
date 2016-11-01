@@ -1,4 +1,5 @@
 #include <string>
+#include <cstring>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -8,9 +9,15 @@
 
 using std::string; 
 
-AuthUI::AuthUI(UI *ui) : ui(ui) {
+UIModule::UIModule(UI *ui) : ui(ui) {
+
+}
+
+AuthUI::AuthUI(UI *ui) : UIModule(ui) {
+    comState = NOTHING;
 	generateLoginWindow();
 	generateRegistrationWindow();
+    Hide();
 }
 
 void AuthUI::generateLoginWindow() {
@@ -137,17 +144,66 @@ void AuthUI::closeReg() {
 
 void AuthUI::login() {
     Connection::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
-	ClientController::Get()->SetState(new MenuLoginWaitingState(true, false));
+    comState = LOGIN;
 }
 
 void AuthUI::registration() {
 	Connection::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
-	ClientController::Get()->SetState(new MenuLoginWaitingState(false, true));
+    comState = REGISTRATION;
+}
+
+void AuthUI::Show() {
+    openLogin();
+}
+
+void AuthUI::Hide() {
+    regWindow->Show(false);
+    logWindow->Show(false);
+}
+
+GameRow::GameRow(int id, string &title, int num_of_players) :
+    id(id),
+    title_label(sfg::Label::Create(title)),
+    num_of_players_label(sfg::Label::Create(std::to_string(num_of_players)))
+{ 
+    
+}
+
+GameListUI::GameListUI(UI *ui) : UIModule(ui) {
+    generateGamelistWindow();
+    Hide();
+}
+
+void GameListUI::generateGamelistWindow() {
+    auto designation_label = sfg::Label::Create("Choose the game:");
+
+    auto table = sfg::Table::Create();
+    table->Attach(designation_label,
+        sf::Rect<unsigned>(0, 0, 5, 5),
+        sfg::Table::AttachOption::FILL,
+        sfg::Table::AttachOption::FILL,
+        sf::Vector2f(5.f, 1.f));
+
+    gamelistWindow = sfg::Window::Create();
+    gamelistWindow->Add(table);
+    gamelistWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - gamelistWindow->GetAllocation().width) / 2,
+                                             (ui->GetRenderWindow()->getSize().y - gamelistWindow->GetAllocation().height) / 2));
+    gamelistWindow->SetStyle(sfg::Window::Style::BACKGROUND);
+    ui->GetDesktop()->Add(gamelistWindow);
+}
+
+void GameListUI::Show() {
+    gamelistWindow->Show(true);
+}
+
+void GameListUI::Hide() {
+    gamelistWindow->Show(false);
 }
 
 UI::UI(sf::RenderWindow *rendWindow) :
 	rendWindow(rendWindow),
-	authUI(this) {
+	authUI(this),
+    gamelistUI(this) {
 	
 }
 

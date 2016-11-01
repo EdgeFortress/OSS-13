@@ -137,6 +137,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="State.cpp" />
     <ClCompile Include="TileGrid.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>

@@ -11,7 +11,7 @@ using std::endl;
 ClientController::ClientController() : 
 	player(new Player),
 	window(new Window()),
-	state(new GameProcessState()),
+	state(nullptr),
 	newState(nullptr) 
 {
 	instance = this;
@@ -25,11 +25,15 @@ void ClientController::Run() {
     };
     sf::Clock clock;
 
+    SetState(new MenuLoginState);
+
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
         window->Update(timeElapsed);
         if (newState) {
+            if (state) state->Ending();
             state.reset(newState);
+            state->Initialize();
             newState = nullptr;
         }
     }
