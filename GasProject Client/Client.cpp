@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-using std::cout;
 using std::endl;
 
 ClientController::ClientController() : 
@@ -18,6 +17,7 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
+	window->Initilize();
     if (!Connection::Start("localhost", PORT)) {
         CC::log << "Connection error!" << endl;
     } else {
