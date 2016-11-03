@@ -131,16 +131,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
-    <ClCompile Include="Sources\player.cpp" />
+    <ClCompile Include="Sources\Network\Network.cpp" />
+    <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
-    <ClCompile Include="Sources\Network\network.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
-    <ClInclude Include="Sources\global.hpp" />
-    <ClInclude Include="Sources\Network\network.hpp" />
-    <ClInclude Include="Sources\player.hpp" />
+    <ClInclude Include="Sources\Global.hpp" />
+    <ClInclude Include="Sources\Network\Network.hpp" />
+    <ClInclude Include="Sources\Player.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>

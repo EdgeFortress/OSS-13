@@ -24,6 +24,7 @@ bool Connection::Start(string ip, int port) {
 		return true;
 	if (GetStatus() == Status::NOT_CONNECTED)
 		return false;
+    return false;
 }
 
 void Connection::Stop() {
