@@ -74,6 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,7 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,6 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,7 +118,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -128,19 +130,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="network.cpp" />
-    <ClCompile Include="users_database.cpp" />
-    <ClCompile Include="World.cpp" />
+    <ClCompile Include="Sources\Database\UsersDB.cpp" />
+    <ClCompile Include="Sources\player.cpp" />
+    <ClCompile Include="Sources\Server.cpp" />
+    <ClCompile Include="Sources\Network\network.cpp" />
+    <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="global.hpp" />
-    <ClInclude Include="network.hpp" />
-    <ClInclude Include="player.hpp" />
-    <ClInclude Include="Server.hpp" />
-    <ClInclude Include="users_database.hpp" />
-    <ClInclude Include="World.hpp" />
+    <ClInclude Include="Sources\Database\UsersDB.hpp" />
+    <ClInclude Include="Sources\global.hpp" />
+    <ClInclude Include="Sources\Network\network.hpp" />
+    <ClInclude Include="Sources\player.hpp" />
+    <ClInclude Include="Sources\Server.hpp" />
+    <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

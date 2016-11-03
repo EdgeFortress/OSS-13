@@ -3,9 +3,9 @@
 #include "network.hpp"
 #include "Server.hpp"
 #include "player.hpp"
-#include "users_database.hpp"
+#include "Database/UsersDB.hpp"
 
-#include <net_const.hpp>
+#include "Common/NetworkConst.hpp"
 
 using namespace std;
 using namespace sf;

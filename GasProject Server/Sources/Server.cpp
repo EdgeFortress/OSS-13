@@ -4,10 +4,10 @@
 #include "SFML/System.hpp"
 
 #include "Server.hpp"
-#include "network.hpp"
-#include "World.hpp"
+#include "Network/Network.hpp"
+#include "World/World.hpp"
 #include "Player.hpp"
-#include "users_database.hpp"
+#include "Database/UsersDB.hpp"
 
 using namespace std;
 using namespace sf;

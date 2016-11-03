@@ -1,7 +1,7 @@
 #include "Client.hpp"
 #include "Window.hpp"
-#include "TileGrid.hpp"
-#include "UI.hpp"
+#include "TileGrid/TileGrid.hpp"
+#include "UI/UI.hpp"
 #include "State.hpp"
 
 Block::Block(TileGrid *tileGrid) : tileGrid(tileGrid),

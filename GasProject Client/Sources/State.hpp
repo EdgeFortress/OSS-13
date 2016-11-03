@@ -5,7 +5,7 @@
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
 
-#include "TileGrid.hpp"
+#include "Graphics/TileGrid/TileGrid.hpp"
 
 class TileGrid;
 

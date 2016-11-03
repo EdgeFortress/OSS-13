@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "users_database.hpp"
+#include "UsersDB.hpp"
 #include "global.hpp"
-#include "useful.hpp"
+#include "Common/Useful.hpp"
 #include "Server.hpp"
 
 using namespace std;

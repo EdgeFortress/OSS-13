@@ -1,7 +1,7 @@
 #include "Client.hpp"
-#include "Window.hpp"
+#include "Graphics/Window.hpp"
 #include "State.hpp"
-#include <net_const.hpp>
+#include "Common/NetworkConst.hpp"
 
 #include <iostream>
 //#include <ctime>

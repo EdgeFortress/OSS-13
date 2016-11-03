@@ -4,8 +4,8 @@
 
 #include <SFML/Network.hpp>
 
-#include <useful.hpp>
-#include <command.hpp>
+#include "Common/Useful.hpp"
+#include "Common/Ñommand.hpp"
 
 class Player;
 class Server;

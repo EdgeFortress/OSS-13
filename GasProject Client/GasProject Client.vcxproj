@@ -68,7 +68,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>\Sources;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>\Sources;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -76,6 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -87,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;SFGUI_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
@@ -107,6 +119,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -121,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;SFGUI_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
@@ -134,21 +147,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp" />
-    <ClCompile Include="network.cpp" />
-    <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="State.cpp" />
-    <ClCompile Include="TileGrid.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="sources\Client.cpp" />
+    <ClCompile Include="Sources\Graphics\Graphics.cpp" />
+    <ClCompile Include="Sources\Network.cpp" />
+    <ClCompile Include="sources\State.cpp" />
+    <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.hpp" />
-    <ClInclude Include="network.hpp" />
-    <ClInclude Include="Sprite.hpp" />
-    <ClInclude Include="State.hpp" />
-    <ClInclude Include="TileGrid.hpp" />
-    <ClInclude Include="UI.hpp" />
-    <ClInclude Include="Window.hpp" />
+    <ClInclude Include="sources\Client.hpp" />
+    <ClInclude Include="Sources\Graphics\Sprite.hpp" />
+    <ClInclude Include="Sources\Network.hpp" />
+    <ClInclude Include="sources\State.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\UI.hpp" />
+    <ClInclude Include="Sources\Graphics\Window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\Human.png" />

@@ -1,6 +1,6 @@
 #include "Client.hpp"
-#include "Window.hpp"
-#include "UI.hpp"
+#include "Graphics/Window.hpp"
+#include "Graphics/UI/UI.hpp"
 #include "State.hpp"
 
 void MenuLoginState::Initialize() const { 

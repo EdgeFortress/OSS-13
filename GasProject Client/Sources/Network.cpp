@@ -2,10 +2,10 @@
 
 #include <SFML/Network.hpp>
 
-#include "network.hpp"
+#include "Network.hpp"
 #include "Client.hpp"
-#include "Window.hpp"
-#include "UI.hpp"
+#include "Graphics/Window.hpp"
+#include "Graphics/UI/UI.hpp"
 
 using namespace std;
 using namespace sf;
@@ -135,7 +135,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 
 sf::IpAddress Connection::serverIp;
 int Connection::serverPort;
-Connection::Status Connection::status = INACTIVE;
+Connection::Status Connection::status = Connection::Status::INACTIVE;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
 ThreadSafeQueue<ClientCommand *> Connection::commandQueue;

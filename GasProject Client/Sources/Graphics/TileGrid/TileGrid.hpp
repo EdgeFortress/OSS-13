@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Client.hpp"
-#include "Sprite.hpp"
+#include "Graphics/Sprite.hpp"
 #include "State.hpp"
 
 class Block;

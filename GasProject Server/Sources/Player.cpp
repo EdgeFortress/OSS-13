@@ -1,5 +1,5 @@
-#include "player.hpp"
-#include "network.hpp"
+#include "Player.hpp"
+#include "Network/Network.hpp"
 
 class Server;
 

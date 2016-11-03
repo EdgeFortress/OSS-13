@@ -1,5 +1,5 @@
 #include "Client.hpp"
-#include "Window.hpp"
+#include "Graphics/Window.hpp"
 #include "TileGrid.hpp"
 
 void Object::SetSprite(int textureIndex, int num, int direction, int frame)

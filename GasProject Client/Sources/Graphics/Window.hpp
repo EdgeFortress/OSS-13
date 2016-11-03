@@ -5,8 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "TileGrid.hpp"
-#include "UI.hpp"
+#include "TileGrid/TileGrid.hpp"
+#include "UI/UI.hpp"
 
 using sf::RenderWindow;
 

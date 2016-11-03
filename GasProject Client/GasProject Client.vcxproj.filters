@@ -13,59 +13,53 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Заголовочные файлы\Graphics">
-      <UniqueIdentifier>{f36dd3c4-f21c-4ff0-b771-701ee3fd397e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Файлы ресурсов\Images">
-      <UniqueIdentifier>{56e8bc55-cb1a-4ecf-8900-7d0dd8865886}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp">
+    <ClCompile Include="sources\Client.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="network.cpp">
+    <ClCompile Include="sources\State.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics.cpp">
+    <ClCompile Include="Sources\Graphics\Graphics.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="TileGrid.cpp">
+    <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
+    <ClCompile Include="Sources\Graphics\UI\UI.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="State.cpp">
+    <ClCompile Include="Sources\Network.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.hpp">
+    <ClInclude Include="sources\Client.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Window.hpp">
-      <Filter>Заголовочные файлы\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="TileGrid.hpp">
-      <Filter>Заголовочные файлы\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="UI.hpp">
-      <Filter>Заголовочные файлы\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="State.hpp">
+    <ClInclude Include="sources\State.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="network.hpp">
+    <ClInclude Include="Sources\Graphics\Sprite.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.hpp">
-      <Filter>Заголовочные файлы\Graphics</Filter>
+    <ClInclude Include="Sources\Graphics\Window.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Graphics\UI\UI.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Network.hpp">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\Human.png">
-      <Filter>Файлы ресурсов\Images</Filter>
+      <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>
 </Project>
