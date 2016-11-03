@@ -70,18 +70,43 @@ void Connection::sendCommands() {
 void Connection::parsePacket(Packet &packet) {
     sf::Int32 code;
     packet >> code;
-    switch (code) {
-        case ServerCommand::AUTH_SUCCESS:
-			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+    switch (static_cast<ServerCommand::Code>(code)) {
+        case ServerCommand::Code::AUTH_SUCCESS:
+			CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
             break;
-        case ServerCommand::REG_SUCCESS: 
-			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+        case ServerCommand::Code::REG_SUCCESS:
+			CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
             break;
-        case ServerCommand::AUTH_ERROR: 
-			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+        case ServerCommand::Code::AUTH_ERROR:
+			CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
             break;
-        case ServerCommand::REG_ERROR:
-			ClientController::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+        case ServerCommand::Code::REG_ERROR:
+			CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+            break;
+        case ServerCommand::Code::GAME_CREATE_SUCCESS:
+            break;
+        case ServerCommand::Code::GAME_CREATE_ERROR:
+            break;
+        case ServerCommand::Code::GAME_LIST: {
+            CC::Get()->GetWindow()->GetUI()->Lock();
+            CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Clear();
+            sf::Int32 size;
+            packet >> size;
+            for (int i = 1; i <= size; i++) {
+                sf::Int32 id, num_of_players;
+                sf::String title;
+                packet >> id >> title >> num_of_players;
+                CC::Get()->GetWindow()->GetUI()->GetGameListUI()->AddGame(id, title, num_of_players);
+            }
+            CC::Get()->GetWindow()->GetUI()->Unlock();
+            break;
+        }
+        case ServerCommand::Code::GAME_JOIN_SUCCESS:
+            CC::log << "You join the game" << endl;
+            CC::Get()->SetState(new GameProcessState());
+            break;
+        case ServerCommand::Code::GAME_JOIN_ERROR:
+            CC::log << "Error join the game" << endl;
             break;
     };
 }
@@ -89,14 +114,19 @@ void Connection::parsePacket(Packet &packet) {
 Packet &operator<<(Packet &packet, ClientCommand *command) {
     packet << sf::Int32(command->GetCode());
     switch (command->GetCode()) {
-        case ClientCommand::AUTH_REQ: {
+        case ClientCommand::Code::AUTH_REQ: {
             auto c = dynamic_cast<AuthorizationClientCommand *>(command);
             packet << sf::String(c->login) << sf::String(c->password);
             break;
         }
-        case ClientCommand::REG_REQ: {
+        case ClientCommand::Code::REG_REQ: {
             auto c = dynamic_cast<RegistrationClientCommand *>(command);
             packet << sf::String(c->login) << sf::String(c->password);
+            break;
+        }
+        case ClientCommand::Code::JOIN_GAME: {
+            auto c = dynamic_cast<JoinGameClientCommand *>(command);
+            packet << sf::Int32(c->id);
             break;
         }
     }

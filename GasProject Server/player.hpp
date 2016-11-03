@@ -27,5 +27,7 @@ private:
 public:
     Player(Server *server, sf::TcpSocket *socket);
 
+    string GetCKey() { return ckey; }
+
     friend Connection;
 };

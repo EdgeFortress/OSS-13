@@ -47,6 +47,8 @@ private:
     std::list<uptr<Player>> players;
 	std::list<uptr<Game>> games;
 
+    static Server *instance;
+
 public:
     uptr<UsersDB> UDB;
 
@@ -57,6 +59,8 @@ public:
     const std::list<uptr<Game>> * const GetGamesList() const;
     Game *JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
+
+    static Server *Get() { return instance; };
 
 	static const Log log;
 };

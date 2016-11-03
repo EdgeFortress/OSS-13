@@ -90,19 +90,20 @@ void Connection::parse(sf::Packet &pac) {
     sf::Int32 code;
     pac >> code;
 
-	switch (code) {
-	case ClientCommand::AUTH_REQ: {
+	switch (static_cast<ClientCommand::Code>(code)) {
+	case ClientCommand::Code::AUTH_REQ: {
 		sf::String login, password;
 		pac >> login >> password;
 		if (server->Authorization(string(login), string(password))) {
 			player->ckey = string(login);
 			player->commandQueue.Push(new AuthSuccessServerCommand());
+            player->commandQueue.Push(new GameListServerCommand());
 		}
 		else
 			player->commandQueue.Push(new AuthErrorServerCommand());
 		break;
 	}
-	case ClientCommand::REG_REQ: {
+	case ClientCommand::Code::REG_REQ: {
 		sf::String login, password;
 		pac >> login >> password;
 		if (server->Registration(string(login), string(password)))
@@ -111,7 +112,7 @@ void Connection::parse(sf::Packet &pac) {
 			player->commandQueue.Push(new RegErrorServerCommand());
 		break;
 	}
-	case ClientCommand::CREATE_GAME: {
+	case ClientCommand::Code::CREATE_GAME: {
 		sf::String title;
 		pac >> title;
 		if (server->CreateGame(title))
@@ -120,11 +121,11 @@ void Connection::parse(sf::Packet &pac) {
 			player->commandQueue.Push(new GameCreateSuccessServerCommand());
 		break;
 	}
-	case ClientCommand::SERVER_LIST_REQ: {
-		player->commandQueue.Push(new GameListServerCommand(server->GetGamesList()));
+	case ClientCommand::Code::SERVER_LIST_REQ: {
+		player->commandQueue.Push(new GameListServerCommand());
 		break;
 	}
-	case ClientCommand::JOIN_GAME: {
+	case ClientCommand::Code::JOIN_GAME: {
 		sf::Int32 id;
 		pac >> id;
 		player->game = server->JoinGame(id, player);
@@ -134,7 +135,7 @@ void Connection::parse(sf::Packet &pac) {
 			player->commandQueue.Push(new GameJoinErrorServerCommand());
 		break;
 	}
-	case ClientCommand::DISCONNECT: {
+	case ClientCommand::Code::DISCONNECT: {
 		active = false;
 		Server::log << "Client" << player->ckey << "disconnected" << endl;
 		break;
@@ -151,13 +152,12 @@ void Connection::Stop() {
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
-    int code = serverCommand->GetCode();
+    ServerCommand::Code code = serverCommand->GetCode();
 	packet << sf::Int32(code);
     switch (code) {
-        case ServerCommand::GAME_LIST: {
-            GameListServerCommand *command = dynamic_cast<GameListServerCommand *>(serverCommand);
-            packet << command->games->size();
-            for (auto &game : *(command->games)) {
+        case ServerCommand::Code::GAME_LIST: {
+            packet << sf::Int32(Server::Get()->GetGamesList()->size());
+            for (auto &game : *(Server::Get()->GetGamesList())) {
                 packet << game.get();
             }
         }

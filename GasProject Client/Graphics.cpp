@@ -46,10 +46,10 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
 	Window *window = CC::Get()->GetWindow();
     AuthUI *authUI = window->GetUI()->GetAuthUI();
 
-    if (authUI->comState) {
+    if (authUI->comState != AuthUI::ComState::NOTHING) {
         AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
         if (answer.isAnswer) {
-            if (authUI->comState == AuthUI::LOGIN) {
+            if (authUI->comState == AuthUI::ComState::LOGIN) {
                 if (answer.result) {
                     CC::log << "You logged in succesfully" << endl;
                     CC::Get()->SetState(new MenuGameListState);
@@ -57,7 +57,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
                     CC::log << "Wrong login data" << endl;
                 }
             }
-            if (authUI->comState == AuthUI::REGISTRATION) {
+            if (authUI->comState == AuthUI::ComState::REGISTRATION) {
                 if (answer.result)
                     CC::log << "You are succesfully registered" << endl;
                 else
@@ -67,14 +67,18 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
         }
     }
 
-	window->GetUI()->desktop.Update(timeElapsed.asSeconds());
-	window->GetUI()->m_sfgui.Display(*render_window);
+    window->GetUI()->Lock();
+    window->GetUI()->Update(timeElapsed);
+    window->GetUI()->Draw(render_window);
+    window->GetUI()->Unlock();
 }
 
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { 
     Window *window = CC::Get()->GetWindow();
-    window->GetUI()->desktop.Update(timeElapsed.asSeconds());
-    window->GetUI()->m_sfgui.Display(*render_window);
+    window->GetUI()->Lock();
+    window->GetUI()->Update(timeElapsed);
+    window->GetUI()->Draw(render_window);
+    window->GetUI()->Unlock();
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }

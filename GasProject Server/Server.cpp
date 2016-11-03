@@ -42,7 +42,9 @@ bool Game::AddPlayer(Player *player) {
 
 Server::Server() : UDB(new UsersDB()),
                    new_game_id(1) {
+    instance = this;
     ListeningSocket::Start(this);
+    CreateGame("One Super Test Game");
     while (true) {
         sleep(seconds(1));
     }
@@ -75,7 +77,8 @@ const std::list<uptr<Game>> * const Server::GetGamesList() const {
     return &games;
 }
 
-Game *Server::JoinGame(const int id, Player *player) const{
+Game *Server::JoinGame(const int id, Player *player) const {
+    Server::log << player->GetCKey() << " connecting game #" << id << endl;
     for (auto &game : games) {
         if (game->GetID() == id) 
             if (game->AddPlayer(player)) return game.get();
@@ -95,3 +98,5 @@ int main() {
 
 	return 0;
 }
+
+Server *Server::instance;
