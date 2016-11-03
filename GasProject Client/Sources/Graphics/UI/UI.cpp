@@ -1,5 +1,6 @@
 #include <string>
 #include <cstring>
+#include <functional>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
@@ -107,7 +108,7 @@ void AuthUI::generateRegistrationWindow() {
 	table->Attach(new_login_entry, 
 		          sf::Rect<unsigned>(5, 0, 5, 5), 
 		          sfg::Table::AttachOption::FILL,
-		          sfg::Table::AttachOption::FILL, 
+		          sfg::Table::AttachOption::FILL,
 		          sf::Vector2f(5.f, 1.f));
 	table->Attach(new_passw_entry, 
 		          sf::Rect<unsigned>(5, 5, 5, 5), 
@@ -122,6 +123,7 @@ void AuthUI::generateRegistrationWindow() {
 	regWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE | sfg::Window::Style::CLOSE);
 	regWindow->SetTitle("Registration of new account");
 	regWindow->Show(false);
+	regWindow->GetSignal(sfg::Window::OnCloseButton).Connect(std::bind(&AuthUI::closeReg, this));
 	ui->GetDesktop()->Add(regWindow);
 }
 
