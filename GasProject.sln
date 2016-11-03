@@ -1,19 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Client", "GasProject Client\GasProject Client.vcxproj", "{8A227764-8BA1-4007-AF4F-B66AA5B36445}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Server", "GasProject Server\GasProject Server.vcxproj", "{D678DA42-ECAA-4A64-99BE-8C7971DAE941}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonRes", "CommonRes", "{BC31589D-AB3F-48B9-AB60-D04FE9E85922}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonRes", "CommonRes", "{F34248DC-EC1D-434B-B06D-DE4BEC858771}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{182657A6-B283-4D8F-AABE-5DF2BE2A6286}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{446251E9-B5B3-4603-B72B-23A1A97B7D76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0}"
 	ProjectSection(SolutionItems) = preProject
-		CommonRes\include\command.hpp = CommonRes\include\command.hpp
-		CommonRes\include\net_const.hpp = CommonRes\include\net_const.hpp
-		CommonRes\include\useful.hpp = CommonRes\include\useful.hpp
+		CommonRes\include\Common\NetworkConst.hpp = CommonRes\include\Common\NetworkConst.hpp
+		CommonRes\include\Common\Useful.hpp = CommonRes\include\Common\Useful.hpp
+		CommonRes\include\Common\Сommand.hpp = CommonRes\include\Common\Сommand.hpp
 	EndProjectSection
 EndProject
 Global
@@ -45,6 +47,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{182657A6-B283-4D8F-AABE-5DF2BE2A6286} = {BC31589D-AB3F-48B9-AB60-D04FE9E85922}
+		{446251E9-B5B3-4603-B72B-23A1A97B7D76} = {F34248DC-EC1D-434B-B06D-DE4BEC858771}
+		{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0} = {446251E9-B5B3-4603-B72B-23A1A97B7D76}
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,8 @@
-#include "World.hpp"
 #include <iostream>
+
+#include "Common/Useful.hpp"
+#include "World.hpp"
+#include "Server.hpp"
 
 Object::Object() {
 	tile = nullptr;
@@ -21,7 +24,7 @@ Tile::Tile(Map *map, int x, int y) {
 void Tile::AddObject(Object *obj) {
 	for (auto i : content) {
 		if (typeid(i) == typeid(obj)) {
-			//std::cout << "this type of object already exists" << std::endl;
+			Server::log << "this type of object already exists" << std::endl;
 			return;
 		}
 	}
@@ -37,7 +40,7 @@ void Tile::RemoveObject(Object *obj) {
 	if (flag) {
 		content.remove(obj); 
     } else {
-		//std::cout << "this type of object does not exist in this tile" << std::endl;
+		Server::log << "this type of object does not exist in this tile" << std::endl;
 		return;
 	}
 }
@@ -76,7 +79,7 @@ Map::~Map() {
 
 void World::FillingWorld() {
 	if (map == nullptr) {
-		std::cout << "map is not created, i wil do it myself :)" << std::endl;
+		Server::log << "map is not created, I wil do it myself :)" << std::endl;
 		map = new Map();
 	}
 	for (int i = 10; i < 90; i++) {

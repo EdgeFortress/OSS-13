@@ -74,9 +74,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -85,12 +87,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)\..\SFML-2.4.0\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>winmm.lib;ws2_32.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -100,6 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,7 +118,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\CommonRes\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Sources;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\..\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -126,19 +130,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="network.cpp" />
-    <ClCompile Include="users_database.cpp" />
-    <ClCompile Include="World.cpp" />
+    <ClCompile Include="Sources\Database\UsersDB.cpp" />
+    <ClCompile Include="Sources\Network\Network.cpp" />
+    <ClCompile Include="Sources\Player.cpp" />
+    <ClCompile Include="Sources\Server.cpp" />
+    <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="global.hpp" />
-    <ClInclude Include="network.hpp" />
-    <ClInclude Include="player.hpp" />
-    <ClInclude Include="Server.hpp" />
-    <ClInclude Include="users_database.hpp" />
-    <ClInclude Include="World.hpp" />
+    <ClInclude Include="Sources\Database\UsersDB.hpp" />
+    <ClInclude Include="Sources\Global.hpp" />
+    <ClInclude Include="Sources\Network\Network.hpp" />
+    <ClInclude Include="Sources\Player.hpp" />
+    <ClInclude Include="Sources\Server.hpp" />
+    <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

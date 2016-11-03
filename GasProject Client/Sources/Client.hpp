@@ -2,11 +2,7 @@
 
 #include <string>
 
-#include <useful.hpp>
-
-#include <iostream>
-using std::cout;
-using std::endl;
+#include "Common/Useful.hpp"
 
 using std::string;
 
@@ -26,13 +22,14 @@ private:
 	uptr<Window> window;
 	uptr<State> state;
     State *newState;
+	static ClientController * instance;
 
 public:
 	/* Work of Client processing in this constructor.
 	Such system allow as awake just 1 function of Client from main. */
     ClientController();
     void Run();
-
+	
 	ClientController(const ClientController &) = delete;
 	ClientController &operator=(const ClientController &) = delete;
 	virtual ~ClientController() = default;
@@ -40,6 +37,14 @@ public:
     void SetState(State *state) { newState = state; }
 
 	Player *GetClient() { return player.get(); }
-	Window *GetWindow() { return window.get(); }
+	Window *GetWindow() { 
+		if(this) return window.get();
+		else return nullptr;
+	}
 	State *GetState() { return state.get(); }
+	static ClientController * const Get() { return instance; }
+
+	static const Log log;
 };
+
+using CC = ClientController;

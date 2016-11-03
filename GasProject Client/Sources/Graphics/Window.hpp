@@ -5,10 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "TileGrid.hpp"
-#include "UI.hpp"
-
-class ClientController;
+#include "TileGrid/TileGrid.hpp"
+#include "UI/UI.hpp"
 
 using sf::RenderWindow;
 
@@ -17,13 +15,15 @@ private:
 	uptr<TileGrid> tileGrid;
 	uptr<UI> ui;
 
+	list<uptr<Texture>> textures;
+
 	uptr<RenderWindow> window;
-	ClientController *controller;
 	int width, height;
 
 	const int req_FPS = 100;
 	sf::Clock clock;
 	int cur_FPS;
+	void loadTextures();
 
 	bool fps_exceed() {
 		if (clock.getElapsedTime() >= sf::milliseconds(100)) {
@@ -35,14 +35,22 @@ private:
 	}
 
 public:
-	Window(ClientController *controller) : tileGrid(new TileGrid),
-										   controller(controller), 
-										   cur_FPS(0) {
+	Window() : 
+		tileGrid(new TileGrid(textures)),
+		cur_FPS(0) 
+	{
+		loadTextures();
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
-		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProject Client"));
-		ui.reset(new UI(controller, window.get()));
+		window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
+		window->clear(sf::Color::Black);
+		window->display();
+		ui.reset(new UI(window.get()));
+	}
+
+	void Initilize() {
+		tileGrid->Initialize();
 	}
 
 	Window(const Window &) = delete;
@@ -52,6 +60,8 @@ public:
 	void Update(sf::Time);
 
 	bool isOpen() const { return window->isOpen(); }
+
+	list<uptr<Texture>> &GetTextures() { return textures;  }
 
 	UI *GetUI() const { return ui.get(); }
 };
