@@ -1,6 +1,5 @@
 #include <string>
 #include <cstring>
-#include <functional>
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
