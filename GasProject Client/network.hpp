@@ -17,7 +17,7 @@ namespace sf {
 using std::string;
 
 class Connection {
-	enum Status {
+	enum class Status : char {
 		INACTIVE = 0,
 		WAITING,
 		CONNECTED,

@@ -7,10 +7,24 @@
 #include "State.hpp"
 
 class Block;
-class Object;
 class TileGrid;
 
 using namespace std;
+
+class Object {
+private:
+    Sprite *sprite;
+
+public:
+    Object() { sprite = new Sprite(); }
+
+    void SetSprite(int textureIndex, int num, int direction, int frame);
+    Sprite *GetSprite() { return sprite; }
+    ~Object()
+    {
+        if (sprite) delete sprite;
+    }
+};
 
 class Tile {
 private:
@@ -83,19 +97,4 @@ public:
 	}
 
 	void Draw(sf::RenderWindow *);
-};
-
-class Object {
-private:
-	Sprite *sprite;
-
-public:
-	Object() { sprite = new Sprite(); }
-
-	void SetSprite(int textureIndex, int num, int direction, int frame);
-	Sprite *GetSprite() { return sprite; }
-	~Object()
-	{
-		if (sprite) delete sprite;
-	}
 };

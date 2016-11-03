@@ -11,36 +11,36 @@ using namespace std;
 using namespace sf;
 
 bool Connection::Start(string ip, int port) {
-	status = WAITING;
+	status = Status::WAITING;
 
     serverIp = ip;
     serverPort = port;
 	Connection::thread.reset(new std::thread(&session));
 
-	while (GetStatus() == WAITING) {
+	while (GetStatus() == Status::WAITING) {
 		sleep(seconds(0.01f));
 	}
-	if (GetStatus() == CONNECTED)
+	if (GetStatus() == Status::CONNECTED)
 		return true;
-	if (GetStatus() == NOT_CONNECTED)
+	if (GetStatus() == Status::NOT_CONNECTED)
 		return false;
 }
 
 void Connection::Stop() {
 	Connection::commandQueue.Push(new DisconnectionClientCommand());
-	status = NOT_CONNECTED;
+	status = Status::NOT_CONNECTED;
 	thread->join();
 }
 
 void Connection::session() {
 	if (socket.connect(serverIp, serverPort, seconds(5)) != sf::Socket::Done)
-		status = NOT_CONNECTED;
+		status = Status::NOT_CONNECTED;
 	else
-		status = CONNECTED;
+		status = Status::CONNECTED;
 
 	socket.setBlocking(false);
 
-    while (status == CONNECTED) {
+    while (status == Status::CONNECTED) {
         bool working = false;
         if (!commandQueue.Empty()) {
             sendCommands();

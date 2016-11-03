@@ -82,23 +82,3 @@ void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeEla
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
-
-void Tile::SetSprite(int textureIndex, int num, int frame) {
-	for (const uptr<Texture> &texture : ClientController::Get()->GetWindow()->GetTextures())
-		if (texture->GetKey() == textureIndex) {
-			sprite = new Sprite();
-			sprite->SetTexture(texture.get());
-			sprite->SetSpriteState(num, 0, frame);
-			return;
-		}
-}
-
-void Object::SetSprite(int textureIndex, int num, int direction, int frame)
-{
-	for (const uptr<Texture> &texture : ClientController::Get()->GetWindow()->GetTextures())
-		if (texture->GetKey() == textureIndex) {
-			sprite->SetTexture(texture.get());
-			sprite->SetSpriteState(num, direction, frame);
-			return;
-		}
-}
