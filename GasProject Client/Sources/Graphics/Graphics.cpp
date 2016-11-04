@@ -32,7 +32,9 @@ void Window::Update(sf::Time timeElapsed) {
         state->DrawTileGrid(window.get(), tileGrid.get());
         state->DrawUI(window.get(), timeElapsed);
     }
+	sizeTile = min(width, height) / 15;
 	window->display();
+	sf::sleep(sf::milliseconds(10));
 }
 
 void MenuLoginState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }

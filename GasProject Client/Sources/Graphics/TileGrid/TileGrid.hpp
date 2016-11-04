@@ -47,7 +47,7 @@ public:
 	}
 	Sprite *GetSprite() const { return sprite;  }
 	void SetSprite(int, int, int);
-	void Draw(sf::RenderWindow *);
+	void Draw(sf::RenderWindow *, int, int);
 
 	//const list<uptr<Object>> &GetContent() const { return content; }
 };
@@ -70,7 +70,6 @@ public:
 class TileGrid {
 private:
 	int xNumOfTiles, yNumOfTiles;
-	int xZero, yZero;
 	int xPos, yPos;
 	list<uptr<Texture>> &textures;
 	vector< vector<Block *> > blocks;
@@ -95,6 +94,5 @@ public:
 		CC::log << "Can't return block " << x << ", " << y << endl;
 		return nullptr;
 	}
-
 	void Draw(sf::RenderWindow *);
 };

@@ -19,6 +19,7 @@ private:
 
 	uptr<RenderWindow> window;
 	int width, height;
+	int sizeTile;
 
 	const int req_FPS = 100;
 	sf::Clock clock;
@@ -58,6 +59,8 @@ public:
 	virtual ~Window() = default;
 
 	void Update(sf::Time);
+
+	int GetSizeTile() const { return sizeTile; }
 
 	bool isOpen() const { return window->isOpen(); }
 
