@@ -25,6 +25,7 @@ void ClientController::Run() {
 		CC::log << "Connected" << endl;
     };
     sf::Clock clock;
+	//time_t startTime = time(nullptr);
 
     SetState(new MenuLoginState);
 
