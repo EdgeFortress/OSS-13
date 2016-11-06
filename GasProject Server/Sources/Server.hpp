@@ -35,6 +35,7 @@ public:
     ~Game();
 
     bool AddPlayer(Player *);
+	void DeletePlayer(Player *);
 
     const int GetID() const;
 
@@ -60,7 +61,7 @@ public:
     Game *JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
 
-    static Server *Get() { return instance; };
+    static Server *Get() { return instance; }
 
-	static const Log log;
+	static Log log;
 };

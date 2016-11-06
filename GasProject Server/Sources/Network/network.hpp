@@ -42,6 +42,8 @@ private:
 public:
     Connection(sf::TcpSocket *, Server *, Player *player);
     void Stop();
+
+	bool IsActive() { return active; }
 };
 
 sf::Packet &operator<<(sf::Packet &, ServerCommand *);

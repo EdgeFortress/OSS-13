@@ -40,20 +40,43 @@ bool Game::AddPlayer(Player *player) {
     return true;
 }
 
+void Game::DeletePlayer(Player *player) { players.remove(player);  }
+
 Server::Server() : UDB(new UsersDB()),
                    new_game_id(1) {
     instance = this;
     ListeningSocket::Start(this);
     CreateGame("One Super Test Game");
     while (true) {
+		for (auto i = players.begin(); i != players.end(); i++)
+			if (!(i->get()->GetConnection()->IsActive())) {
+				players.erase(i);
+				break;
+			}
+		for (auto i = games.begin(); i != games.end(); i++)
+			for (auto j = players.begin(); j != players.end(); j++)
+				if (!(j->get()->GetConnection()->IsActive())) {
+					i->get()->DeletePlayer(j->get());
+					break;
+				}
         sleep(seconds(1));
     }
 }
 
 bool Server::Authorization(string &login, string &password) const {
     if (UDB->Check(login, password)) {
-		Server::log << "Player is authorized:" << login << password << endl;
-        return true;
+		bool isNew = true;
+		for (auto &i : players)
+			if (i->GetCKey() == login) {
+				isNew = false;
+				break;
+			}
+		if (isNew) {
+			Server::log << "Player is authorized:" << login << password << endl;
+			return true;
+		}
+		Server::log << "Player" << login << password << "is trying to authorize second time" <<endl;
+		return false;
     }
 	Server::log << "Wrong login data received:" << login << password << endl;
     return false;
@@ -91,7 +114,7 @@ void Server::AddPlayer(Player *player) {
     players.push_back(uptr<Player>(player));
 }
 
-const Log Server::log;
+Log Server::log;
 
 int main() {
 	Server server;

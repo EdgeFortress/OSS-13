@@ -9,3 +9,5 @@ Player::Player(Server *server, sf::TcpSocket *socket) : ckey(""),
                                                         connection(new Connection(socket, server, this)) {
 
 }
+
+Player::~Player() { connection->Stop(); }

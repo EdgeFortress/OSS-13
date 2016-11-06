@@ -56,7 +56,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
                     CC::log << "You logged in succesfully" << endl;
                     CC::Get()->SetState(new MenuGameListState);
                 } else {
-                    CC::log << "Wrong login data" << endl;
+                    CC::log << "You did not log in" << endl;
                 }
             }
             if (authUI->comState == AuthUI::ComState::REGISTRATION) {
