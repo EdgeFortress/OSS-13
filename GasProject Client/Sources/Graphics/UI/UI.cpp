@@ -34,6 +34,8 @@ void AuthUI::generateLoginWindow() {
 	login_entry->SetRequisition(sf::Vector2f(100, 0));
 	passw_entry->SetRequisition(sf::Vector2f(100, 0));
 
+	passw_entry->HideText('*');
+
 	auto table = sfg::Table::Create();
 
 	table->Attach(login_label,  
@@ -88,6 +90,8 @@ void AuthUI::generateRegistrationWindow() {
 	new_login_entry->SetRequisition(sf::Vector2f(100.f, 0.f));
 	new_passw_entry->SetRequisition(sf::Vector2f(100.f, 0.f));
 
+	new_passw_entry->HideText('*');
+
 	auto table = sfg::Table::Create();
 	table->Attach(login_label, 
 				  sf::Rect<unsigned>(0, 0, 5, 5), 
@@ -130,12 +134,14 @@ void AuthUI::openLogin() {
 	regWindow->Show(false);
 	new_login_entry->SetText("");
 	new_passw_entry->SetText("");
+	login_entry->GrabFocus();
 	logWindow->Show(true);
 }
 
 void AuthUI::openReg() {
 	login_entry->SetText("");
 	passw_entry->SetText("");
+	new_login_entry->GrabFocus();
 	regWindow->Show(true);
 }
 
@@ -160,6 +166,24 @@ void AuthUI::Show() {
 void AuthUI::Hide() {
     regWindow->Show(false);
     logWindow->Show(false);
+}
+
+void AuthUI::ChangeFocus() {
+	if (login_entry->HasFocus())
+		passw_entry->GrabFocus();
+	else if (passw_entry->HasFocus())
+		login_entry->GrabFocus();
+	if (new_login_entry->HasFocus())
+		new_passw_entry->GrabFocus();
+	else if (new_passw_entry->HasFocus())
+		new_login_entry->GrabFocus();
+}
+
+void AuthUI::AccountDataEnter() {
+	if (login_entry->HasFocus() || passw_entry->HasFocus())
+		this->login();
+	if (new_login_entry->HasFocus() || new_passw_entry->HasFocus())
+		this->registration();
 }
 
 GameRow::GameRow(int id, string title, int num_of_players) :

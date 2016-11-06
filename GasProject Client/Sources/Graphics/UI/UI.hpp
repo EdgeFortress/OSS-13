@@ -22,7 +22,7 @@ public:
 };
 
 class AuthUI : UIModule {
-
+private:
     enum class ComState : char {
         NOTHING = 0,
         LOGIN,
@@ -39,7 +39,6 @@ class AuthUI : UIModule {
         ServerAnswer &operator=(const ServerAnswer &serverAnswer) = default;
     };
 
-private:
     sfg::Window::Ptr logWindow, regWindow;
     sfg::Entry::Ptr login_entry, passw_entry, new_login_entry, new_passw_entry;
 
@@ -77,6 +76,9 @@ public:
 
     virtual void Hide() final;
     virtual void Show() final;
+
+	void ChangeFocus();
+	void AccountDataEnter();
 
     friend void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
 };
@@ -146,9 +148,4 @@ public:
 	sfg::Desktop *GetDesktop() { return &desktop; }
     AuthUI *GetAuthUI() { return &authUI; }
     GameListUI *GetGameListUI() { return &gamelistUI; };
-
-	//friend void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
-	//friend void MenuGameListState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
-	//friend void GameLobbyState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
-	//friend void GameProcessState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
 };

@@ -19,15 +19,17 @@ void Window::loadTextures() {
 
 void Window::Update(sf::Time timeElapsed) {
 	sf::Event event;
+	State *state = CC::Get()->GetState();
 	while (window->pollEvent(event)) {
 		ui->HandleEvent(event);
+		if (state)
+			state->HandleEvent(event);
 		if (event.type == sf::Event::Closed)
 			window->close();
 	}
 
 	window->resetGLStates();
 	window->clear(sf::Color::Black);
-    State *state = CC::Get()->GetState();
     if (state) {
         state->DrawTileGrid(window.get(), tileGrid.get());
         state->DrawUI(window.get(), timeElapsed);
@@ -75,7 +77,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     window->GetUI()->Unlock();
 }
 
-void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { 
+void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
@@ -84,3 +86,14 @@ void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeEla
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
+
+void MenuLoginState::HandleEvent(sf::Event event) const {
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
+		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->ChangeFocus();
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
+}
+
+void MenuGameListState::HandleEvent(sf::Event event) const { }
+void GameLobbyState::HandleEvent(sf::Event event) const { }
+void GameProcessState::HandleEvent(sf::Event event) const { }
