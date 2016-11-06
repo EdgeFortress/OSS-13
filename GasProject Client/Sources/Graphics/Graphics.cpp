@@ -72,8 +72,8 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
             }
         }
 		if (authUI->comState != AuthUI::ComState::NOTHING) {
-			CC::log << "Waiting for network" << endl;
 			sf::sleep(sf::seconds(0.5f));
+			CC::log << "Waiting for network" << endl;
 			render_window->display();
 		}
     }
