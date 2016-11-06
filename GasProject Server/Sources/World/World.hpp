@@ -1,5 +1,4 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
 #include <list>
 #include <vector>
@@ -13,92 +12,94 @@ class Map;
 class Object {
 protected:
 	Tile *tile;
+
 public:
 	Object();
-	Object(Tile *tile);
+	Object(Tile *tile = nullptr);
 };
 
 class Item : public Object {
 
 };
 
-class Block : public Object {
+class Turf : public Object {
 protected:
 	bool density;
+
 public:
-	Block(bool density) : density(density){}
+	Turf(Tile *tile) : Object(tile) {}
 };
 
 class Mob : public Object {
 
 };
 
-class Wall : public Block {
+class Wall : public Turf {
 public:
-	Wall(bool density = true) : Block(density){}
-	Wall(const Wall &object);
+	Wall(Tile *tile = nullptr) : Turf(tile) {
+        density = true;
+    }
 
-	~Wall();
+	Wall(const Wall &object) = default;
+	~Wall() = default;
 };
 
-class Floor : public Block {
+class Floor : public Turf {
 public:
-	Floor(bool density = false) : Block(density) {}
-	Floor(const Floor &object);
-
-	~Floor();
+	Floor(Tile *tile) : Turf(tile) {
+        density = false;
+    }
+	
+    Floor(const Floor &object) = default;
+	~Floor() = default;
 };
 
-class Gate : public Block {
+class Gate : public Turf {
 public:
-	Gate(bool density = true) : Block(density) {}
-	Gate(const Gate &object);
+	Gate(Tile *tile) : Turf(tile) {
+        density = true;
+    }
 
-	~Gate();
-
+	Gate(const Gate &object) = default;
+	~Gate() = default;
 };
 
 class Tile {
 private:
-	list<Object *> content;
+	list<uptr<Object>> content;
 	Map *map;
 	int x, y;
 
 public:
 	Tile(Map *map, int x, int y);
-	//add object to map
-	void AddObject(Object *obj);
+
+	bool AddObject(Object *obj);
 	// Removing object from tile content, but not deleting it
-	void RemoveObject(Object *obj);
-	~Tile();
+	bool RemoveObject(Object *obj);
 };
 
 class Map {
 private:
-	vector< vector<Tile *> > tiles;
+	vector< vector<uptr<Tile>> > tiles;
 	int sizeX;
 	int sizeY;
 
 public:
-	Map(int x = 100, int y = 100);
-	Tile *GetTile(int x, int y);
-	~Map();
+	Map(const int sizeX, const int sizeY);
+	Tile *GetTile(int x, int y) const;
 };
 
 class World {
 private:
-	Map *map;
+	uptr<Map> map;
 
 public:
-	World() {
-		map = new Map();
+	World() : map(new Map(100, 100)) {
 		FillingWorld();
 	}
+
     void Update() { }
 	void FillingWorld();
-	~World() {
-		delete map;
-	}
 };
 
 class Camera {

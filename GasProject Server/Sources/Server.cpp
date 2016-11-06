@@ -72,9 +72,9 @@ bool Server::Authorization(string &login, string &password) const {
 				break;
 			}
 		if (isNew) {
-			Server::log << "Player is authorized:" << login << password << endl;
-			return true;
-		}
+		Server::log << "Player is authorized:" << login << password << endl;
+        return true;
+    }
 		Server::log << "Player" << login << password << "is trying to authorize second time" <<endl;
 		return false;
     }
@@ -114,12 +114,11 @@ void Server::AddPlayer(Player *player) {
     players.push_back(uptr<Player>(player));
 }
 
-Log Server::log;
-
 int main() {
 	Server server;
 
 	return 0;
 }
 
+Log Server::log;
 Server *Server::instance;

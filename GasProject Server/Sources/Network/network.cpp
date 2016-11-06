@@ -19,8 +19,8 @@ void ListeningSocket::listening() {
         sf::TcpSocket::Status status = listener.accept(*socket);
         switch (status) {
             case sf::TcpSocket::Done: {
-				server->AddPlayer(new Player(server, socket));
-				socket = new sf::TcpSocket;
+                server->AddPlayer(new Player(server, socket));
+                socket = new sf::TcpSocket;
                 break;
             }
             case sf::TcpSocket::NotReady: {
@@ -149,7 +149,7 @@ void Connection::parse(sf::Packet &pac) {
 void Connection::Stop() {
     active = false;
 	if (thread)
-		thread->join();
+        thread->join();
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
