@@ -26,8 +26,10 @@ private:
 
 public:
     Player(Server *server, sf::TcpSocket *socket);
+	~Player();
 
     string GetCKey() { return ckey; }
+	Connection *GetConnection() { return connection.get(); }
 
     friend Connection;
 };

@@ -44,7 +44,7 @@ public:
 	State *GetState() { return state.get(); }
 	static ClientController * const Get() { return instance; }
 
-	static const Log log;
+	static Log log;
 };
 
 using CC = ClientController;

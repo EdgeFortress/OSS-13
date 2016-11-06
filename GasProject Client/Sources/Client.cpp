@@ -25,9 +25,8 @@ void ClientController::Run() {
 		CC::log << "Connected" << endl;
     };
     sf::Clock clock;
-    //time_t startTime = time(nullptr);
 
-    SetState(new GameProcessState);
+    SetState(new MenuLoginState);
 
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
@@ -50,5 +49,5 @@ int main() {
 	return 0;
 }
 
-const Log CC::log;
+Log CC::log;
 ClientController *ClientController::instance;

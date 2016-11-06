@@ -148,7 +148,8 @@ void Connection::parse(sf::Packet &pac) {
 
 void Connection::Stop() {
     active = false;
-    thread->join();
+	if (thread)
+        thread->join();
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
