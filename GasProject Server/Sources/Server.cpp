@@ -48,17 +48,17 @@ Server::Server() : UDB(new UsersDB()),
     ListeningSocket::Start(this);
     CreateGame("One Super Test Game");
     while (true) {
-		for (auto i = players.begin(); i != players.end(); i++)
-			if (!(i->get()->GetConnection()->IsActive())) {
-				players.erase(i);
-				break;
-			}
 		for (auto i = games.begin(); i != games.end(); i++)
 			for (auto j = players.begin(); j != players.end(); j++)
 				if (!(j->get()->GetConnection()->IsActive())) {
 					i->get()->DeletePlayer(j->get());
 					break;
 				}
+		for (auto i = players.begin(); i != players.end(); i++)
+			if (!(i->get()->GetConnection()->IsActive())) {
+				players.erase(i);
+				break;
+			}
         sleep(seconds(1));
     }
 }
