@@ -77,8 +77,8 @@ public:
     virtual void Hide() final;
     virtual void Show() final;
 
-	void ChangeFocus();
-	void AccountDataEnter();
+    void ChangeFocus();
+    void AccountDataEnter();
 
     friend void MenuLoginState::DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const;
 };
@@ -121,31 +121,31 @@ public:
 
 class UI {
 private:
-	sf::RenderWindow *rendWindow;
+    sf::RenderWindow *rendWindow;
 
-	sfg::SFGUI m_sfgui;
-	sfg::Desktop desktop;
+    sfg::SFGUI m_sfgui;
+    sfg::Desktop desktop;
 
-	AuthUI authUI;
+    AuthUI authUI;
     GameListUI gamelistUI;
 
     std::mutex UImutex;
 
 public:
-	UI(sf::RenderWindow *window);
-	UI(const UI &) = delete;
-	UI &operator=(const UI &) = delete;
-	virtual ~UI() = default;
+    UI(sf::RenderWindow *window);
+    UI(const UI &) = delete;
+    UI &operator=(const UI &) = delete;
+    virtual ~UI() = default;
 
-	void HandleEvent(sf::Event event);
+    void HandleEvent(sf::Event event);
     void Update(sf::Time timeElapsed);
     void Draw(sf::RenderWindow *render_window);
 
     void Lock();
     void Unlock();
 
-	sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
-	sfg::Desktop *GetDesktop() { return &desktop; }
+    sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
+    sfg::Desktop *GetDesktop() { return &desktop; }
     AuthUI *GetAuthUI() { return &authUI; }
     GameListUI *GetGameListUI() { return &gamelistUI; };
 };

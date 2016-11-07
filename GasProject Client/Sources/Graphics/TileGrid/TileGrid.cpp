@@ -9,26 +9,26 @@ Tile::Tile(Block *block) : block(block), sprite(Global::Sprite::EMPTY) {
 };
 
 void Tile::Draw(sf::RenderWindow *window,int xNum = 0, int yNum = 0) {
-	/*int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
-	int xPosition = sizeTile * xNum;
-	int yPosition = sizeTile * yNum ;
+    /*int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
+    int xPosition = sizeTile * xNum;
+    int yPosition = sizeTile * yNum ;
 
-	Sprite* tileSprite = this->GetSprite();
-	if (tileSprite) {
-		tileSprite->SetSize(sizeTile);
-		tileSprite->Draw(window, xPosition, yPosition);
-	}
-	
+    Sprite* tileSprite = this->GetSprite();
+    if (tileSprite) {
+        tileSprite->SetSize(sizeTile);
+        tileSprite->Draw(window, xPosition, yPosition);
+    }
+    
     for (auto &object : content) {
-		Sprite* objSprite = object.get()->GetSprite();
-		objSprite->SetSize(sizeTile);
-		objSprite->Draw(window, xPosition, yPosition);
+        Sprite* objSprite = object.get()->GetSprite();
+        objSprite->SetSize(sizeTile);
+        objSprite->Draw(window, xPosition, yPosition);
     }*/
 }
 
 Block::Block(TileGrid *tileGrid) : 
-	tileGrid(tileGrid),
-	tiles(tileGrid->GetBlockSize())
+    tileGrid(tileGrid),
+    tiles(tileGrid->GetBlockSize())
 {
     for (auto &vect : tiles) {
         vect.resize(tileGrid->GetBlockSize());
@@ -69,8 +69,8 @@ Tile *TileGrid::GetTile(int x, int y) const {
 
 void TileGrid::Draw(sf::RenderWindow *window) {
     Lock();
-	//for(int i = 0; i < 15; i++)
-	//	for (int j = 0; j < 15; j++)
-	//		this->GetTile(xPos + i, yPos + j)->Draw(window, i, j);
+    //for(int i = 0; i < 15; i++)
+    //    for (int j = 0; j < 15; j++)
+    //        this->GetTile(xPos + i, yPos + j)->Draw(window, i, j);
     Unlock();
 }
