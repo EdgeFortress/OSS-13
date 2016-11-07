@@ -3,8 +3,13 @@
 #include <list>
 #include <vector>
 
+#include "Common/NetworkConst.hpp"
+#include "Camera.hpp"
+
 using std::list;
 using std::vector;
+
+class Player;
 
 class Tile;
 class Map;
@@ -12,10 +17,13 @@ class Map;
 class Object {
 protected:
 	Tile *tile;
+    Global::Sprite sprite;
 
 public:
 	Object();
-	Object(Tile *tile = nullptr);
+	explicit Object(Tile *tile = nullptr);
+
+    Tile *GetTile() { return tile; }
 };
 
 class Item : public Object {
@@ -27,17 +35,21 @@ protected:
 	bool density;
 
 public:
-	Turf(Tile *tile) : Object(tile) {}
+    explicit Turf(Tile *tile) : Object(tile) {}
 };
 
 class Mob : public Object {
-
+public:
+    explicit Mob(Tile *tile) : Object(tile) {
+        sprite = Global::Sprite::Mob;
+    }
 };
 
 class Wall : public Turf {
 public:
-	Wall(Tile *tile = nullptr) : Turf(tile) {
+    explicit Wall(Tile *tile) : Turf(tile) {
         density = true;
+        sprite = Global::Sprite::Wall;
     }
 
 	Wall(const Wall &object) = default;
@@ -46,47 +58,73 @@ public:
 
 class Floor : public Turf {
 public:
-	Floor(Tile *tile) : Turf(tile) {
+    explicit Floor(Tile *tile) : Turf(tile) {
         density = false;
+        sprite = Global::Sprite::Floor;
     }
 	
     Floor(const Floor &object) = default;
 	~Floor() = default;
 };
 
-class Gate : public Turf {
+class Airlock : public Turf {
 public:
-	Gate(Tile *tile) : Turf(tile) {
+    explicit Airlock(Tile *tile) : Turf(tile) {
         density = true;
+        sprite = Global::Sprite::Airlock;
     }
 
-	Gate(const Gate &object) = default;
-	~Gate() = default;
+	Airlock(const Airlock &object) = default;
+	~Airlock() = default;
 };
 
 class Tile {
 private:
-	list<uptr<Object>> content;
 	Map *map;
 	int x, y;
+    Global::Sprite sprite;
+
+    list<uptr<Object>> content;
 
 public:
-	Tile(Map *map, int x, int y);
+    explicit Tile(Map *map, int x, int y);
 
 	bool AddObject(Object *obj);
 	// Removing object from tile content, but not deleting it
 	bool RemoveObject(Object *obj);
+
+    int X() const { return x; }
+    int Y() const { return y; }
+    Map *GetMap() const { return map; }
+};
+
+class Block {
+private:
+    Map *map;
+    int blockX, blockY;
+    int size;
+
+    vector< vector<Tile *> > tiles;
+
+public:
+    explicit Block(Map *map, int blockX, int blockY);
+
+    int X() const { return blockX; }
+    int Y() const { return blockY; }
 };
 
 class Map {
 private:
+    int sizeX, sizeY;
+    int numOfBlocksX, numOfBlocksY;
+
 	vector< vector<uptr<Tile>> > tiles;
-	int sizeX;
-	int sizeY;
+    vector< vector<uptr<Block>> > blocks;
 
 public:
-	Map(const int sizeX, const int sizeY);
+    explicit Map(const int sizeX, const int sizeY);
 	Tile *GetTile(int x, int y) const;
+    Block *GetBlock(int x, int y) const;
 };
 
 class World {
@@ -100,31 +138,5 @@ public:
 
     void Update() { }
 	void FillingWorld();
-};
-
-class Camera {
-private:
-	Tile *tile;
-	bool suspense;
-
-public:
-	Camera() {
-		suspense = true;
-		tile = nullptr;
-	}
-
-	Camera(Tile *tile) {
-		this->tile = tile;
-		suspense = false;
-	}
-
-	void SetPosition(Tile *tile) {
-		this->tile = tile;
-		suspense = false;
-	}
-
-	void Suspend() {
-		tile = nullptr;
-		suspense = true;
-	}
+    Mob *CreateNewPlayerMob();
 };

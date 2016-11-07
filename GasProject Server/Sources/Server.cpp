@@ -37,6 +37,7 @@ const int Game::GetID() const { return id; }
 
 bool Game::AddPlayer(Player *player) {
     players.push_back(player);
+    player->SetMob(world->CreateNewPlayerMob());
     return true;
 }
 

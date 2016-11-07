@@ -39,7 +39,7 @@ public:
 
     const int GetID() const;
 
-    friend sf::Packet &operator<<(sf::Packet &packet, Game *game);
+    friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
 };
 
 class Server {

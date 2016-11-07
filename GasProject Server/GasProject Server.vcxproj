@@ -134,6 +134,7 @@
     <ClCompile Include="Sources\Network\Network.cpp" />
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
+    <ClCompile Include="Sources\World\Camera.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="Sources\Network\Network.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
+    <ClInclude Include="Sources\World\Camera.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
