@@ -50,11 +50,10 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
 	Window *window = CC::Get()->GetWindow();
     AuthUI *authUI = window->GetUI()->GetAuthUI();
 
-    while (authUI->comState != AuthUI::ComState::NOTHING) {
+    if (authUI->comState != AuthUI::ComState::NOTHING) {
         AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
         if (answer.isAnswer) {
             if (authUI->comState == AuthUI::ComState::LOGIN) {
-				authUI->comState = AuthUI::ComState::NOTHING;
                 if (answer.result) {
                     CC::log << "You logged in succesfully" << endl;
                     CC::Get()->SetState(new MenuGameListState);
@@ -63,7 +62,6 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
                 }
             }
             if (authUI->comState == AuthUI::ComState::REGISTRATION) {
-				authUI->comState = AuthUI::ComState::NOTHING;
                 if (answer.result)
                     CC::log << "You are succesfully registered" << endl;
                 else
@@ -71,11 +69,6 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
                 authUI->openLogin();
             }
         }
-		if (authUI->comState != AuthUI::ComState::NOTHING) {
-			CC::log << "Waiting for network" << endl;
-			sf::sleep(sf::seconds(0.5f));
-			render_window->display();
-		}
     }
 
     window->GetUI()->Lock();
@@ -83,6 +76,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
+
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();
     window->GetUI()->Lock();
@@ -99,6 +93,7 @@ void MenuLoginState::HandleEvent(sf::Event event) const {
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
 		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
 }
+
 void MenuGameListState::HandleEvent(sf::Event event) const { }
 void GameLobbyState::HandleEvent(sf::Event event) const { }
 void GameProcessState::HandleEvent(sf::Event event) const { }
