@@ -23,10 +23,10 @@ public:
 
     T Pop() {
         mutex.lock();
-		if (queue.empty())
-			return nullptr;
+        if (queue.empty())
+            return nullptr;
         T t = queue.front(); 
-		queue.pop();
+        queue.pop();
         mutex.unlock();
         return t;
     }
@@ -43,31 +43,31 @@ using std::endl;
 
 class Log {
 private:
-	std::mutex mutex;
-	explicit Log(const Log& log);
-	Log& operator=(const Log&);
+    std::mutex mutex;
+    explicit Log(const Log& log);
+    Log& operator=(const Log&);
 
 public:
-	explicit Log() {}
+    explicit Log() {}
 
-	Log& operator<<(long long int a) {
-		mutex.lock();
-		std::cout << a << ' ';
-		mutex.unlock();
-		return *this;
-	}
+    Log& operator<<(long long int a) {
+        mutex.lock();
+        std::cout << a << ' ';
+        mutex.unlock();
+        return *this;
+    }
 
-	Log& operator<<(std::string str) {
-		mutex.lock();
-		std::cout << str << ' ';
-		mutex.unlock();
-		return *this;
-	}
+    Log& operator<<(std::string str) {
+        mutex.lock();
+        std::cout << str << ' ';
+        mutex.unlock();
+        return *this;
+    }
 
-	Log& operator<<(std::ostream& f(std::ostream &os)) {
-		mutex.lock();
-		std::cout << std::endl;
-		mutex.unlock();
-		return *this;
-	}
+    Log& operator<<(std::ostream& f(std::ostream &os)) {
+        mutex.lock();
+        std::cout << std::endl;
+        mutex.unlock();
+        return *this;
+    }
 };

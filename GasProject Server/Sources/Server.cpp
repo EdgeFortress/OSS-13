@@ -38,7 +38,7 @@ const int Game::GetID() const { return id; }
 bool Game::AddPlayer(Player *player) {
     players.push_back(player);
     player->SetMob(world->CreateNewPlayerMob());
-	player->AddCommand(new GraphicsFullUpdateServerCommand(player->GetCamera()));
+    player->AddCommand(new GraphicsFullUpdateServerCommand(player->GetCamera()));
     return true;
 }
 
@@ -50,46 +50,46 @@ Server::Server() : UDB(new UsersDB()),
     ListeningSocket::Start(this);
     CreateGame("One Super Test Game");
     while (true) {
-		for (auto &game : games)
-			for (auto &player : players)
-				if (!(player->GetConnection()->IsActive())) {
-					game->DeletePlayer(player.get());
-					break;
-				}
-		for (auto &player : players)
-			if (!(player->GetConnection()->IsActive())) {
-				players.remove(player);
-				break;
-			}
+        for (auto &game : games)
+            for (auto &player : players)
+                if (!(player->GetConnection()->IsActive())) {
+                    game->DeletePlayer(player.get());
+                    break;
+                }
+        for (auto &player : players)
+            if (!(player->GetConnection()->IsActive())) {
+                players.remove(player);
+                break;
+            }
         sleep(seconds(1));
     }
 }
 
 bool Server::Authorization(string &login, string &password) const {
     if (UDB->Check(login, password)) {
-		bool isNew = true;
-		for (auto &i : players)
-			if (i->GetCKey() == login) {
-				isNew = false;
-				break;
-			}
-		if (isNew) {
-		Server::log << "Player is authorized:" << login << password << endl;
+        bool isNew = true;
+        for (auto &i : players)
+            if (i->GetCKey() == login) {
+                isNew = false;
+                break;
+            }
+        if (isNew) {
+        Server::log << "Player is authorized:" << login << password << endl;
         return true;
     }
-		Server::log << "Player" << login << password << "is trying to authorize second time" <<endl;
-		return false;
+        Server::log << "Player" << login << password << "is trying to authorize second time" <<endl;
+        return false;
     }
-	Server::log << "Wrong login data received:" << login << password << endl;
+    Server::log << "Wrong login data received:" << login << password << endl;
     return false;
 }
 
 bool Server::Registration(string &login, string &password) const {
     if (UDB->Add(login, password)) {
-		Server::log << "New player is registrated:" << login << password << endl;
+        Server::log << "New player is registrated:" << login << password << endl;
         return true;
     }
-	Server::log << "Player is trying make second accoun with same login:" << login << password << endl;
+    Server::log << "Player is trying make second accoun with same login:" << login << password << endl;
     return false;
 }
 
@@ -118,9 +118,9 @@ void Server::AddPlayer(Player *player) {
 }
 
 int main() {
-	Server server;
+    Server server;
 
-	return 0;
+    return 0;
 }
 
 Log Server::log;

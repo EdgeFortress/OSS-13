@@ -16,16 +16,16 @@ class Map;
 
 class Object {
 protected:
-	Tile *tile;
-	Global::Sprite sprite;
+    Tile *tile;
+    Global::Sprite sprite;
 
 public:
-	Object();
-	explicit Object(Tile *tile = nullptr);
+    Object();
+    explicit Object(Tile *tile = nullptr);
 
-	Tile *GetTile() { return tile; }
+    Tile *GetTile() { return tile; }
 
-	friend sf::Packet &operator<<(sf::Packet &, Object &);
+    friend sf::Packet &operator<<(sf::Packet &, Object &);
 };
 
 class Item : public Object {
@@ -34,7 +34,7 @@ class Item : public Object {
 
 class Turf : public Object {
 protected:
-	bool density;
+    bool density;
 
 public:
     explicit Turf(Tile *tile) : Object(tile) {}
@@ -54,8 +54,8 @@ public:
         sprite = Global::Sprite::Wall;
     }
 
-	Wall(const Wall &object) = default;
-	~Wall() = default;
+    Wall(const Wall &object) = default;
+    ~Wall() = default;
 };
 
 class Floor : public Turf {
@@ -64,9 +64,9 @@ public:
         density = false;
         sprite = Global::Sprite::Floor;
     }
-	
+    
     Floor(const Floor &object) = default;
-	~Floor() = default;
+    ~Floor() = default;
 };
 
 class Airlock : public Turf {
@@ -76,14 +76,14 @@ public:
         sprite = Global::Sprite::Airlock;
     }
 
-	Airlock(const Airlock &object) = default;
-	~Airlock() = default;
+    Airlock(const Airlock &object) = default;
+    ~Airlock() = default;
 };
 
 class Tile {
 private:
-	Map *map;
-	int x, y;
+    Map *map;
+    int x, y;
     Global::Sprite sprite;
 
     list<uptr<Object>> content;
@@ -91,15 +91,15 @@ private:
 public:
     explicit Tile(Map *map, int x, int y);
 
-	bool AddObject(Object *obj);
-	// Removing object from tile content, but not deleting it
-	bool RemoveObject(Object *obj);
+    bool AddObject(Object *obj);
+    // Removing object from tile content, but not deleting it
+    bool RemoveObject(Object *obj);
 
     int X() const { return x; }
     int Y() const { return y; }
     Map *GetMap() const { return map; }
 
-	friend sf::Packet &operator<<(sf::Packet &, Tile &);
+    friend sf::Packet &operator<<(sf::Packet &, Tile &);
 };
 
 class Block {
@@ -116,9 +116,9 @@ public:
     int X() const { return blockX; }
     int Y() const { return blockY; }
 
-	//Tile *GetTile(int x, int y);
+    //Tile *GetTile(int x, int y);
 
-	friend sf::Packet &operator<<(sf::Packet &, Block &);
+    friend sf::Packet &operator<<(sf::Packet &, Block &);
 };
 
 class Map {
@@ -126,25 +126,25 @@ private:
     int sizeX, sizeY;
     int numOfBlocksX, numOfBlocksY;
 
-	vector< vector<uptr<Tile>> > tiles;
+    vector< vector<uptr<Tile>> > tiles;
     vector< vector<uptr<Block>> > blocks;
 
 public:
     explicit Map(const int sizeX, const int sizeY);
-	Tile *GetTile(int x, int y) const;
+    Tile *GetTile(int x, int y) const;
     Block *GetBlock(int x, int y) const;
 };
 
 class World {
 private:
-	uptr<Map> map;
+    uptr<Map> map;
 
 public:
-	World() : map(new Map(100, 100)) {
-		FillingWorld();
-	}
+    World() : map(new Map(100, 100)) {
+        FillingWorld();
+    }
 
     void Update() { }
-	void FillingWorld();
+    void FillingWorld();
     Mob *CreateNewPlayerMob();
 };

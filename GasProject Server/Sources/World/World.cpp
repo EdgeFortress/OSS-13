@@ -7,13 +7,13 @@
 #include "Player.hpp"
 
 Object::Object() {
-	tile = nullptr;
+    tile = nullptr;
 }
 
 Object::Object(Tile *tile) {
-	this->tile = tile;
+    this->tile = tile;
     if (tile)
-	    tile->AddObject(this);
+        tile->AddObject(this);
 }
 
 Tile::Tile(Map *map, int x, int y) :
@@ -23,16 +23,16 @@ Tile::Tile(Map *map, int x, int y) :
 }
 
 bool Tile::AddObject(Object *obj) {
-	for (auto &i : content)
+    for (auto &i : content)
         if (typeid(i.get()) == typeid(obj)) {
             return false;
         }
-	content.push_back(uptr<Object>(obj));
+    content.push_back(uptr<Object>(obj));
     return true;
 }
 
 bool Tile::RemoveObject(Object *obj) {
-	for (auto &i : content)
+    for (auto &i : content)
         if (i.get() == obj) {
             content.remove(i);
             return true;
@@ -58,9 +58,9 @@ Block::Block(Map *map, int blockX, int blockY) :
 }
 
 /*Tile *Block::GetTile(int x, int y) {
-	if (x >= 0 && x < Global::BLOCK_SIZE && y >= 0 && y < Global::BLOCK_SIZE)
-		return tiles[y][x];
-	return nullptr;
+    if (x >= 0 && x < Global::BLOCK_SIZE && y >= 0 && y < Global::BLOCK_SIZE)
+        return tiles[y][x];
+    return nullptr;
 }*/
 
 Map::Map(const int sizeX, const int sizeY) : 
@@ -74,15 +74,15 @@ Map::Map(const int sizeX, const int sizeY) :
         vect = vector<uptr<Tile>>(sizeX);
     }
 
-	int y = 0;
-	for (vector<uptr<Tile>> &vect : tiles) {
-		int x = 0;
-		for (uptr<Tile> &tile : vect) {
+    int y = 0;
+    for (vector<uptr<Tile>> &vect : tiles) {
+        int x = 0;
+        for (uptr<Tile> &tile : vect) {
             tile.reset(new Tile(this, x, y));
-			x++;
-		}
-		y++;
-	}
+            x++;
+        }
+        y++;
+    }
 
     for (vector<uptr<Block>> &vect : blocks) {
         vect = vector<uptr<Block>>(numOfBlocksY);
@@ -103,9 +103,9 @@ Map::Map(const int sizeX, const int sizeY) :
 }
 
 Tile *Map::GetTile(int x, int y) const {
-	if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) 
+    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) 
         return tiles[y][x].get();
-	return nullptr;
+    return nullptr;
 }
 
 Block *Map::GetBlock(int x, int y) const {

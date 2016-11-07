@@ -22,20 +22,20 @@ class Game {
 private:
     std::string title;
     const int id;
-	Server *server;
+    Server *server;
     bool active;
     uptr<std::thread> thread;
-	uptr<World> world;
+    uptr<World> world;
 
     std::list<Player *> players;
     static void gameProcess(Game *);
 
 public:
-	Game(Server *server, std::string title, int id);
+    Game(Server *server, std::string title, int id);
     ~Game();
 
     bool AddPlayer(Player *);
-	void DeletePlayer(Player *);
+    void DeletePlayer(Player *);
 
     const int GetID() const;
 
@@ -46,14 +46,14 @@ class Server {
 private:
     int new_game_id;
     std::list<uptr<Player>> players;
-	std::list<uptr<Game>> games;
+    std::list<uptr<Game>> games;
 
     static Server *instance;
 
 public:
     uptr<UsersDB> UDB;
 
-	Server();
+    Server();
     bool Authorization(std::string &login, std::string &password) const;
     bool Registration(std::string &login, std::string &password) const;
     bool CreateGame(std::string title);
@@ -63,5 +63,5 @@ public:
 
     static Server *Get() { return instance; }
 
-	static Log log;
+    static Log log;
 };

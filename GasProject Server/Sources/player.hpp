@@ -32,10 +32,10 @@ private:
 
 public:
     Player(Server *server, sf::TcpSocket *socket);
-	~Player();
+    ~Player();
 
     string GetCKey() { return ckey; }
-	Connection *GetConnection() { return connection.get(); }
+    Connection *GetConnection() { return connection.get(); }
 
     void SetMob(Mob *mob);
     void SetCamera(Camera *camera) { this->camera.reset(camera); }
@@ -43,7 +43,7 @@ public:
     Mob *GetMob() { return mob; }
     Camera *GetCamera() { return camera.get(); }
 
-	void AddCommand(ServerCommand *);
+    void AddCommand(ServerCommand *);
 
     friend Connection;
 };

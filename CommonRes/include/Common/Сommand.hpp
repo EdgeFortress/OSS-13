@@ -14,7 +14,7 @@ struct ClientCommand {
         SERVER_LIST_REQ,
         CREATE_GAME,
         JOIN_GAME,
-		DISCONNECT
+        DISCONNECT
     };
 
     virtual const Code GetCode() const = 0;
@@ -61,9 +61,9 @@ struct JoinGameClientCommand : public ClientCommand {
 };
 
 struct DisconnectionClientCommand : public ClientCommand {
-	virtual const Code GetCode() const override { return Code::DISCONNECT; }
+    virtual const Code GetCode() const override { return Code::DISCONNECT; }
 
-	DisconnectionClientCommand() { }
+    DisconnectionClientCommand() { }
 };
 
 struct ServerCommand {
@@ -127,8 +127,8 @@ struct GameListServerCommand : public ServerCommand {
 class Camera;
 
 struct GraphicsFullUpdateServerCommand : public ServerCommand {
-	Camera *camera;
-	GraphicsFullUpdateServerCommand(Camera *camera) : camera(camera) { }
+    Camera *camera;
+    GraphicsFullUpdateServerCommand(Camera *camera) : camera(camera) { }
     virtual const Code GetCode() const override { return Code::GRAPHICS_FULL_UPDATE; }
 };
 

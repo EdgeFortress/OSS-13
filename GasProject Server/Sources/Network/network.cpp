@@ -29,7 +29,7 @@ void ListeningSocket::listening() {
                 break;
             }
             default: {
-				Server::log << "New connection accepting error" << endl;
+                Server::log << "New connection accepting error" << endl;
                 active = false;
                 break;
             }
@@ -59,22 +59,22 @@ Connection::Connection(sf::TcpSocket *socket, Server *server, Player *player) : 
 }
 
 void Connection::session(Connection *inst) {
-	Server::log << "New client is connected" << endl;
+    Server::log << "New client is connected" << endl;
     inst->socket->setBlocking(false);
     sf::Packet packet;
     bool isWorking;
     while (inst->active) {
         packet.clear();
         isWorking = false;
-		sf::Socket::Status status = inst->socket->receive(packet);
+        sf::Socket::Status status = inst->socket->receive(packet);
         if (status == sf::Socket::Done) {
             inst->parse(packet);
             isWorking = true;
         }
-		if (status == sf::Socket::Disconnected) {
-			inst->active = false;
-			Server::log << "Lost client" << inst->player->ckey << "signal" << endl;
-		}
+        if (status == sf::Socket::Disconnected) {
+            inst->active = false;
+            Server::log << "Lost client" << inst->player->ckey << "signal" << endl;
+        }
         while (!inst->player->commandQueue.Empty()) {
             packet.clear();
             ServerCommand *temp = inst->player->commandQueue.Pop();
@@ -149,13 +149,13 @@ void Connection::parse(sf::Packet &pac) {
 
 void Connection::Stop() {
     active = false;
-	if (thread)
+    if (thread)
         thread->join();
 }
 
 Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
     ServerCommand::Code code = serverCommand->GetCode();
-	packet << sf::Int32(code);
+    packet << sf::Int32(code);
     switch (code) {
         case ServerCommand::Code::GAME_LIST: {
             packet << sf::Int32(Server::Get()->GetGamesList()->size());
@@ -170,7 +170,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         }
     }
 
-	return packet;
+    return packet;
 }
 
 Packet &operator<<(Packet &packet, Game &game) {
@@ -188,25 +188,25 @@ Packet &operator<<(Packet &packet, Camera &camera) {
 }
 
 Packet &operator<<(Packet &packet, Block &block) {
-	for (auto &vect : block.tiles)
-		for (auto *&tile : vect)
-			packet << *tile;
+    for (auto &vect : block.tiles)
+        for (auto *&tile : vect)
+            packet << *tile;
 
-	return packet;
+    return packet;
 }
 
 Packet &operator<<(Packet &packet, Tile &tile) {
-	packet << sf::Int32(tile.content.size());
-	for (auto &obj : tile.content)
-		packet << *obj;
+    packet << sf::Int32(tile.content.size());
+    for (auto &obj : tile.content)
+        packet << *obj;
 
-	return packet;
+    return packet;
 }
 
 Packet &operator<<(Packet &packet, Object &obj) {
-	packet << sf::Int32(obj.sprite);
+    packet << sf::Int32(obj.sprite);
 
-	return packet;
+    return packet;
 }
 
 bool ListeningSocket::active = false;
