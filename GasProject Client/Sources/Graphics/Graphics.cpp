@@ -68,6 +68,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
                     CC::log << "Problems with registration" << endl;
                 authUI->openLogin();
             }
+			authUI->comState = AuthUI::ComState::NOTHING;
         }
     }
 

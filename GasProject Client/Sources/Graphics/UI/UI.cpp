@@ -150,13 +150,21 @@ void AuthUI::closeReg() {
 }
 
 void AuthUI::login() {
-    Connection::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
-    comState = ComState::LOGIN;
+	if (comState == ComState::NOTHING) {
+		Connection::commandQueue.Push(new AuthorizationClientCommand(login_entry->GetText(), passw_entry->GetText()));
+		comState = ComState::LOGIN;
+	}
+	else
+		CC::log << "Wait for answer to previous command" << endl;
 }
 
 void AuthUI::registration() {
-	Connection::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
-    comState = ComState::REGISTRATION;
+	if (comState == ComState::NOTHING) {
+		Connection::commandQueue.Push(new RegistrationClientCommand(new_login_entry->GetText(), new_passw_entry->GetText()));
+		comState = ComState::REGISTRATION;
+	}
+	else
+		CC::log << "Wait for answer to previous command" << endl;
 }
 
 void AuthUI::Show() {
