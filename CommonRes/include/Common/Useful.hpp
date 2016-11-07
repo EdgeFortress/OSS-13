@@ -39,6 +39,8 @@ public:
     }
 };
 
+using std::endl;
+
 class Log {
 private:
 	std::mutex mutex;

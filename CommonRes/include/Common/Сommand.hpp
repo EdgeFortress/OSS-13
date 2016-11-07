@@ -7,8 +7,6 @@
 
 using std::string;
 
-class Game;
-
 struct ClientCommand {
     enum class Code : char {
         AUTH_REQ = 1,
@@ -74,13 +72,17 @@ struct ServerCommand {
         REG_SUCCESS,
         AUTH_ERROR,
         REG_ERROR,
+
         GAME_CREATE_SUCCESS,
         GAME_CREATE_ERROR,
         GAME_LIST,
         GAME_JOIN_SUCCESS,
         GAME_JOIN_ERROR,
-        CONNECTION_ERROR,
+
+        GRAPHICS_FULL_UPDATE,
+
         COMMAND_CODE_ERROR
+        //CONNECTION_ERROR,
     };
 
     virtual const Code GetCode() const = 0;
@@ -122,10 +124,18 @@ struct GameListServerCommand : public ServerCommand {
     virtual const Code GetCode() const override { return Code::GAME_LIST; }
 };
 
-struct ConnectionErrorServerCommand : public ServerCommand {
-    virtual const Code GetCode() const override { return Code::CONNECTION_ERROR; }
+class Camera;
+
+struct GraphicsFullUpdateServerCommand : public ServerCommand {
+    Camera *camera;
+    virtual const Code GetCode() const override { return Code::GRAPHICS_FULL_UPDATE; }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {
     virtual const Code GetCode() const override { return Code::COMMAND_CODE_ERROR; }
 };
+
+//struct ConnectionErrorServerCommand : public ServerCommand {
+//    virtual const Code GetCode() const override { return Code::CONNECTION_ERROR; }
+//};
+

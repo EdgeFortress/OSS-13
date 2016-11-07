@@ -13,7 +13,7 @@ using namespace sf;
 void ListeningSocket::listening() {
     sf::TcpListener listener;
     listener.setBlocking(false);
-    listener.listen(PORT);
+    listener.listen(Global::PORT);
     sf::TcpSocket *socket = new sf::TcpSocket;
     while (active) {
         sf::TcpSocket::Status status = listener.accept(*socket);
@@ -159,20 +159,33 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         case ServerCommand::Code::GAME_LIST: {
             packet << sf::Int32(Server::Get()->GetGamesList()->size());
             for (auto &game : *(Server::Get()->GetGamesList())) {
-                packet << game.get();
+                packet << *(game.get());
             }
+            break;
+        }
+        case ServerCommand::Code::GRAPHICS_FULL_UPDATE: {
+            GraphicsFullUpdateServerCommand *command = dynamic_cast<GraphicsFullUpdateServerCommand *>(serverCommand);
+            packet << *(command->camera);
         }
     }
 
 	return packet;
 }
 
-Packet &operator<<(Packet &packet, Game *game) {
-    packet << sf::Int32(game->id);
-    packet << sf::String(game->title);
-    packet << sf::Int32(game->players.size());
+Packet &operator<<(Packet &packet, Game &game) {
+    packet << sf::Int32(game.id);
+    packet << sf::String(game.title);
+    packet << sf::Int32(game.players.size());
     return packet;
 }
+
+Packet &operator<<(Packet &packet, Camera &camera) {
+    return packet;
+}
+
+//Packet &operator<<(Packet &packet, Block *block) {
+//
+//}
 
 bool ListeningSocket::active = false;
 Server *ListeningSocket::server;
