@@ -110,7 +110,7 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::GAME_JOIN_ERROR:
             CC::log << "Error join the game" << endl;
             break;
-		case ServerCommand::Code::GRAPHICS_FULL_UPDATE:
+        case ServerCommand::Code::GRAPHICS_FULL_UPDATE:
             TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
             tileGrid.Lock();
             packet >> tileGrid;

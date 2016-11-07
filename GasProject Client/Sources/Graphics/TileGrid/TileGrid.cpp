@@ -53,9 +53,11 @@ TileGrid::TileGrid() : blockSize(Global::BLOCK_SIZE) {
 
     blocks.resize(num_of_visible_blocks);
 
-    for (auto &vect : blocks)
+    for (auto &vect : blocks) {
+        vect.resize(num_of_visible_blocks);
         for (auto &block : vect)
             block.reset(new Block(this));
+    }
 }
 
 Tile *TileGrid::GetTile(int x, int y) const {
