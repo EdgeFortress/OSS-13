@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="sources\Client.cpp" />
     <ClCompile Include="Sources\Graphics\Graphics.cpp" />
+    <ClCompile Include="Sources\Graphics\Sprite.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
     <ClCompile Include="sources\State.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />

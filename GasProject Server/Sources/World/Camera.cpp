@@ -1,4 +1,3 @@
-
 #include "Camera.hpp"
 #include "Common/Useful.hpp"
 #include "Server.hpp"

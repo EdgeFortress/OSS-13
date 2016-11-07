@@ -127,7 +127,8 @@ struct GameListServerCommand : public ServerCommand {
 class Camera;
 
 struct GraphicsFullUpdateServerCommand : public ServerCommand {
-    Camera *camera;
+	Camera *camera;
+	GraphicsFullUpdateServerCommand(Camera *camera) : camera(camera) { }
     virtual const Code GetCode() const override { return Code::GRAPHICS_FULL_UPDATE; }
 };
 

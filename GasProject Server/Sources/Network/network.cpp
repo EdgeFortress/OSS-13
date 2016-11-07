@@ -3,6 +3,7 @@
 #include "network.hpp"
 #include "Server.hpp"
 #include "player.hpp"
+#include "World/World.hpp"
 #include "Database/UsersDB.hpp"
 
 #include "Common/NetworkConst.hpp"
@@ -180,12 +181,33 @@ Packet &operator<<(Packet &packet, Game &game) {
 }
 
 Packet &operator<<(Packet &packet, Camera &camera) {
+    for (auto &vect : camera.visibleBlocks)
+        for (auto *&block : vect)
+            packet << *block;
     return packet;
 }
 
-//Packet &operator<<(Packet &packet, Block *block) {
-//
-//}
+Packet &operator<<(Packet &packet, Block &block) {
+	for (auto &vect : block.tiles)
+		for (auto *&tile : vect)
+			packet << *tile;
+
+	return packet;
+}
+
+Packet &operator<<(Packet &packet, Tile &tile) {
+	packet << sf::Int32(tile.content.size());
+	for (auto &obj : tile.content)
+		packet << *obj;
+
+	return packet;
+}
+
+Packet &operator<<(Packet &packet, Object &obj) {
+	packet << sf::Int32(obj.sprite);
+
+	return packet;
+}
 
 bool ListeningSocket::active = false;
 Server *ListeningSocket::server;

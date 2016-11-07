@@ -57,6 +57,12 @@ Block::Block(Map *map, int blockX, int blockY) :
     }
 }
 
+/*Tile *Block::GetTile(int x, int y) {
+	if (x >= 0 && x < Global::BLOCK_SIZE && y >= 0 && y < Global::BLOCK_SIZE)
+		return tiles[y][x];
+	return nullptr;
+}*/
+
 Map::Map(const int sizeX, const int sizeY) : 
     sizeX(sizeX), sizeY(sizeY),
     numOfBlocksX(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0)),

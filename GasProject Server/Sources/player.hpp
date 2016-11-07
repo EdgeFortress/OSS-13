@@ -43,5 +43,7 @@ public:
     Mob *GetMob() { return mob; }
     Camera *GetCamera() { return camera.get(); }
 
+	void AddCommand(ServerCommand *);
+
     friend Connection;
 };

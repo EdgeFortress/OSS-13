@@ -15,7 +15,8 @@ private:
 	uptr<TileGrid> tileGrid;
 	uptr<UI> ui;
 
-	list<uptr<Texture>> textures;
+	//list<uptr<Texture>> textures;
+	list<uptr<Sprite>> sprites;
 
 	uptr<RenderWindow> window;
 	int width, height;
@@ -24,7 +25,7 @@ private:
 	const int req_FPS = 100;
 	sf::Clock clock;
 	int cur_FPS;
-	void loadTextures();
+	void loadTextures(list<uptr<Sprite>> &);
 
 	bool fps_exceed() {
 		if (clock.getElapsedTime() >= sf::milliseconds(100)) {
@@ -37,10 +38,10 @@ private:
 
 public:
 	Window() : 
-		tileGrid(new TileGrid(textures)),
+		tileGrid(new TileGrid()),
 		cur_FPS(0) 
 	{
-		loadTextures();
+		loadTextures(sprites);
 		sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 		width = static_cast<int>(0.9 * videoMode.width);
 		height = static_cast<int>(0.9 * videoMode.height);
@@ -48,10 +49,6 @@ public:
 		window->clear(sf::Color::Black);
 		window->display();
 		ui.reset(new UI(window.get()));
-	}
-
-	void Initilize() {
-		tileGrid->Initialize();
 	}
 
 	Window(const Window &) = delete;
@@ -64,7 +61,9 @@ public:
 
 	bool isOpen() const { return window->isOpen(); }
 
-	list<uptr<Texture>> &GetTextures() { return textures;  }
+	//list<uptr<Texture>> &GetTextures() { return textures;  }
+	list<uptr<Sprite>> &GetSprites() { return sprites; }
 
 	UI *GetUI() const { return ui.get(); }
+    TileGrid *GetTileGrid() const { return tileGrid.get(); }
 };

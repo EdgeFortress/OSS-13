@@ -17,3 +17,7 @@ void Player::SetMob(Mob *mob) {
 };
 
 Player::~Player() { connection->Stop(); }
+
+void Player::AddCommand(ServerCommand *command) {
+	commandQueue.Push(command);
+}

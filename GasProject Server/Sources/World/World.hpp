@@ -17,13 +17,15 @@ class Map;
 class Object {
 protected:
 	Tile *tile;
-    Global::Sprite sprite;
+	Global::Sprite sprite;
 
 public:
 	Object();
 	explicit Object(Tile *tile = nullptr);
 
-    Tile *GetTile() { return tile; }
+	Tile *GetTile() { return tile; }
+
+	friend sf::Packet &operator<<(sf::Packet &, Object &);
 };
 
 class Item : public Object {
@@ -96,6 +98,8 @@ public:
     int X() const { return x; }
     int Y() const { return y; }
     Map *GetMap() const { return map; }
+
+	friend sf::Packet &operator<<(sf::Packet &, Tile &);
 };
 
 class Block {
@@ -111,6 +115,10 @@ public:
 
     int X() const { return blockX; }
     int Y() const { return blockY; }
+
+	//Tile *GetTile(int x, int y);
+
+	friend sf::Packet &operator<<(sf::Packet &, Block &);
 };
 
 class Map {

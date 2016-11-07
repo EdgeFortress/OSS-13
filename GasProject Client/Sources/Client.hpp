@@ -42,7 +42,7 @@ public:
 		else return nullptr;
 	}
 	State *GetState() { return state.get(); }
-	static ClientController * const Get() { return instance; }
+	static ClientController *const Get() { return instance; }
 
 	static Log log;
 };

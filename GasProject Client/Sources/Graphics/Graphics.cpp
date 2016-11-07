@@ -4,17 +4,9 @@
 #include "UI/UI.hpp"
 #include "State.hpp"
 
-Block::Block(TileGrid *tileGrid) : tileGrid(tileGrid),
-								   tiles(tileGrid->BlockSize,
-								   vector<Tile *>(tileGrid->BlockSize)) {
-	for (auto &vect : tiles)
-		for (auto &tile : vect)
-			tile = new Tile(this);
-}
-
-void Window::loadTextures() {
-	Texture * human = new Texture(1, "Images/Human.png", 32, textures, 1);
-	human->SetInfo(0, 0, true, 1);
+void Window::loadTextures(list<uptr<Sprite>> &sprites) {
+	Texture human("Images/Human.png", 32, 1);
+	sprites.push_back(uptr<Sprite>(human.SetInfo(Global::Sprite::Mob, 0, 0, true, 1)));
 }
 
 void Window::Update(sf::Time timeElapsed) {

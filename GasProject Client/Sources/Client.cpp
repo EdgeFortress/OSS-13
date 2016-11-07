@@ -18,7 +18,6 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
-	window->Initilize();
     if (!Connection::Start("localhost", Global::PORT)) {
         CC::log << "Connection error!" << endl;
     } else {

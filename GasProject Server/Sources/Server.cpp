@@ -38,6 +38,7 @@ const int Game::GetID() const { return id; }
 bool Game::AddPlayer(Player *player) {
     players.push_back(player);
     player->SetMob(world->CreateNewPlayerMob());
+	player->AddCommand(new GraphicsFullUpdateServerCommand(player->GetCamera()));
     return true;
 }
 

@@ -1,4 +1,5 @@
 #include <thread>
+#include <string>
 
 #include <SFML/Network.hpp>
 
@@ -109,6 +110,12 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::GAME_JOIN_ERROR:
             CC::log << "Error join the game" << endl;
             break;
+		case ServerCommand::Code::GRAPHICS_FULL_UPDATE:
+            TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
+            tileGrid.Lock();
+            packet >> tileGrid;
+            tileGrid.Unlock();
+			break;
     };
 }
 
@@ -131,6 +138,39 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
             break;
         }
     }
+    return packet;
+}
+
+Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
+    for (auto &vect : tileGrid.blocks)
+        for (auto &block : vect)
+            packet >> *block;
+    return packet;
+}
+
+Packet &operator>>(Packet &packet, Block &block) {
+    for (auto &vect : block.tiles)
+        for (auto &tile : vect)
+            packet >> *tile;
+    return packet;
+}
+
+Packet &operator>>(Packet &packet, Tile &tile) {
+    sf::Int32 size;
+    packet >> size;
+    tile.Clear();
+    for (int i = 0; i < size; i++) {
+        Object *object = new Object();
+        packet >> *object;
+        tile.content.push_back(uptr<Object>(object));
+    }
+    return packet;
+}
+
+Packet &operator>>(Packet &packet, Object &object) {
+    sf::Int32 sprite;
+    packet >> sprite;
+    object.sprite = static_cast<Global::Sprite>(sprite);
     return packet;
 }
 
