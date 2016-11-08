@@ -74,11 +74,6 @@ TileGrid::TileGrid(const int windowWidth, const int windowHeight) : blockSize(Gl
         for (auto &block : vect)
             block.reset(new Block(this));
     }
-    
-    Window *window = CC::Get()->GetWindow();
-    tileSize = min(windowWidth, windowHeight) / Global::FOV;
-    xPadding = (windowWidth - tileSize * 15) / 2;
-    yPadding = (windowHeight - tileSize * 15) / 2;
 }
 
 Tile *TileGrid::GetTile(int x, int y) const {
@@ -93,8 +88,14 @@ void TileGrid::Draw(sf::RenderWindow * const window) {
     for (int y = -(Global::FOV / 2); y < Global::FOV / 2; y++)
         for (int x = -(Global::FOV / 2); x < Global::FOV / 2; x++) {
             Tile *tile = GetTile(xPos + x, yPos + y);
-            if (tile) tile->Draw(window, xPadding + (x + Global::FOV / 2) * tileSize, 
-                                         xPadding + (y + Global::FOV / 2) * tileSize);
+            if (tile) tile->Draw(window, xPadding + (x + Global::FOV / 2) * tileSize,
+                                         yPadding + (y + Global::FOV / 2) * tileSize);
         }
     Unlock();
+}
+
+void TileGrid::Resize(const int windowWidth, const int windowHeight) {
+    tileSize = min(windowWidth, windowHeight) / Global::FOV;
+    xPadding = (windowWidth - tileSize * 15) / 2;
+    yPadding = (windowHeight - tileSize * 15) / 2;
 }

@@ -37,6 +37,7 @@ Sprite::Sprite() : sprite(new sf::Sprite()) {
     texture = nullptr;
     spriteIndex = frames = 0;
     curFrame = -1;
+    scale = 1;
     directed = false;
     key = Global::Sprite::EMPTY;
 }
@@ -45,7 +46,7 @@ Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIn
     sprite(new sf::Sprite(*t->GetSFMLTexture())),
     texture(t),
     spriteIndex(spriteIndex), firstFrameIndex(firstFrameIndex),
-    directed(directed), frames(frames), curFrame(0), key(key)
+    scale(1), directed(directed), frames(frames), curFrame(0), key(key)
 {
 
 }
@@ -63,5 +64,10 @@ void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, con
 
     sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
     sprite->setTextureRect(rect);
+    sprite->setScale(scale, scale);
     window->draw(*sprite);
+}
+
+void Sprite::Resize(int size) {
+    scale = float(size) / texture->GetSizeOfTile();
 }

@@ -8,6 +8,10 @@ void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &spr
     Texture *t = new Texture("Images/Human.png", 32, 1);
     sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Mob, 0, 0, true, 1)));
     textures.push_back(uptr<Texture>(t));
+    t = new Texture("Images/Turfs.png", 32, 2);
+    sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Wall, 0, 0, false, 1)));
+    sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Floor, 1, 1, false, 1)));
+    textures.push_back(uptr<Texture>(t));
 }
 
 void Window::Update(sf::Time timeElapsed) {
@@ -17,6 +21,8 @@ void Window::Update(sf::Time timeElapsed) {
         ui->HandleEvent(event);
         if (state)
             state->HandleEvent(event);
+        if (event.type == sf::Event::Resized)
+            Resize(event.size.width, event.size.height);
         if (event.type == sf::Event::Closed)
             window->close();
     }

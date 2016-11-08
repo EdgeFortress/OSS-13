@@ -80,6 +80,8 @@ public:
 
     void Draw(sf::RenderWindow * const window, const int x, const int y, const int direction) const;
 
+    void Resize(int size);
+
     Global::Sprite GetKey() const { return key; }
 
     /*bool PixelTransparent(int x, int y) const

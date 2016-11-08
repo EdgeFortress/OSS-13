@@ -43,6 +43,7 @@ public:
         width = static_cast<int>(0.9 * videoMode.width);
         height = static_cast<int>(0.9 * videoMode.height);
         tileGrid.reset(new TileGrid(width, height));
+        Resize(width, height);
         window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
         window->clear(sf::Color::Black);
         window->display();
@@ -54,6 +55,12 @@ public:
     virtual ~Window() = default;
 
     void Update(sf::Time);
+    void Resize(const int newWidth, const int newHeight) {
+        width = newWidth; height = newHeight;
+        tileGrid->Resize(width, height);
+        for (auto &sprite : sprites)
+            sprite->Resize(tileGrid->GetTileSize());
+    }
 
     bool isOpen() const { return window->isOpen(); }
 

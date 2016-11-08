@@ -98,7 +98,10 @@ public:
     void Lock() { mutex.lock(); }
     void Unlock() { mutex.unlock(); }
 
-    int GetBlockSize() const { return blockSize; }
+    void Resize(const int windowWidth, const int windowHeight);
+
+    const int GetBlockSize() const { return blockSize; }
+    const int GetTileSize() const { return tileSize; }
 
     friend sf::Packet &operator>> (sf::Packet &packet, TileGrid &tileGrid);
 };
