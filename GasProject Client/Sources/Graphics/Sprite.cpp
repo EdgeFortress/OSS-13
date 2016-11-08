@@ -42,14 +42,15 @@ Sprite::Sprite() : sprite(new sf::Sprite()) {
 }
 
 Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIndex, int frames, bool directed) :
-    sprite(new sf::Sprite()),
+    sprite(new sf::Sprite(*t->GetSFMLTexture())),
+    texture(t),
     spriteIndex(spriteIndex), firstFrameIndex(firstFrameIndex),
     directed(directed), frames(frames), curFrame(0), key(key)
 {
 
 }
 
-void Sprite::Draw(sf::RenderWindow *window, int x, int y, int direction) const {
+void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const int direction) const {
     sf::Rect<int> rect;
 
     int realState = firstFrameIndex;
@@ -61,5 +62,6 @@ void Sprite::Draw(sf::RenderWindow *window, int x, int y, int direction) const {
     rect.width = rect.height = texture->GetSizeOfTile();
 
     sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
+    sprite->setTextureRect(rect);
     window->draw(*sprite);
 }

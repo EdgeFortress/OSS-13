@@ -113,6 +113,7 @@ private:
 public:
     explicit Block(Map *map, int blockX, int blockY);
 
+    Tile *GetTile(int x, int y) const { return tiles[y][x]; }
     int X() const { return blockX; }
     int Y() const { return blockY; }
 

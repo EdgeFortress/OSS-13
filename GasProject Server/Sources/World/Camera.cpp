@@ -8,7 +8,7 @@ Camera::Camera() {
     tile = nullptr;
 }
 
-Camera::Camera(Tile *tile) {
+Camera::Camera(const Tile * const tile) {
     this->tile = tile;
     suspense = false;
     countVisibleBlocks();
@@ -22,7 +22,7 @@ Camera::Camera(Tile *tile) {
     }
 }
 
-void Camera::SetPosition(Tile *tile) {
+void Camera::SetPosition(const Tile * const tile) {
     this->tile = tile;
     suspense = false;
     countVisibleBlocks();

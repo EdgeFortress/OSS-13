@@ -23,10 +23,6 @@ Tile::Tile(Map *map, int x, int y) :
 }
 
 bool Tile::AddObject(Object *obj) {
-    for (auto &i : content)
-        if (typeid(i.get()) == typeid(obj)) {
-            return false;
-        }
     content.push_back(uptr<Object>(obj));
     return true;
 }

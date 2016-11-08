@@ -181,6 +181,10 @@ Packet &operator<<(Packet &packet, Game &game) {
 }
 
 Packet &operator<<(Packet &packet, Camera &camera) {
+    sf::Int32 cameraCentreX, cameraCentreY;
+    cameraCentreX = camera.GetPosition()->X() - camera.visibleBlocks[0][0]->GetTile(0, 0)->X();
+    cameraCentreY = camera.GetPosition()->Y() - camera.visibleBlocks[0][0]->GetTile(0, 0)->Y();
+    packet << cameraCentreX << cameraCentreY;
     for (auto &vect : camera.visibleBlocks)
         for (auto *&block : vect)
             packet << *block;
@@ -191,7 +195,6 @@ Packet &operator<<(Packet &packet, Block &block) {
     for (auto &vect : block.tiles)
         for (auto *&tile : vect)
             packet << *tile;
-
     return packet;
 }
 
@@ -199,13 +202,11 @@ Packet &operator<<(Packet &packet, Tile &tile) {
     packet << sf::Int32(tile.content.size());
     for (auto &obj : tile.content)
         packet << *obj;
-
     return packet;
 }
 
 Packet &operator<<(Packet &packet, Object &obj) {
     packet << sf::Int32(obj.sprite);
-
     return packet;
 }
 

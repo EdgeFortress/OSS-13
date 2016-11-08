@@ -15,17 +15,17 @@ private:
     uptr<TileGrid> tileGrid;
     uptr<UI> ui;
 
-    //list<uptr<Texture>> textures;
+    list<uptr<Texture>> textures;
     list<uptr<Sprite>> sprites;
 
     uptr<RenderWindow> window;
     int width, height;
-    int sizeTile;
+    
 
     const int req_FPS = 100;
     sf::Clock clock;
     int cur_FPS;
-    void loadTextures(list<uptr<Sprite>> &);
+    void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
 
     bool fps_exceed() {
         if (clock.getElapsedTime() >= sf::milliseconds(100)) {
@@ -37,14 +37,12 @@ private:
     }
 
 public:
-    Window() : 
-        tileGrid(new TileGrid()),
-        cur_FPS(0) 
-    {
-        loadTextures(sprites);
+    Window() : cur_FPS(0) {
+        loadTextures(textures, sprites);
         sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
         width = static_cast<int>(0.9 * videoMode.width);
         height = static_cast<int>(0.9 * videoMode.height);
+        tileGrid.reset(new TileGrid(width, height));
         window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
         window->clear(sf::Color::Black);
         window->display();
@@ -57,13 +55,13 @@ public:
 
     void Update(sf::Time);
 
-    int GetSizeTile() const { return sizeTile; }
-
     bool isOpen() const { return window->isOpen(); }
 
     //list<uptr<Texture>> &GetTextures() { return textures;  }
     list<uptr<Sprite>> &GetSprites() { return sprites; }
 
+    int GetWidth() const { return width; }
+    int GetHeight() const { return height; }
     UI *GetUI() const { return ui.get(); }
     TileGrid *GetTileGrid() const { return tileGrid.get(); }
 };

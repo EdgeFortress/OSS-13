@@ -17,14 +17,16 @@ using namespace std;
 
 class Object {
 private:
-    Global::Sprite sprite;
+    Sprite *sprite;
     int direction;
 
 public:
-    Object() : sprite(Global::Sprite::EMPTY), direction(-1) { }
+    explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const bool directed = false);
 
-    void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
-    Global::Sprite GetSprite() const { return sprite; }
+    void Draw(sf::RenderWindow * const, const int x, const int y);
+
+    void SetSprite(const Global::Sprite);
+    //Sprite *GetSprite() const { return sprite; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
 };
@@ -42,7 +44,7 @@ public:
     Tile &operator=(const Tile &) = delete;
     ~Tile() = default;
 
-    void Draw(sf::RenderWindow *, int x, int y);
+    void Draw(sf::RenderWindow * const, const int x, const int y) const;
 
     void Clear() { content.clear(); }
     void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
@@ -77,19 +79,21 @@ private:
     int xNumOfTiles, yNumOfTiles;
     int xPos, yPos;
     int blockSize;
+    int tileSize;
+    int xPadding, yPadding;
 
     std::mutex mutex;
     vector< vector<uptr<Block>> > blocks;
 
 public:
-    explicit TileGrid();
+    explicit TileGrid(const int windowWidth, const int windowHeight);
 
     TileGrid(const TileGrid &) = delete;
     TileGrid &operator=(const TileGrid &) = delete;
     ~TileGrid() = default;
 
     Tile *GetTile(int x, int y) const;
-    void Draw(sf::RenderWindow *);
+    void Draw(sf::RenderWindow * const);
 
     void Lock() { mutex.lock(); }
     void Unlock() { mutex.unlock(); }

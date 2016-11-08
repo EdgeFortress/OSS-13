@@ -5,25 +5,41 @@
 #include "TileGrid.hpp"
 #include "Common/NetworkConst.hpp"
 
+Object::Object(const Global::Sprite key, const bool directed) {
+    //if (directed) direction = 0;
+    //else direction = -1;
+    direction = 0;
+    SetSprite(key);
+}
+
+void Object::SetSprite(const Global::Sprite key) {
+    sprite = nullptr;
+    if (int(key))
+        for (auto &sprite : CC::Get()->GetWindow()->GetSprites())
+            if (sprite->GetKey() == key)
+                this->sprite = sprite.get();
+};
+
+void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
+    if (sprite) sprite->Draw(window, x, y, direction);
+}
+
 Tile::Tile(Block *block) : block(block), sprite(Global::Sprite::EMPTY) {
 };
 
-void Tile::Draw(sf::RenderWindow *window,int xNum = 0, int yNum = 0) {
-    /*int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
-    int xPosition = sizeTile * xNum;
-    int yPosition = sizeTile * yNum ;
+void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
+    //int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
+    //int xPosition = sizeTile * xNum;
+    //int yPosition = sizeTile * yNum;
 
-    Sprite* tileSprite = this->GetSprite();
-    if (tileSprite) {
-        tileSprite->SetSize(sizeTile);
-        tileSprite->Draw(window, xPosition, yPosition);
-    }
+    //Sprite* tileSprite = this->GetSprite();
+    //if (tileSprite) {
+    //    tileSprite->SetSize(sizeTile);
+    //    tileSprite->Draw(window, xPosition, yPosition);
+    //}
     
-    for (auto &object : content) {
-        Sprite* objSprite = object.get()->GetSprite();
-        objSprite->SetSize(sizeTile);
-        objSprite->Draw(window, xPosition, yPosition);
-    }*/
+    for (auto &obj : content)
+        obj->Draw(window, x, y);
 }
 
 Block::Block(TileGrid *tileGrid) : 
@@ -44,7 +60,7 @@ Tile* Block::GetTile (int x, int y) const {
     return nullptr;
 }
 
-TileGrid::TileGrid() : blockSize(Global::BLOCK_SIZE) {
+TileGrid::TileGrid(const int windowWidth, const int windowHeight) : blockSize(Global::BLOCK_SIZE) {
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided
@@ -58,6 +74,11 @@ TileGrid::TileGrid() : blockSize(Global::BLOCK_SIZE) {
         for (auto &block : vect)
             block.reset(new Block(this));
     }
+    
+    Window *window = CC::Get()->GetWindow();
+    tileSize = min(windowWidth, windowHeight) / Global::FOV;
+    xPadding = (windowWidth - tileSize * 15) / 2;
+    yPadding = (windowHeight - tileSize * 15) / 2;
 }
 
 Tile *TileGrid::GetTile(int x, int y) const {
@@ -67,10 +88,13 @@ Tile *TileGrid::GetTile(int x, int y) const {
     return nullptr;
 }
 
-void TileGrid::Draw(sf::RenderWindow *window) {
+void TileGrid::Draw(sf::RenderWindow * const window) {
     Lock();
-    //for(int i = 0; i < 15; i++)
-    //    for (int j = 0; j < 15; j++)
-    //        this->GetTile(xPos + i, yPos + j)->Draw(window, i, j);
+    for (int y = -(Global::FOV / 2); y < Global::FOV / 2; y++)
+        for (int x = -(Global::FOV / 2); x < Global::FOV / 2; x++) {
+            Tile *tile = GetTile(xPos + x, yPos + y);
+            if (tile) tile->Draw(window, xPadding + (x + Global::FOV / 2) * tileSize, 
+                                         xPadding + (y + Global::FOV / 2) * tileSize);
+        }
     Unlock();
 }

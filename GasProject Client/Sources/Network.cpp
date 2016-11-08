@@ -142,6 +142,11 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 }
 
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
+    sf::Int32 xPos, yPos;
+    packet >> xPos >> yPos;
+    tileGrid.xPos = xPos;
+    tileGrid.yPos = yPos;
+
     for (auto &vect : tileGrid.blocks)
         for (auto &block : vect)
             packet >> *block;
@@ -170,7 +175,7 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 Packet &operator>>(Packet &packet, Object &object) {
     sf::Int32 sprite;
     packet >> sprite;
-    object.sprite = static_cast<Global::Sprite>(sprite);
+    object.SetSprite(Global::Sprite(sprite));
     return packet;
 }
 

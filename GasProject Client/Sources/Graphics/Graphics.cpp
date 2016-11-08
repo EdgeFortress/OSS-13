@@ -4,9 +4,10 @@
 #include "UI/UI.hpp"
 #include "State.hpp"
 
-void Window::loadTextures(list<uptr<Sprite>> &sprites) {
-    Texture human("Images/Human.png", 32, 1);
-    sprites.push_back(uptr<Sprite>(human.SetInfo(Global::Sprite::Mob, 0, 0, true, 1)));
+void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {
+    Texture *t = new Texture("Images/Human.png", 32, 1);
+    sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Mob, 0, 0, true, 1)));
+    textures.push_back(uptr<Texture>(t));
 }
 
 void Window::Update(sf::Time timeElapsed) {
@@ -26,7 +27,6 @@ void Window::Update(sf::Time timeElapsed) {
         state->DrawTileGrid(window.get(), tileGrid.get());
         state->DrawUI(window.get(), timeElapsed);
     }
-    sizeTile = min(width, height) / 15;
     window->display();
     sf::sleep(sf::milliseconds(10));
 }

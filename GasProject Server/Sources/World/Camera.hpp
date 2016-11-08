@@ -11,7 +11,7 @@ namespace sf {
 
 class Camera {
 private:
-    Tile *tile;
+    const Tile *tile;
     bool suspense;
 
     std::vector< std::vector<Block *> > visibleBlocks;
@@ -20,9 +20,10 @@ private:
 
 public:
     Camera();
-    explicit Camera(Tile *tile);
+    explicit Camera(const Tile * const tile);
 
-    void SetPosition(Tile *tile);
+    void SetPosition(const Tile * const tile);
+    const Tile * const GetPosition() const { return tile; }
     void Suspend();
 
     friend sf::Packet &operator<<(sf::Packet &, Camera &);

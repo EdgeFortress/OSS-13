@@ -78,7 +78,9 @@ public:
     Sprite();
     Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIndex, int frames, bool directed);
 
-    void Draw(sf::RenderWindow *window, int x, int y, int direction) const;
+    void Draw(sf::RenderWindow * const window, const int x, const int y, const int direction) const;
+
+    Global::Sprite GetKey() const { return key; }
 
     /*bool PixelTransparent(int x, int y) const
     {
