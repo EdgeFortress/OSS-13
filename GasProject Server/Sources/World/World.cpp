@@ -11,7 +11,6 @@ Object::Object() {
 }
 
 Object::Object(Tile *tile) {
-    this->tile = tile;
     if (tile)
         tile->AddObject(this);
 }
@@ -23,6 +22,9 @@ Tile::Tile(Map *map, int x, int y) :
 }
 
 bool Tile::AddObject(Object *obj) {
+    if (obj->GetTile())
+        obj->GetTile()->RemoveObject(obj);
+    obj->SetTile(this);
     content.push_back(uptr<Object>(obj));
     return true;
 }
@@ -30,7 +32,9 @@ bool Tile::AddObject(Object *obj) {
 bool Tile::RemoveObject(Object *obj) {
     for (auto &i : content)
         if (i.get() == obj) {
+            i.release();
             content.remove(i);
+            obj->SetTile(nullptr);
             return true;
         }
     return false;
@@ -108,6 +112,21 @@ Block *Map::GetBlock(int x, int y) const {
     if (x >= 0 && x < numOfBlocksX && y >= 0 && y < numOfBlocksY)
         return blocks[y][x].get();
     return nullptr;
+}
+
+void World::Update(sf::Time timeElapsed) {
+    time_since_testMob_update += timeElapsed;
+    if (time_since_testMob_update >= sf::seconds(1)) {
+        int x = testMob->GetTile()->X() + test_dx;
+        int y = testMob->GetTile()->Y() + test_dy;
+        if (test_dx == 1 && x == 51) test_dx = 0, test_dy = 1;
+        if (test_dy == 1 && y == 51) test_dx = -1, test_dy = 0;
+        if (test_dx == -1 && x == 49) test_dx = 0, test_dy = -1;
+        if (test_dy == -1 && y == 49) test_dx = 1, test_dy = 0;
+        Server::log << x << y << endl;
+        map->GetTile(x, y)->AddObject(testMob.get());
+        time_since_testMob_update = sf::Time::Zero;
+    }
 }
 
 void World::FillingWorld() {

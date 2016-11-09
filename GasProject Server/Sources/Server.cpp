@@ -22,8 +22,9 @@ Game::Game(Server *server, string title, int id) : title(title),
 
 void Game::gameProcess(Game *inst) {
     inst->world.reset(new World());
+    Clock clock;
     while (inst->active) {
-        inst->world->Update();
+        inst->world->Update(clock.restart());
         sleep(seconds(0.1f));
     }
 }

@@ -12,14 +12,7 @@ Camera::Camera(const Tile * const tile) {
     this->tile = tile;
     suspense = false;
     countVisibleBlocks();
-    Server::log << "Camera created: " << tile->X() << " " << tile->Y() << endl
-        << "Visible blocks: " << endl;
-    for (auto &vect : visibleBlocks) {
-        for (auto *&block : vect) {
-            if (block)
-                Server::log << block->X() << " " << block->Y() << endl;
-        }
-    }
+    Server::log << "Camera created: " << tile->X() << " " << tile->Y() << endl;
 }
 
 void Camera::SetPosition(const Tile * const tile) {

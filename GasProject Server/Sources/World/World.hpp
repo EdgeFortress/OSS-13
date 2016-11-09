@@ -3,7 +3,10 @@
 #include <list>
 #include <vector>
 
+#include <SFML/System/Time.hpp>
+
 #include "Common/NetworkConst.hpp"
+#include "Network/Differences.hpp"
 #include "Camera.hpp"
 
 using std::list;
@@ -24,6 +27,8 @@ public:
     explicit Object(Tile *tile = nullptr);
 
     Tile *GetTile() { return tile; }
+    // Just set tile pointer
+    void SetTile(Tile *tile) { this->tile = tile; }
 
     friend sf::Packet &operator<<(sf::Packet &, Object &);
 };
@@ -91,8 +96,9 @@ private:
 public:
     explicit Tile(Map *map, int x, int y);
 
+    // Add object to the tile, and change object.tile pointer
     bool AddObject(Object *obj);
-    // Removing object from tile content, but not deleting it
+    // Removing object from tile content, but not deleting it, and change object.tile pointer
     bool RemoveObject(Object *obj);
 
     int X() const { return x; }
@@ -140,12 +146,22 @@ class World {
 private:
     uptr<Map> map;
 
+    uptr<Mob> testMob;
+    sf::Time time_since_testMob_update;
+    int test_dx;
+    int test_dy;
+
 public:
     World() : map(new Map(100, 100)) {
         FillingWorld();
+        testMob.reset(new Mob(map->GetTile(49, 49)));
+
+        test_dx = 1;
+        test_dy = 0;
     }
 
-    void Update() { }
+    void Update(sf::Time timeElapsed);
+
     void FillingWorld();
     Mob *CreateNewPlayerMob();
 };
