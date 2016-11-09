@@ -37,6 +37,15 @@ void Window::Update(sf::Time timeElapsed) {
     sf::sleep(sf::milliseconds(10));
 }
 
+void Window::Resize(const int newWidth, const int newHeight) {
+    width = newWidth; height = newHeight;
+    sf::FloatRect visibleArea(0, 0, width, height);
+    window->setView(sf::View(visibleArea));
+    tileGrid->Resize(width, height);
+    for (auto &sprite : sprites)
+        sprite->Resize(tileGrid->GetTileSize());
+}
+
 void MenuLoginState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
 void MenuGameListState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
 void GameLobbyState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const { }
