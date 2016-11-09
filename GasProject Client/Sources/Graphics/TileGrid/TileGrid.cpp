@@ -11,7 +11,7 @@ Object::Object(const Global::Sprite key, const bool directed) {
     direction = 0;
     SetSprite(key);
 }
-
+///
 void Object::SetSprite(const Global::Sprite key) {
     sprite = nullptr;
     if (int(key))
