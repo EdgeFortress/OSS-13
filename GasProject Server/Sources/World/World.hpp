@@ -6,7 +6,7 @@
 #include <SFML/System/Time.hpp>
 
 #include "Common/NetworkConst.hpp"
-#include "Network/Differences.hpp"
+#include "Common/Differences.hpp"
 #include "Camera.hpp"
 
 using std::list;
@@ -24,6 +24,7 @@ protected:
 
 public:
     Object();
+    // Construct object at tile
     explicit Object(Tile *tile = nullptr);
 
     Tile *GetTile() { return tile; }
@@ -97,13 +98,20 @@ public:
     explicit Tile(Map *map, int x, int y);
 
     // Add object to the tile, and change object.tile pointer
-    bool AddObject(Object *obj);
+    // If object was in content of other tile, generate MoveDiff,
+    // else generate AddDiff
+    void AddObject(Object *obj);
     // Removing object from tile content, but not deleting it, and change object.tile pointer
+    // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
 
     int X() const { return x; }
     int Y() const { return y; }
+    Block *GetBlock() const;
     Map *GetMap() const { return map; }
+
+    //Test
+    list<uptr<Object>> &GetContent() { return content; };
 
     friend sf::Packet &operator<<(sf::Packet &, Tile &);
 };
@@ -115,15 +123,18 @@ private:
     int size;
 
     vector< vector<Tile *> > tiles;
+    list<Diff> differences;
 
 public:
     explicit Block(Map *map, int blockX, int blockY);
 
+    void AddDiff(Diff &&diff) {
+        differences.push_back(diff);
+    }
+
     Tile *GetTile(int x, int y) const { return tiles[y][x]; }
     int X() const { return blockX; }
     int Y() const { return blockY; }
-
-    //Tile *GetTile(int x, int y);
 
     friend sf::Packet &operator<<(sf::Packet &, Block &);
 };
@@ -146,7 +157,7 @@ class World {
 private:
     uptr<Map> map;
 
-    uptr<Mob> testMob;
+    Mob* testMob;
     sf::Time time_since_testMob_update;
     int test_dx;
     int test_dy;
@@ -154,8 +165,8 @@ private:
 public:
     World() : map(new Map(100, 100)) {
         FillingWorld();
-        testMob.reset(new Mob(map->GetTile(49, 49)));
 
+        testMob = new Mob(map->GetTile(49, 49));
         test_dx = 1;
         test_dy = 0;
     }

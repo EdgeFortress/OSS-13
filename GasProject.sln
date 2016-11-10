@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{4462
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0}"
 	ProjectSection(SolutionItems) = preProject
+		CommonRes\include\Common\Differences.hpp = CommonRes\include\Common\Differences.hpp
 		CommonRes\include\Common\NetworkConst.hpp = CommonRes\include\Common\NetworkConst.hpp
 		CommonRes\include\Common\Useful.hpp = CommonRes\include\Common\Useful.hpp
 		CommonRes\include\Common\Сommand.hpp = CommonRes\include\Common\Сommand.hpp
