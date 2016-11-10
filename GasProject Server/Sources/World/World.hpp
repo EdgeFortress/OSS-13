@@ -17,6 +17,9 @@ class Player;
 class Tile;
 class Map;
 
+class Gas;
+class Local;
+
 class Object {
 protected:
     Tile *tile;
@@ -30,6 +33,7 @@ public:
     Tile *GetTile() { return tile; }
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
+	virtual void Interact(Object *) {}
 
     friend sf::Packet &operator<<(sf::Packet &, Object &);
 };
@@ -91,11 +95,16 @@ private:
     Map *map;
     int x, y;
     Global::Sprite sprite;
+	Local *local;
 
     list<uptr<Object>> content;
+	list<Gas> listGas;
 
 public:
     explicit Tile(Map *map, int x, int y);
+
+    void CheckLocal();
+    void Update();
 
     // Add object to the tile, and change object.tile pointer
     // If object was in content of other tile, generate MoveDiff,
@@ -110,9 +119,11 @@ public:
     Block *GetBlock() const;
     Map *GetMap() const { return map; }
 
+    void SetLocal(Local *local) { this->local = local; }
+
     //Test
     list<uptr<Object>> &GetContent() { return content; };
-
+	
     friend sf::Packet &operator<<(sf::Packet &, Tile &);
 };
 
@@ -146,11 +157,17 @@ private:
 
     vector< vector<uptr<Tile>> > tiles;
     vector< vector<uptr<Block>> > blocks;
+	list<uptr<Local>> locals;
 
 public:
     explicit Map(const int sizeX, const int sizeY);
     Tile *GetTile(int x, int y) const;
     Block *GetBlock(int x, int y) const;
+
+    void GenerateLocals();
+
+    void NewLocal(Tile *tile);
+    void RemoveLocal(const Local *local);
 };
 
 class World {
@@ -165,6 +182,7 @@ private:
 public:
     World() : map(new Map(100, 100)) {
         FillingWorld();
+        map->GenerateLocals();
 
         testMob = new Mob(map->GetTile(49, 49));
         test_dx = 1;
@@ -175,4 +193,34 @@ public:
 
     void FillingWorld();
     Mob *CreateNewPlayerMob();
+};
+
+class Local {
+	list<Tile *> tiles;
+    Map *map;
+
+public:
+    Local(Tile *tile) : map(tile->GetMap()) { tiles.push_back(tile); }
+
+	void AddTile(Tile *tile) {
+		tiles.push_back(tile);
+	}
+	void Merge(Local *local) {
+        if (this == local) return;
+        for (auto &tile : local->tiles) {
+            tiles.push_back(tile);
+            tile->SetLocal(this);
+        }
+        map->RemoveLocal(local);
+	}
+    //test
+    const list<Tile *> &GetTiles() { return tiles; }
+};
+
+class Gas {
+	double pressure;
+};
+
+class Oxygen : public Gas {
+
 };
