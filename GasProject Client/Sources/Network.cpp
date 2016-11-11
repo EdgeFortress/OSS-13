@@ -6,7 +6,6 @@
 #include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Graphics/UI/UI.hpp"
 #include "Common/Useful.hpp"
 
 using namespace std;
