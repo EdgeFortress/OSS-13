@@ -84,6 +84,9 @@ public:
 
     Global::Sprite GetKey() const { return key; }
 
+    bool Animated() { return frames > 1; }
+    void UpdateFrame() { ++curFrame %= frames; }
+
     /*bool PixelTransparent(int x, int y) const
     {
         x /= scale; y /= scale;

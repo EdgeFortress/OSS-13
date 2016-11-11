@@ -18,7 +18,8 @@ Object::Object(Tile *tile) : tile(nullptr) {
 Tile::Tile(Map *map, int x, int y) :
     map(map), x(x), y(y), local(nullptr)
 {
-    sprite = Global::Sprite::Space;
+    unsigned ux = x, uy = y;
+    sprite = Global::Sprite(unsigned(Global::Sprite::Space) + ((ux + uy) ^ ~(ux * uy)) % 25);
 }
 
 void Tile::AddObject(Object *obj) {
@@ -65,7 +66,7 @@ bool Tile::RemoveObject(Object *obj) {
             i.release();
             content.remove(i);
             obj->SetTile(nullptr);
-			// дописать удаление из локали
+			//add local remove
             return true;
         }
     return false;
@@ -219,8 +220,6 @@ void World::Update(sf::Time timeElapsed) {
         map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
     }
-
-
 }
 
 void World::FillingWorld() {
