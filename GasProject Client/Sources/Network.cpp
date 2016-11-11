@@ -154,6 +154,9 @@ Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
 }
 
 Packet &operator>>(Packet &packet, Block &block) {
+    sf::Int32 id;
+    packet >> id;
+    block.id = id;
     for (auto &vect : block.tiles)
         for (auto &tile : vect)
             packet >> *tile;

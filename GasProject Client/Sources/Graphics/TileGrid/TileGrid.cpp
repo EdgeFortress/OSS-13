@@ -43,7 +43,7 @@ void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const
 }
 
 Block::Block(TileGrid *tileGrid) : 
-    tileGrid(tileGrid),
+    tileGrid(tileGrid), id(-1),
     tiles(tileGrid->GetBlockSize())
 {
     for (auto &vect : tiles) {

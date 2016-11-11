@@ -35,7 +35,7 @@ public:
     void SetTile(Tile *tile) { this->tile = tile; }
 	virtual void Interact(Object *) {}
 
-    friend sf::Packet &operator<<(sf::Packet &, Object &);
+    friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };
 
 class Item : public Object {
@@ -124,12 +124,13 @@ public:
     //Test
     list<uptr<Object>> &GetContent() { return content; };
 	
-    friend sf::Packet &operator<<(sf::Packet &, Tile &);
+    friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
 
 class Block {
 private:
     Map *map;
+    int id;
     int blockX, blockY;
     int size;
 
@@ -146,8 +147,11 @@ public:
     Tile *GetTile(int x, int y) const { return tiles[y][x]; }
     int X() const { return blockX; }
     int Y() const { return blockY; }
+    int ID() const { return id; }
 
-    friend sf::Packet &operator<<(sf::Packet &, Block &);
+    const list<Diff> GetDifferences() { return differences; }
+
+    friend sf::Packet &operator<<(sf::Packet &, const Block &);
 };
 
 class Map {
@@ -161,13 +165,16 @@ private:
 
 public:
     explicit Map(const int sizeX, const int sizeY);
-    Tile *GetTile(int x, int y) const;
-    Block *GetBlock(int x, int y) const;
 
     void GenerateLocals();
 
     void NewLocal(Tile *tile);
     void RemoveLocal(const Local *local);
+
+    Tile *GetTile(int x, int y) const;
+    Block *GetBlock(int x, int y) const;
+    int GetNumOfBlocksX() const;
+    int GetNumOfBlocksY() const;
 };
 
 class World {

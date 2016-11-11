@@ -113,7 +113,8 @@ void Tile::Update() {
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
-    map(map), blockX(blockX), blockY(blockY),
+    map(map), id(blockY * map->GetNumOfBlocksX() + blockX),
+    blockX(blockX), blockY(blockY),
     size(Global::BLOCK_SIZE),
     tiles(size, vector<Tile *>(size))
 {
@@ -167,27 +168,12 @@ Map::Map(const int sizeX, const int sizeY) :
                 << "Block size: " << Global::BLOCK_SIZE << std::endl;
 }
 
-Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) 
-        return tiles[y][x].get();
-    return nullptr;
-}
-
-Block *Map::GetBlock(int x, int y) const {
-    if (x >= 0 && x < numOfBlocksX && y >= 0 && y < numOfBlocksY)
-        return blocks[y][x].get();
-    return nullptr;
-}
-
 void Map::GenerateLocals() {
     for (auto &vect : tiles)
         for (auto &tile : vect)
             tile->CheckLocal();
 
     Server::log << "Num of locals:" << locals.size() << endl;
-    for (auto &tile : locals.front()->GetTiles())
-        Server::log << tile->X() << tile->Y() << endl;
-
 }
 
 void Map::NewLocal(Tile *tile) {
@@ -204,6 +190,21 @@ void Map::RemoveLocal(const Local *local) {
         }
     }
 }
+
+Tile *Map::GetTile(int x, int y) const {
+    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
+        return tiles[y][x].get();
+    return nullptr;
+}
+
+Block *Map::GetBlock(int x, int y) const {
+    if (x >= 0 && x < numOfBlocksX && y >= 0 && y < numOfBlocksY)
+        return blocks[y][x].get();
+    return nullptr;
+}
+
+int Map::GetNumOfBlocksX() const { return numOfBlocksX; }
+int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
 
 void World::Update(sf::Time timeElapsed) {
     time_since_testMob_update += timeElapsed;
