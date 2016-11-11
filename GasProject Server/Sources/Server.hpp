@@ -22,37 +22,38 @@ class Game {
 private:
     std::string title;
     const int id;
-	Server *server;
+    Server *server;
     bool active;
     uptr<std::thread> thread;
-	uptr<World> world;
+    uptr<World> world;
 
     std::list<Player *> players;
     static void gameProcess(Game *);
 
 public:
-	Game(Server *server, std::string title, int id);
+    Game(Server *server, std::string title, int id);
     ~Game();
 
     bool AddPlayer(Player *);
+    void DeletePlayer(Player *);
 
     const int GetID() const;
 
-    friend sf::Packet &operator<<(sf::Packet &packet, Game *game);
+    friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
 };
 
 class Server {
 private:
     int new_game_id;
     std::list<uptr<Player>> players;
-	std::list<uptr<Game>> games;
+    std::list<uptr<Game>> games;
 
     static Server *instance;
 
 public:
     uptr<UsersDB> UDB;
 
-	Server();
+    Server();
     bool Authorization(std::string &login, std::string &password) const;
     bool Registration(std::string &login, std::string &password) const;
     bool CreateGame(std::string title);
@@ -60,7 +61,7 @@ public:
     Game *JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
 
-    static Server *Get() { return instance; };
+    static Server *Get() { return instance; }
 
-	static const Log log;
+    static Log log;
 };

@@ -22,8 +22,9 @@ Game::Game(Server *server, string title, int id) : title(title),
 
 void Game::gameProcess(Game *inst) {
     inst->world.reset(new World());
+    Clock clock;
     while (inst->active) {
-        inst->world->Update();
+        inst->world->Update(clock.restart());
         sleep(seconds(0.1f));
     }
 }
@@ -37,8 +38,12 @@ const int Game::GetID() const { return id; }
 
 bool Game::AddPlayer(Player *player) {
     players.push_back(player);
+    player->SetMob(world->CreateNewPlayerMob());
+    player->AddCommand(new GraphicsFullUpdateServerCommand(player->GetCamera()));
     return true;
 }
+
+void Game::DeletePlayer(Player *player) { players.remove(player);  }
 
 Server::Server() : UDB(new UsersDB()),
                    new_game_id(1) {
@@ -46,24 +51,46 @@ Server::Server() : UDB(new UsersDB()),
     ListeningSocket::Start(this);
     CreateGame("One Super Test Game");
     while (true) {
+        for (auto &game : games)
+            for (auto &player : players)
+                if (!(player->GetConnection()->IsActive())) {
+                    game->DeletePlayer(player.get());
+                    break;
+                }
+        for (auto &player : players)
+            if (!(player->GetConnection()->IsActive())) {
+                players.remove(player);
+                break;
+            }
         sleep(seconds(1));
     }
 }
 
 bool Server::Authorization(string &login, string &password) const {
     if (UDB->Check(login, password)) {
-		Server::log << "Player is authorized:" << login << password << endl;
+        bool isNew = true;
+        for (auto &i : players)
+            if (i->GetCKey() == login) {
+                isNew = false;
+                break;
+            }
+        if (isNew) {
+        Server::log << "Player is authorized:" << login << password << endl;
         return true;
     }
-	Server::log << "Wrong login data received:" << login << password << endl;
+        Server::log << "Player" << login << password << "is trying to authorize second time" <<endl;
+        return false;
+    }
+    Server::log << "Wrong login data received:" << login << password << endl;
     return false;
 }
 
 bool Server::Registration(string &login, string &password) const {
     if (UDB->Add(login, password)) {
-		Server::log << "New player is registrated:" << login << password << endl;
+        Server::log << "New player is registrated:" << login << password << endl;
         return true;
     }
+    Server::log << "Player is trying make second accoun with same login:" << login << password << endl;
     return false;
 }
 
@@ -91,12 +118,11 @@ void Server::AddPlayer(Player *player) {
     players.push_back(uptr<Player>(player));
 }
 
-const Log Server::log;
-
 int main() {
-	Server server;
+    Server server;
 
-	return 0;
+    return 0;
 }
 
+Log Server::log;
 Server *Server::instance;

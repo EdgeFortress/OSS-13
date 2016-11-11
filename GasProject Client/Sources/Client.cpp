@@ -9,25 +9,24 @@
 using std::endl;
 
 ClientController::ClientController() : 
-	player(new Player),
-	window(new Window()),
-	state(nullptr),
-	newState(nullptr) 
+    player(new Player),
+    window(new Window()),
+    state(nullptr),
+    newState(nullptr) 
 {
-	instance = this;
+    instance = this;
 }
 
 void ClientController::Run() {
-	window->Initilize();
-    if (!Connection::Start("localhost", PORT)) {
+    if (!Connection::Start("localhost", Global::PORT)) {
         CC::log << "Connection error!" << endl;
     } else {
-		CC::log << "Connected" << endl;
+        CC::log << "Connected" << endl;
     };
     sf::Clock clock;
     //time_t startTime = time(nullptr);
 
-    SetState(new GameProcessState);
+    SetState(new MenuLoginState);  
 
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
@@ -39,16 +38,16 @@ void ClientController::Run() {
             newState = nullptr;
         }
     }
-	Connection::Stop();
+    Connection::Stop();
 }
 
 
 int main() {
-	ClientController clientController;
+    ClientController clientController;
     clientController.Run();
-	
-	return 0;
+    
+    return 0;
 }
 
-const Log CC::log;
+Log CC::log;
 ClientController *ClientController::instance;

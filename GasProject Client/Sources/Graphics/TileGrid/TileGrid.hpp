@@ -6,6 +6,10 @@
 #include "Graphics/Sprite.hpp"
 #include "State.hpp"
 
+namespace sf {
+    class Packet;
+}
+
 class Block;
 class TileGrid;
 
@@ -14,85 +18,92 @@ using namespace std;
 class Object {
 private:
     Sprite *sprite;
+    int direction;
 
 public:
-    Object() { sprite = new Sprite(); }
+    explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const bool directed = false);
 
-    void SetSprite(int textureIndex, int num, int direction, int frame);
-    Sprite *GetSprite() { return sprite; }
-    ~Object()
-    {
-        if (sprite) delete sprite;
-    }
+    void Draw(sf::RenderWindow * const, const int x, const int y);
+
+    void SetSprite(const Global::Sprite);
+    //Sprite *GetSprite() const { return sprite; }
+
+    friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
 };
 
 class Tile {
 private:
-	Block *block;
-	Sprite *sprite;
-	list<uptr<Object>> content;
+    Block *block;
+    Global::Sprite sprite;
+    list<uptr<Object>> content;
 
 public:
-	explicit Tile(Block *block);
+    explicit Tile(Block *block);
 
-	Tile(const Tile &) = delete;
-	Tile &operator=(const Tile &) = delete;
-	~Tile() = default;
+    Tile(const Tile &) = delete;
+    Tile &operator=(const Tile &) = delete;
+    ~Tile() = default;
 
-	void Clear() { 
-		content.clear();
-	}
-	void AddObject(Object *obj) {
-		content.push_back(uptr<Object>(obj));
-	}
-	Sprite *GetSprite() const { return sprite;  }
-	void SetSprite(int, int, int);
-	void Draw(sf::RenderWindow *, int, int);
+    void Draw(sf::RenderWindow * const, const int x, const int y) const;
 
-	//const list<uptr<Object>> &GetContent() const { return content; }
+    void Clear() { content.clear(); }
+    void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
+
+    Global::Sprite GetSprite() const { return sprite;  }
+    void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
+
+    //const list<uptr<Object>> &GetContent() const { return content; }
+
+    friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 };
 
 class Block {
 private:
-	TileGrid *tileGrid;
-	vector < vector<Tile *> > tiles;
+    TileGrid *tileGrid;
+    int id;
+
+    vector< vector< uptr<Tile> > > tiles;
 
 public:
-	explicit Block(TileGrid *tileGrid);
+    explicit Block(TileGrid *tileGrid);
 
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	~Block() = default;
+    Block(const Block &) = delete;
+    Block &operator=(const Block &) = delete;
+    ~Block() = default;
 
-	Tile *GetTile(int x, int y);
+    Tile *GetTile(int x, int y) const;
+
+    friend sf::Packet &operator>>(sf::Packet &packet, Block &block);
 };
 
 class TileGrid {
 private:
-	int xNumOfTiles, yNumOfTiles;
-	int xPos, yPos;
-	list<uptr<Texture>> &textures;
-	vector< vector<Block *> > blocks;
+    int xNumOfTiles, yNumOfTiles;
+    int xPos, yPos;
+    int blockSize;
+    int tileSize;
+    int xPadding, yPadding;
+
+    std::mutex mutex;
+    vector< vector<uptr<Block>> > blocks;
 
 public:
-	static const int BlockSize = 8;
-	static const int NumOfBlocks = 4;//non static is non visible for constructor
-	static const int SpriteRes = 64;
+    explicit TileGrid(const int windowWidth, const int windowHeight);
 
-	explicit TileGrid(list<uptr<Texture>> &textures);
-	void Initialize();
+    TileGrid(const TileGrid &) = delete;
+    TileGrid &operator=(const TileGrid &) = delete;
+    ~TileGrid() = default;
 
-	TileGrid(const TileGrid &) = delete;
-	TileGrid &operator=(const TileGrid &) = delete;
-	~TileGrid() = default;
+    Tile *GetTile(int x, int y) const;
+    void Draw(sf::RenderWindow * const);
 
-	Tile *GetTile(int x, int y)
-	{
+    void Lock() { mutex.lock(); }
+    void Unlock() { mutex.unlock(); }
 
-		if (x >= 0 && x < NumOfBlocks * BlockSize && y >= 0 && y < NumOfBlocks * BlockSize)
-			return blocks[y / BlockSize][x / BlockSize]->GetTile(x % BlockSize, y % BlockSize);
-		CC::log << "Can't return block " << x << ", " << y << endl;
-		return nullptr;
-	}
-	void Draw(sf::RenderWindow *);
+    void Resize(const int windowWidth, const int windowHeight);
+
+    const int GetBlockSize() const { return blockSize; }
+    const int GetTileSize() const { return tileSize; }
+
+    friend sf::Packet &operator>> (sf::Packet &packet, TileGrid &tileGrid);
 };
