@@ -47,7 +47,7 @@ public:
 	}
 	Sprite *GetSprite() const { return sprite;  }
 	void SetSprite(int, int, int);
-	void Draw(sf::RenderWindow *, int, int, int);
+	void Draw(sf::RenderWindow *, int, int);
 
 	//const list<uptr<Object>> &GetContent() const { return content; }
 };
@@ -78,7 +78,7 @@ public:
 	static const int BlockSize = 8;
 	static const int NumOfBlocks = 4;//non static is non visible for constructor
 	static const int SpriteRes = 64;
-	int sizeTile;
+
 	explicit TileGrid(list<uptr<Texture>> &textures);
 	void Initialize();
 

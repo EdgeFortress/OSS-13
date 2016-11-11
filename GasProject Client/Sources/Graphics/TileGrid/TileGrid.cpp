@@ -26,8 +26,9 @@ void Tile::SetSprite(int textureIndex, int num, int frame) {
         }
 }
 
-void Tile::Draw(sf::RenderWindow *window,int sizeTile,int xNum = 0, int yNum = 0)
+void Tile::Draw(sf::RenderWindow *window,int xNum = 0, int yNum = 0)
 {
+	int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
 	int xPosition = sizeTile * xNum;
 	int yPosition = sizeTile * yNum ;
 
@@ -56,7 +57,13 @@ void TileGrid::Draw(sf::RenderWindow *window)
 {
 	for(int i = 0; i < 15; i++)
 		for (int j = 0; j < 15; j++)
-			this->GetTile(xPos + i, yPos + j)->Draw(window, sizeTile, i, j);
+			this->GetTile(xPos + i, yPos + j)->Draw(window, i, j);
+
+
+
+	/*Tile * firstTile = this->GetTile(1, 1);
+	firstTile -> Draw(window);*/
+
 }
 
 TileGrid::TileGrid(list<uptr<Texture>> &textures) :

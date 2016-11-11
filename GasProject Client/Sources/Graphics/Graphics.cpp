@@ -23,8 +23,6 @@ void Window::Update(sf::Time timeElapsed) {
 		ui->HandleEvent(event);
 		if (event.type == sf::Event::Closed)
 			window->close();
-		if(event.type == sf::Event::Resized)
-			tileGrid.get()->sizeTile = min(width, height) / 15;
 	}
 
 	window->resetGLStates();
@@ -34,7 +32,7 @@ void Window::Update(sf::Time timeElapsed) {
         state->DrawTileGrid(window.get(), tileGrid.get());
         state->DrawUI(window.get(), timeElapsed);
     }
-	
+	sizeTile = min(width, height) / 15;
 	window->display();
 	sf::sleep(sf::milliseconds(10));
 }
