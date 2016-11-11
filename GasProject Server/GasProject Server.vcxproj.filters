@@ -56,8 +56,5 @@
     <ClInclude Include="Sources\World\Camera.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Network\Differences.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

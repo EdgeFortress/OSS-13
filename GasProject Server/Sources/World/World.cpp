@@ -10,23 +10,53 @@ Object::Object() {
     tile = nullptr;
 }
 
-Object::Object(Tile *tile) {
+Object::Object(Tile *tile) : tile(nullptr) {
     if (tile)
         tile->AddObject(this);
 }
 
 Tile::Tile(Map *map, int x, int y) :
-    map(map), x(x), y(y)
+    map(map), x(x), y(y), local(nullptr)
 {
     sprite = Global::Sprite::Space;
 }
 
-bool Tile::AddObject(Object *obj) {
-    if (obj->GetTile())
-        obj->GetTile()->RemoveObject(obj);
+void Tile::AddObject(Object *obj) {
+    Tile *lastTile;
+    bool moved = false;
+    if (lastTile = obj->GetTile()) {
+        int n = 0;
+        for (auto &i : lastTile->content) {
+            if (i.get() == obj) {
+                i.release();
+                lastTile->content.remove(i);
+
+                Block *block = lastTile->GetBlock();
+                int x = lastTile->X() % Global::BLOCK_SIZE;
+                int y = lastTile->Y() % Global::BLOCK_SIZE;
+                if (GetBlock() == block) {
+                    int toX = X() % Global::BLOCK_SIZE;
+                    int toY = Y() % Global::BLOCK_SIZE;
+                    block->AddDiff(MoveDiff(block, x, y, n, toX, toY));
+                    moved = true;
+                } else {
+                    block->AddDiff(RemoveDiff(block, x, y, n));
+                }
+                
+                break;
+            }
+            n++;
+        }
+    }
     obj->SetTile(this);
     content.push_back(uptr<Object>(obj));
-    return true;
+
+    if (!moved) {
+        Block *block = GetBlock();
+        int x = X() % Global::BLOCK_SIZE;
+        int y = Y() % Global::BLOCK_SIZE;
+        block->AddDiff(AddDiff(block, x, y, int(content.size() - 1)));
+    }
 }
 
 bool Tile::RemoveObject(Object *obj) {
@@ -35,16 +65,58 @@ bool Tile::RemoveObject(Object *obj) {
             i.release();
             content.remove(i);
             obj->SetTile(nullptr);
+			// дописать удаление из локали
             return true;
         }
     return false;
 }
 
+Block *Tile::GetBlock() const {
+    return map->GetBlock(x / Global::BLOCK_SIZE, y / Global::BLOCK_SIZE);
+}
+
+void Tile::CheckLocal() {
+    if (local) return;
+
+    bool floor = false;
+    for (auto &obj : content) {
+        if (dynamic_cast<Wall *>(obj.get())) {
+            return;
+        }
+        if (dynamic_cast<Floor *>(obj.get())) {
+            floor = true;
+        }
+    }
+    if (!floor) return;
+
+	for (int dx = -1; dx <= 1; dx++)
+		for (int dy = -1; dy <= 1; dy++) {
+			if (!map->GetTile(x + dx, y + dy) || 
+                dx == 0 && dy == 0)
+				continue;
+			if (map->GetTile(x + dx, y + dy)->local) {
+                if (local) {
+                    local->Merge(map->GetTile(x + dx, y + dy)->local);
+                } else {
+                    map->GetTile(x + dx, y + dy)->local->AddTile(this);
+                    local = map->GetTile(x + dx, y + dy)->local;
+                }
+			}
+		}
+    if (!local) {
+        map->NewLocal(this);
+    }
+}
+
+void Tile::Update() {
+	
+}
+
 Block::Block(Map *map, int blockX, int blockY) :
-    map(map), blockX(blockX), blockY(blockY),
+    map(map), id(blockY * map->GetNumOfBlocksX() + blockX),
+    blockX(blockX), blockY(blockY),
     size(Global::BLOCK_SIZE),
     tiles(size, vector<Tile *>(size))
-    
 {
     int y = 0;
     for (vector<Tile *> &vect : tiles) {
@@ -56,12 +128,6 @@ Block::Block(Map *map, int blockX, int blockY) :
         y++;
     }
 }
-
-/*Tile *Block::GetTile(int x, int y) {
-    if (x >= 0 && x < Global::BLOCK_SIZE && y >= 0 && y < Global::BLOCK_SIZE)
-        return tiles[y][x];
-    return nullptr;
-}*/
 
 Map::Map(const int sizeX, const int sizeY) : 
     sizeX(sizeX), sizeY(sizeY),
@@ -102,8 +168,31 @@ Map::Map(const int sizeX, const int sizeY) :
                 << "Block size: " << Global::BLOCK_SIZE << std::endl;
 }
 
+void Map::GenerateLocals() {
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            tile->CheckLocal();
+
+    Server::log << "Num of locals:" << locals.size() << endl;
+}
+
+void Map::NewLocal(Tile *tile) {
+    if (!tile) return;
+    locals.push_back(uptr<Local>(new Local(tile)));
+    tile->SetLocal(locals.back().get());
+}
+
+void Map::RemoveLocal(const Local *local) {
+    for (auto &i : locals) {
+        if (i.get() == local) {
+            locals.remove(i);
+            break;
+        }
+    }
+}
+
 Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) 
+    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
         return tiles[y][x].get();
     return nullptr;
 }
@@ -114,6 +203,9 @@ Block *Map::GetBlock(int x, int y) const {
     return nullptr;
 }
 
+int Map::GetNumOfBlocksX() const { return numOfBlocksX; }
+int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
+
 void World::Update(sf::Time timeElapsed) {
     time_since_testMob_update += timeElapsed;
     if (time_since_testMob_update >= sf::seconds(1)) {
@@ -123,10 +215,12 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dy == 1 && y == 51) test_dx = -1, test_dy = 0;
         if (test_dx == -1 && x == 49) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 49) test_dx = 1, test_dy = 0;
-        Server::log << x << y << endl;
-        map->GetTile(x, y)->AddObject(testMob.get());
+
+        map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
     }
+
+
 }
 
 void World::FillingWorld() {
@@ -138,6 +232,20 @@ void World::FillingWorld() {
                 new Wall(tile);
         }
     }
+
+    for (int i = 5; i <= 10; i++) {
+        for (int j = 5; j <= 10; j++) {
+            Tile *tile = map->GetTile(i, j);
+            new Floor(tile);
+        }
+    }
+
+    /*for (int i = 85; i <= 95; i++) {
+        for (int j = 85; j <= 95; j++) {
+            Tile *tile = map->GetTile(i, j);
+            new Floor(tile);
+        }
+    }*/
 }
 
 Mob *World::CreateNewPlayerMob() {

@@ -9,6 +9,7 @@
 
 class Player;
 class Server;
+struct Diff;
 
 class ListeningSocket {
 private:
@@ -47,3 +48,4 @@ public:
 };
 
 sf::Packet &operator<<(sf::Packet &, ServerCommand *);
+sf::Packet &operator<<(sf::Packet &packet, const Diff &diff);

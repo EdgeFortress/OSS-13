@@ -180,32 +180,68 @@ Packet &operator<<(Packet &packet, Game &game) {
     return packet;
 }
 
-Packet &operator<<(Packet &packet, Camera &camera) {
+void Camera::PackDifferences(Packet &packet) {
+    for (auto &vect : visibleBlocks)
+        for (auto &block : vect) {
+            if (block->GetDifferences().size()) {
+                packet << sf::Int32(block->ID());
+                packet << sf::Int32(block->GetDifferences().size());
+                Server::log << "Send diffences of block" << block->ID() << "(" << block->GetDifferences().size() << ")" << endl;
+                for (const Diff &diff : block->GetDifferences())
+                    packet << diff;
+            }
+        }
+}
+
+Packet &operator<<(Packet &packet, const Diff &diff) {
+    packet << Int32(diff.GetType());
+    packet << Int32(diff.x) << Int32(diff.y);
+    packet << Int32(diff.objectNum);
+    switch (diff.GetType()) {
+        case Diff::Type::MOVE: {
+            const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
+            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY);
+            break;
+        }
+        case Diff::Type::ADD: {
+            const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
+            break;
+        }
+        case Diff::Type::REMOVE: {
+            const RemoveDiff &removeDiff = dynamic_cast<const RemoveDiff &>(diff);
+            break;
+        }
+    }
+    return packet;
+}
+
+Packet &operator<<(Packet &packet, const Camera &camera) {
     sf::Int32 cameraCentreX, cameraCentreY;
     cameraCentreX = camera.GetPosition()->X() - camera.visibleBlocks[0][0]->GetTile(0, 0)->X();
     cameraCentreY = camera.GetPosition()->Y() - camera.visibleBlocks[0][0]->GetTile(0, 0)->Y();
     packet << cameraCentreX << cameraCentreY;
     for (auto &vect : camera.visibleBlocks)
-        for (auto *&block : vect)
+        for (const Block *block : vect)
             packet << *block;
     return packet;
 }
 
-Packet &operator<<(Packet &packet, Block &block) {
+Packet &operator<<(Packet &packet, const Block &block) {
+    packet << sf::Int32(block.ID());
     for (auto &vect : block.tiles)
-        for (auto *&tile : vect)
+        for (const Tile *tile : vect)
             packet << *tile;
     return packet;
 }
 
-Packet &operator<<(Packet &packet, Tile &tile) {
+Packet &operator<<(Packet &packet, const Tile &tile) {
     packet << sf::Int32(tile.content.size());
     for (auto &obj : tile.content)
         packet << *obj;
     return packet;
 }
 
-Packet &operator<<(Packet &packet, Object &obj) {
+Packet &operator<<(Packet &packet, const Object &obj) {
     packet << sf::Int32(obj.sprite);
     return packet;
 }

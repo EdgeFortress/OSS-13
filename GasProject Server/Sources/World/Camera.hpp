@@ -26,5 +26,7 @@ public:
     const Tile * const GetPosition() const { return tile; }
     void Suspend();
 
-    friend sf::Packet &operator<<(sf::Packet &, Camera &);
+    void PackDifferences(sf::Packet &packet);
+
+    friend sf::Packet &operator<<(sf::Packet &, const Camera &);
 };

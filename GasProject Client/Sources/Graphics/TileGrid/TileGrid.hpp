@@ -60,6 +60,8 @@ public:
 class Block {
 private:
     TileGrid *tileGrid;
+    int id;
+
     vector< vector< uptr<Tile> > > tiles;
 
 public:

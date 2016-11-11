@@ -39,7 +39,7 @@ void Window::Update(sf::Time timeElapsed) {
 
 void Window::Resize(const int newWidth, const int newHeight) {
     width = newWidth; height = newHeight;
-    sf::FloatRect visibleArea(0, 0, width, height);
+    sf::FloatRect visibleArea(0, 0, float(width), float(height));
     window->setView(sf::View(visibleArea));
     tileGrid->Resize(width, height);
     for (auto &sprite : sprites)
