@@ -1,9 +1,10 @@
 #pragma once
 
-#include "State.hpp"
-#include "network.hpp"
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
+#include <SFML/System.hpp>
+
+#include "Common/Useful.hpp"
 
 class GameListUI;
 class AuthUI;

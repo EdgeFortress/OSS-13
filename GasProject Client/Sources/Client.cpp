@@ -2,6 +2,7 @@
 #include "Graphics/Window.hpp"
 #include "State.hpp"
 #include "Common/NetworkConst.hpp"
+#include "Network.hpp"
 
 #include <iostream>
 //#include <ctime>

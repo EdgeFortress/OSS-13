@@ -1,5 +1,7 @@
 #pragma once
+
 #include "UI.hpp"
+#include "State.hpp"
 
 class AuthUI : UIModule {
 private:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "Client.hpp"
 #include "Graphics/Sprite.hpp"

@@ -1,4 +1,7 @@
 #pragma once
+
+#include <SFML/Graphics.hpp>
+
 #include "UI.hpp"
 
 class GameProcessUI : UIModule {

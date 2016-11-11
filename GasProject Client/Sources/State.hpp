@@ -1,13 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widgets.hpp>
-
-#include "Graphics/TileGrid/TileGrid.hpp"
+#include <SFML/System.hpp>
 
 class TileGrid;
+
+namespace sf {
+	class RenderWindow;
+}
 
 /*  Just states, nothing expecial. Each state must have unique realization of functions.
     ClientContoller can change states and use this functions. 

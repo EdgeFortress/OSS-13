@@ -1,5 +1,9 @@
 #pragma once
+
 #include "UI.hpp"
+#include <SFML\Graphics.hpp>
+
+using std::string;
 
 struct GameRow {
 	int id;

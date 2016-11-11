@@ -1,4 +1,5 @@
 #include "GameListUI.hpp"
+#include "Network.hpp"
 
 GameListUI::GameListUI(UI *ui) : UIModule(ui) {
 	generateGamelistWindow();

@@ -1,4 +1,9 @@
+#include <SFML/Graphics.hpp>
+
+#include "Client.hpp"
 #include "AuthUI.hpp"
+#include "Network.hpp"
+
 
 void AuthUI::AccountDataEnter() {
 	if (login_entry->HasFocus() || passw_entry->HasFocus())
