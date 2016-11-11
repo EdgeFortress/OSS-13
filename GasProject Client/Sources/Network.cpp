@@ -3,10 +3,13 @@
 
 #include <SFML/Network.hpp>
 
+#include "Graphics/UI/UI.hpp"
+#include "Graphics/UI/AuthUI.hpp"
+#include "Graphics/UI/GameListUI.hpp"
+
 #include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Graphics/UI/UI.hpp"
 
 using namespace std;
 using namespace sf;

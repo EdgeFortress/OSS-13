@@ -1,7 +1,10 @@
 #include "Client.hpp"
 #include "Window.hpp"
 #include "TileGrid/TileGrid.hpp"
-#include "UI/UI.hpp"
+
+#include "Graphics/UI/UI.hpp"
+#include "Graphics/UI/AuthUI.hpp"
+
 #include "State.hpp"
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {
