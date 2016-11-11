@@ -235,7 +235,7 @@ Packet &operator<<(Packet &packet, const Block &block) {
 }
 
 Packet &operator<<(Packet &packet, const Tile &tile) {
-    packet << sf::Int32(tile.content.size());
+    packet << sf::Int32(tile.content.size()) << sf::Int32(tile.sprite);
     for (auto &obj : tile.content)
         packet << *obj;
     return packet;

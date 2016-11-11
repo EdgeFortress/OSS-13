@@ -16,15 +16,17 @@ void Object::SetSprite(const Global::Sprite key) {
     sprite = nullptr;
     if (int(key))
         for (auto &sprite : CC::Get()->GetWindow()->GetSprites())
-            if (sprite->GetKey() == key)
+            if (sprite->GetKey() == key) {
                 this->sprite = sprite.get();
+                break;
+            }
 };
 
 void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
     if (sprite) sprite->Draw(window, x, y, direction);
 }
 
-Tile::Tile(Block *block) : block(block), sprite(Global::Sprite::EMPTY) {
+Tile::Tile(Block *block) : block(block), sprite(nullptr) {
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
@@ -37,7 +39,9 @@ void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const
     //    tileSprite->SetSize(sizeTile);
     //    tileSprite->Draw(window, xPosition, yPosition);
     //}
-    
+   
+    sprite->Draw(window, x, y, 0);
+
     for (auto &obj : content)
         obj->Draw(window, x, y);
 }

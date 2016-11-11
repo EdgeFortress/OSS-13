@@ -20,12 +20,12 @@ private:
 
     uptr<RenderWindow> window;
     int width, height;
-    
+
+    sf::Time animationTime;
 
     const int req_FPS = 100;
     sf::Clock clock;
     int cur_FPS;
-    void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
 
     bool fps_exceed() {
         if (clock.getElapsedTime() >= sf::milliseconds(100)) {
@@ -35,6 +35,8 @@ private:
         if (cur_FPS >= req_FPS / 10) return true;
         return false;
     }
+
+    void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
 
 public:
     Window() : cur_FPS(0) {
@@ -48,6 +50,8 @@ public:
         window->clear(sf::Color::Black);
         window->display();
         ui.reset(new UI(window.get()));
+
+        animationTime = sf::Time::Zero;
     }
 
     Window(const Window &) = delete;

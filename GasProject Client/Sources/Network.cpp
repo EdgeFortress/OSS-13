@@ -7,6 +7,7 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/UI/UI.hpp"
+#include "Common/Useful.hpp"
 
 using namespace std;
 using namespace sf;
@@ -164,9 +165,14 @@ Packet &operator>>(Packet &packet, Block &block) {
 }
 
 Packet &operator>>(Packet &packet, Tile &tile) {
-    sf::Int32 size;
-    packet >> size;
+    sf::Int32 size, sprite;
+    packet >> size >> sprite;
     tile.Clear();
+    for (auto &spr : CC::Get()->GetWindow()->GetSprites())
+        if (spr->GetKey() == Global::Sprite(sprite)) {
+            tile.sprite = spr.get();
+            break;
+        }
     for (int i = 0; i < size; i++) {
         Object *object = new Object();
         packet >> *object;

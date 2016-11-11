@@ -13,6 +13,7 @@ namespace Global {
         Wall,
         Airlock,
         Mob,
-        Space
+        Space,
+        NextSprite = Space + 26,
     };
 }

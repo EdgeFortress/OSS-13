@@ -34,7 +34,8 @@ public:
 class Tile {
 private:
     Block *block;
-    Global::Sprite sprite;
+    //Global::Sprite sprite;
+    Sprite *sprite;
     list<uptr<Object>> content;
 
 public:
@@ -46,11 +47,11 @@ public:
 
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
 
-    void Clear() { content.clear(); }
+    void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
 
-    Global::Sprite GetSprite() const { return sprite;  }
-    void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
+    //Global::Sprite GetSprite() const { return sprite;  }
+    //void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
 
     //const list<uptr<Object>> &GetContent() const { return content; }
 

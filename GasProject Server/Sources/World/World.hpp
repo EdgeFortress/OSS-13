@@ -213,6 +213,7 @@ public:
 		tiles.push_back(tile);
 	}
 	void Merge(Local *local) {
+        if (!local) return;
         if (this == local) return;
         for (auto &tile : local->tiles) {
             tiles.push_back(tile);
