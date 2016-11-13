@@ -23,7 +23,7 @@ public:
     UIModule &operator=(const UIModule &) = delete;
     virtual ~UIModule() = default;
 
-	virtual void Draw() = 0;
+    virtual void Draw() = 0;
 
     virtual void Hide() = 0;
     virtual void Show() = 0;
@@ -38,8 +38,8 @@ private:
     sfg::Desktop desktop;
 
     uptr<AuthUI> authUI;
-	uptr<GameListUI> gamelistUI;
-	uptr<GameProcessUI> gameProcessUI;
+    uptr<GameListUI> gamelistUI;
+    uptr<GameProcessUI> gameProcessUI;
 
     std::mutex UImutex;
 

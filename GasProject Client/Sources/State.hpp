@@ -5,7 +5,7 @@
 class TileGrid;
 
 namespace sf {
-	class RenderWindow;
+    class RenderWindow;
 }
 
 /*  Just states, nothing expecial. Each state must have unique realization of functions.

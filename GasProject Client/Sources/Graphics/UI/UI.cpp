@@ -21,7 +21,7 @@ UI::UI(sf::RenderWindow *rendWindow) :
     rendWindow(rendWindow),
     authUI(new AuthUI(this)),
     gamelistUI(new GameListUI(this)),
-	gameProcessUI(new GameProcessUI(this))
+    gameProcessUI(new GameProcessUI(this))
 {
     
 }

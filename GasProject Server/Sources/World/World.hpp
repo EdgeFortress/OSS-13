@@ -33,7 +33,7 @@ public:
     Tile *GetTile() { return tile; }
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
-	virtual void Interact(Object *) {}
+    virtual void Interact(Object *) {}
 
     friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };
@@ -95,10 +95,10 @@ private:
     Map *map;
     int x, y;
     Global::Sprite sprite;
-	Local *local;
+    Local *local;
 
     list<uptr<Object>> content;
-	list<Gas> listGas;
+    list<Gas> listGas;
 
 public:
     explicit Tile(Map *map, int x, int y);
@@ -123,7 +123,7 @@ public:
 
     //Test
     list<uptr<Object>> &GetContent() { return content; };
-	
+    
     friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
 
@@ -162,7 +162,7 @@ private:
 
     vector< vector<uptr<Tile>> > tiles;
     vector< vector<uptr<Block>> > blocks;
-	list<uptr<Local>> locals;
+    list<uptr<Local>> locals;
 
 public:
     explicit Map(const int sizeX, const int sizeY);
@@ -206,16 +206,16 @@ public:
 };
 
 class Local {
-	list<Tile *> tiles;
+    list<Tile *> tiles;
     Map *map;
 
 public:
     Local(Tile *tile) : map(tile->GetMap()) { tiles.push_back(tile); }
 
-	void AddTile(Tile *tile) {
-		tiles.push_back(tile);
-	}
-	void Merge(Local *local) {
+    void AddTile(Tile *tile) {
+        tiles.push_back(tile);
+    }
+    void Merge(Local *local) {
         if (!local) return;
         if (this == local) return;
         for (auto &tile : local->tiles) {
@@ -223,13 +223,13 @@ public:
             tile->SetLocal(this);
         }
         map->RemoveLocal(local);
-	}
+    }
     //test
     const list<Tile *> &GetTiles() { return tiles; }
 };
 
 class Gas {
-	double pressure;
+    double pressure;
 };
 
 class Oxygen : public Gas {

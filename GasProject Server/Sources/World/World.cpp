@@ -66,7 +66,7 @@ bool Tile::RemoveObject(Object *obj) {
             i.release();
             content.remove(i);
             obj->SetTile(nullptr);
-			//add local remove
+            //add local remove
             return true;
         }
     return false;
@@ -90,27 +90,27 @@ void Tile::CheckLocal() {
     }
     if (!floor) return;
 
-	for (int dx = -1; dx <= 1; dx++)
-		for (int dy = -1; dy <= 1; dy++) {
-			if (!map->GetTile(x + dx, y + dy) || 
+    for (int dx = -1; dx <= 1; dx++)
+        for (int dy = -1; dy <= 1; dy++) {
+            if (!map->GetTile(x + dx, y + dy) || 
                 dx == 0 && dy == 0)
-				continue;
-			if (map->GetTile(x + dx, y + dy)->local) {
+                continue;
+            if (map->GetTile(x + dx, y + dy)->local) {
                 if (local) {
                     local->Merge(map->GetTile(x + dx, y + dy)->local);
                 } else {
                     map->GetTile(x + dx, y + dy)->local->AddTile(this);
                     local = map->GetTile(x + dx, y + dy)->local;
                 }
-			}
-		}
+            }
+        }
     if (!local) {
         map->NewLocal(this);
     }
 }
 
 void Tile::Update() {
-	
+    
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
