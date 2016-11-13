@@ -89,8 +89,8 @@ Tile *TileGrid::GetTile(int x, int y) const {
 
 void TileGrid::Draw(sf::RenderWindow * const window) {
     Lock();
-    for (int y = -(Global::FOV / 2); y < Global::FOV / 2; y++)
-        for (int x = -(Global::FOV / 2); x < Global::FOV / 2; x++) {
+    for (int y = -(Global::FOV / 2); y <= Global::FOV / 2; y++)
+        for (int x = -(Global::FOV / 2); x <= Global::FOV / 2; x++) {
             Tile *tile = GetTile(xPos + x, yPos + y);
             if (tile) tile->Draw(window, xPadding + (x + Global::FOV / 2) * tileSize,
                                          yPadding + (y + Global::FOV / 2) * tileSize);
