@@ -10,8 +10,6 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Common/Useful.hpp"
-#include "Graphics/UI/AuthUI.hpp"
-#include "Graphics/UI/GameListUI.hpp"
 
 using namespace std;
 using namespace sf;
