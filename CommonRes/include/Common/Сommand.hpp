@@ -3,7 +3,8 @@
 #include <string>
 #include <list>
 
-#include "useful.hpp"
+#include "Useful.hpp"
+#include "Differences.hpp"
 
 using std::string;
 
@@ -80,6 +81,7 @@ struct ServerCommand {
         GAME_JOIN_ERROR,
 
         GRAPHICS_FULL_UPDATE,
+        GRAPHICS_DIFFS,
 
         COMMAND_CODE_ERROR
         //CONNECTION_ERROR,
@@ -130,6 +132,12 @@ struct GraphicsFullUpdateServerCommand : public ServerCommand {
     Camera *camera;
     GraphicsFullUpdateServerCommand(Camera *camera) : camera(camera) { }
     virtual const Code GetCode() const override { return Code::GRAPHICS_FULL_UPDATE; }
+};
+
+struct GraphicsDiffsServerCommand : public ServerCommand {
+    const std::list<sptr<Diff>> differences;
+    GraphicsDiffsServerCommand(const std::list<sptr<Diff>> &differences) : differences(differences) { }
+    virtual const Code GetCode() const override { return Code::GRAPHICS_DIFFS; }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {

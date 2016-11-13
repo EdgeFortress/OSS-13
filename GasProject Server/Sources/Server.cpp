@@ -24,14 +24,15 @@ void Game::gameProcess(Game *inst) {
     inst->world.reset(new World());
     Clock clock;
     while (inst->active) {
-        inst->world->Update(clock.restart());
+        inst->update(clock.restart());
         sleep(seconds(0.1f));
     }
 }
 
-Game::~Game() {
-    active = false;
-    thread->join();
+void Game::update(sf::Time timeElapsed) {
+    world->Update(timeElapsed);
+    for (Player *player : players)
+        player->Update();
 }
 
 const int Game::GetID() const { return id; }
@@ -43,7 +44,12 @@ bool Game::AddPlayer(Player *player) {
     return true;
 }
 
-void Game::DeletePlayer(Player *player) { players.remove(player);  }
+void Game::DeletePlayer(Player *player) { players.remove(player); }
+
+Game::~Game() {
+    active = false;
+    thread->join();
+}
 
 Server::Server() : UDB(new UsersDB()),
                    new_game_id(1) {

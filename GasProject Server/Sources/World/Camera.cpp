@@ -58,3 +58,14 @@ void Camera::countVisibleBlocks() {
         y++;
     }
 }
+
+const std::list<sptr<Diff>> Camera::GetVisibleDifferences() {
+    std::list<sptr<Diff>> diffs;
+    for (auto &vect : visibleBlocks)
+        for (auto &block : vect) {
+            for (auto &diff : block->GetDifferences())
+                diffs.push_back(diff);
+        }
+
+    return diffs;
+}

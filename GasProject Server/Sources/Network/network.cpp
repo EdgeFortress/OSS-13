@@ -167,6 +167,11 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         case ServerCommand::Code::GRAPHICS_FULL_UPDATE: {
             GraphicsFullUpdateServerCommand *command = dynamic_cast<GraphicsFullUpdateServerCommand *>(serverCommand);
             packet << *(command->camera);
+            break;
+        }
+        case ServerCommand::Code::GRAPHICS_DIFFS: {
+            GraphicsDiffsServerCommand *command = dynamic_cast<GraphicsDiffsServerCommand *>(serverCommand);
+            break;
         }
     }
 
@@ -180,21 +185,9 @@ Packet &operator<<(Packet &packet, Game &game) {
     return packet;
 }
 
-void Camera::PackDifferences(Packet &packet) {
-    for (auto &vect : visibleBlocks)
-        for (auto &block : vect) {
-            if (block->GetDifferences().size()) {
-                packet << sf::Int32(block->ID());
-                packet << sf::Int32(block->GetDifferences().size());
-                Server::log << "Send diffences of block" << block->ID() << "(" << block->GetDifferences().size() << ")" << endl;
-                for (const Diff &diff : block->GetDifferences())
-                    packet << diff;
-            }
-        }
-}
-
 Packet &operator<<(Packet &packet, const Diff &diff) {
     packet << Int32(diff.GetType());
+    packet << Int32(diff.block->ID());
     packet << Int32(diff.x) << Int32(diff.y);
     packet << Int32(diff.objectNum);
     switch (diff.GetType()) {
