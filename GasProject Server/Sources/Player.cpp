@@ -11,13 +11,19 @@ Player::Player(Server *server, sf::TcpSocket *socket) : ckey(""),
 
 }
 
+void Player::Update() {
+    const auto &&differences = camera->GetVisibleDifferences();
+    if (!differences.empty())
+        commandQueue.Push(new GraphicsDiffsServerCommand(differences));
+}
+
 void Player::SetMob(Mob *mob) {
     this->mob = mob;
     SetCamera(new Camera(mob->GetTile()));
 };
 
-Player::~Player() { connection->Stop(); }
-
 void Player::AddCommand(ServerCommand *command) {
     commandQueue.Push(command);
 }
+
+Player::~Player() { connection->Stop(); }

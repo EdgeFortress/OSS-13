@@ -12,6 +12,7 @@ class UsersDB;
 
 namespace sf {
     class Packet;
+    class Time;
 }
 
 namespace std {
@@ -28,16 +29,20 @@ private:
     uptr<World> world;
 
     std::list<Player *> players;
+
     static void gameProcess(Game *);
+
+    void update(sf::Time timeElapsed);
 
 public:
     Game(Server *server, std::string title, int id);
-    ~Game();
 
     bool AddPlayer(Player *);
     void DeletePlayer(Player *);
 
     const int GetID() const;
+
+    ~Game();
 
     friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
 };

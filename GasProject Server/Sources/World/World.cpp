@@ -38,10 +38,10 @@ void Tile::AddObject(Object *obj) {
                 if (GetBlock() == block) {
                     int toX = X() % Global::BLOCK_SIZE;
                     int toY = Y() % Global::BLOCK_SIZE;
-                    block->AddDiff(MoveDiff(block, x, y, n, toX, toY));
+                    block->AddDiff(new MoveDiff(block, x, y, n, toX, toY));
                     moved = true;
                 } else {
-                    block->AddDiff(RemoveDiff(block, x, y, n));
+                    block->AddDiff(new RemoveDiff(block, x, y, n));
                 }
                 
                 break;
@@ -56,7 +56,7 @@ void Tile::AddObject(Object *obj) {
         Block *block = GetBlock();
         int x = X() % Global::BLOCK_SIZE;
         int y = Y() % Global::BLOCK_SIZE;
-        block->AddDiff(AddDiff(block, x, y, int(content.size() - 1)));
+        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1)));
     }
 }
 
@@ -130,6 +130,10 @@ Block::Block(Map *map, int blockX, int blockY) :
     }
 }
 
+void Block::ClearDiffs() {
+    differences.clear();
+}
+
 Map::Map(const int sizeX, const int sizeY) : 
     sizeX(sizeX), sizeY(sizeY),
     numOfBlocksX(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0)),
@@ -192,6 +196,12 @@ void Map::RemoveLocal(const Local *local) {
     }
 }
 
+void Map::ClearDiffs() {
+    for (auto &vect : blocks)
+        for (auto &block : vect)
+            block->ClearDiffs();
+}
+
 Tile *Map::GetTile(int x, int y) const {
     if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
         return tiles[y][x].get();
@@ -208,6 +218,8 @@ int Map::GetNumOfBlocksX() const { return numOfBlocksX; }
 int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
 
 void World::Update(sf::Time timeElapsed) {
+    map->ClearDiffs();
+
     time_since_testMob_update += timeElapsed;
     if (time_since_testMob_update >= sf::seconds(1)) {
         int x = testMob->GetTile()->X() + test_dx;

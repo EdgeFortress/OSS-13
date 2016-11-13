@@ -135,13 +135,13 @@ private:
     int size;
 
     vector< vector<Tile *> > tiles;
-    list<Diff> differences;
+    list<sptr<Diff>> differences;
 
 public:
     explicit Block(Map *map, int blockX, int blockY);
 
-    void AddDiff(Diff &&diff) {
-        differences.push_back(diff);
+    void AddDiff(Diff *diff) {
+        differences.push_back(sptr<Diff>(diff));
     }
 
     Tile *GetTile(int x, int y) const { return tiles[y][x]; }
@@ -149,7 +149,8 @@ public:
     int Y() const { return blockY; }
     int ID() const { return id; }
 
-    const list<Diff> GetDifferences() { return differences; }
+    const list<sptr<Diff>> GetDifferences() { return differences; }
+    void ClearDiffs();
 
     friend sf::Packet &operator<<(sf::Packet &, const Block &);
 };
@@ -170,6 +171,8 @@ public:
 
     void NewLocal(Tile *tile);
     void RemoveLocal(const Local *local);
+
+    void ClearDiffs();
 
     Tile *GetTile(int x, int y) const;
     Block *GetBlock(int x, int y) const;

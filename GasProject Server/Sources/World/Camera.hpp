@@ -1,9 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <list>
+
+#include "Common/Useful.hpp"
 
 class Tile;
 class Block;
+struct Diff;
 
 namespace sf {
     class Packet;
@@ -26,7 +30,7 @@ public:
     const Tile * const GetPosition() const { return tile; }
     void Suspend();
 
-    void PackDifferences(sf::Packet &packet);
+    const std::list<sptr<Diff>> GetVisibleDifferences();
 
     friend sf::Packet &operator<<(sf::Packet &, const Camera &);
 };
