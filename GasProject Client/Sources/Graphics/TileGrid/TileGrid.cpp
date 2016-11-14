@@ -26,7 +26,10 @@ void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
     if (sprite) sprite->Draw(window, x, y, direction);
 }
 
-Tile::Tile(Block *block) : block(block), sprite(nullptr) {
+Tile::Tile(Block *block, const int x, const int y) : 
+    block(block), x(x), y(y),
+    sprite(nullptr) 
+{
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
@@ -50,10 +53,15 @@ Block::Block(TileGrid *tileGrid) :
     tileGrid(tileGrid), id(-1),
     tiles(tileGrid->GetBlockSize())
 {
+    int y = 0;
     for (auto &vect : tiles) {
         vect.resize(tileGrid->GetBlockSize());
-        for (auto &tile : vect)
-            tile.reset(new Tile(this));
+        int x = 0;
+        for (auto &tile : vect) {
+            tile.reset(new Tile(this, x, y));
+            x++;
+        }
+        y++;
     }
 }
 
@@ -80,13 +88,6 @@ TileGrid::TileGrid(const int windowWidth, const int windowHeight) : blockSize(Gl
     }
 }
 
-Tile *TileGrid::GetTile(int x, int y) const {
-    if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize)
-        return blocks[y / blockSize][x / blockSize]->GetTile(x % blockSize, y % blockSize);
-    //CC::log << "Can't return block " << x << ", " << y << endl;
-    return nullptr;
-}
-
 void TileGrid::Draw(sf::RenderWindow * const window) {
     Lock();
     for (int y = -(Global::FOV / 2); y <= Global::FOV / 2; y++)
@@ -102,4 +103,42 @@ void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     tileSize = min(windowWidth, windowHeight) / Global::FOV;
     xPadding = (windowWidth - tileSize * 15) / 2;
     yPadding = (windowHeight - tileSize * 15) / 2;
+}
+
+void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY) {
+    Block *block = GetBlock(blockID);
+    if (!block) {
+        CC::log << "Wrong BlockID accepted: " << blockID << endl;
+        return;
+    }
+    Tile *tile = block->GetTile(x, y);
+    Tile *new_tile = block->GetTile(toX, toY);
+    if (!tile) {
+        CC::log << "Wrong block (" << blockID << ") coordinates: " << x << y << endl;
+        return;
+    }
+    if (!new_tile) {
+        CC::log << "Wrong block (" << blockID << ") coordinates: " << x << y << endl;
+        return;
+    }
+    auto obj = tile->RemoveObject(objectNum);
+    new_tile->AddObject(obj.release());
+}
+
+Block *TileGrid::GetBlock(int blockID) const {
+    for (auto &vect : blocks) {
+        for (auto &block : vect) {
+            if (block->GetID() == blockID) {
+                return block.get();
+            }
+        }
+    }
+    return nullptr;
+}
+
+Tile *TileGrid::GetTile(int x, int y) const {
+    if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize)
+        return blocks[y / blockSize][x / blockSize]->GetTile(x % blockSize, y % blockSize);
+    //CC::log << "Can't return block " << x << ", " << y << endl;
+    return nullptr;
 }
