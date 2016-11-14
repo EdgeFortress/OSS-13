@@ -42,6 +42,7 @@ public:
     AuthUI &operator=(const AuthUI &) = delete;
     virtual ~AuthUI() = default;
 
+    virtual void Resize(int width, int height) final;
     virtual void Draw() final {};
 
     void SetServerAnswer(bool result) {

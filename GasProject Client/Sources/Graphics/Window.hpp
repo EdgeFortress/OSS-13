@@ -39,19 +39,20 @@ private:
     void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
 
 public:
-    Window() : cur_FPS(0) {
+    Window() : 
+        cur_FPS(0) ,
+        animationTime(sf::Time::Zero)
+    {
         loadTextures(textures, sprites);
+
+        tileGrid.reset(new TileGrid);
+        ui.reset(new UI);
+
         sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
         width = static_cast<int>(0.9 * videoMode.width);
         height = static_cast<int>(0.9 * videoMode.height);
-        tileGrid.reset(new TileGrid(width, height));
         window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
         Resize(width, height);
-        window->clear(sf::Color::Black);
-        window->display();
-        ui.reset(new UI(window.get()));
-
-        animationTime = sf::Time::Zero;
     }
 
     Window(const Window &) = delete;

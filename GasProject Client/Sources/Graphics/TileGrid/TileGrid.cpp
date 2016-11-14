@@ -62,7 +62,7 @@ Tile* Block::GetTile (int x, int y) const {
     return nullptr;
 }
 
-TileGrid::TileGrid(const int windowWidth, const int windowHeight) : blockSize(Global::BLOCK_SIZE) {
+TileGrid::TileGrid() : blockSize(Global::BLOCK_SIZE) {
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided

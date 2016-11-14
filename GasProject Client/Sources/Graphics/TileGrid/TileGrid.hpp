@@ -61,7 +61,7 @@ public:
     }
     uptr<Object> RemoveObject(int num) { 
         if (num >= content.size() || num < 0) {
-            CC::log << "Wrong object num: tile" << "(" << x << "," << y << ") num: " << num << endl;
+            CC::log << "Wrong object num for remove: tile" << "(" << x << "," << y << ") num: " << num << endl;
             return uptr<Object>();
         }
         for (auto &obj : content) {
@@ -115,7 +115,7 @@ private:
     vector< vector<uptr<Block>> > blocks;
 
 public:
-    explicit TileGrid(const int windowWidth, const int windowHeight);
+    explicit TileGrid();
 
     TileGrid(const TileGrid &) = delete;
     TileGrid &operator=(const TileGrid &) = delete;

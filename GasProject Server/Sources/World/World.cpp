@@ -46,7 +46,7 @@ void Tile::AddObject(Object *obj) {
                     block->AddDiff(new MoveDiff(block, x, y, n, toX, toY, int(content.size())));
                     moved = true;
                 } else {
-                    Server::log << "Block changed" << endl;
+                    //Server::log << "Block changed" << endl;
                     block->AddDiff(new RemoveDiff(block, x, y, n));
                 }
                 

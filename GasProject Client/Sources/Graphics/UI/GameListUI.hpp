@@ -17,7 +17,7 @@ struct GameRow {
     void join();
 };
 
-class GameListUI : UIModule {
+class GameListUI : public UIModule {
 private:
     sfg::Window::Ptr gamelistWindow;
     sfg::Box::Ptr gamesBox;
@@ -36,6 +36,8 @@ public:
 
     void AddGame(int id, string title, int num_of_players);
     void Clear();
+
+    virtual void Resize(int width, int height) final;
     virtual void Draw() final {};
 
     virtual void Hide() final;
