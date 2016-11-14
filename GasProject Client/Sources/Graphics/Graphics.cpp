@@ -5,6 +5,7 @@
 
 #include "Graphics/UI/UI.hpp"
 #include "Graphics/UI/AuthUI.hpp"
+#include "Graphics/UI/GameProcessUI.hpp"
 
 #include "State.hpp"
 
@@ -94,7 +95,14 @@ void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeEla
     window->GetUI()->Unlock();
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
-void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
+void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
+    Window *window = CC::Get()->GetWindow();
+    GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
+    window->GetUI()->Lock();
+    window->GetUI()->Update(timeElapsed);
+    gameProcessUI->Draw(render_window);
+    window->GetUI()->Unlock();
+}
 
 void MenuLoginState::HandleEvent(sf::Event event) const {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)

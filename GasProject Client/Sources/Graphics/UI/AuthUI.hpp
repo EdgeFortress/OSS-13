@@ -3,7 +3,7 @@
 #include "UI.hpp"
 #include "State.hpp"
 
-class AuthUI : UIModule {
+class AuthUI : public UIModule {
 private:
     enum class ComState : char {
         NOTHING = 0,

@@ -59,5 +59,6 @@ public:
     sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
     sfg::Desktop *GetDesktop() { return &desktop; }
     AuthUI *GetAuthUI() { return authUI.get(); }
-    GameListUI *GetGameListUI() { return gamelistUI.get(); };
+    GameListUI *GetGameListUI() { return gamelistUI.get(); }
+    GameProcessUI *GetGameProcessUI() { return gameProcessUI.get(); }
 };

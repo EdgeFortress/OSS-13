@@ -48,7 +48,9 @@ public:
     ~Tile() = default;
 
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
-
+    int GetNumObj() {
+        return content.size();
+    }
     void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
     uptr<Object> RemoveObject(int num) { 
@@ -127,6 +129,7 @@ public:
 
     Block *GetBlock(int blockID) const;
     Tile *GetTile(int x, int y) const;
+    Tile *GetTileByPixel(int x, int y) const;
 
     const int GetBlockSize() const { return blockSize; }
     const int GetTileSize() const { return tileSize; }

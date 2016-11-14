@@ -17,7 +17,7 @@ struct GameRow {
     void join();
 };
 
-class GameListUI : UIModule {
+class GameListUI : public UIModule {
 private:
     sfg::Window::Ptr gamelistWindow;
     sfg::Box::Ptr gamesBox;
