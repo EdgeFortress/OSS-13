@@ -4,9 +4,21 @@
 
 #include "UI.hpp"
 
+class InfoLabel {
+private:
+    sf::RectangleShape rectangle;
+    sf::Text text;
+
+public:
+    InfoLabel();
+    void Draw(sf::RenderWindow *window);
+    void CountPosition(int width, int height);
+    void SetText(string text);
+};
+
 class GameProcessUI : public UIModule {
-    sf::RectangleShape infoLabelBackground;
-    sf::Text infoLabelText;
+    InfoLabel infoLabel;
+
     void drawInfoPanel(sf::RenderWindow* renderWindow);
 public:
     GameProcessUI(UI * ui);

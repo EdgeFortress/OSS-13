@@ -82,5 +82,14 @@
     <Image Include="Images\Human.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="Images\Space.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Images\Turfs.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Images\lobby_background.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>
