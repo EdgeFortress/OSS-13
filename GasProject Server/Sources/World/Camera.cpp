@@ -8,11 +8,11 @@ Camera::Camera() {
     tile = nullptr;
 }
 
-Camera::Camera(const Tile * const tile) {
+Camera::Camera(const Tile * const tile) : suspense(true) {
     this->tile = tile;
-    suspense = false;
     countVisibleBlocks();
     Server::log << "Camera created: " << tile->X() << " " << tile->Y() << endl;
+    suspense = false;
 }
 
 void Camera::SetPosition(const Tile * const tile) {
@@ -27,8 +27,10 @@ void Camera::Suspend() {
 }
 
 void Camera::countVisibleBlocks() {
+    //Server::log << "Count visible blocks" << endl;
+
     visibleBlocks.resize(0);
-    if (suspense) return;
+    if (!tile) return;
 
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
@@ -60,7 +62,8 @@ void Camera::countVisibleBlocks() {
 }
 
 const std::list<sptr<Diff>> Camera::GetVisibleDifferences() {
-    std::list<sptr<Diff>> diffs;
+    std::list<sptr<Diff>> diffs(0);
+    if (suspense) return diffs;
     for (auto &vect : visibleBlocks)
         for (auto &block : vect) {
             for (auto &diff : block->GetDifferences())

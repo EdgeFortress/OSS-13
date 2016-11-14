@@ -128,7 +128,8 @@ void Tile::CheckLocal() {
 }
 
 void Tile::Update() {
-    
+    for (auto &obj : content)
+        obj->Update();
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
@@ -218,6 +219,12 @@ void Map::ClearDiffs() {
     for (auto &vect : blocks)
         for (auto &block : vect)
             block->ClearDiffs();
+}
+
+void Map::Update() {
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            tile->Update();
 }
 
 Tile *Map::GetTile(int x, int y) const {
