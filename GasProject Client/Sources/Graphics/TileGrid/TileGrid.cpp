@@ -91,8 +91,10 @@ void TileGrid::Draw(sf::RenderWindow * const window) {
 
 void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     tileSize = min(windowWidth, windowHeight) / Global::FOV;
-    xPadding = (windowWidth - tileSize * 15) / 2;
-    yPadding = (windowHeight - tileSize * 15) / 2;
+    xNumOfTiles = 15;
+    yNumOfTiles = 15;
+    xPadding = (windowWidth - tileSize * xNumOfTiles) / 2;
+    yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
 }
 
 void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY, int toObjectNum) {
@@ -161,4 +163,12 @@ Tile *TileGrid::GetTile(int x, int y) const {
         return blocks[y / blockSize][x / blockSize]->GetTile(x % blockSize, y % blockSize);
     //CC::log << "Can't return block " << x << ", " << y << endl;
     return nullptr;
+}
+
+Tile * TileGrid::GetTileByPixel(int x, int y) const
+{
+    int xTile = (x - xPadding) / tileSize + xPos - xNumOfTiles / 2;
+    int yTile = (y - yPadding) / tileSize + yPos - yNumOfTiles / 2;
+
+    return GetTile(xTile, yTile);
 }

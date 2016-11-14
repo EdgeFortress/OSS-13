@@ -24,7 +24,7 @@ public:
     virtual ~UIModule() = default;
 
     virtual void Resize(int width, int height) = 0;
-    virtual void Draw() = 0;
+    virtual void Draw(sf::RenderWindow* renderWindow) = 0;
 
     virtual void Hide() = 0;
     virtual void Show() = 0;
@@ -64,5 +64,6 @@ public:
     //sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
     sfg::Desktop *GetDesktop() { return &desktop; }
     AuthUI *GetAuthUI() { return authUI.get(); }
-    GameListUI *GetGameListUI() { return gamelistUI.get(); };
+    GameListUI *GetGameListUI() { return gamelistUI.get(); }
+    GameProcessUI *GetGameProcessUI() { return gameProcessUI.get(); }
 };

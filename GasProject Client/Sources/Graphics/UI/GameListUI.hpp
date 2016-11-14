@@ -38,7 +38,7 @@ public:
     void Clear();
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw() final {};
+    virtual void Draw(sf::RenderWindow* renderWindow) final {};
 
     virtual void Hide() final;
     virtual void Show() final;

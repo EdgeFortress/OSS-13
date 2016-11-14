@@ -3,7 +3,7 @@
 #include "UI.hpp"
 #include "State.hpp"
 
-class AuthUI : UIModule {
+class AuthUI : public UIModule {
 private:
     enum class ComState : char {
         NOTHING = 0,
@@ -43,7 +43,7 @@ public:
     virtual ~AuthUI() = default;
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw() final {};
+    virtual void Draw(sf::RenderWindow* renderWindow) final {};
 
     void SetServerAnswer(bool result) {
         mutex.lock();
