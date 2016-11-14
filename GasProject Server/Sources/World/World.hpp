@@ -24,16 +24,20 @@ class Object {
 protected:
     Tile *tile;
     Global::Sprite sprite;
+    bool density;
 
 public:
     Object();
     // Construct object at tile
     explicit Object(Tile *tile = nullptr);
 
+    bool GetDensity() { return density; }
     Tile *GetTile() { return tile; }
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
     virtual void Interact(Object *) {}
+
+    virtual void Update() {}
 
     friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };
@@ -43,25 +47,32 @@ class Item : public Object {
 };
 
 class Turf : public Object {
-protected:
-    bool density;
-
 public:
     explicit Turf(Tile *tile) : Object(tile) {}
 };
 
 class Mob : public Object {
+private:
+    int vertical, horizontal;
 public:
     explicit Mob(Tile *tile) : Object(tile) {
         sprite = Global::Sprite::Mob;
+        density = false;
     }
+
+    void MoveNorth() { vertical--; }
+    void MoveSouth() { vertical++; }
+    void MoveEast() { horizontal++; }
+    void MoveWest() { horizontal--; }
+
+    virtual void Update() override;
 };
 
 class Wall : public Turf {
 public:
     explicit Wall(Tile *tile) : Turf(tile) {
-        density = true;
         sprite = Global::Sprite::Wall;
+        density = true;
     }
 
     Wall(const Wall &object) = default;
@@ -71,8 +82,8 @@ public:
 class Floor : public Turf {
 public:
     explicit Floor(Tile *tile) : Turf(tile) {
-        density = false;
         sprite = Global::Sprite::Floor;
+        density = false;
     }
     
     Floor(const Floor &object) = default;
@@ -82,8 +93,8 @@ public:
 class Airlock : public Turf {
 public:
     explicit Airlock(Tile *tile) : Turf(tile) {
-        density = true;
         sprite = Global::Sprite::Airlock;
+        density = true;
     }
 
     Airlock(const Airlock &object) = default;
@@ -113,6 +124,7 @@ public:
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
+    void MoveTo(Object *, Tile *);
 
     int X() const { return x; }
     int Y() const { return y; }
@@ -174,6 +186,7 @@ public:
 
     void ClearDiffs();
 
+    const vector< vector<uptr<Tile>> > &GetTiles() { return tiles; }
     Tile *GetTile(int x, int y) const;
     Block *GetBlock(int x, int y) const;
     int GetNumOfBlocksX() const;
@@ -186,17 +199,23 @@ private:
 
     Mob* testMob;
     sf::Time time_since_testMob_update;
+    sf::Time mobsUpdateTime;
     int test_dx;
     int test_dy;
+    int mobsVelocity;
 
 public:
     World() : map(new Map(100, 100)) {
         FillingWorld();
         map->GenerateLocals();
 
+        time_since_testMob_update = sf::Time::Zero;
         testMob = new Mob(map->GetTile(49, 49));
         test_dx = 1;
         test_dy = 0;
+
+        mobsUpdateTime = sf::Time::Zero;
+        mobsVelocity = 5;
     }
 
     void Update(sf::Time timeElapsed);

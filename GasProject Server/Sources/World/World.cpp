@@ -15,6 +15,17 @@ Object::Object(Tile *tile) : tile(nullptr) {
         tile->AddObject(this);
 }
 
+void Mob::Update() {
+    if (vertical < 0)
+        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X(), tile->Y() - 1)), vertical++;
+    if (vertical > 0)
+        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X(), tile->Y() + 1)), vertical--;
+    if (horizontal < 0)
+        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X() - 1, tile->Y())), horizontal++;
+    if (horizontal > 0)
+        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X() + 1, tile->Y())), horizontal--;
+}
+
 Tile::Tile(Map *map, int x, int y) :
     map(map), x(x), y(y), local(nullptr)
 {
@@ -70,6 +81,22 @@ bool Tile::RemoveObject(Object *obj) {
             return true;
         }
     return false;
+}
+
+void Tile::MoveTo(Object *obj, Tile *tile) {
+    bool available = true;
+    for (auto &object : tile->GetContent())
+        if (object->GetDensity())
+        {
+            available = false;
+            break;
+        }
+    
+    if (available)
+    {
+        RemoveObject(obj);
+        tile->AddObject(obj);
+    }
 }
 
 Block *Tile::GetBlock() const {
@@ -231,6 +258,15 @@ void World::Update(sf::Time timeElapsed) {
 
         map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
+    }
+
+    mobsUpdateTime += timeElapsed;
+    if (mobsUpdateTime >= sf::seconds(float(1.0 / mobsVelocity))) {
+        mobsUpdateTime = sf::Time::Zero;
+        for (auto &vect : map->GetTiles())
+            for (auto &tile : vect)
+                for (auto &obj : tile->GetContent())
+                    obj->Update();
     }
 }
 
