@@ -16,14 +16,8 @@ Object::Object(Tile *tile) : tile(nullptr) {
 }
 
 void Mob::Update() {
-    if (vertical < 0)
-        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X(), tile->Y() - 1)), vertical++;
-    if (vertical > 0)
-        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X(), tile->Y() + 1)), vertical--;
-    if (horizontal < 0)
-        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X() - 1, tile->Y())), horizontal++;
-    if (horizontal > 0)
-        tile->MoveTo(this, tile->GetMap()->GetTile(tile->X() + 1, tile->Y())), horizontal--;
+    tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
+    moveY = 0; moveX = 0;
 }
 
 Tile::Tile(Map *map, int x, int y) :
@@ -83,9 +77,9 @@ bool Tile::RemoveObject(Object *obj) {
     return false;
 }
 
-void Tile::MoveTo(Object *obj, Tile *tile) {
+void Tile::MoveTo(Object *obj) {
     bool available = true;
-    for (auto &object : tile->GetContent())
+    for (auto &object : content)
         if (object->GetDensity())
         {
             available = false;
@@ -93,10 +87,7 @@ void Tile::MoveTo(Object *obj, Tile *tile) {
         }
     
     if (available)
-    {
-        RemoveObject(obj);
-        tile->AddObject(obj);
-    }
+        AddObject(obj);
 }
 
 Block *Tile::GetBlock() const {
