@@ -171,6 +171,9 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         }
         case ServerCommand::Code::GRAPHICS_DIFFS: {
             GraphicsDiffsServerCommand *command = dynamic_cast<GraphicsDiffsServerCommand *>(serverCommand);
+            packet << Int32(command->differences.size());
+            for (auto &diff : command->differences)
+                packet << *diff;
             break;
         }
     }

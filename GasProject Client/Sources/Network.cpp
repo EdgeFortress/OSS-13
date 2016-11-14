@@ -95,11 +95,11 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::GAME_LIST: {
             CC::Get()->GetWindow()->GetUI()->Lock();
             CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Clear();
-            sf::Int32 size;
+            Int32 size;
             packet >> size;
             for (int i = 1; i <= size; i++) {
-                sf::Int32 id, num_of_players;
-                sf::String title;
+                Int32 id, num_of_players;
+                String title;
                 packet >> id >> title >> num_of_players;
                 CC::Get()->GetWindow()->GetUI()->GetGameListUI()->AddGame(id, title, num_of_players);
             }
@@ -113,31 +113,59 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::GAME_JOIN_ERROR:
             CC::log << "Error join the game" << endl;
             break;
-        case ServerCommand::Code::GRAPHICS_FULL_UPDATE:
+        case ServerCommand::Code::GRAPHICS_FULL_UPDATE: {
             TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
             tileGrid.Lock();
             packet >> tileGrid;
             tileGrid.Unlock();
             break;
+        }
+        case ServerCommand::Code::GRAPHICS_DIFFS: {
+            TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
+            Int32 size;
+            packet >> size;
+            tileGrid.Lock();
+            for (int i = 0; i < size; i++) {
+                Int32 type, blockID, x, y, objectNum;
+                packet >> type >> blockID >> x >> y >> objectNum;
+                switch (Diff::Type(type)) {
+                    case Diff::Type::MOVE:
+                        Int32 toX, toY;
+                        packet >> toX >> toY;
+                        tileGrid.Move(blockID, x, y, objectNum, toX, toY);
+                        break;
+                    case Diff::Type::ADD:
+                        break;
+                    case Diff::Type::REMOVE:
+                        break;
+                    default:
+                        CC::log << "Wrong diff type: " << type << endl;
+                        break;
+                }
+            }
+            tileGrid.Unlock();
+            break;
+        }
+
     };
 }
 
 Packet &operator<<(Packet &packet, ClientCommand *command) {
-    packet << sf::Int32(command->GetCode());
+    packet << Int32(command->GetCode());
     switch (command->GetCode()) {
         case ClientCommand::Code::AUTH_REQ: {
             auto c = dynamic_cast<AuthorizationClientCommand *>(command);
-            packet << sf::String(c->login) << sf::String(c->password);
+            packet << String(c->login) << String(c->password);
             break;
         }
         case ClientCommand::Code::REG_REQ: {
             auto c = dynamic_cast<RegistrationClientCommand *>(command);
-            packet << sf::String(c->login) << sf::String(c->password);
+            packet << String(c->login) << String(c->password);
             break;
         }
         case ClientCommand::Code::JOIN_GAME: {
             auto c = dynamic_cast<JoinGameClientCommand *>(command);
-            packet << sf::Int32(c->id);
+            packet << Int32(c->id);
             break;
         }
     }
@@ -145,7 +173,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 }
 
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
-    sf::Int32 xPos, yPos;
+    Int32 xPos, yPos;
     packet >> xPos >> yPos;
     tileGrid.xPos = xPos;
     tileGrid.yPos = yPos;

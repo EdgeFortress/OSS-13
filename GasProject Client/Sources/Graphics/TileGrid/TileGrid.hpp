@@ -35,12 +35,13 @@ public:
 class Tile {
 private:
     Block *block;
+    const int x, y;
     //Global::Sprite sprite;
     Sprite *sprite;
     list<uptr<Object>> content;
 
 public:
-    explicit Tile(Block *block);
+    explicit Tile(Block *block, const int x, const int y);
 
     Tile(const Tile &) = delete;
     Tile &operator=(const Tile &) = delete;
@@ -50,6 +51,21 @@ public:
 
     void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
+    uptr<Object> RemoveObject(int num) { 
+        if (num >= content.size() || num < 0) {
+            CC::log << "Wrong object num: tile" << "(" << x << "," << y << ") num: " << num << endl;
+            return uptr<Object>();
+        }
+        for (auto &obj : content) {
+            if (!num) {
+                uptr<Object> temp = std::move(obj);
+                content.remove(obj);
+                return std::move(temp);
+            }
+            else num--;
+        }
+        return uptr<Object>();
+    }
 
     //Global::Sprite GetSprite() const { return sprite;  }
     //void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
@@ -73,6 +89,7 @@ public:
     Block &operator=(const Block &) = delete;
     ~Block() = default;
 
+    int GetID() const { return id; }
     Tile *GetTile(int x, int y) const;
 
     friend sf::Packet &operator>>(sf::Packet &packet, Block &block);
@@ -96,13 +113,20 @@ public:
     TileGrid &operator=(const TileGrid &) = delete;
     ~TileGrid() = default;
 
-    Tile *GetTile(int x, int y) const;
     void Draw(sf::RenderWindow * const);
 
     void Lock() { mutex.lock(); }
     void Unlock() { mutex.unlock(); }
 
     void Resize(const int windowWidth, const int windowHeight);
+
+    // Differences commiting
+    void Move(int blockID, int x, int y, int objectNum, int toX, int toY);
+    void Add() {}
+    void Remove() {}
+
+    Block *GetBlock(int blockID) const;
+    Tile *GetTile(int x, int y) const;
 
     const int GetBlockSize() const { return blockSize; }
     const int GetTileSize() const { return tileSize; }
