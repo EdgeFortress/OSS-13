@@ -53,17 +53,17 @@ public:
 
 class Mob : public Object {
 private:
-    int vertical, horizontal;
+    int moveY, moveX;
 public:
     explicit Mob(Tile *tile) : Object(tile) {
         sprite = Global::Sprite::Mob;
         density = false;
     }
 
-    void MoveNorth() { vertical--; }
-    void MoveSouth() { vertical++; }
-    void MoveEast() { horizontal++; }
-    void MoveWest() { horizontal--; }
+    void MoveNorth() { moveY = -1; }
+    void MoveSouth() { moveY = 1; }
+    void MoveEast() { moveX = 1 ; }
+    void MoveWest() { moveX = -1; }
 
     virtual void Update() override;
 };
@@ -124,7 +124,7 @@ public:
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
-    void MoveTo(Object *, Tile *);
+    void MoveTo(Object *);
 
     int X() const { return x; }
     int Y() const { return y; }
