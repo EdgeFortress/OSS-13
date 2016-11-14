@@ -196,11 +196,12 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
     switch (diff.GetType()) {
         case Diff::Type::MOVE: {
             const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
-            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY);
+            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toObjectNum);
             break;
         }
         case Diff::Type::ADD: {
             const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
+            packet << Int32(addDiff.sprite);
             break;
         }
         case Diff::Type::REMOVE: {

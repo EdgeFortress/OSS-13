@@ -50,7 +50,15 @@ public:
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
 
     void Clear() { content.clear(); sprite = nullptr; }
-    void AddObject(Object *obj) { content.push_back(uptr<Object>(obj)); }
+    void AddObject(Object *obj, int num) { 
+        if (num > content.size()) {
+            CC::log << "Wrong object number" << endl;
+            return;
+        }
+        auto iter = content.begin();
+        for (int i = 0; i < num; iter++, i++);
+        content.insert(iter, uptr<Object>(obj));
+    }
     uptr<Object> RemoveObject(int num) { 
         if (num >= content.size() || num < 0) {
             CC::log << "Wrong object num: tile" << "(" << x << "," << y << ") num: " << num << endl;
@@ -121,9 +129,9 @@ public:
     void Resize(const int windowWidth, const int windowHeight);
 
     // Differences commiting
-    void Move(int blockID, int x, int y, int objectNum, int toX, int toY);
-    void Add() {}
-    void Remove() {}
+    void Move(int blockID, int x, int y, int objectNum, int toX, int toY, int toObjectNum);
+    void Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite);
+    void Remove(int blockID, int x, int y, int objectNum);
 
     Block *GetBlock(int blockID) const;
     Tile *GetTile(int x, int y) const;
