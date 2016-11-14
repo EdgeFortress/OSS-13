@@ -33,17 +33,7 @@ Tile::Tile(Block *block, const int x, const int y) :
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
-    //int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
-    //int xPosition = sizeTile * xNum;
-    //int yPosition = sizeTile * yNum;
-
-    //Sprite* tileSprite = this->GetSprite();
-    //if (tileSprite) {
-    //    tileSprite->SetSize(sizeTile);
-    //    tileSprite->Draw(window, xPosition, yPosition);
-    //}
-   
-    sprite->Draw(window, x, y, 0);
+    if (sprite) sprite->Draw(window, x, y, 0);
 
     for (auto &obj : content)
         obj->Draw(window, x, y);

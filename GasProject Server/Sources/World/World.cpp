@@ -286,6 +286,6 @@ void World::FillingWorld() {
 }
 
 Mob *World::CreateNewPlayerMob() {
-    Tile *startTile = map->GetTile(50, 50);
+    Tile *startTile = map->GetTile(5, 5);
     return new Mob(startTile);
 }

@@ -194,7 +194,10 @@ Packet &operator>>(Packet &packet, Block &block) {
     block.id = id;
     for (auto &vect : block.tiles)
         for (auto &tile : vect)
-            packet >> *tile;
+            if (id >= 0)
+                packet >> *tile;
+            else
+                tile->Clear();
     return packet;
 }
 

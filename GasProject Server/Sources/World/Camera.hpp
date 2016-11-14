@@ -16,6 +16,7 @@ namespace sf {
 class Camera {
 private:
     const Tile *tile;
+    int relX, relY;
     bool suspense;
 
     std::vector< std::vector<Block *> > visibleBlocks;

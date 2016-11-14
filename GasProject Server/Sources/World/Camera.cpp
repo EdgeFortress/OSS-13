@@ -46,6 +46,11 @@ void Camera::countVisibleBlocks() {
     int firstBlockX = firstTileX / Global::BLOCK_SIZE + (firstTileX < 0 ? -1 : 0);
     int firstBlockY = firstTileY / Global::BLOCK_SIZE + (firstTileY < 0 ? -1 : 0);
     Server::log << "First visible tile: " << firstTileX << ", " << firstTileY << endl;
+    Server::log << "First visible block: " << firstBlockX << ", " << firstBlockY << endl;
+
+    relX = tile->X() - firstBlockX * Global::BLOCK_SIZE;
+    relY = tile->Y() - firstBlockY * Global::BLOCK_SIZE;
+    Server::log << "Related camera pos: " << relX << ", " << relY << endl;
 
     // Filling our result vector by block pointers
     visibleBlocks.resize(num_of_visible_blocks);
@@ -66,8 +71,10 @@ const std::list<sptr<Diff>> Camera::GetVisibleDifferences() {
     if (suspense) return diffs;
     for (auto &vect : visibleBlocks)
         for (auto &block : vect) {
-            for (auto &diff : block->GetDifferences())
-                diffs.push_back(diff);
+            if (block) {
+                for (auto &diff : block->GetDifferences())
+                    diffs.push_back(diff);
+            }
         }
 
     return diffs;
