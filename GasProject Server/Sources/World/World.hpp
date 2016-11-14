@@ -31,24 +31,30 @@ public:
     // Construct object at tile
     explicit Object(Tile *tile = nullptr);
 
+    virtual void Update() = 0;
+
     bool GetDensity() { return density; }
     Tile *GetTile() { return tile; }
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
-    virtual void Interact(Object *) {}
-
-    virtual void Update() {}
+    
+    virtual void Interact(Object *) = 0;
 
     friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };
 
 class Item : public Object {
-
+public:
+    virtual void Update() { };
+    virtual void Interact(Object *) { };
 };
 
 class Turf : public Object {
 public:
     explicit Turf(Tile *tile) : Object(tile) {}
+
+    virtual void Update() { };
+    virtual void Interact(Object *) { };
 };
 
 class Mob : public Object {
@@ -66,6 +72,7 @@ public:
     void MoveWest() { horizontal--; }
 
     virtual void Update() override;
+    virtual void Interact(Object *) { };
 };
 
 class Wall : public Turf {
@@ -185,6 +192,7 @@ public:
     void RemoveLocal(const Local *local);
 
     void ClearDiffs();
+    void Update();
 
     const vector< vector<uptr<Tile>> > &GetTiles() { return tiles; }
     Tile *GetTile(int x, int y) const;

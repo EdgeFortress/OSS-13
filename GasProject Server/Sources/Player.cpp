@@ -12,6 +12,7 @@ Player::Player(Server *server, sf::TcpSocket *socket) : ckey(""),
 }
 
 void Player::Update() {
+    if (!camera || camera->IsSuspense()) return;
     const auto &&differences = camera->GetVisibleDifferences();
     if (!differences.empty())
         commandQueue.Push(new GraphicsDiffsServerCommand(differences));

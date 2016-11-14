@@ -30,6 +30,8 @@ public:
     const Tile * const GetPosition() const { return tile; }
     void Suspend();
 
+    bool IsSuspense() const { return suspense; }
+
     const std::list<sptr<Diff>> GetVisibleDifferences();
 
     friend sf::Packet &operator<<(sf::Packet &, const Camera &);

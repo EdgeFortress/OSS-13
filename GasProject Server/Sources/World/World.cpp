@@ -137,7 +137,8 @@ void Tile::CheckLocal() {
 }
 
 void Tile::Update() {
-    
+    for (auto &obj : content)
+        obj->Update();
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
@@ -229,6 +230,12 @@ void Map::ClearDiffs() {
             block->ClearDiffs();
 }
 
+void Map::Update() {
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            tile->Update();
+}
+
 Tile *Map::GetTile(int x, int y) const {
     if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
         return tiles[y][x].get();
@@ -260,14 +267,7 @@ void World::Update(sf::Time timeElapsed) {
         time_since_testMob_update = sf::Time::Zero;
     }
 
-    mobsUpdateTime += timeElapsed;
-    if (mobsUpdateTime >= sf::seconds(float(1.0 / mobsVelocity))) {
-        mobsUpdateTime = sf::Time::Zero;
-        for (auto &vect : map->GetTiles())
-            for (auto &tile : vect)
-                for (auto &obj : tile->GetContent())
-                    obj->Update();
-    }
+    
 }
 
 void World::FillingWorld() {
