@@ -250,15 +250,6 @@ void World::Update(sf::Time timeElapsed) {
         map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
     }
-
-    mobsUpdateTime += timeElapsed;
-    if (mobsUpdateTime >= sf::seconds(float(1.0 / mobsVelocity))) {
-        mobsUpdateTime = sf::Time::Zero;
-        for (auto &vect : map->GetTiles())
-            for (auto &tile : vect)
-                for (auto &obj : tile->GetContent())
-                    obj->Update();
-    }
 }
 
 void World::FillingWorld() {

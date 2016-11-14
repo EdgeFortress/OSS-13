@@ -58,6 +58,7 @@ public:
     explicit Mob(Tile *tile) : Object(tile) {
         sprite = Global::Sprite::Mob;
         density = false;
+        moveY = 0; moveX = 0;
     }
 
     void MoveNorth() { moveY = -1; }
@@ -135,7 +136,7 @@ public:
 
     //Test
     list<uptr<Object>> &GetContent() { return content; };
-    
+
     friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
 
@@ -186,7 +187,6 @@ public:
 
     void ClearDiffs();
 
-    const vector< vector<uptr<Tile>> > &GetTiles() { return tiles; }
     Tile *GetTile(int x, int y) const;
     Block *GetBlock(int x, int y) const;
     int GetNumOfBlocksX() const;
@@ -213,9 +213,6 @@ public:
         testMob = new Mob(map->GetTile(49, 49));
         test_dx = 1;
         test_dy = 0;
-
-        mobsUpdateTime = sf::Time::Zero;
-        mobsVelocity = 5;
     }
 
     void Update(sf::Time timeElapsed);

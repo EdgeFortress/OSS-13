@@ -77,12 +77,12 @@ public:
     virtual void HandleEvent(sf::Event) const final;
 
     GameProcessState() {
-        vertical = 0;
-        horizontal = 0;
+        moveX = 0;
+        moveY = 0;
     }
     GameProcessState(const GameProcessState &) = delete;
     GameProcessState &operator=(const GameProcessState &) = delete;
     virtual ~GameProcessState() = default;
 
-    int vertical, horizontal;
+    int moveX, moveY;
 };
