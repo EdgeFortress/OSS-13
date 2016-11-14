@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "Window.hpp"
+#include "Network.hpp"
 #include "TileGrid/TileGrid.hpp"
 
 #include "Graphics/UI/UI.hpp"
@@ -85,7 +86,6 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
-
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();
     window->GetUI()->Lock();
@@ -102,10 +102,19 @@ void MenuLoginState::HandleEvent(sf::Event event) const {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
 }
-
 void MenuGameListState::HandleEvent(sf::Event event) const { }
 void GameLobbyState::HandleEvent(sf::Event event) const { }
-void GameProcessState::HandleEvent(sf::Event event) const { }
+void GameProcessState::HandleEvent(sf::Event event) const {
+    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W))
+        Connection::commandQueue.Push(new NorthClientCommand());
+    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S))
+        Connection::commandQueue.Push(new SouthClientCommand());
+    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D))
+        Connection::commandQueue.Push(new EastClientCommand());
+    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A))
+        Connection::commandQueue.Push(new WestClientCommand());
+    //Add changes to vertical and horizontal and send them at some concrete time (need timeElapsed as an argument)
+}
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {
     Texture *t = new Texture("Images/Human.png", 32, 1);

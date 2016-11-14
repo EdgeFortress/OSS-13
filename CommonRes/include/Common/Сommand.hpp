@@ -15,7 +15,11 @@ struct ClientCommand {
         SERVER_LIST_REQ,
         CREATE_GAME,
         JOIN_GAME,
-        DISCONNECT
+        DISCONNECT,
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
     };
 
     virtual const Code GetCode() const = 0;
@@ -65,6 +69,30 @@ struct DisconnectionClientCommand : public ClientCommand {
     virtual const Code GetCode() const override { return Code::DISCONNECT; }
 
     DisconnectionClientCommand() { }
+};
+
+struct NorthClientCommand : public ClientCommand {
+    virtual const Code GetCode() const override { return Code::NORTH; }
+
+    NorthClientCommand() { }
+};
+
+struct SouthClientCommand : public ClientCommand {
+    virtual const Code GetCode() const override { return Code::SOUTH; }
+
+    SouthClientCommand() { }
+};
+
+struct EastClientCommand : public ClientCommand {
+    virtual const Code GetCode() const override { return Code::EAST; }
+
+    EastClientCommand() { }
+};
+
+struct WestClientCommand : public ClientCommand {
+    virtual const Code GetCode() const override { return Code::WEST; }
+
+    WestClientCommand() { }
 };
 
 struct ServerCommand {

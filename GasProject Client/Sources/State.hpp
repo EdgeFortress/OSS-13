@@ -76,8 +76,13 @@ public:
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const final;
     virtual void HandleEvent(sf::Event) const final;
 
-    GameProcessState() = default;
+    GameProcessState() {
+        vertical = 0;
+        horizontal = 0;
+    }
     GameProcessState(const GameProcessState &) = delete;
     GameProcessState &operator=(const GameProcessState &) = delete;
     virtual ~GameProcessState() = default;
+
+    int vertical, horizontal;
 };
