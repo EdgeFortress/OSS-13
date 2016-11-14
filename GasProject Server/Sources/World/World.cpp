@@ -43,9 +43,10 @@ void Tile::AddObject(Object *obj) {
                 if (GetBlock() == block) {
                     int toX = X() % Global::BLOCK_SIZE;
                     int toY = Y() % Global::BLOCK_SIZE;
-                    block->AddDiff(new MoveDiff(block, x, y, n, toX, toY));
+                    block->AddDiff(new MoveDiff(block, x, y, n, toX, toY, int(content.size())));
                     moved = true;
                 } else {
+                    Server::log << "Block changed" << endl;
                     block->AddDiff(new RemoveDiff(block, x, y, n));
                 }
                 
@@ -61,7 +62,7 @@ void Tile::AddObject(Object *obj) {
         Block *block = GetBlock();
         int x = X() % Global::BLOCK_SIZE;
         int y = Y() % Global::BLOCK_SIZE;
-        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1)));
+        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1), obj->GetSprite()));
     }
 }
 
@@ -249,10 +250,10 @@ void World::Update(sf::Time timeElapsed) {
     if (time_since_testMob_update >= sf::seconds(1)) {
         int x = testMob->GetTile()->X() + test_dx;
         int y = testMob->GetTile()->Y() + test_dy;
-        if (test_dx == 1 && x == 51) test_dx = 0, test_dy = 1;
-        if (test_dy == 1 && y == 51) test_dx = -1, test_dy = 0;
-        if (test_dx == -1 && x == 49) test_dx = 0, test_dy = -1;
-        if (test_dy == -1 && y == 49) test_dx = 1, test_dy = 0;
+        if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
+        if (test_dy == 1 && y == 53) test_dx = -1, test_dy = 0;
+        if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
+        if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
         map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
@@ -285,6 +286,6 @@ void World::FillingWorld() {
 }
 
 Mob *World::CreateNewPlayerMob() {
-    Tile *startTile = map->GetTile(50, 50);
+    Tile *startTile = map->GetTile(5, 5);
     return new Mob(startTile);
 }

@@ -196,11 +196,12 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
     switch (diff.GetType()) {
         case Diff::Type::MOVE: {
             const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
-            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY);
+            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toObjectNum);
             break;
         }
         case Diff::Type::ADD: {
             const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
+            packet << Int32(addDiff.sprite);
             break;
         }
         case Diff::Type::REMOVE: {
@@ -212,13 +213,14 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 }
 
 Packet &operator<<(Packet &packet, const Camera &camera) {
-    sf::Int32 cameraCentreX, cameraCentreY;
-    cameraCentreX = camera.GetPosition()->X() - camera.visibleBlocks[0][0]->GetTile(0, 0)->X();
-    cameraCentreY = camera.GetPosition()->Y() - camera.visibleBlocks[0][0]->GetTile(0, 0)->Y();
-    packet << cameraCentreX << cameraCentreY;
+    packet << Int32(camera.relX) << Int32(camera.relY);
     for (auto &vect : camera.visibleBlocks)
-        for (const Block *block : vect)
-            packet << *block;
+        for (const Block *block : vect) {
+            if (block)
+                packet << *block;
+            else
+                packet << Int32(-1);
+        }
     return packet;
 }
 
