@@ -36,6 +36,8 @@ private:
     sfg::SFGUI m_sfgui;
     sfg::Desktop desktop;
 
+    sf::Font font;
+
     sf::Texture background;
     sf::Sprite background_sprite;
 
@@ -61,8 +63,9 @@ public:
     void Lock();
     void Unlock();
 
-    //sf::RenderWindow *GetRenderWindow() const { return rendWindow; }
+    const sf::Font &GetFont() const { return font; }
     sfg::Desktop *GetDesktop() { return &desktop; }
+
     AuthUI *GetAuthUI() { return authUI.get(); }
     GameListUI *GetGameListUI() { return gamelistUI.get(); }
     GameProcessUI *GetGameProcessUI() { return gameProcessUI.get(); }

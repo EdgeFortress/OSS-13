@@ -22,6 +22,8 @@ UI::UI() :
     gamelistUI(new GameListUI(this)),
     gameProcessUI(new GameProcessUI(this))
 {
+    if (!font.loadFromFile("agency.ttf"))
+        CC::log << "Font load error!" << endl;
     background.loadFromFile("Images/MenuBackground.jpg");
     background_sprite.setTexture(background);
 }
