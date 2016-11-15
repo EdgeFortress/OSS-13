@@ -34,8 +34,9 @@ public:
 
     virtual void Update() = 0;
 
-    bool GetDensity() { return density; }
-    Tile *GetTile() { return tile; }
+    bool GetDensity() const { return density; }
+    Global::Sprite GetSprite() const { return sprite; }
+    Tile *GetTile() const { return tile; }
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
     

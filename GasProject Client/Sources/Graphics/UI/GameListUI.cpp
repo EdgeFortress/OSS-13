@@ -29,10 +29,6 @@ void GameListUI::generateGamelistWindow() {
 
     gamelistWindow = sfg::Window::Create();
     gamelistWindow->Add(box);
-    gamelistWindow->SetRequisition(sf::Vector2f(static_cast<float>(ui->GetRenderWindow()->getSize().x) / 2,
-        static_cast<float>(ui->GetRenderWindow()->getSize().y) / 2));
-    gamelistWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - gamelistWindow->GetAllocation().width) / 2,
-        (ui->GetRenderWindow()->getSize().y - gamelistWindow->GetAllocation().height) / 2));
     gamelistWindow->SetStyle(sfg::Window::Style::BACKGROUND);
     ui->GetDesktop()->Add(gamelistWindow);
 }
@@ -51,6 +47,13 @@ void GameListUI::AddGame(int id, string title, int num_of_players) {
 void GameListUI::Clear() {
     games.clear();
     gamesBox->RemoveAll();
+}
+
+void GameListUI::Resize(int width, int height) {
+    gamelistWindow->SetRequisition(sf::Vector2f(float(width) / 2,
+                                                float(height) / 2));
+    gamelistWindow->SetPosition(sf::Vector2f((width - gamelistWindow->GetAllocation().width) / 2,
+                                             (height - gamelistWindow->GetAllocation().height) / 2));
 }
 
 void GameListUI::Show() {

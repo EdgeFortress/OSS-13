@@ -71,8 +71,8 @@ void AuthUI::generateLoginWindow() {
 
     logWindow = sfg::Window::Create();
     logWindow->Add(table);
-    logWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - logWindow->GetAllocation().width) / 10,
-        (ui->GetRenderWindow()->getSize().y - logWindow->GetAllocation().height) / 3));
+    //logWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - logWindow->GetAllocation().width) / 10,
+        //(ui->GetRenderWindow()->getSize().y - logWindow->GetAllocation().height) / 3));
     logWindow->SetStyle(NULL);
     ui->GetDesktop()->Add(logWindow);
 }
@@ -121,8 +121,6 @@ void AuthUI::generateRegistrationWindow() {
 
     regWindow = sfg::Window::Create();
     regWindow->Add(table);
-    regWindow->SetPosition(sf::Vector2f((ui->GetRenderWindow()->getSize().x - regWindow->GetAllocation().width) / 2,
-        (ui->GetRenderWindow()->getSize().y - regWindow->GetAllocation().height) / 2));
     regWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE | sfg::Window::Style::CLOSE);
     regWindow->SetTitle("Registration of new account");
     regWindow->Show(false);
@@ -165,6 +163,13 @@ void AuthUI::registration() {
     }
     else
         CC::log << "Wait for answer to previous command" << endl;
+}
+
+void AuthUI::Resize(int width, int height) {
+    logWindow->SetPosition(sf::Vector2f((width - logWindow->GetAllocation().width) / 10,
+                                        (height - logWindow->GetAllocation().height) / 3));
+    regWindow->SetPosition(sf::Vector2f((width - regWindow->GetAllocation().width) / 2,
+                                        (height - regWindow->GetAllocation().height) / 2));
 }
 
 void AuthUI::Show() {

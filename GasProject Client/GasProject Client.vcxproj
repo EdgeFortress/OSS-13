@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\Human.png" />
+    <Image Include="Images\lobby_background.jpg" />
     <Image Include="Images\Space.png" />
     <Image Include="Images\Turfs.png" />
   </ItemGroup>

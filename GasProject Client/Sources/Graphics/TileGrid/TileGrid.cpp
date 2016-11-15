@@ -33,17 +33,7 @@ Tile::Tile(Block *block, const int x, const int y) :
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
-    //int sizeTile = CC::Get()->GetWindow()->GetSizeTile();
-    //int xPosition = sizeTile * xNum;
-    //int yPosition = sizeTile * yNum;
-
-    //Sprite* tileSprite = this->GetSprite();
-    //if (tileSprite) {
-    //    tileSprite->SetSize(sizeTile);
-    //    tileSprite->Draw(window, xPosition, yPosition);
-    //}
-   
-    sprite->Draw(window, x, y, 0);
+    if (sprite) sprite->Draw(window, x, y, 0);
 
     for (auto &obj : content)
         obj->Draw(window, x, y);
@@ -72,7 +62,7 @@ Tile* Block::GetTile (int x, int y) const {
     return nullptr;
 }
 
-TileGrid::TileGrid(const int windowWidth, const int windowHeight) : blockSize(Global::BLOCK_SIZE) {
+TileGrid::TileGrid() : blockSize(Global::BLOCK_SIZE) {
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided
@@ -101,11 +91,13 @@ void TileGrid::Draw(sf::RenderWindow * const window) {
 
 void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     tileSize = min(windowWidth, windowHeight) / Global::FOV;
-    xPadding = (windowWidth - tileSize * 15) / 2;
-    yPadding = (windowHeight - tileSize * 15) / 2;
+    xNumOfTiles = 15;
+    yNumOfTiles = 15;
+    xPadding = (windowWidth - tileSize * xNumOfTiles) / 2;
+    yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
 }
 
-void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY) {
+void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY, int toObjectNum) {
     Block *block = GetBlock(blockID);
     if (!block) {
         CC::log << "Wrong BlockID accepted: " << blockID << endl;
@@ -122,7 +114,37 @@ void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY) 
         return;
     }
     auto obj = tile->RemoveObject(objectNum);
-    new_tile->AddObject(obj.release());
+    new_tile->AddObject(obj.release(), toObjectNum);
+}
+
+void TileGrid::Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite) {
+    Block *block = GetBlock(blockID);
+    if (!block) {
+        CC::log << "Wrong BlockID accepted: " << blockID << endl;
+        return;
+    }
+    Tile *tile = block->GetTile(x, y);
+    if (!tile) {
+        CC::log << "Wrong block (" << blockID << ") coordinates: " << x << y << endl;
+        return;
+    }
+
+    tile->AddObject(new Object(sprite), objectNum);
+}
+
+void TileGrid::Remove(int blockID, int x, int y, int objectNum) {
+    Block *block = GetBlock(blockID);
+    if (!block) {
+        CC::log << "Wrong BlockID accepted: " << blockID << endl;
+        return;
+    }
+    Tile *tile = block->GetTile(x, y);
+    if (!tile) {
+        CC::log << "Wrong block (" << blockID << ") coordinates: " << x << y << endl;
+        return;
+    }
+
+    tile->RemoveObject(objectNum);
 }
 
 Block *TileGrid::GetBlock(int blockID) const {
@@ -141,4 +163,12 @@ Tile *TileGrid::GetTile(int x, int y) const {
         return blocks[y / blockSize][x / blockSize]->GetTile(x % blockSize, y % blockSize);
     //CC::log << "Can't return block " << x << ", " << y << endl;
     return nullptr;
+}
+
+Tile * TileGrid::GetTileByPixel(int x, int y) const
+{
+    int xTile = (x - xPadding) / tileSize + xPos - xNumOfTiles / 2;
+    int yTile = (y - yPadding) / tileSize + yPos - yNumOfTiles / 2;
+
+    return GetTile(xTile, yTile);
 }

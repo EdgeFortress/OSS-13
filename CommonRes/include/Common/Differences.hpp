@@ -1,8 +1,9 @@
 #pragma once
 
-//#include "Server.hpp"
+#include "NetworkConst.hpp"
 
 class Block;
+class Object;
 
 struct Diff {
     enum class Type : char {
@@ -28,18 +29,20 @@ struct Diff {
 };
 
 struct MoveDiff : public Diff {
-    int toX, toY;
-    explicit MoveDiff(Block *block, int x, int y, int objectNum, int toX, int toY) :
+    int toX, toY, toObjectNum;
+    explicit MoveDiff(Block *block, int x, int y, int objectNum, int toX, int toY, int toObjectNum) :
         Diff(block, x, y, objectNum),
-        toX(toX), toY(toY)
+        toX(toX), toY(toY), toObjectNum(toObjectNum)
     { }
 
     virtual Type GetType() const final { return Type::MOVE; }
 };
 
 struct AddDiff : public Diff {
-    explicit AddDiff(Block *block, int x, int y, int objectNum) :
-        Diff(block, x, y, objectNum)
+    Global::Sprite sprite;
+    explicit AddDiff(Block *block, int x, int y, int objectNum, Global::Sprite sprite) :
+        Diff(block, x, y, objectNum),
+        sprite(sprite)
     { }
 
     virtual Type GetType() const final { return Type::ADD; }

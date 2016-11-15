@@ -5,6 +5,7 @@
 
 #include "Graphics/UI/UI.hpp"
 #include "Graphics/UI/AuthUI.hpp"
+#include "Graphics/UI/GameProcessUI.hpp"
 
 #include "State.hpp"
 
@@ -45,6 +46,7 @@ void Window::Resize(const int newWidth, const int newHeight) {
     sf::FloatRect visibleArea(0, 0, float(width), float(height));
     window->setView(sf::View(visibleArea));
     tileGrid->Resize(width, height);
+    ui->Resize(width, height);
     for (auto &sprite : sprites)
         sprite->Resize(tileGrid->GetTileSize());
 }
@@ -84,6 +86,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
 
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
+    window->GetUI()->DrawMenuBackground(render_window);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
@@ -91,11 +94,19 @@ void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeEla
     Window *window = CC::Get()->GetWindow();
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
+    window->GetUI()->DrawMenuBackground(render_window);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
-void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
+void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
+    Window *window = CC::Get()->GetWindow();
+    GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
+    window->GetUI()->Lock();
+    window->GetUI()->Update(timeElapsed);
+    gameProcessUI->Draw(render_window);
+    window->GetUI()->Unlock();
+}
 
 void MenuLoginState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
