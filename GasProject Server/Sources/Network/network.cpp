@@ -136,6 +136,30 @@ void Connection::parse(sf::Packet &pac) {
                 player->commandQueue.Push(new GameJoinErrorServerCommand());
             break;
         }
+        case ClientCommand::Code::NORTH: {
+            auto mob = player->GetMob();
+            if (mob)
+                mob->MoveNorth();
+            break;
+        }
+        case ClientCommand::Code::SOUTH: {
+            auto mob = player->GetMob();
+            if (mob)
+                mob->MoveSouth();
+            break;
+        }
+        case ClientCommand::Code::EAST: {
+            auto mob = player->GetMob();
+            if (mob)
+                mob->MoveEast();
+            break;
+        }
+        case ClientCommand::Code::WEST: {
+            auto mob = player->GetMob();
+            if (mob)
+                mob->MoveWest();
+            break;
+        }
         case ClientCommand::Code::DISCONNECT: {
             active = false;
             Server::log << "Client" << player->ckey << "disconnected" << endl;
@@ -232,8 +256,10 @@ Packet &operator<<(Packet &packet, const Block &block) {
 
 Packet &operator<<(Packet &packet, const Tile &tile) {
     packet << sf::Int32(tile.content.size()) << sf::Int32(tile.sprite);
-    for (auto &obj : tile.content)
-        packet << *obj;
+    for (auto &obj : tile.content) {
+        if (obj)
+            packet << *obj;
+    }
     return packet;
 }
 

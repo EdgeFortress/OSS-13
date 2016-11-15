@@ -13,8 +13,9 @@ void Window::Update(sf::Time timeElapsed) {
     State *state = CC::Get()->GetState();
     while (window->pollEvent(event)) {
         ui->HandleEvent(event);
-        if (state)
-            state->HandleEvent(event);
+        if (state) {          
+            state->HandleEvent(event, timeElapsed);
+        }
         if (event.type == sf::Event::Resized)
             Resize(event.size.width, event.size.height);
         if (event.type == sf::Event::Closed)
@@ -96,24 +97,47 @@ void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeEla
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
 
-void MenuLoginState::HandleEvent(sf::Event event) const {
+void MenuLoginState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->ChangeFocus();
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
 }
-void MenuGameListState::HandleEvent(sf::Event event) const { }
-void GameLobbyState::HandleEvent(sf::Event event) const { }
-void GameProcessState::HandleEvent(sf::Event event) const {
+void MenuGameListState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
+void GameLobbyState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
+void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
+    static bool movingNorth = false, movingSouth = false, movingEast = false, movingWest = false;
+    static sf::Time moveTime = sf::Time::Zero;
+    int moveX = 0, moveY = 0;
     if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W))
-        Connection::commandQueue.Push(new NorthClientCommand());
+        movingNorth = true;
     if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S))
-        Connection::commandQueue.Push(new SouthClientCommand());
+        movingSouth = true;
     if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D))
-        Connection::commandQueue.Push(new EastClientCommand());
+        movingEast = true;
     if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A))
-        Connection::commandQueue.Push(new WestClientCommand());
-    //Add changes to vertical and horizontal and send them at some concrete time (need timeElapsed as an argument)
+        movingWest = true;
+    moveTime += timeElapsed;
+    if (moveTime >= sf::seconds(0.01f)) {
+        moveTime = sf::Time::Zero;
+        if (movingNorth)
+            moveY--;
+        if (movingSouth)
+            moveY++;
+        if (movingEast)
+            moveX++;
+        if (movingWest)
+            moveX--;
+        movingNorth = movingSouth = movingEast = movingWest = false;
+        if (moveY < 0)
+            Connection::commandQueue.Push(new NorthClientCommand());
+        if (moveY > 0)
+            Connection::commandQueue.Push(new SouthClientCommand());
+        if (moveX > 0)
+            Connection::commandQueue.Push(new EastClientCommand());
+        if (moveX < 0)
+            Connection::commandQueue.Push(new WestClientCommand());
+    }
 }
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {

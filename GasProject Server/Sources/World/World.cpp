@@ -17,6 +17,7 @@ Object::Object(Tile *tile) : tile(nullptr) {
 
 void Mob::Update() {
     tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
+    //Server::log << moveX << moveY << "UPDATING" << endl;
     moveY = 0; moveX = 0;
 }
 
@@ -35,7 +36,7 @@ void Tile::AddObject(Object *obj) {
         for (auto &i : lastTile->content) {
             if (i.get() == obj) {
                 i.release();
-                lastTile->content.remove(i);
+                //lastTile->content.remove(i);
 
                 Block *block = lastTile->GetBlock();
                 int x = lastTile->X() % Global::BLOCK_SIZE;
@@ -54,6 +55,7 @@ void Tile::AddObject(Object *obj) {
             n++;
         }
     }
+
     obj->SetTile(this);
     content.push_back(uptr<Object>(obj));
 
@@ -69,7 +71,7 @@ bool Tile::RemoveObject(Object *obj) {
     for (auto &i : content)
         if (i.get() == obj) {
             i.release();
-            content.remove(i);
+            //content.remove(i);
             obj->SetTile(nullptr);
             //add local remove
             return true;
@@ -80,13 +82,14 @@ bool Tile::RemoveObject(Object *obj) {
 void Tile::MoveTo(Object *obj) {
     bool available = true;
     for (auto &object : content)
-        if (object->GetDensity())
-        {
-            available = false;
-            break;
-        }
+        if (object)
+            if (object->GetDensity())
+            {
+                available = false;
+                break;
+            }
     
-    if (available)
+    if (available && obj)
         AddObject(obj);
 }
 
@@ -128,8 +131,23 @@ void Tile::CheckLocal() {
 }
 
 void Tile::Update() {
-    for (auto &obj : content)
-        obj->Update();
+    /*for (auto iter = content.begin(); iter != content.end(); iter++) {
+        auto obj = iter->get();
+        if (obj)
+            obj->Update();
+        if (iter->get() == nullptr)
+            iter = content.erase(iter);
+    }*/
+    auto iter = content.begin();
+    for (int i = 0; i < content.size(); i++) {
+        auto obj = iter->get();
+        if (obj)
+            obj->Update();
+        if (iter->get() == nullptr)
+            iter = content.erase(iter);
+        else
+            iter++;
+    }
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
@@ -257,6 +275,8 @@ void World::Update(sf::Time timeElapsed) {
         map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
     }
+    
+    map->Update();
 }
 
 void World::FillingWorld() {
