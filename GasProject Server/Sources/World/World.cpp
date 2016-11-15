@@ -16,7 +16,8 @@ Object::Object(Tile *tile) : tile(nullptr) {
 }
 
 void Mob::Update() {
-    tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
+    if (moveX || moveY)
+        tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
     //Server::log << moveX << moveY << "UPDATING" << endl;
     moveY = 0; moveX = 0;
 }
