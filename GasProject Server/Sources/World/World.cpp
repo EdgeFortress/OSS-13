@@ -18,7 +18,6 @@ Object::Object(Tile *tile) : tile(nullptr) {
 void Mob::Update() {
     if (moveX || moveY)
         tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
-    //Server::log << moveX << moveY << "UPDATING" << endl;
     moveY = 0; moveX = 0;
 }
 
@@ -82,19 +81,17 @@ bool Tile::RemoveObject(Object *obj) {
 }
 
 void Tile::MoveTo(Object *obj) {
-    if (this) {
-        bool available = true;
-        for (auto &object : content)
-            if (object)
-                if (object->GetDensity())
-                {
-                    available = false;
-                    break;
-                }
+    bool available = true;
+    for (auto &object : content)
+        if (object)
+            if (object->GetDensity())
+            {
+                available = false;
+                break;
+            }
 
-        if (available && obj)
-            AddObject(obj);
-    }
+    if (available && obj)
+        AddObject(obj);
 }
 
 Block *Tile::GetBlock() const {
@@ -135,15 +132,7 @@ void Tile::CheckLocal() {
 }
 
 void Tile::Update() {
-    /*for (auto iter = content.begin(); iter != content.end(); iter++) {
-        auto obj = iter->get();
-        if (obj)
-            obj->Update();
-        if (iter->get() == nullptr)
-            iter = content.erase(iter);
-    }*/
-    auto iter = content.begin();
-    for (int i = 0; i < content.size(); i++) {
+    for (auto iter = content.begin(); iter != content.end();) {
         auto obj = iter->get();
         if (obj)
             obj->Update();
@@ -276,7 +265,7 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-        map->GetTile(x, y)->AddObject(testMob);
+        //map->GetTile(x, y)->AddObject(testMob);
         time_since_testMob_update = sf::Time::Zero;
     }
     

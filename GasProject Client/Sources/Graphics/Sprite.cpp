@@ -52,22 +52,20 @@ Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIn
 }
 
 void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const int direction) const {
-    if (this) {
-        sf::Rect<int> rect;
+    sf::Rect<int> rect;
 
-        int realState = firstFrameIndex;
-        if (directed) realState += direction * frames;
-        if (frames > 1) realState += curFrame;
+    int realState = firstFrameIndex;
+    if (directed) realState += direction * frames;
+    if (frames > 1) realState += curFrame;
 
-        rect.left = realState % texture->GetXNumOfTiles() * texture->GetSizeOfTile();
-        rect.top = realState / texture->GetXNumOfTiles() * texture->GetSizeOfTile();
-        rect.width = rect.height = texture->GetSizeOfTile();
+    rect.left = realState % texture->GetXNumOfTiles() * texture->GetSizeOfTile();
+    rect.top = realState / texture->GetXNumOfTiles() * texture->GetSizeOfTile();
+    rect.width = rect.height = texture->GetSizeOfTile();
 
-        sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
-        sprite->setTextureRect(rect);
-        sprite->setScale(scale, scale);
-        window->draw(*sprite);
-    }
+    sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
+    sprite->setTextureRect(rect);
+    sprite->setScale(scale, scale);
+    window->draw(*sprite);
 }
 
 void Sprite::Resize(int size) {

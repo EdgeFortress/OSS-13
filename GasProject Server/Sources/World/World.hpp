@@ -5,7 +5,6 @@
 
 #include <SFML/System/Time.hpp>
 
-#include "Common/Useful.hpp"
 #include "Common/NetworkConst.hpp"
 #include "Common/Differences.hpp"
 #include "Camera.hpp"

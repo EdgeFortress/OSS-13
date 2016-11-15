@@ -23,9 +23,7 @@ void Object::SetSprite(const Global::Sprite key) {
 };
 
 void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
-    if (this)
-        if (sprite)
-            sprite->Draw(window, x, y, direction);
+    if (sprite) sprite->Draw(window, x, y, direction);
 }
 
 Tile::Tile(Block *block, const int x, const int y) : 

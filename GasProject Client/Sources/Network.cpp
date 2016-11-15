@@ -138,6 +138,7 @@ void Connection::parsePacket(Packet &packet) {
                         Int32 sprite;
                         packet >> sprite;
                         tileGrid.Add(blockID, x, y, objectNum, Global::Sprite(sprite));
+                        CC::log << "***********************************" << endl;
                         break;
                     case Diff::Type::REMOVE:
                         tileGrid.Remove(blockID, x, y, objectNum);
