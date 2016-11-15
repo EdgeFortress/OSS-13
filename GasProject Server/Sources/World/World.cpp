@@ -81,17 +81,19 @@ bool Tile::RemoveObject(Object *obj) {
 }
 
 void Tile::MoveTo(Object *obj) {
-    bool available = true;
-    for (auto &object : content)
-        if (object)
-            if (object->GetDensity())
-            {
-                available = false;
-                break;
-            }
-    
-    if (available && obj)
-        AddObject(obj);
+    if (this) {
+        bool available = true;
+        for (auto &object : content)
+            if (object)
+                if (object->GetDensity())
+                {
+                    available = false;
+                    break;
+                }
+
+        if (available && obj)
+            AddObject(obj);
+    }
 }
 
 Block *Tile::GetBlock() const {
