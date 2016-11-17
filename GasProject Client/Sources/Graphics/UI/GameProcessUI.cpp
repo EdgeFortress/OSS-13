@@ -13,9 +13,10 @@ InfoLabel::InfoLabel(const sf::Font &font) {
     text.setFillColor(sf::Color(255, 69, 0));
 }
 
-void InfoLabel::Draw(RenderWindow *window) {
-    window->draw(rectangle);
-    window->draw(text);
+void InfoLabel::Draw(RenderWindow *renderWindow) {
+    renderWindow->draw(rectangle);
+
+    renderWindow->draw(text);
 }
 
 void InfoLabel::CountPosition(int width, int height) {
@@ -26,15 +27,6 @@ void InfoLabel::CountPosition(int width, int height) {
 void InfoLabel::SetText(string s) {
     text.setString(s);
 }
-
-//void GameProcessUI::drawInfoPanel(sf::RenderWindow *renderWindow) {
-//    sf::Vector2i mousePosition = sf::Mouse::getPosition(*renderWindow);
-//    //CC::log << mousePosition.x << " " << mousePosition.y << endl;
-//    Tile *tile = CC::Get()->GetWindow()->GetTileGrid()->GetTileByPixel(mousePosition.x, mousePosition.y);
-//    if(tile != NULL) {
-//        CC::log << tile->GetNumObj() << endl;
-//    }
-//}
 
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     infoLabel(ui->GetFont())

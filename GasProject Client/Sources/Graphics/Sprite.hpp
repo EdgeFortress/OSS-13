@@ -39,19 +39,7 @@ public:
 
     Sprite *SetInfo(Global::Sprite, int num, int firstFrame, bool directed, int frames);
 
-    /*bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const {
-        int realState = spritesInfo[sprite].firstFrame;
-        if (spritesInfo[sprite].directed > 0) realState += direction * spritesInfo[sprite].frames;
-        if (spritesInfo[sprite].frames > 1) realState += frame;
-
-        x += realState % xNumOfTiles * sizeOfTile;
-        y += realState / xNumOfTiles * sizeOfTile;
-
-        if (x < 0 || x >= texture->getSize().x || y < 0 || y >= texture->getSize().y) return true;
-        if (texture->copyToImage().getPixel(x, y).a == 0) return true;
-
-        return false;
-    }*/
+    bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const;
 
     sf::Texture *GetSFMLTexture() const { return texture.get(); }
 
@@ -87,10 +75,10 @@ public:
     bool Animated() { return frames > 1; }
     void UpdateFrame() { ++curFrame %= frames; }
 
-    /*bool PixelTransparent(int x, int y) const
+    bool PixelTransparent(int x, int y) const
     {
         x /= scale; y /= scale;
-        if (texture->PixelTransparent(x, y, num, directed, animated)) return true;
+        if (texture->PixelTransparent(x, y, spriteIndex, directed, curFrame)) return true;
         return false;
-    }*/
+    }
 };

@@ -8,11 +8,13 @@
 
 Object::Object() {
     tile = nullptr;
+    name = "";
 }
 
 Object::Object(Tile *tile) : tile(nullptr) {
     if (tile)
         tile->AddObject(this);
+    name = "";
 }
 
 void Mob::Update() {

@@ -18,6 +18,20 @@ Texture::Texture(string path, int sizeOfTile, int numOfSprites) :
     yNumOfTiles = texture->getSize().y / sizeOfTile;
 }
 
+bool Texture::PixelTransparent(int x, int y, int sprite, int direction, int frame) const {
+    int realState = spritesInfo[sprite].firstFrame;
+    if (spritesInfo[sprite].directed) realState += (direction - 1) * spritesInfo[sprite].frames;
+    if (spritesInfo[sprite].frames > 1) realState += frame;
+
+    x += realState % xNumOfTiles * sizeOfTile;
+    y += realState / xNumOfTiles * sizeOfTile;
+
+    if (x < 0 || x >= texture->getSize().x || y < 0 || y >= texture->getSize().y) return true;
+    if (texture->copyToImage().getPixel(x, y).a == 0) return true;
+
+    return false;
+}
+
 Sprite *Texture::SetInfo(Global::Sprite key, int num, int firstFrame, bool directed, int frames) {
     spritesInfo[num].firstFrame = firstFrame;
     spritesInfo[num].directed = directed;

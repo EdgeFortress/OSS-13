@@ -221,8 +221,10 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 
 Packet &operator>>(Packet &packet, Object &object) {
     sf::Int32 sprite;
-    packet >> sprite;
+    sf::String name;
+    packet >> sprite >> name;
     object.SetSprite(Global::Sprite(sprite));
+    object.name = name;
     return packet;
 }
 

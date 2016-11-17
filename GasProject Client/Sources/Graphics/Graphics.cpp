@@ -149,6 +149,11 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
         if (moveX < 0)
             Connection::commandQueue.Push(new WestClientCommand());
     }
+    if (event.type == sf::Event::MouseMoved){
+        Object *obj = CC::Get()->GetWindow()->GetTileGrid()->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
+        if (obj != nullptr)
+            CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
+    }
 }
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {
