@@ -142,6 +142,7 @@
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Network.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
+    <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\World\Camera.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />

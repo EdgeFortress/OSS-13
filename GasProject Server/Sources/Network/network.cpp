@@ -129,11 +129,12 @@ void Connection::parse(sf::Packet &pac) {
         case ClientCommand::Code::JOIN_GAME: {
             sf::Int32 id;
             pac >> id;
-            player->game = server->JoinGame(id, player);
-            if (player->game)
+            //player->game = server->JoinGame(id, player);
+            server->JoinGame(id, player);
+            /*if (player->game)
                 player->commandQueue.Push(new GameJoinSuccessServerCommand());
             else
-                player->commandQueue.Push(new GameJoinErrorServerCommand());
+                player->commandQueue.Push(new GameJoinErrorServerCommand());*/
             break;
         }
         case ClientCommand::Code::NORTH: {

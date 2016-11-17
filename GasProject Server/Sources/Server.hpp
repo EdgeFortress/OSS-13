@@ -2,8 +2,11 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 #include "Common/Useful.hpp"
+#include "World/World.hpp"
+#include "PlayerCommand.hpp"
 
 class Player;
 class Server;
@@ -34,18 +37,26 @@ private:
 
     void update(sf::Time timeElapsed);
 
+    ThreadSafeQueue<NetworkCommand *> networkCommandQueue;
+
 public:
     Game(Server *server, std::string title, int id);
 
     bool AddPlayer(Player *);
     void DeletePlayer(Player *);
 
+    const uptr<World> &GetWorld() { return world; }
+
     const int GetID() const;
+
+    void AddNetworkCommand(NetworkCommand *);
 
     ~Game();
 
     friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
 };
+
+extern thread_local Game *CurThreadGame;
 
 class Server {
 private:
@@ -63,7 +74,7 @@ public:
     bool Registration(std::string &login, std::string &password) const;
     bool CreateGame(std::string title);
     const std::list<uptr<Game>> * const GetGamesList() const;
-    Game *JoinGame(const int id, Player *player) const;
+    void JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
 
     static Server *Get() { return instance; }

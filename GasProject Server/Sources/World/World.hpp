@@ -117,7 +117,7 @@ private:
     Global::Sprite sprite;
     Local *local;
 
-    list<uptr<Object>> content;
+    list<Object *> content;
     list<Gas> listGas;
 
 public:
@@ -143,7 +143,7 @@ public:
     void SetLocal(Local *local) { this->local = local; }
 
     //Test
-    list<uptr<Object>> &GetContent() { return content; };
+    const list<Object *> GetContentCopy() { return content; };
 
     friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
@@ -213,18 +213,16 @@ private:
     int test_dy;
     int mobsVelocity;
 
+    std::vector<uptr<Object>> objects;
+
 public:
     World() : map(new Map(100, 100)) {
-        FillingWorld();
         map->GenerateLocals();
-
-        time_since_testMob_update = sf::Time::Zero;
-        testMob = new Mob(map->GetTile(49, 49));
-        test_dx = 1;
-        test_dy = 0;
     }
 
     void Update(sf::Time timeElapsed);
+
+    void AddObject(Object *);
 
     void FillingWorld();
     Mob *CreateNewPlayerMob();

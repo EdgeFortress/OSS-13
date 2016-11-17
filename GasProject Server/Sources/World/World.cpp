@@ -8,11 +8,13 @@
 
 Object::Object() {
     tile = nullptr;
+    CurThreadGame->GetWorld()->AddObject(this);
 }
 
 Object::Object(Tile *tile) : tile(nullptr) {
     if (tile)
         tile->AddObject(this);
+    CurThreadGame->GetWorld()->AddObject(this);
 }
 
 void Mob::Update() {
@@ -34,9 +36,10 @@ void Tile::AddObject(Object *obj) {
     if (lastTile = obj->GetTile()) {
         int n = 0;
         for (auto &i : lastTile->content) {
-            if (i.get() == obj) {
-                i.release();
-                //lastTile->content.remove(i);
+            if (i == obj) {
+                //i.release();
+                i = nullptr;
+                lastTile->content.remove(i);
 
                 Block *block = lastTile->GetBlock();
                 int x = lastTile->X() % Global::BLOCK_SIZE;
@@ -58,7 +61,7 @@ void Tile::AddObject(Object *obj) {
     }
 
     obj->SetTile(this);
-    content.push_back(uptr<Object>(obj));
+    content.push_back(obj);
 
     if (!moved) {
         Block *block = GetBlock();
@@ -70,9 +73,10 @@ void Tile::AddObject(Object *obj) {
 
 bool Tile::RemoveObject(Object *obj) {
     for (auto &i : content)
-        if (i.get() == obj) {
-            i.release();
-            //content.remove(i);
+        if (i == obj) {
+            //i.release();
+            i = nullptr;
+            content.remove(i);
             obj->SetTile(nullptr);
             //add local remove
             return true;
@@ -103,10 +107,10 @@ void Tile::CheckLocal() {
 
     bool floor = false;
     for (auto &obj : content) {
-        if (dynamic_cast<Wall *>(obj.get())) {
+        if (dynamic_cast<Wall *>(obj)) {
             return;
         }
-        if (dynamic_cast<Floor *>(obj.get())) {
+        if (dynamic_cast<Floor *>(obj)) {
             floor = true;
         }
     }
@@ -132,7 +136,7 @@ void Tile::CheckLocal() {
 }
 
 void Tile::Update() {
-    for (auto iter = content.begin(); iter != content.end();) {
+    /*for (auto iter = content.begin(); iter != content.end();) {
         auto obj = iter->get();
         if (obj)
             obj->Update();
@@ -140,7 +144,7 @@ void Tile::Update() {
             iter = content.erase(iter);
         else
             iter++;
-    }
+    }*/
 }
 
 Block::Block(Map *map, int blockX, int blockY) :
@@ -270,6 +274,14 @@ void World::Update(sf::Time timeElapsed) {
     }
     
     map->Update();
+
+    for (unsigned i = 0; i < objects.size();)
+    {
+        size_t len = objects.size();
+        (objects.begin() + i)->get()->Update();
+        if (objects.size() == len)
+            i++;
+    }
 }
 
 void World::FillingWorld() {
@@ -289,12 +301,21 @@ void World::FillingWorld() {
         }
     }
 
+    time_since_testMob_update = sf::Time::Zero;
+    testMob = new Mob(map->GetTile(49, 49));
+    test_dx = 1;
+    test_dy = 0;
+
     /*for (int i = 85; i <= 95; i++) {
         for (int j = 85; j <= 95; j++) {
             Tile *tile = map->GetTile(i, j);
             new Floor(tile);
         }
     }*/
+}
+
+void World::AddObject(Object *obj) {
+    objects.push_back(uptr<Object>(obj));
 }
 
 Mob *World::CreateNewPlayerMob() {

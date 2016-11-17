@@ -17,11 +17,12 @@ Game::Game(Server *server, string title, int id) : title(title),
                                                    server(server),
                                                    active(true),
                                                    thread(new std::thread(gameProcess, this)) {
-
 }
 
 void Game::gameProcess(Game *inst) {
+    CurThreadGame = inst;
     inst->world.reset(new World());
+    inst->world->FillingWorld();
     Clock clock;
     while (inst->active) {
         inst->update(clock.restart());
@@ -30,6 +31,31 @@ void Game::gameProcess(Game *inst) {
 }
 
 void Game::update(sf::Time timeElapsed) {
+    while (!networkCommandQueue.Empty())
+    {
+        NetworkCommand *temp = networkCommandQueue.Pop();
+        switch (temp->GetCode())
+        {
+            case NetworkCommand::Code::ADD_PLAYER: {
+                AddPlayerCommand *command = dynamic_cast<AddPlayerCommand *>(temp);
+                if (command) {
+                    if (AddPlayer(command->player)) {
+                        command->player->SetGame(this);
+                        command->player->AddCommand(new GameJoinSuccessServerCommand());
+                    }
+                    else {
+                        command->player->AddCommand(new GameJoinErrorServerCommand());
+                    }
+                }
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        if (temp) delete temp;
+    }
+
     world->Update(timeElapsed);
     for (Player *player : players)
         player->Update();
@@ -45,6 +71,10 @@ bool Game::AddPlayer(Player *player) {
 }
 
 void Game::DeletePlayer(Player *player) { players.remove(player); }
+
+void Game::AddNetworkCommand(NetworkCommand *command) {
+    networkCommandQueue.Push(command);
+}
 
 Game::~Game() {
     active = false;
@@ -110,14 +140,17 @@ const std::list<uptr<Game>> * const Server::GetGamesList() const {
     return &games;
 }
 
-Game *Server::JoinGame(const int id, Player *player) const {
+void Server::JoinGame(const int id, Player *player) const {
     Server::log << player->GetCKey() << " connecting game #" << id << endl;
     for (auto &game : games) {
-        if (game->GetID() == id) 
-            if (game->AddPlayer(player)) return game.get();
-            else return nullptr;
+        if (game->GetID() == id) {
+            //if (game->AddPlayer(player)) return game.get();
+            //else return nullptr;
+
+            game->AddNetworkCommand(new AddPlayerCommand(player));
+            return;
+        }
     }
-    return nullptr;
 }
 
 void Server::AddPlayer(Player *player) {
@@ -132,3 +165,4 @@ int main() {
 
 Log Server::log;
 Server *Server::instance;
+thread_local Game *CurThreadGame = nullptr;

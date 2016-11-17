@@ -48,7 +48,7 @@ public:
     ~Tile() = default;
 
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
-    int GetNumObj() {
+    size_t GetNumObj() {
         return content.size();
     }
     void Clear() { content.clear(); sprite = nullptr; }

@@ -38,6 +38,7 @@ public:
     string GetCKey() { return ckey; }
     Connection *GetConnection() { return connection.get(); }
 
+    void SetGame(Game *game) { this->game = game; }
     void SetMob(Mob *mob);
     void SetCamera(Camera *camera) { this->camera.reset(camera); }
 
