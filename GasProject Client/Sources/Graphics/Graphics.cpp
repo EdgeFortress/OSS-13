@@ -105,6 +105,7 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
     gameProcessUI->Draw(render_window);
+    window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
 
@@ -148,6 +149,13 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
             Connection::commandQueue.Push(new EastClientCommand());
         if (moveX < 0)
             Connection::commandQueue.Push(new WestClientCommand());
+    }
+    if (event.type == sf::Event::MouseMoved){
+        Object *obj = CC::Get()->GetWindow()->GetTileGrid()->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
+        if (obj != nullptr)
+            CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
+        else 
+            CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
     }
 }
 

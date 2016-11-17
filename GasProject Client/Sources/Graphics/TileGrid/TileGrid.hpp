@@ -20,13 +20,17 @@ class Object {
 private:
     Sprite *sprite;
     int direction;
+    
 
 public:
+    string name;
     explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const bool directed = false);
 
     void Draw(sf::RenderWindow * const, const int x, const int y);
 
     void SetSprite(const Global::Sprite);
+
+    bool checkObj(int x, int y);
     //Sprite *GetSprite() const { return sprite; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
@@ -51,6 +55,7 @@ public:
     size_t GetNumObj() {
         return content.size();
     }
+    Object * GetObjectByCoord(int x, int y);
     void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj, int num) { 
         if (num > content.size()) {
@@ -137,10 +142,12 @@ public:
 
     Block *GetBlock(int blockID) const;
     Tile *GetTile(int x, int y) const;
-    Tile *GetTileByPixel(int x, int y) const;
+    Object *GetObjectByPixel(int x, int y) const;
 
     const int GetBlockSize() const { return blockSize; }
     const int GetTileSize() const { return tileSize; }
+    const int GetWidth() const { return tileSize * xNumOfTiles; }
+    const int GetHeigth() const { return tileSize * yNumOfTiles; }
 
     friend sf::Packet &operator>> (sf::Packet &packet, TileGrid &tileGrid);
 };

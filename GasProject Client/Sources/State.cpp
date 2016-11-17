@@ -4,6 +4,7 @@
 #include "Graphics/UI/UI.hpp"
 #include "Graphics/UI/AuthUI.hpp"
 #include "Graphics/UI/GameListUI.hpp"
+#include "Graphics/UI/GameProcessUI.hpp"
 
 #include "State.hpp"
 
@@ -16,7 +17,9 @@ void MenuGameListState::Initialize() const {
 }
 
 void GameLobbyState::Initialize() const { }
-void GameProcessState::Initialize() const { }
+void GameProcessState::Initialize() const { 
+    CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->Show();
+}
 
 void MenuLoginState::Ending() const {  
     CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Hide();

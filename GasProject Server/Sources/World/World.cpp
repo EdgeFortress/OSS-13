@@ -8,6 +8,7 @@
 
 Object::Object() {
     tile = nullptr;
+    name = "";
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
@@ -15,6 +16,7 @@ Object::Object(Tile *tile) : tile(nullptr) {
     if (tile)
         tile->AddObject(this);
     CurThreadGame->GetWorld()->AddObject(this);
+    name = "";
 }
 
 void Mob::Update() {

@@ -23,6 +23,7 @@ class Local;
 class Object {
 protected:
     Tile *tile;
+    std::string name;
     Global::Sprite sprite;
     bool density;
 
@@ -64,6 +65,7 @@ private:
 public:
     explicit Mob(Tile *tile) : Object(tile) {
         sprite = Global::Sprite::Mob;
+        name = "Mob";
         density = false;
         moveY = 0; moveX = 0;
     }
@@ -81,6 +83,7 @@ class Wall : public Turf {
 public:
     explicit Wall(Tile *tile) : Turf(tile) {
         sprite = Global::Sprite::Wall;
+        name = "Wall";
         density = true;
     }
 
@@ -92,6 +95,7 @@ class Floor : public Turf {
 public:
     explicit Floor(Tile *tile) : Turf(tile) {
         sprite = Global::Sprite::Floor;
+        name = "Floor";
         density = false;
     }
     

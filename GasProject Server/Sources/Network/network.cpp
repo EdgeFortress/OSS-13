@@ -267,7 +267,7 @@ Packet &operator<<(Packet &packet, const Tile &tile) {
 }
 
 Packet &operator<<(Packet &packet, const Object &obj) {
-    packet << sf::Int32(obj.sprite);
+    packet << sf::Int32(obj.sprite) << sf::String(obj.name);
     return packet;
 }
 

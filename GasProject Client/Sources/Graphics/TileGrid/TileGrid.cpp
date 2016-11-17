@@ -20,7 +20,11 @@ void Object::SetSprite(const Global::Sprite key) {
                 this->sprite = sprite.get();
                 break;
             }
-};
+}
+bool Object::checkObj(int x, int y) {
+    return !(sprite->PixelTransparent(x, y));
+}
+;
 
 void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
     if (sprite) sprite->Draw(window, x, y, direction);
@@ -37,6 +41,14 @@ void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const
 
     for (auto &obj : content)
         obj->Draw(window, x, y);
+}
+
+Object * Tile::GetObjectByCoord(int x, int y) {
+    for (auto obj = content.rbegin(); obj != content.rend(); obj++) {
+        if ((*obj)->checkObj(x, y))
+            return (*obj).get();
+    }
+    return nullptr;
 }
 
 Block::Block(TileGrid *tileGrid) : 
@@ -93,7 +105,7 @@ void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     tileSize = min(windowWidth, windowHeight) / Global::FOV;
     xNumOfTiles = 15;
     yNumOfTiles = 15;
-    xPadding = (windowWidth - tileSize * xNumOfTiles) / 2;
+    xPadding = 0;
     yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
 }
 
@@ -165,10 +177,15 @@ Tile *TileGrid::GetTile(int x, int y) const {
     return nullptr;
 }
 
-Tile * TileGrid::GetTileByPixel(int x, int y) const
+Object * TileGrid::GetObjectByPixel(int x, int y) const
 {
     int xTile = (x - xPadding) / tileSize + xPos - xNumOfTiles / 2;
     int yTile = (y - yPadding) / tileSize + yPos - yNumOfTiles / 2;
+    Tile *locTile = GetTile(xTile, yTile);
+    if (locTile == nullptr) return nullptr;
+    int xLoc = (x - xPadding) % tileSize;
+    int yLoc = (y - yPadding) % tileSize;
+    Object *locObj = locTile->GetObjectByCoord(xLoc, yLoc);
 
-    return GetTile(xTile, yTile);
+    return locObj;
 }
