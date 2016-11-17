@@ -105,7 +105,7 @@ void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     tileSize = min(windowWidth, windowHeight) / Global::FOV;
     xNumOfTiles = 15;
     yNumOfTiles = 15;
-    xPadding = (windowWidth - tileSize * xNumOfTiles) / 2;
+    xPadding = 0;
     yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
 }
 

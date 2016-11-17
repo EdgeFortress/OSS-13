@@ -1,3 +1,6 @@
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Widgets.hpp>
+
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid/TileGrid.hpp"
@@ -28,14 +31,33 @@ void InfoLabel::SetText(string s) {
     text.setString(s);
 }
 
+void GameProcessUI::generateChatWindow() {
+    chatWindow = sfg::Window::Create();
+    chatWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE ^ sfg::Window::Style::TITLEBAR);
+
+    ui->GetDesktop()->Add(chatWindow);
+}
+
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     infoLabel(ui->GetFont())
-{ }
+{ 
+    generateChatWindow();
+
+    Hide();
+}
 
 void GameProcessUI::Resize(int width, int height) { 
     infoLabel.CountPosition(width, height);
+    chatWindow->SetAllocation(sf::FloatRect(height, 0, width - height, height));
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
     infoLabel.Draw(renderWindow);
+}
+void GameProcessUI::Show() {
+    chatWindow->Show(true);
+}
+
+void GameProcessUI::Hide() {
+    chatWindow->Show(false);
 }
