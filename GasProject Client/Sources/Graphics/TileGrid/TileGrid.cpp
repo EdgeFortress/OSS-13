@@ -43,7 +43,7 @@ void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const
         obj->Draw(window, x, y);
 }
 
-Object * Tile::GetObjectByCoord(int x, int y) {
+Object *Tile::GetObjectByCoord(const unsigned x, const unsigned y) const {
     for (auto obj = content.rbegin(); obj != content.rend(); obj++) {
         if ((*obj)->checkObj(x, y))
             return (*obj).get();

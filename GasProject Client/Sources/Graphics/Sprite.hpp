@@ -39,7 +39,10 @@ public:
 
     Sprite *SetInfo(Global::Sprite, int num, int firstFrame, bool directed, int frames);
 
-    bool PixelTransparent(int x, int y, int sprite, int direction, int frame) const;
+    bool PixelTransparent(const unsigned x, const unsigned y, 
+                          const int sprite, 
+                          const int direction, 
+                          const int frame) const;
 
     sf::Texture *GetSFMLTexture() const { return texture.get(); }
 
@@ -75,10 +78,8 @@ public:
     bool Animated() { return frames > 1; }
     void UpdateFrame() { ++curFrame %= frames; }
 
-    bool PixelTransparent(int x, int y) const
-    {
-        x /= scale; y /= scale;
-        if (texture->PixelTransparent(x, y, spriteIndex, directed, curFrame)) return true;
+    bool PixelTransparent(const int x, const int y) const {
+        if (texture->PixelTransparent(int(x / scale), int(y / scale), spriteIndex, directed, curFrame)) return true;
         return false;
     }
 };

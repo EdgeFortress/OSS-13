@@ -46,9 +46,9 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     Hide();
 }
 
-void GameProcessUI::Resize(int width, int height) { 
+void GameProcessUI::Resize(const int width, const int height) { 
     infoLabel.CountPosition(width, height);
-    chatWindow->SetAllocation(sf::FloatRect(height, 0, width - height, height));
+    chatWindow->SetAllocation(sf::FloatRect(float(height), 0, float(width - height), float(height)));
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {

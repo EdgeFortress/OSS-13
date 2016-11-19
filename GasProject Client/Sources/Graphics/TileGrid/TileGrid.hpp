@@ -52,10 +52,8 @@ public:
     ~Tile() = default;
 
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
-    size_t GetNumObj() {
-        return content.size();
-    }
-    Object * GetObjectByCoord(int x, int y);
+
+    Object *GetObjectByCoord(const unsigned x, const unsigned y) const;
     void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj, int num) { 
         if (num > content.size()) {
