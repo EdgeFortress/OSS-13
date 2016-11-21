@@ -4,6 +4,7 @@
 
 #include "Common/Useful.hpp"
 #include "World/Camera.hpp"
+#include "PlayerCommand.hpp"
 
 using std::string;
 
@@ -28,26 +29,29 @@ private:
     Mob *mob;
     uptr<Camera> camera;
 
-    ThreadSafeQueue<ServerCommand *> commandQueue;
+    ThreadSafeQueue<ServerCommand *> commandsToClient;
+    ThreadSafeQueue<PlayerCommand *> commandsFromClient;
 
 public:
     Player(Server *server, sf::TcpSocket *socket);
 
     void Update();
+    void SendUpdates();
 
     string GetCKey() { return ckey; }
     Connection *GetConnection() { return connection.get(); }
 
-    void SetGame(Game *game) { this->game = game; }
     void SetMob(Mob *mob);
     void SetCamera(Camera *camera) { this->camera.reset(camera); }
 
     Mob *GetMob() { return mob; }
     Camera *GetCamera() { return camera.get(); }
 
-    void AddCommand(ServerCommand *);
+    void AddCommandToClient(ServerCommand *);
+    void AddCommandFromClient(PlayerCommand *);
 
     ~Player();
 
     friend Connection;
+    friend Server;
 };

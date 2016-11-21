@@ -24,7 +24,6 @@ void Object::SetSprite(const Global::Sprite key) {
 bool Object::checkObj(int x, int y) {
     return !(sprite->PixelTransparent(x, y));
 }
-;
 
 void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
     if (sprite) sprite->Draw(window, x, y, direction);

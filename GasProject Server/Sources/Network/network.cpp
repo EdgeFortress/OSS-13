@@ -75,9 +75,9 @@ void Connection::session(Connection *inst) {
             inst->active = false;
             Server::log << "Lost client" << inst->player->ckey << "signal" << endl;
         }
-        while (!inst->player->commandQueue.Empty()) {
+        while (!inst->player->commandsToClient.Empty()) {
             packet.clear();
-            ServerCommand *temp = inst->player->commandQueue.Pop();
+            ServerCommand *temp = inst->player->commandsToClient.Pop();
             packet << temp;
             if (temp) delete temp;
             while (inst->socket->send(packet) == sf::Socket::Partial);
@@ -97,44 +97,39 @@ void Connection::parse(sf::Packet &pac) {
             pac >> login >> password;
             if (server->Authorization(string(login), string(password))) {
                 player->ckey = string(login);
-                player->commandQueue.Push(new AuthSuccessServerCommand());
-                player->commandQueue.Push(new GameListServerCommand());
+                player->commandsToClient.Push(new AuthSuccessServerCommand());
+                player->commandsToClient.Push(new GameListServerCommand());
             }
             else
-                player->commandQueue.Push(new AuthErrorServerCommand());
+                player->commandsToClient.Push(new AuthErrorServerCommand());
             break;
         }
         case ClientCommand::Code::REG_REQ: {
             sf::String login, password;
             pac >> login >> password;
             if (server->Registration(string(login), string(password)))
-                player->commandQueue.Push(new RegSuccessServerCommand());
+                player->commandsToClient.Push(new RegSuccessServerCommand());
             else
-                player->commandQueue.Push(new RegErrorServerCommand());
+                player->commandsToClient.Push(new RegErrorServerCommand());
             break;
         }
         case ClientCommand::Code::CREATE_GAME: {
             sf::String title;
             pac >> title;
             if (server->CreateGame(title))
-                player->commandQueue.Push(new GameCreateSuccessServerCommand());
+                player->commandsToClient.Push(new GameCreateSuccessServerCommand());
             else
-                player->commandQueue.Push(new GameCreateSuccessServerCommand());
+                player->commandsToClient.Push(new GameCreateSuccessServerCommand());
             break;
         }
         case ClientCommand::Code::SERVER_LIST_REQ: {
-            player->commandQueue.Push(new GameListServerCommand());
+            player->commandsToClient.Push(new GameListServerCommand());
             break;
         }
         case ClientCommand::Code::JOIN_GAME: {
             sf::Int32 id;
             pac >> id;
-            //player->game = server->JoinGame(id, player);
             server->JoinGame(id, player);
-            /*if (player->game)
-                player->commandQueue.Push(new GameJoinSuccessServerCommand());
-            else
-                player->commandQueue.Push(new GameJoinErrorServerCommand());*/
             break;
         }
         case ClientCommand::Code::NORTH: {
@@ -168,7 +163,7 @@ void Connection::parse(sf::Packet &pac) {
         }
         default:
             Server::log << "Unknown Command received from" << player->ckey << endl;
-            player->commandQueue.Push(new CommandCodeErrorServerCommand());
+            player->commandsToClient.Push(new CommandCodeErrorServerCommand());
     }
 }
 

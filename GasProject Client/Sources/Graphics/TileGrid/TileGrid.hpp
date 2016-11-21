@@ -55,7 +55,8 @@ public:
 
     Object *GetObjectByCoord(const unsigned x, const unsigned y) const;
     void Clear() { content.clear(); sprite = nullptr; }
-    void AddObject(Object *obj, int num) { 
+    void AddObject(Object *obj, int num) {
+        CC::log << "ADD" << endl;
         if (num > content.size()) {
             CC::log << "Wrong object number" << endl;
             return;
@@ -64,7 +65,8 @@ public:
         for (int i = 0; i < num; iter++, i++);
         content.insert(iter, uptr<Object>(obj));
     }
-    uptr<Object> RemoveObject(int num) { 
+    uptr<Object> RemoveObject(int num) {
+        CC::log << "REMOVE" << endl;
         if (num >= content.size() || num < 0) {
             CC::log << "Wrong object num for remove: tile" << "(" << x << "," << y << ") num: " << num << endl;
             return uptr<Object>();
@@ -83,7 +85,7 @@ public:
     //Global::Sprite GetSprite() const { return sprite;  }
     //void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
 
-    //const list<uptr<Object>> &GetContent() const { return content; }
+    const list<uptr<Object>> &GetContent() const { return content; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 };

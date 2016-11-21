@@ -32,12 +32,11 @@ private:
     uptr<World> world;
 
     std::list<Player *> players;
+    std::mutex playersLock;
 
     static void gameProcess(Game *);
 
     void update(sf::Time timeElapsed);
-
-    ThreadSafeQueue<NetworkCommand *> networkCommandQueue;
 
 public:
     Game(Server *server, std::string title, int id);
@@ -48,8 +47,6 @@ public:
     const uptr<World> &GetWorld() { return world; }
 
     const int GetID() const;
-
-    void AddNetworkCommand(NetworkCommand *);
 
     ~Game();
 

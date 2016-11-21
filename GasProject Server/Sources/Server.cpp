@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>
+#include <mutex>
 
 #include "SFML/System.hpp"
 
@@ -31,50 +32,29 @@ void Game::gameProcess(Game *inst) {
 }
 
 void Game::update(sf::Time timeElapsed) {
-    while (!networkCommandQueue.Empty())
-    {
-        NetworkCommand *temp = networkCommandQueue.Pop();
-        switch (temp->GetCode())
-        {
-            case NetworkCommand::Code::ADD_PLAYER: {
-                AddPlayerCommand *command = dynamic_cast<AddPlayerCommand *>(temp);
-                if (command) {
-                    if (AddPlayer(command->player)) {
-                        command->player->SetGame(this);
-                        command->player->AddCommand(new GameJoinSuccessServerCommand());
-                    }
-                    else {
-                        command->player->AddCommand(new GameJoinErrorServerCommand());
-                    }
-                }
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-        if (temp) delete temp;
-    }
-
     world->Update(timeElapsed);
-    for (Player *player : players)
-        player->Update();
+    {
+        std::unique_lock<std::mutex> lock(playersLock);
+        ///// Wrong order!!!
+        for (Player *player : players)
+            player->SendUpdates();
+        for (Player *player : players)
+            player->Update();
+        /////
+    }
 }
 
 const int Game::GetID() const { return id; }
 
 bool Game::AddPlayer(Player *player) {
+    std::unique_lock<std::mutex> lock(playersLock);
     players.push_back(player);
-    player->SetMob(world->CreateNewPlayerMob());
-    player->AddCommand(new GraphicsFullUpdateServerCommand(player->GetCamera()));
+    //player->SetMob(world->CreateNewPlayerMob());
+    //player->AddCommandToClient(new GraphicsFullUpdateServerCommand(player->GetCamera()));
     return true;
 }
 
 void Game::DeletePlayer(Player *player) { players.remove(player); }
-
-void Game::AddNetworkCommand(NetworkCommand *command) {
-    networkCommandQueue.Push(command);
-}
 
 Game::~Game() {
     active = false;
@@ -144,11 +124,13 @@ void Server::JoinGame(const int id, Player *player) const {
     Server::log << player->GetCKey() << " connecting game #" << id << endl;
     for (auto &game : games) {
         if (game->GetID() == id) {
-            //if (game->AddPlayer(player)) return game.get();
-            //else return nullptr;
-
-            game->AddNetworkCommand(new AddPlayerCommand(player));
-            return;
+            if (game->AddPlayer(player)) {
+                player->game = game.get();
+                player->AddCommandFromClient(new JoinPlayerCommand);
+                player->AddCommandToClient(new GameJoinSuccessServerCommand());
+            }
+            else
+                player->AddCommandToClient(new GameJoinErrorServerCommand());
         }
     }
 }

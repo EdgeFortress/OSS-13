@@ -130,17 +130,19 @@ void Connection::parsePacket(Packet &packet) {
                 packet >> type >> blockID >> x >> y >> objectNum;
                 switch (Diff::Type(type)) {
                     case Diff::Type::MOVE:
+                        CC::log << "MOVE_DIFF" << endl;
                         Int32 toX, toY, toObjectNum;
                         packet >> toX >> toY >> toObjectNum;
                         tileGrid.Move(blockID, x, y, objectNum, toX, toY, toObjectNum);
                         break;
                     case Diff::Type::ADD:
+                        CC::log << "ADD_DIFF" << endl;
                         Int32 sprite;
                         packet >> sprite;
                         tileGrid.Add(blockID, x, y, objectNum, Global::Sprite(sprite));
-                        CC::log << "***********************************" << endl;
                         break;
                     case Diff::Type::REMOVE:
+                        CC::log << "REMOVE_DIFF" << endl;
                         tileGrid.Remove(blockID, x, y, objectNum);
                         break;
                     default:
