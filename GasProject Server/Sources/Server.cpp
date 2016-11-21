@@ -35,12 +35,10 @@ void Game::update(sf::Time timeElapsed) {
     world->Update(timeElapsed);
     {
         std::unique_lock<std::mutex> lock(playersLock);
-        ///// Wrong order!!!
-        for (Player *player : players)
-            player->SendUpdates();
         for (Player *player : players)
             player->Update();
-        /////
+        for (Player *player : players)
+            player->SendUpdates();
     }
 }
 

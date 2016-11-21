@@ -9,7 +9,9 @@ class Server;
 Player::Player(Server *server, sf::TcpSocket *socket) : ckey(""),
                                                         server(server),
                                                         game(nullptr),
-                                                        connection(new Connection(socket, server, this)) {
+                                                        connection(new Connection(socket, server, this)),
+                                                        sync(false)
+{
 
 }
 
@@ -19,7 +21,7 @@ void Player::Update() {
         switch (temp->GetCode()) {
             case PlayerCommand::Code::JOIN: {
                 SetMob(game->GetWorld()->CreateNewPlayerMob());
-                AddCommandToClient(new GraphicsFullUpdateServerCommand(GetCamera()));
+                //AddCommandToClient(new GraphicsFullUpdateServerCommand(GetCamera()));
                 break;
             }
         }
@@ -30,8 +32,13 @@ void Player::Update() {
 void Player::SendUpdates() {
     if (camera && !camera->IsSuspense()) {
         const auto &&differences = camera->GetVisibleDifferences();
-        if (!differences.empty()) {
-            commandsToClient.Push(new GraphicsDiffsServerCommand(differences));
+        if (sync) {
+            if (!differences.empty()) {
+                commandsToClient.Push(new GraphicsDiffsServerCommand(differences));
+            }
+        } else {
+            AddCommandToClient(new GraphicsFullUpdateServerCommand(GetCamera()));
+            sync = true;
         }
     }
 }

@@ -28,6 +28,7 @@ private:
 
     Mob *mob;
     uptr<Camera> camera;
+    bool sync;
 
     ThreadSafeQueue<ServerCommand *> commandsToClient;
     ThreadSafeQueue<PlayerCommand *> commandsFromClient;
