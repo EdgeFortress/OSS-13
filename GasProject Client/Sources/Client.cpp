@@ -29,6 +29,8 @@ void ClientController::Run() {
 
     SetState(new MenuLoginState);  
 
+    window->Initialize();
+
     while (window->isOpen()) {
         sf::Time timeElapsed = clock.restart();
         window->Update(timeElapsed);

@@ -36,6 +36,7 @@ private:
         return false;
     }
 
+    void resize(const int newWidth, const int newHeight);
     void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
 
 public:
@@ -47,20 +48,14 @@ public:
 
         tileGrid.reset(new TileGrid);
         ui.reset(new UI);
-
-        sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
-        width = static_cast<int>(0.9 * videoMode.width);
-        height = static_cast<int>(0.9 * videoMode.height);
-        window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
-        Resize(width, height);
     }
 
     Window(const Window &) = delete;
     Window &operator=(const Window &) = delete;
     virtual ~Window() = default;
 
+    void Initialize();
     void Update(sf::Time);
-    void Resize(const int newWidth, const int newHeight);
 
     bool isOpen() const { return window->isOpen(); }
 

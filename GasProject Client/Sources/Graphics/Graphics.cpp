@@ -9,6 +9,14 @@
 
 #include "State.hpp"
 
+void Window::Initialize() {
+    sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
+    width = static_cast<int>(0.9 * videoMode.width);
+    height = static_cast<int>(0.9 * videoMode.height);
+    window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
+    resize(window->getSize().x, window->getSize().y);
+}
+
 void Window::Update(sf::Time timeElapsed) {
     sf::Event event;
     State *state = CC::Get()->GetState();
@@ -18,7 +26,7 @@ void Window::Update(sf::Time timeElapsed) {
             state->HandleEvent(event, timeElapsed);
         }
         if (event.type == sf::Event::Resized)
-            Resize(event.size.width, event.size.height);
+            resize(event.size.width, event.size.height);
         if (event.type == sf::Event::Closed)
             window->close();
     }
@@ -41,7 +49,7 @@ void Window::Update(sf::Time timeElapsed) {
     sf::sleep(sf::milliseconds(10));
 }
 
-void Window::Resize(const int newWidth, const int newHeight) {
+void Window::resize(const int newWidth, const int newHeight) {
     width = newWidth; height = newHeight;
     sf::FloatRect visibleArea(0, 0, float(width), float(height));
     window->setView(sf::View(visibleArea));

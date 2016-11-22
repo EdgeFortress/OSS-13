@@ -145,6 +145,8 @@ public:
     const int GetTileSize() const { return tileSize; }
     const int GetWidth() const { return tileSize * xNumOfTiles; }
     const int GetHeigth() const { return tileSize * yNumOfTiles; }
+    const int GetPaddingX() const { return xPadding; }
+    const int GetPaddingY() const { return yPadding; }
 
     friend sf::Packet &operator>> (sf::Packet &packet, TileGrid &tileGrid);
 };

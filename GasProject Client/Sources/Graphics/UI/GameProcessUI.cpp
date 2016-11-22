@@ -48,7 +48,11 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 
 void GameProcessUI::Resize(const int width, const int height) { 
     infoLabel.CountPosition(width, height);
-    chatWindow->SetAllocation(sf::FloatRect(float(height), 0, float(width - height), float(height)));
+    TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
+    chatWindow->SetAllocation(sf::FloatRect(float(tileGrid->GetTileSize() * Global::FOV),
+                                            0, 
+                                            float(width - tileGrid->GetTileSize() * Global::FOV), 
+                                            float(height)));
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
