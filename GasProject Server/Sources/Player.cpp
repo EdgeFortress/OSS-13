@@ -31,8 +31,8 @@ void Player::Update() {
 
 void Player::SendUpdates() {
     if (camera && !camera->IsSuspense()) {
-        const auto &&differences = camera->GetVisibleDifferences();
         if (sync) {
+            const auto &&differences = camera->GetVisibleDifferences();
             if (!differences.empty()) {
                 commandsToClient.Push(new GraphicsDiffsServerCommand(differences));
             }
