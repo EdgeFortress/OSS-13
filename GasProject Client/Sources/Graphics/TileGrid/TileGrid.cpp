@@ -5,11 +5,10 @@
 #include "TileGrid.hpp"
 #include "Common/NetworkConst.hpp"
 
-Object::Object(const Global::Sprite key, const bool directed) {
-    //if (directed) direction = 0;
-    //else direction = -1;
-    direction = 0;
+Object::Object(const Global::Sprite key, const string name, const bool directed) {
     SetSprite(key);
+    this->name = name;
+    direction = 0;
 }
 
 void Object::SetSprite(const Global::Sprite key) {
@@ -18,7 +17,7 @@ void Object::SetSprite(const Global::Sprite key) {
         for (auto &sprite : CC::Get()->GetWindow()->GetSprites())
             if (sprite->GetKey() == key) {
                 this->sprite = sprite.get();
-                break;
+                return;
             }
 }
 bool Object::checkObj(int x, int y) {
@@ -128,7 +127,7 @@ void TileGrid::Move(int blockID, int x, int y, int objectNum, int toX, int toY, 
     new_tile->AddObject(obj.release(), toObjectNum);
 }
 
-void TileGrid::Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite) {
+void TileGrid::Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite, string name) {
     Block *block = GetBlock(blockID);
     if (!block) {
         CC::log << "Wrong BlockID accepted: " << blockID << endl;
@@ -140,7 +139,7 @@ void TileGrid::Add(int blockID, int x, int y, int objectNum, Global::Sprite spri
         return;
     }
 
-    tile->AddObject(new Object(sprite), objectNum);
+    tile->AddObject(new Object(sprite, name), objectNum);
 }
 
 void TileGrid::Remove(int blockID, int x, int y, int objectNum) {

@@ -20,18 +20,17 @@ class Object {
 private:
     Sprite *sprite;
     int direction;
-    
 
 public:
     string name;
-    explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const bool directed = false);
+    explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const string name = "", const bool directed = false);
 
     void Draw(sf::RenderWindow * const, const int x, const int y);
 
     void SetSprite(const Global::Sprite);
 
     bool checkObj(int x, int y);
-    //Sprite *GetSprite() const { return sprite; }
+    Sprite *GetSprite() const { return sprite; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
 };
@@ -56,7 +55,6 @@ public:
     Object *GetObjectByCoord(const unsigned x, const unsigned y) const;
     void Clear() { content.clear(); sprite = nullptr; }
     void AddObject(Object *obj, int num) {
-        CC::log << "ADD" << endl;
         if (num > content.size()) {
             CC::log << "Wrong object number" << endl;
             return;
@@ -66,7 +64,6 @@ public:
         content.insert(iter, uptr<Object>(obj));
     }
     uptr<Object> RemoveObject(int num) {
-        CC::log << "REMOVE" << endl;
         if (num >= content.size() || num < 0) {
             CC::log << "Wrong object num for remove: tile" << "(" << x << "," << y << ") num: " << num << endl;
             return uptr<Object>();
@@ -137,7 +134,7 @@ public:
 
     // Differences commiting
     void Move(int blockID, int x, int y, int objectNum, int toX, int toY, int toObjectNum);
-    void Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite);
+    void Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite, string name);
     void Remove(int blockID, int x, int y, int objectNum);
 
     Block *GetBlock(int blockID) const;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <list>
 #include <vector>
 
@@ -29,14 +30,14 @@ protected:
 
 public:
     Object();
-    // Construct object at tile
-    explicit Object(Tile *tile = nullptr);
 
     virtual void Update() = 0;
 
     bool GetDensity() const { return density; }
     Global::Sprite GetSprite() const { return sprite; }
     Tile *GetTile() const { return tile; }
+    std::string GetName() const { return name; }
+
     // Just set tile pointer
     void SetTile(Tile *tile) { this->tile = tile; }
     
@@ -53,7 +54,7 @@ public:
 
 class Turf : public Object {
 public:
-    explicit Turf(Tile *tile) : Object(tile) {}
+    Turf() {}
 
     virtual void Update() { };
     virtual void Interact(Object *) { };
@@ -63,7 +64,7 @@ class Mob : public Object {
 private:
     int moveY, moveX;
 public:
-    explicit Mob(Tile *tile) : Object(tile) {
+    explicit Mob() {
         sprite = Global::Sprite::Mob;
         name = "Mob";
         density = false;
@@ -81,7 +82,7 @@ public:
 
 class Wall : public Turf {
 public:
-    explicit Wall(Tile *tile) : Turf(tile) {
+    Wall() {
         sprite = Global::Sprite::Wall;
         name = "Wall";
         density = true;
@@ -93,7 +94,7 @@ public:
 
 class Floor : public Turf {
 public:
-    explicit Floor(Tile *tile) : Turf(tile) {
+    Floor() {
         sprite = Global::Sprite::Floor;
         name = "Floor";
         density = false;
@@ -105,7 +106,7 @@ public:
 
 class Airlock : public Turf {
 public:
-    explicit Airlock(Tile *tile) : Turf(tile) {
+    explicit Airlock() {
         sprite = Global::Sprite::Airlock;
         density = true;
     }

@@ -12,13 +12,6 @@ Object::Object() {
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
-Object::Object(Tile *tile) : tile(nullptr) {
-    if (tile)
-        tile->AddObject(this);
-    CurThreadGame->GetWorld()->AddObject(this);
-    name = "";
-}
-
 void Mob::Update() {
     if (moveX || moveY)
         tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
@@ -69,7 +62,7 @@ void Tile::AddObject(Object *obj) {
         Block *block = GetBlock();
         int x = X() % Global::BLOCK_SIZE;
         int y = Y() % Global::BLOCK_SIZE;
-        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1), obj->GetSprite()));
+        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1), obj->GetSprite(), obj->GetName()));
     }
 }
 
@@ -290,21 +283,21 @@ void World::FillingWorld() {
     for (int i = 45; i <= 55; i++) {
         for (int j = 45; j <= 55; j++) {
             Tile *tile = map->GetTile(i, j);
-            new Floor(tile);
+            tile->AddObject(new Floor);
             if ((i == 45 || i == 55) && (j == 45 || j == 55))
-                new Wall(tile);
+                tile->AddObject(new Wall);
         }
     }
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
-            Tile *tile = map->GetTile(i, j);
-            new Floor(tile);
+            map->GetTile(i, j)->AddObject(new Floor);
         }
     }
 
     time_since_testMob_update = sf::Time::Zero;
-    testMob = new Mob(map->GetTile(49, 49));
+    testMob = new Mob;
+    map->GetTile(49, 49)->AddObject(testMob);
     test_dx = 1;
     test_dy = 0;
 
@@ -321,6 +314,7 @@ void World::AddObject(Object *obj) {
 }
 
 Mob *World::CreateNewPlayerMob() {
-    Tile *startTile = map->GetTile(50, 50);
-    return new Mob(startTile);
+    Mob *mob = new Mob();
+    map->GetTile(50, 50)->AddObject(mob);
+    return mob;
 }

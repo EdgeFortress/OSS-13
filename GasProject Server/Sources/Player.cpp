@@ -21,7 +21,6 @@ void Player::Update() {
         switch (temp->GetCode()) {
             case PlayerCommand::Code::JOIN: {
                 SetMob(game->GetWorld()->CreateNewPlayerMob());
-                //AddCommandToClient(new GraphicsFullUpdateServerCommand(GetCamera()));
                 break;
             }
         }
@@ -31,8 +30,8 @@ void Player::Update() {
 
 void Player::SendUpdates() {
     if (camera && !camera->IsSuspense()) {
-        const auto &&differences = camera->GetVisibleDifferences();
         if (sync) {
+            const auto &&differences = camera->GetVisibleDifferences();
             if (!differences.empty()) {
                 commandsToClient.Push(new GraphicsDiffsServerCommand(differences));
             }

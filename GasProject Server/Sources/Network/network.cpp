@@ -222,6 +222,7 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
         case Diff::Type::ADD: {
             const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
             packet << Int32(addDiff.sprite);
+            packet << String(addDiff.name);
             break;
         }
         case Diff::Type::REMOVE: {

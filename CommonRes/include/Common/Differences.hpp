@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "NetworkConst.hpp"
 
 class Block;
@@ -40,9 +42,10 @@ struct MoveDiff : public Diff {
 
 struct AddDiff : public Diff {
     Global::Sprite sprite;
-    explicit AddDiff(Block *block, int x, int y, int objectNum, Global::Sprite sprite) :
+    std::string name;
+    explicit AddDiff(Block *block, int x, int y, int objectNum, Global::Sprite sprite, std::string name) :
         Diff(block, x, y, objectNum),
-        sprite(sprite)
+        sprite(sprite), name(name)
     { }
 
     virtual Type GetType() const final { return Type::ADD; }

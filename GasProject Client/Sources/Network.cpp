@@ -129,22 +129,26 @@ void Connection::parsePacket(Packet &packet) {
                 Int32 type, blockID, x, y, objectNum;
                 packet >> type >> blockID >> x >> y >> objectNum;
                 switch (Diff::Type(type)) {
-                    case Diff::Type::MOVE:
-                        CC::log << "MOVE_DIFF" << endl;
+                    case Diff::Type::MOVE: {
+                        //CC::log << "MOVE_DIFF" << endl;
                         Int32 toX, toY, toObjectNum;
                         packet >> toX >> toY >> toObjectNum;
                         tileGrid.Move(blockID, x, y, objectNum, toX, toY, toObjectNum);
                         break;
-                    case Diff::Type::ADD:
-                        CC::log << "ADD_DIFF" << endl;
+                    }
+                    case Diff::Type::ADD: {
+                        //CC::log << "ADD_DIFF" << endl;
                         Int32 sprite;
-                        packet >> sprite;
-                        tileGrid.Add(blockID, x, y, objectNum, Global::Sprite(sprite));
+                        String name;
+                        packet >> sprite >> name;
+                        tileGrid.Add(blockID, x, y, objectNum, Global::Sprite(sprite), name);
                         break;
-                    case Diff::Type::REMOVE:
-                        CC::log << "REMOVE_DIFF" << endl;
+                    }
+                    case Diff::Type::REMOVE: {
+                        //CC::log << "REMOVE_DIFF" << endl;
                         tileGrid.Remove(blockID, x, y, objectNum);
                         break;
+                    }
                     default:
                         CC::log << "Wrong diff type: " << type << endl;
                         break;
