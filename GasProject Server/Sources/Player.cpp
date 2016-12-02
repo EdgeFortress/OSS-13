@@ -9,8 +9,7 @@ class Server;
 Player::Player(Server *server, sf::TcpSocket *socket) : ckey(""),
                                                         server(server),
                                                         game(nullptr),
-                                                        connection(new Connection(socket, server, this)),
-                                                        sync(false)
+                                                        connection(new Connection(socket, server, this))
 {
 
 }
@@ -26,25 +25,20 @@ void Player::Update() {
         }
         if (temp) delete temp;
     }
+
+    if (mob->GetTile() != camera->GetPosition()) camera->SetPosition(mob->GetTile());
 }
 
 void Player::SendUpdates() {
-    if (camera && !camera->IsSuspense()) {
-        if (sync) {
-            const auto &&differences = camera->GetVisibleDifferences();
-            if (!differences.empty()) {
-                commandsToClient.Push(new GraphicsDiffsServerCommand(differences));
-            }
-        } else {
-            AddCommandToClient(new GraphicsFullUpdateServerCommand(GetCamera()));
-            sync = true;
-        }
+    if (camera) {
+        camera->UpdateView();
     }
 }
 
 void Player::SetMob(Mob *mob) {
     this->mob = mob;
     SetCamera(new Camera(mob->GetTile()));
+    camera->SetPlayer(this);
 };
 
 void Player::AddCommandToClient(ServerCommand *command) {

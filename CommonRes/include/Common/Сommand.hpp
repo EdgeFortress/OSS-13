@@ -108,8 +108,7 @@ struct ServerCommand {
         GAME_JOIN_SUCCESS,
         GAME_JOIN_ERROR,
 
-        GRAPHICS_FULL_UPDATE,
-        GRAPHICS_DIFFS,
+        GRAPHICS_UPDATE,
 
         COMMAND_CODE_ERROR
         //CONNECTION_ERROR,
@@ -154,18 +153,27 @@ struct GameListServerCommand : public ServerCommand {
     virtual const Code GetCode() const override { return Code::GAME_LIST; }
 };
 
-class Camera;
+struct BlockInfo;
 
-struct GraphicsFullUpdateServerCommand : public ServerCommand {
-    Camera *camera;
-    GraphicsFullUpdateServerCommand(Camera *camera) : camera(camera) { }
-    virtual const Code GetCode() const override { return Code::GRAPHICS_FULL_UPDATE; }
-};
+struct GraphicsUpdateServerCommand : public ServerCommand {
+    enum Option {
+        EMPTY = 0,
+        BLOCKS_SHIFT = 1,
+        CAMERA_MOVE = 1 << 1,
+        DIFFERENCES = 1 << 2
+    };
 
-struct GraphicsDiffsServerCommand : public ServerCommand {
-    const std::list<sptr<Diff>> differences;
-    GraphicsDiffsServerCommand(const std::list<sptr<Diff>> &differences) : differences(differences) { }
-    virtual const Code GetCode() const override { return Code::GRAPHICS_DIFFS; }
+    std::list<sptr<Diff>> diffs;
+    std::list<BlockInfo> blocksInfo;
+
+    Option options;
+
+    int cameraX;
+    int cameraY;
+    int firstBlockX;
+    int firstBlockY;
+
+    virtual const Code GetCode() const override { return Code::GRAPHICS_UPDATE; }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {

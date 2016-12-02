@@ -6,6 +6,7 @@
 
 #include "Common/Useful.hpp"
 #include "Common/Ñommand.hpp"
+#include "TileGrid_Info.hpp"
 
 class Player;
 class Server;
@@ -48,4 +49,7 @@ public:
 };
 
 sf::Packet &operator<<(sf::Packet &, ServerCommand *);
-sf::Packet &operator<<(sf::Packet &packet, const Diff &diff);
+sf::Packet &operator<<(sf::Packet &, const Diff &);
+sf::Packet &operator<<(sf::Packet &, const BlockInfo &);
+sf::Packet &operator<<(sf::Packet &, const TileInfo &);
+sf::Packet &operator<<(sf::Packet &, const ObjectInfo &);

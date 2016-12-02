@@ -113,51 +113,60 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::GAME_JOIN_ERROR:
             CC::log << "Error join the game" << endl;
             break;
-        case ServerCommand::Code::GRAPHICS_FULL_UPDATE: {
+        case ServerCommand::Code::GRAPHICS_UPDATE: {
             TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
-            tileGrid.Lock();
-            packet >> tileGrid;
-            tileGrid.Unlock();
-            break;
-        }
-        case ServerCommand::Code::GRAPHICS_DIFFS: {
-            TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
-            Int32 size;
-            packet >> size;
-            tileGrid.Lock();
-            for (int i = 0; i < size; i++) {
-                Int32 type, blockID, x, y, objectNum;
-                packet >> type >> blockID >> x >> y >> objectNum;
-                switch (Diff::Type(type)) {
-                    case Diff::Type::MOVE: {
-                        //CC::log << "MOVE_DIFF" << endl;
-                        Int32 toX, toY, toObjectNum;
-                        packet >> toX >> toY >> toObjectNum;
-                        tileGrid.Move(blockID, x, y, objectNum, toX, toY, toObjectNum);
-                        break;
-                    }
-                    case Diff::Type::ADD: {
-                        //CC::log << "ADD_DIFF" << endl;
-                        Int32 sprite;
-                        String name;
-                        packet >> sprite >> name;
-                        tileGrid.Add(blockID, x, y, objectNum, Global::Sprite(sprite), name);
-                        break;
-                    }
-                    case Diff::Type::REMOVE: {
-                        //CC::log << "REMOVE_DIFF" << endl;
-                        tileGrid.Remove(blockID, x, y, objectNum);
-                        break;
-                    }
-                    default:
-                        CC::log << "Wrong diff type: " << type << endl;
-                        break;
+            Int32 options;
+            packet >> options;
+            tileGrid.LockDrawing();
+            if (options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
+                Int32 x, y, blockNum;
+                packet >> x >> y >> blockNum;
+                tileGrid.ShiftBlocks(x, y);
+                while (blockNum) {
+                    packet >> x >> y;
+                    Block *block = new Block(&tileGrid);
+                    packet >> *(block);
+                    tileGrid.SetBlock(x, y, block);
+                    blockNum--;
                 }
             }
-            tileGrid.Unlock();
-            break;
+            if (options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
+                Int32 x, y;
+                packet >> x >> y;
+                tileGrid.SetCameraPosition(x, y);
+            }
+            if (options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
+                Int32 count;
+                packet >> count;
+                for (int i = 0; i < count; i++) {
+                    Int32 type, blockX, blockY, x, y, objectNum;
+                    packet >> type >> blockX >> blockY >> x >> y >> objectNum;
+                    switch (Diff::Type(type)) {
+                        case Diff::Type::MOVE: {
+                            Int32 toX, toY, toObjectNum;
+                            packet >> toX >> toY >> toObjectNum;
+                            tileGrid.Move(blockX, blockY, x, y, objectNum, toX, toY, toObjectNum);
+                            break;
+                        }
+                        case Diff::Type::ADD: {
+                            Int32 sprite;
+                            String name;
+                            packet >> sprite >> name;
+                            tileGrid.Add(blockX, blockY, x, y, objectNum, Global::Sprite(sprite), name);
+                            break;
+                        }
+                        case Diff::Type::REMOVE: {
+                            tileGrid.Remove(blockX, blockY, x, y, objectNum);
+                            break;
+                        }
+                        default:
+                            CC::log << "Wrong diff type: " << type << endl;
+                            break;
+                    }
+                }
+            }
+            tileGrid.UnlockDrawing();
         }
-
     };
 }
 
@@ -186,25 +195,28 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
     Int32 xPos, yPos;
     packet >> xPos >> yPos;
-    tileGrid.xPos = xPos;
-    tileGrid.yPos = yPos;
+    tileGrid.xRelPos = xPos;
+    tileGrid.yRelPos = yPos;
 
     for (auto &vect : tileGrid.blocks)
-        for (auto &block : vect)
-            packet >> *block;
+        for (auto &block : vect) {
+            sf::Int32 id;
+            packet >> id;
+            if (id >= 0)
+                packet >> *block;
+            //else block->Clear();
+            //block-> = id;
+        }
     return packet;
 }
 
 Packet &operator>>(Packet &packet, Block &block) {
-    sf::Int32 id;
-    packet >> id;
-    block.id = id;
+    //sf::Int32 id;
+    //packet >> id;
+    //block.id = id;
     for (auto &vect : block.tiles)
         for (auto &tile : vect)
-            if (id >= 0)
-                packet >> *tile;
-            else
-                tile->Clear();
+            packet >> *tile;
     return packet;
 }
 

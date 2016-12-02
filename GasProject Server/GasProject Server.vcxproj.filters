@@ -59,5 +59,8 @@
     <ClInclude Include="Sources\PlayerCommand.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Network\TileGrid_Info.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

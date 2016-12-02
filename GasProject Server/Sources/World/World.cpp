@@ -12,9 +12,16 @@ Object::Object() {
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
+const ObjectInfo Object::GetObjectInfo() const {
+    return std::move(ObjectInfo(int(sprite), name));
+}
+
 void Mob::Update() {
-    if (moveX || moveY)
-        tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY)->MoveTo(this);
+    if (moveX || moveY) {
+        Tile *dest_tile = tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY);
+        if (dest_tile)
+            dest_tile->MoveTo(this);
+    }
     moveY = 0; moveX = 0;
 }
 
@@ -142,6 +149,14 @@ void Tile::Update() {
     }*/
 }
 
+const TileInfo Tile::GetTileInfo() const {
+    std::list<ObjectInfo> content;
+    for (auto &obj : this->content) {
+        content.push_back(obj->GetObjectInfo());
+    }
+    return std::move(TileInfo(int(sprite), content));
+}
+
 Block::Block(Map *map, int blockX, int blockY) :
     map(map), id(blockY * map->GetNumOfBlocksX() + blockX),
     blockX(blockX), blockY(blockY),
@@ -161,6 +176,18 @@ Block::Block(Map *map, int blockX, int blockY) :
 
 void Block::ClearDiffs() {
     differences.clear();
+}
+
+const BlockInfo Block::GetBlockInfo() {
+    std::list<TileInfo> tilesInfo;
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            if (tile) tilesInfo.push_back(tile->GetTileInfo());
+            else {
+                TileInfo tileInfo;
+                tilesInfo.push_back(tileInfo);
+            }
+            return std::move(BlockInfo(blockX, blockY, tilesInfo));
 }
 
 Map::Map(const int sizeX, const int sizeY) : 
