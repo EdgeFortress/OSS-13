@@ -184,17 +184,23 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
             }
             break;
         }
-        case ServerCommand::Code::GRAPHICS_FULL_UPDATE: {
-            GraphicsFullUpdateServerCommand *command = dynamic_cast<GraphicsFullUpdateServerCommand *>(serverCommand);
-            packet << *(command->camera);
-            break;
-        }
-        case ServerCommand::Code::GRAPHICS_DIFFS: {
-            GraphicsDiffsServerCommand *command = dynamic_cast<GraphicsDiffsServerCommand *>(serverCommand);
-            packet << Int32(command->differences.size());
-            for (auto &diff : command->differences)
-                packet << *diff;
-            break;
+        case ServerCommand::Code::GRAPHICS_UPDATE: {
+            GraphicsUpdateServerCommand *command = dynamic_cast<GraphicsUpdateServerCommand *>(serverCommand);
+            packet << sf::Int32(command->options);
+            if (command->options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
+                packet << sf::Int32(command->firstBlockX) << sf::Int32(command->firstBlockY);
+                packet << sf::Int32(command->blocksInfo.size());
+                for (auto &blockInfo : command->blocksInfo)
+                    packet << blockInfo;
+            }
+            if (command->options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
+                packet << sf::Int32(command->cameraX) << sf::Int32(command->cameraY);
+            }
+            if (command->options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
+                packet << sf::Int32(command->diffs.size());
+                for (auto &diff : command->diffs)
+                    packet << *(diff);
+            }
         }
     }
 
@@ -209,8 +215,10 @@ Packet &operator<<(Packet &packet, Game &game) {
 }
 
 Packet &operator<<(Packet &packet, const Diff &diff) {
+    if (diff.GetType() == Diff::Type::NONE) return packet;
     packet << Int32(diff.GetType());
-    packet << Int32(diff.block->ID());
+    packet << Int32(diff.block->X());
+    packet << Int32(diff.block->Y());
     packet << Int32(diff.x) << Int32(diff.y);
     packet << Int32(diff.objectNum);
     switch (diff.GetType()) {
@@ -233,37 +241,23 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
     return packet;
 }
 
-Packet &operator<<(Packet &packet, const Camera &camera) {
-    packet << Int32(camera.relX) << Int32(camera.relY);
-    for (auto &vect : camera.visibleBlocks)
-        for (const Block *block : vect) {
-            if (block)
-                packet << *block;
-            else
-                packet << Int32(-1);
-        }
+Packet &operator<<(Packet &packet, const BlockInfo &blockInfo) {
+    packet << sf::Int32(blockInfo.x) << sf::Int32(blockInfo.y);
+    for (auto &tileInfo : blockInfo.tiles)
+        packet << tileInfo;
     return packet;
 }
 
-Packet &operator<<(Packet &packet, const Block &block) {
-    packet << sf::Int32(block.ID());
-    for (auto &vect : block.tiles)
-        for (const Tile *tile : vect)
-            packet << *tile;
-    return packet;
-}
-
-Packet &operator<<(Packet &packet, const Tile &tile) {
-    packet << sf::Int32(tile.content.size()) << sf::Int32(tile.sprite);
-    for (auto &obj : tile.content) {
-        if (obj)
-            packet << *obj;
+Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
+    packet << sf::Int32(tileInfo.content.size()) << sf::Int32(tileInfo.sprite);
+    for (auto &objInfo : tileInfo.content) {
+        packet << objInfo;
     }
     return packet;
 }
 
-Packet &operator<<(Packet &packet, const Object &obj) {
-    packet << sf::Int32(obj.sprite) << sf::String(obj.name);
+Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
+    packet << sf::Int32(objInfo.sprite) << sf::String(objInfo.name);
     return packet;
 }
 

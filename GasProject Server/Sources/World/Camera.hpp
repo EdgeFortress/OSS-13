@@ -7,6 +7,8 @@
 
 class Tile;
 class Block;
+class Mob;
+class Player;
 struct Diff;
 
 namespace sf {
@@ -16,24 +18,36 @@ namespace sf {
 class Camera {
 private:
     const Tile *tile;
-    int relX, relY;
+    const Tile *lasttile;
+    Player *player;
+    //int relX, relY;
     bool suspense;
 
-    std::vector< std::vector<Block *> > visibleBlocks;
+    int visibleBlocksNum;
 
-    void countVisibleBlocks();
+    int firstBlockX;
+    int firstBlockY;
+
+    // Update options
+    bool blockShifted;
+    bool unsuspensed;
+    bool cameraMoved;
+
+    std::vector< std::vector<Block *> > visibleBlocks;
+    std::vector< std::vector<bool> > blocksSync;
+
+    void fullRecountVisibleBlocks(const Tile * const tile);
+    void refreshVisibleBlocks(const Tile * const tile);
 
 public:
-    Camera();
-    explicit Camera(const Tile * const tile);
+    explicit Camera(const Tile * const tile = nullptr);
 
+    void UpdateView();
+
+    void SetPlayer(Player * const player) { this->player = player; }
     void SetPosition(const Tile * const tile);
     const Tile * const GetPosition() const { return tile; }
     void Suspend();
 
     bool IsSuspense() const { return suspense; }
-
-    const std::list<sptr<Diff>> GetVisibleDifferences();
-
-    friend sf::Packet &operator<<(sf::Packet &, const Camera &);
 };

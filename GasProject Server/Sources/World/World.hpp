@@ -9,6 +9,7 @@
 #include "Common/NetworkConst.hpp"
 #include "Common/Differences.hpp"
 #include "Camera.hpp"
+#include "Network/TileGrid_Info.hpp"
 
 using std::list;
 using std::vector;
@@ -42,6 +43,8 @@ public:
     void SetTile(Tile *tile) { this->tile = tile; }
     
     virtual void Interact(Object *) = 0;
+
+    const ObjectInfo GetObjectInfo() const;
 
     friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };
@@ -150,6 +153,8 @@ public:
     //Test
     const list<Object *> GetContentCopy() { return content; };
 
+    const TileInfo GetTileInfo() const;
+
     friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
 
@@ -176,6 +181,7 @@ public:
     int ID() const { return id; }
 
     const list<sptr<Diff>> GetDifferences() { return differences; }
+    const BlockInfo GetBlockInfo();
     void ClearDiffs();
 
     friend sf::Packet &operator<<(sf::Packet &, const Block &);

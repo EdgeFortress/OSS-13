@@ -39,7 +39,6 @@ class Tile {
 private:
     Block *block;
     const int x, y;
-    //Global::Sprite sprite;
     Sprite *sprite;
     list<uptr<Object>> content;
 
@@ -79,9 +78,6 @@ public:
         return uptr<Object>();
     }
 
-    //Global::Sprite GetSprite() const { return sprite;  }
-    //void SetSprite(Global::Sprite sprite) { this->sprite = sprite; };
-
     const list<uptr<Object>> &GetContent() const { return content; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
@@ -110,12 +106,22 @@ public:
 class TileGrid {
 private:
     int xNumOfTiles, yNumOfTiles;
+    // Camera position
     int xPos, yPos;
-    int blockSize;
+    int xRelPos, yRelPos;
     int tileSize;
+    // TileGrid padding
     int xPadding, yPadding;
 
+    int blockSize;
+    int firstBlockX, firstBlockY;
+    int firstTileX, firstTileY;
+    int numOfVisibleBlocks;
+
     std::mutex mutex;
+    // Protection against re-locking
+    bool drawingLocked;
+
     vector< vector<uptr<Block>> > blocks;
 
 public:
@@ -126,18 +132,27 @@ public:
     ~TileGrid() = default;
 
     void Draw(sf::RenderWindow * const);
-
-    void Lock() { mutex.lock(); }
-    void Unlock() { mutex.unlock(); }
-
     void Resize(const int windowWidth, const int windowHeight);
 
-    // Differences commiting
-    void Move(int blockID, int x, int y, int objectNum, int toX, int toY, int toObjectNum);
-    void Add(int blockID, int x, int y, int objectNum, Global::Sprite sprite, string name);
-    void Remove(int blockID, int x, int y, int objectNum);
+    //void Lock() { mutex.lock(); }
+    //void Unlock() { mutex.unlock(); }
 
-    Block *GetBlock(int blockID) const;
+    // Lock for network updating
+    void LockDrawing();
+    // Unlock for network updating
+    void UnlockDrawing();
+
+    // Differences commiting
+    void Move(int blockX, int blockY, int x, int y, int objectNum, int toX, int toY, int toObjectNum);
+    void Add(int blockX, int blockY, int x, int y, int objectNum, Global::Sprite sprite, string name);
+    void Remove(int blockX, int blockY, int x, int y, int objectNum);
+
+    void ShiftBlocks(const int newFirstX, const int newFirstY);
+
+    void SetCameraPosition(const int x, const int y);
+    void SetBlock(int x, int y, Block *);
+
+    Block *GetBlock(const int blockX, const int blockY) const;
     Tile *GetTile(int x, int y) const;
     Object *GetObjectByPixel(int x, int y) const;
 
