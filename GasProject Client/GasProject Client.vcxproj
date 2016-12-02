@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="sources\Client.cpp" />
+    <ClCompile Include="Sources\Graphics\Chat.cpp" />
     <ClCompile Include="Sources\Graphics\Graphics.cpp" />
     <ClCompile Include="Sources\Graphics\Sprite.cpp" />
     <ClCompile Include="Sources\Graphics\UI\AuthUI.cpp" />
@@ -160,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\Client.hpp" />
+    <ClInclude Include="Sources\Graphics\Chat.hpp" />
     <ClInclude Include="Sources\Graphics\Sprite.hpp" />
     <ClInclude Include="Sources\Graphics\UI\AuthUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameListUI.hpp" />
