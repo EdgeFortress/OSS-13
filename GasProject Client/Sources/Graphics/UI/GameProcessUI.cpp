@@ -27,7 +27,7 @@ void InfoLabel::CountPosition(int width, int height) {
     text.setPosition(5, height - rectangle.getSize().y - 2);
 }
 
-void InfoLabel::SetText(string s) {
+void InfoLabel::SetText(const string &s) {
     text.setString(s);
 }
 
@@ -39,7 +39,7 @@ void GameProcessUI::generateChatWindow() {
 }
 
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
-    infoLabel(ui->GetFont())
+    infoLabel(ui->GetFont()), chat(ui->GetFont())
 { 
     generateChatWindow();
 
@@ -48,16 +48,19 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 
 void GameProcessUI::Resize(const int width, const int height) { 
     infoLabel.CountPosition(width, height);
+    chat.Resize(width, height);
     TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
     chatWindow->SetAllocation(sf::FloatRect(float(tileGrid->GetTileSize() * Global::FOV),
                                             0, 
                                             float(width - tileGrid->GetTileSize() * Global::FOV), 
-                                            float(height)));
+                                            float(height / 2)));
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
     infoLabel.Draw(renderWindow);
+    chat.Draw(renderWindow);
 }
+
 void GameProcessUI::Show() {
     chatWindow->Show(true);
 }

@@ -11,6 +11,7 @@
 class Player;
 class Server;
 class World;
+class Chat;
 class UsersDB;
 
 namespace sf {
@@ -21,6 +22,34 @@ namespace sf {
 namespace std {
     class thread;
 }
+
+class Chat {
+private:
+    struct message {
+        Player *player;
+        std::wstring text;
+
+        message(Player *player, const std::wstring &text) : player(player), text(text) { }
+    };
+    std::vector<message> messages;
+
+public:
+    Chat() = default;
+
+    Chat(Chat &chat) = delete;
+    Chat& operator=(Chat &chat) = delete;
+
+    ~Chat() = default;
+
+    void AddMessage(const std::vector<std::wstring> &message, Player *player) {
+        std::vector<Chat::message> localMessage;
+        for (auto &text : message) {
+            localMessage.push_back(Chat::message(player, text));
+        }
+        messages.insert(messages.end(), localMessage.begin(), localMessage.end());
+        messages.push_back(Chat::message(player, std::wstring()));
+    }
+};
 
 class Game {
 private:
@@ -33,6 +62,8 @@ private:
 
     std::list<Player *> players;
     std::mutex playersLock;
+
+    Chat chat;
 
     static void gameProcess(Game *);
 
@@ -47,7 +78,9 @@ public:
     const uptr<World> &GetWorld() { return world; }
 
     const int GetID() const;
+    Chat *GetChat() { return &chat; }
 
+    void SendChatMessage(const std::vector<std::wstring> &message, Player *player);
     ~Game();
 
     friend sf::Packet &operator<<(sf::Packet &packet, Game &game);

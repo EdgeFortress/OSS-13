@@ -13,13 +13,17 @@ struct ClientCommand {
         AUTH_REQ = 1,
         REG_REQ,
         SERVER_LIST_REQ,
+
         CREATE_GAME,
         JOIN_GAME,
         DISCONNECT,
+
         NORTH,
         SOUTH,
         EAST,
-        WEST
+        WEST,
+
+        SEND_CHAT_MESSAGE
     };
 
     virtual const Code GetCode() const = 0;
@@ -95,6 +99,14 @@ struct WestClientCommand : public ClientCommand {
     WestClientCommand() { }
 };
 
+struct SendChatMessageClientCommand : public ClientCommand {
+    std::vector<std::wstring> message;
+
+    virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
+
+    SendChatMessageClientCommand(const std::vector<std::wstring> &message) : message(message) { }
+};
+
 struct ServerCommand {
     enum class Code : char {
         AUTH_SUCCESS = 1,
@@ -109,6 +121,8 @@ struct ServerCommand {
         GAME_JOIN_ERROR,
 
         GRAPHICS_UPDATE,
+
+        SEND_CHAT_MESSAGE,
 
         COMMAND_CODE_ERROR
         //CONNECTION_ERROR,
@@ -174,6 +188,15 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
     int firstBlockY;
 
     virtual const Code GetCode() const override { return Code::GRAPHICS_UPDATE; }
+};
+
+struct SendChatMessageServerCommand : public ServerCommand {
+    std::vector<std::wstring> message;
+    std::string playerName;
+
+    virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
+
+    SendChatMessageServerCommand(const std::vector<std::wstring> &message, std::string &playerName) : message(message), playerName(playerName) { }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {

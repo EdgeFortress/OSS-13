@@ -11,8 +11,8 @@
 
 void Window::Initialize() {
     sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
-    width = static_cast<int>(0.9 * videoMode.width);
-    height = static_cast<int>(0.9 * videoMode.height);
+    width = static_cast<int>(0.8 * videoMode.width);
+    height = static_cast<int>(0.8 * videoMode.height);
     window.reset(new RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
     resize(window->getSize().x, window->getSize().y);
 }
@@ -126,37 +126,58 @@ void MenuLoginState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
 void MenuGameListState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
 void GameLobbyState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
 void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
+    static bool playing = true, chat = false;
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
+        playing = !playing, chat = !chat;
+
     static bool movingNorth = false, movingSouth = false, movingEast = false, movingWest = false;
     static sf::Time moveTime = sf::Time::Zero;
-    int moveX = 0, moveY = 0;
-    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W))
-        movingNorth = true;
-    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S))
-        movingSouth = true;
-    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D))
-        movingEast = true;
-    if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A))
-        movingWest = true;
-    moveTime += timeElapsed;
-    if (moveTime >= sf::seconds(0.01f)) {
-        moveTime = sf::Time::Zero;
-        if (movingNorth)
-            moveY--;
-        if (movingSouth)
-            moveY++;
-        if (movingEast)
-            moveX++;
-        if (movingWest)
-            moveX--;
-        movingNorth = movingSouth = movingEast = movingWest = false;
-        if (moveY < 0)
-            Connection::commandQueue.Push(new NorthClientCommand());
-        if (moveY > 0)
-            Connection::commandQueue.Push(new SouthClientCommand());
-        if (moveX > 0)
-            Connection::commandQueue.Push(new EastClientCommand());
-        if (moveX < 0)
-            Connection::commandQueue.Push(new WestClientCommand());
+    static int moveX = 0, moveY = 0;
+    if (playing) {
+        if (event.type == sf::Event::KeyPressed) {
+                switch (event.key.code) {
+                    case sf::Keyboard::Up:
+                    case sf::Keyboard::W:
+                        movingNorth = true;
+                        break;
+                    case sf::Keyboard::Down:
+                    case sf::Keyboard::S:
+                        movingSouth = true;
+                        break;
+                    case sf::Keyboard::Right:
+                    case sf::Keyboard::D:
+                        movingEast = true;
+                        break;
+                    case sf::Keyboard::Left:
+                    case sf::Keyboard::A:
+                        movingWest = true;
+                        break;
+                    default:
+                        break;
+            }
+        }
+        moveTime += timeElapsed;
+        if (moveTime >= sf::seconds(0.01f)) {
+            moveTime = sf::Time::Zero;
+            if (movingNorth)
+                moveY--;
+            if (movingSouth)
+                moveY++;
+            if (movingEast)
+                moveX++;
+            if (movingWest)
+                moveX--;
+            movingNorth = movingSouth = movingEast = movingWest = false;
+            if (moveY < 0)
+                Connection::commandQueue.Push(new NorthClientCommand());
+            if (moveY > 0)
+                Connection::commandQueue.Push(new SouthClientCommand());
+            if (moveX > 0)
+                Connection::commandQueue.Push(new EastClientCommand());
+            if (moveX < 0)
+                Connection::commandQueue.Push(new WestClientCommand());
+            moveX = moveY = 0;
+        }
     }
 
     if (event.type == sf::Event::MouseMoved) {
@@ -165,6 +186,31 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
             CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
         else 
             CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
+    }
+ 
+    if (chat) {
+        if (event.type == sf::Event::KeyPressed) {
+            Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
+            int a = sf::Keyboard::A, z = sf::Keyboard::Z;
+            wstring str(6, 0);
+            int i = 0;
+            if (event.key.code >= a && event.key.code <= z)
+                str[i++] = event.key.code - a + 'a';
+            if (event.key.code == sf::Keyboard::Period)
+                str[i++] = '.';
+            if (event.key.code == sf::Keyboard::Comma)
+                str[i++] = ',';
+            if (event.key.code == sf::Keyboard::Quote)
+                str[i++] = '"';
+            if (event.key.code == sf::Keyboard::Space)
+                str[i++] = ' ';
+            if (event.key.code == sf::Keyboard::Dash)
+                str[i++] = '-';
+            if (event.key.code == sf::Keyboard::Return)
+                chat->Send();
+            str.resize(i);
+            chat->SetSymbol(str);
+        }
     }
 }
 
