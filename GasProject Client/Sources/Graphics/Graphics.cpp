@@ -189,27 +189,17 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
     }
  
     if (chat) {
+        Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
         if (event.type == sf::Event::KeyPressed) {
-            Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
-            int a = sf::Keyboard::A, z = sf::Keyboard::Z;
-            wstring str(6, 0);
-            int i = 0;
-            if (event.key.code >= a && event.key.code <= z)
-                str[i++] = event.key.code - a + 'a';
-            if (event.key.code == sf::Keyboard::Period)
-                str[i++] = '.';
-            if (event.key.code == sf::Keyboard::Comma)
-                str[i++] = ',';
-            if (event.key.code == sf::Keyboard::Quote)
-                str[i++] = '"';
-            if (event.key.code == sf::Keyboard::Space)
-                str[i++] = ' ';
-            if (event.key.code == sf::Keyboard::Dash)
-                str[i++] = '-';
             if (event.key.code == sf::Keyboard::Return)
                 chat->Send();
-            str.resize(i);
-            chat->SetSymbol(str);
+            if (event.key.code == sf::Keyboard::BackSpace)
+                chat->DeleteSymbol();
+        }
+        if (event.type == sf::Event::TextEntered) {
+            wchar_t c = wchar_t(event.text.unicode);
+            if (c != '\r' && c != '\t' && c != '\b')
+                chat->SetSymbol(c);
         }
     }
 }
