@@ -79,6 +79,11 @@ void Chat::DeleteSymbol() {
     wstring text = entryText.getString();
     if (text.size())
         text.resize(text.size() - 1);
+    else if (entryTextBuffer.size()) {
+        text = entryTextBuffer[entryTextBuffer.size() - 1].getString();
+        entryTextBuffer.erase(--entryTextBuffer.end());
+        text.resize(text.size() - 1);
+    }
     entryText.setString(text);
 }
 
