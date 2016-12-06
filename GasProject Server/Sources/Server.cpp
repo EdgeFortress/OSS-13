@@ -54,9 +54,11 @@ bool Game::AddPlayer(Player *player) {
 
 void Game::DeletePlayer(Player *player) { players.remove(player); }
 
-void Game::SendChatMessage(std::wstring &message, std::string &playerName) {
-    for (auto &player : players)
-        player->AddCommandToClient(new SendChatMessageServerCommand(message, playerName));
+void Game::SendChatMessage(const std::vector<std::wstring> &message, Player *player) {
+    for (auto &iter : players) {
+        if (iter != player)
+            iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
+    }
 }
 
 Game::~Game() {

@@ -10,7 +10,6 @@ Chat::Chat(const sf::Font &font) {
     entryText.setCharacterSize(20);
     entryText.setFillColor(sf::Color::Magenta);
     entryText.setString("");
-    showPos = 0;
 }
 
 void Chat::Draw(sf::RenderWindow *renderWindow) {
@@ -19,126 +18,99 @@ void Chat::Draw(sf::RenderWindow *renderWindow) {
 
     renderWindow->draw(entryText);
 
-    float size = 0;
-    if (boxText.size())
-        for (int i = int(boxText.size() - 1); i >= 0; i--) {
-            size += boxText[i].getLocalBounds().height + 15;
-            if (size > box.getSize().y)
-                break;
-            float boxTextXShift = box.getSize().x * 0.01f;
-            boxText[i].setPosition(chatXPos + boxTextXShift, chatYPos - size);
-            renderWindow->draw(boxText[i]);
-        }
+    int size = 1;
+    for (int i = int(boxText.size() - 1); i >= 0; i--) {
+        if (size++ * entryText.getCharacterSize() > box.getSize().y)
+            break;
+        float boxTextXShift = box.getSize().x * 0.01f, boxTextYShift = entry.getSize().y * 0.1f + entryText.getCharacterSize();
+        boxText[i].setPosition(chatXPos + boxTextXShift, chatYPos - entryText.getCharacterSize() * size);
+        renderWindow->draw(boxText[i]);
+    }
 }
 
 void Chat::SetSymbol(const wchar_t c) {
-    entryString += c;
+    wstring text = entryText.getString() + c;
+    //CC::log << text.size() << endl;
 
-    sf::Text tempText;
-    tempText.setFont(*entryText.getFont());
-    tempText.setCharacterSize(20);
-    tempText.setString(wstring(entryString.c_str() + showPos));
+    //if (text.size() * entryText.getCharacterSize() > entry.getSize().x) {
+    if (text.size() > 60) {
+        wstring::iterator cut = text.begin();
+        bool spaces = false;
+        for (auto i = ++text.begin(); i < text.end(); i++)
+            if (*i == ' ')
+                cut = i, spaces = true;
+        if (spaces) {
+            wstring buf;
+            buf.insert(buf.end(), text.begin(), cut);
+            entryText.setString(buf);
+            wstring new_text;
+            new_text.insert(new_text.end(), ++cut, text.end());
+            text = move(new_text);
+        }
+        else {
+            text.resize(1);
+            text[0] = c;
+        }
 
-    while (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
-        showPos++, tempText.setString(wstring(entryString.c_str() + showPos));
+        entryTextBuffer.push_back(entryText);
+    }
 
-    entryText.setString(wstring(entryString.c_str() + showPos));
+    entryText.setString(text);
 }
 
 void Chat::Send() {
-    Connection::commandQueue.Push(new SendChatMessageClientCommand(entryString));
+    entryTextBuffer.push_back(entryText);
 
+    vector<wstring> message;
+    for (auto &text : entryTextBuffer)
+        message.push_back(text.getString());
+    Connection::commandQueue.Push(new SendChatMessageClientCommand(message));
+
+    entryText.setString(">You:");
+    boxText.push_back(entryText);
+    boxText.insert(boxText.end(), entryTextBuffer.begin(), entryTextBuffer.end());
+
+    entryTextBuffer.erase(entryTextBuffer.begin(), entryTextBuffer.end());
     entryText.setString("");
-    entryString.erase(entryString.begin(), entryString.end());
-    showPos = 0;
+    boxText.push_back(entryText);
 }
 
 void Chat::DeleteSymbol() {
-    if (entryString.size())
-        entryString.resize(entryString.size() - 1);
-
-    if (showPos) {
-        showPos--;
-        sf::Text tempText;
-        tempText.setFont(*entryText.getFont());
-        tempText.setCharacterSize(20);
-        tempText.setString(wstring(entryString.c_str() + showPos));
-        if (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
-            showPos++;
+    wstring text = entryText.getString();
+    if (text.size())
+        text.resize(text.size() - 1);
+    else if (entryTextBuffer.size()) {
+        text = entryTextBuffer[entryTextBuffer.size() - 1].getString();
+        entryTextBuffer.erase(--entryTextBuffer.end());
+        text.resize(text.size() - 1);
     }
-    
-    entryText.setString(wstring(entryString.c_str() + showPos));
+    entryText.setString(text);
 }
 
-void Chat::AddIncomingMessage(wstring &message, const std::string &playerName) {
-    sf::Text tempText;
-    tempText.setFont(*entryText.getFont());
-    tempText.setCharacterSize(20);
-    tempText.setFillColor(sf::Color::Magenta);
-    tempText.setString('>' + playerName + ':');
-    boxText.push_back(tempText);
+void Chat::AddIncomingMessage(const vector<wstring> &message, const std::string &playerName) {
+    vector<sf::Text> localMessage;
+    sf::Text text;
+    text.setFont(*(entryText.getFont()));
+    text.setCharacterSize(20);
+    text.setFillColor(sf::Color::Magenta);
+    text.setString('>' + playerName + ':');
+    localMessage.push_back(text);
+    for (auto &str : message)
+        text.setString(str), localMessage.push_back(text);
+    boxText.insert(boxText.end(), localMessage.begin(), localMessage.end());
 
-    static int counter = 0;
-    //CC::log << "GOT MESSAGE" << counter << endl;
-
-    unsigned startPos = 0, shiftPos = 0;
-    while (startPos < message.size()) {
-        do {
-            shiftPos++;
-            tempText.setString(message.substr(startPos, shiftPos));
-            float fieldSize = entry.getSize().x * 0.96f;
-            //wcout << message << endl;
-            unsigned messageSize = unsigned(message.size());
-            //wcout << message.substr(startPos, shiftPos) << endl;
-            //sf::FloatRect textRect = tempText.getGlobalBounds();
-            //CC::log << shiftPos << endl;
-            float textSize = shiftPos * 15.0f;//textRect.width;
-            //CC::log << "CYCLE" << counter << endl;
-            if (textSize >= fieldSize || startPos + shiftPos > messageSize)
-                break;
-        } while (true);
-
-        //CC::log << "PARSING MESSAGE" << counter << endl;
-
-        bool spaces = true;
-        if (startPos + shiftPos < message.size())
-            if (message[startPos + shiftPos] != ' ') {
-                spaces = false;
-                for (unsigned i = startPos + shiftPos; i > startPos; i--) {
-                    if (message[i] == ' ') {
-                        spaces = true;
-                        shiftPos = i - startPos;
-                        break;
-                    }
-                }
-                tempText.setString(message.substr(startPos, shiftPos));
-            }
-
-        boxText.push_back(tempText);
-        startPos += shiftPos;
-        if (spaces)
-            startPos++;
-        shiftPos = 1;
-    }
-
-    //CC::log << "FINISHED PARSING" << counter << endl;
-
-    counter++;
+    text.setString("");
+    boxText.push_back(text);
 }
 
 void Chat::Resize(int width, int height) {
     TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
 
-    chatXPos = tileGrid->GetTileSize() * float(Global::FOV);
-
-    float chatWidth = width - chatXPos;
-    float entryHeight = height * 0.05f;
-    float chatShift = entryHeight * 0.1f;
-
+    float chatWidth = width * 0.5f, entryHeight = height * 0.05f, chatShift = entryHeight * 0.1f;
     entry.setSize(sf::Vector2f(chatWidth, entryHeight));
     box.setSize(sf::Vector2f(chatWidth, height * 0.5f - entryHeight));
 
-    chatYPos = height - entry.getSize().y - chatShift;
+    chatXPos = tileGrid->GetTileSize() * float(Global::FOV), chatYPos = height - entry.getSize().y - chatShift;
     entry.setPosition(chatXPos, chatYPos);
     box.setPosition(chatXPos, chatYPos - box.getSize().y);
 

@@ -11,11 +11,8 @@ using std::wstring;
 class Chat {
 private:
     sf::RectangleShape entry, box;
-
-    unsigned showPos;
-    wstring entryString;
     sf::Text entryText;
-
+    vector<sf::Text> entryTextBuffer;
     vector<sf::Text> boxText;
 
     float chatXPos, chatYPos;
@@ -36,5 +33,5 @@ public:
     void DeleteSymbol();
 
     void Send();
-    void AddIncomingMessage(wstring &message, const std::string &playerName);
+    void AddIncomingMessage(const vector<wstring> &message, const std::string &playerName);
 };

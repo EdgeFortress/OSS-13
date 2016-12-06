@@ -172,10 +172,14 @@ void Connection::parsePacket(Packet &packet) {
             break;
         }
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
+            std::vector<std::wstring> message;
+            sf::Int32 size;
+            std::wstring str;
             std::string playerName;
-            std::wstring message;
             packet >> playerName;
-            packet >> message;
+            packet >> size;
+            for (int i = 0; i < int(size); i++)
+                packet >> str, message.push_back(str);
             auto chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
             chat->AddIncomingMessage(message, playerName);
             break;
@@ -203,7 +207,10 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageClientCommand *>(command);
-            packet << c->message;
+            packet << sf::Int32(c->message.size());
+            for (auto &str : c->message) {
+                packet << str;
+            }
             break;
         }
     }
