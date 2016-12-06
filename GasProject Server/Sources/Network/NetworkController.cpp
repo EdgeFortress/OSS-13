@@ -32,10 +32,10 @@ void NetworkController::working() {
                 }
             }
             else {
-                for (auto &pair : sockets) {
-                    if (selector.isReady(*pair.second)) {
-                        sf::TcpSocket *socket = pair.second.get();
-                        Player *player = pair.first;
+                for (auto iter = sockets.begin(); iter != sockets.end();) {
+                    if (selector.isReady(*iter->second)) {
+                        sf::TcpSocket *socket = iter->second.get();
+                        Player *player = iter->first;
 
                         sf::Packet packet;
                         sf::Socket::Status status = socket->receive(packet);
@@ -47,9 +47,12 @@ void NetworkController::working() {
                                 Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
                                 player->connected = false;
                                 selector.remove(*socket);
+                                iter = sockets.erase(iter);
+                                continue;
                                 break;
                         }
                     }
+                    iter++;
                 }
             }
         }
@@ -62,11 +65,11 @@ void NetworkController::working() {
                 ServerCommand *temp = player->commandsToClient.Pop();
                 packet << temp;
                 if (temp) delete temp;
-                sf::Socket::Status status = pair.second->send(packet);
-                if (status == sf::Socket::Disconnected) {
-                    Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
-                    player->connected = false;
-                }
+                pair.second->send(packet);
+                //if (status == sf::Socket::Disconnected) {
+                //    Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
+                //    player->connected = false;
+                //}
             }
         }
     }
