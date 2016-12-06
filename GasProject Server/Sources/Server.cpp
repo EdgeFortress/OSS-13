@@ -5,7 +5,8 @@
 #include "SFML/System.hpp"
 
 #include "Server.hpp"
-#include "Network/Network.hpp"
+#include "Network/NetworkController.hpp"
+#include "Common/Ñommand.hpp"
 #include "World/World.hpp"
 #include "Player.hpp"
 #include "Database/UsersDB.hpp"
@@ -13,9 +14,8 @@
 using namespace std;
 using namespace sf;
 
-Game::Game(Server *server, string title, int id) : title(title),
+Game::Game(string title, int id) : title(title),
                                                    id(id),
-                                                   server(server),
                                                    active(true),
                                                    thread(new std::thread(gameProcess, this)) {
 }
@@ -67,19 +67,21 @@ Game::~Game() {
 }
 
 Server::Server() : UDB(new UsersDB()),
+                   networkController(new NetworkController()),
                    new_game_id(1) {
     instance = this;
-    ListeningSocket::Start(this);
+    //ListeningSocket::Start(this);
+    networkController->Start();
     CreateGame("One Super Test Game");
     while (true) {
         for (auto &game : games)
             for (auto &player : players)
-                if (!(player->GetConnection()->IsActive())) {
+                if (!(player->IsConnected())) {
                     game->DeletePlayer(player.get());
                     break;
                 }
         for (auto &player : players)
-            if (!(player->GetConnection()->IsActive())) {
+            if (!(player->IsConnected())) {
                 players.remove(player);
                 break;
             }
@@ -116,7 +118,7 @@ bool Server::Registration(string &login, string &password) const {
 }
 
 bool Server::CreateGame(string title) {
-    games.push_back(uptr<Game>(new Game(this, title, new_game_id)));
+    games.push_back(uptr<Game>(new Game(title, new_game_id)));
     new_game_id++;
     return true;
 }
@@ -125,19 +127,15 @@ const std::list<uptr<Game>> * const Server::GetGamesList() const {
     return &games;
 }
 
-void Server::JoinGame(const int id, Player *player) const {
-    Server::log << player->GetCKey() << " connecting game #" << id << endl;
+Game *Server::JoinGame(const int id, Player *player) const {
     for (auto &game : games) {
         if (game->GetID() == id) {
             if (game->AddPlayer(player)) {
-                player->game = game.get();
-                player->AddCommandFromClient(new JoinPlayerCommand);
-                player->AddCommandToClient(new GameJoinSuccessServerCommand());
+                return game.get();
             }
-            else
-                player->AddCommandToClient(new GameJoinErrorServerCommand());
         }
     }
+    return nullptr;
 }
 
 void Server::AddPlayer(Player *player) {

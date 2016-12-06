@@ -131,7 +131,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
-    <ClCompile Include="Sources\Network\Network.cpp" />
+    <ClCompile Include="Sources\Network\NetworkController.cpp" />
+    <ClCompile Include="Sources\Network\Packing.cpp" />
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\World\Camera.cpp" />
@@ -140,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\Global.hpp" />
-    <ClInclude Include="Sources\Network\Network.hpp" />
+    <ClInclude Include="Sources\Network\NetworkController.hpp" />
     <ClInclude Include="Sources\Network\TileGrid_Info.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
     <ClInclude Include="Sources\PlayerCommand.hpp" />

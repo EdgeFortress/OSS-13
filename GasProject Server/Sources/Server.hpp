@@ -10,6 +10,7 @@
 
 class Player;
 class Server;
+class NetworkController;
 class World;
 class Chat;
 class UsersDB;
@@ -35,10 +36,8 @@ private:
 
 public:
     Chat() = default;
-
     Chat(Chat &chat) = delete;
     Chat& operator=(Chat &chat) = delete;
-
     ~Chat() = default;
 
     void AddMessage(const std::vector<std::wstring> &message, Player *player) {
@@ -55,7 +54,6 @@ class Game {
 private:
     std::string title;
     const int id;
-    Server *server;
     bool active;
     uptr<std::thread> thread;
     uptr<World> world;
@@ -70,7 +68,7 @@ private:
     void update(sf::Time timeElapsed);
 
 public:
-    Game(Server *server, std::string title, int id);
+    Game(std::string title, int id);
 
     bool AddPlayer(Player *);
     void DeletePlayer(Player *);
@@ -91,6 +89,9 @@ extern thread_local Game *CurThreadGame;
 class Server {
 private:
     int new_game_id;
+
+    uptr<NetworkController> networkController;
+
     std::list<uptr<Player>> players;
     std::list<uptr<Game>> games;
 
@@ -104,7 +105,7 @@ public:
     bool Registration(std::string &login, std::string &password) const;
     bool CreateGame(std::string title);
     const std::list<uptr<Game>> * const GetGamesList() const;
-    void JoinGame(const int id, Player *player) const;
+    Game *JoinGame(const int id, Player *player) const;
     void AddPlayer(Player *player);
 
     static Server *Get() { return instance; }
