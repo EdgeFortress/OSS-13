@@ -49,4 +49,9 @@ void Player::AddCommandFromClient(PlayerCommand *command) {
     commandsFromClient.Push(command);
 }
 
+void Player::ChatMessage(std::wstring &message) {
+    game->SendChatMessage(message, ckey);
+    game->GetChat()->AddMessage(message, this);
+}
+
 Player::~Player() { connection->Stop(); }

@@ -31,6 +31,7 @@ private:
 
         message(Player *player, const std::wstring &text) : player(player), text(text) { }
     };
+
     std::vector<message> messages;
 
 public:
@@ -41,13 +42,8 @@ public:
 
     ~Chat() = default;
 
-    void AddMessage(const std::vector<std::wstring> &message, Player *player) {
-        std::vector<Chat::message> localMessage;
-        for (auto &text : message) {
-            localMessage.push_back(Chat::message(player, text));
-        }
-        messages.insert(messages.end(), localMessage.begin(), localMessage.end());
-        messages.push_back(Chat::message(player, std::wstring()));
+    void AddMessage(std::wstring &message, Player *player) {
+        messages.push_back(Chat::message(player, message));
     }
 };
 
@@ -80,7 +76,7 @@ public:
     const int GetID() const;
     Chat *GetChat() { return &chat; }
 
-    void SendChatMessage(const std::vector<std::wstring> &message, Player *player);
+    void SendChatMessage(std::wstring &message, std::string &playerName);
     ~Game();
 
     friend sf::Packet &operator<<(sf::Packet &packet, Game &game);

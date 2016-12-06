@@ -151,14 +151,9 @@ void Connection::parse(sf::Packet &pac) {
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-            std::vector<std::wstring> message;
-            sf::Int32 size;
-            std::wstring str;
-            pac >> size;
-            for (int i = 0; i < int(size); i++)
-                pac >> str, message.push_back(str);
-            player->game->SendChatMessage(message, player);
-            player->game->GetChat()->AddMessage(message, player);
+            std::wstring message;
+            pac >> message;
+            player->ChatMessage(message);
             break;
         }
         case ClientCommand::Code::WEST: {
@@ -217,10 +212,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageServerCommand *>(serverCommand);
             packet << c->playerName;
-            packet << sf::Int32(c->message.size());
-            for (auto &str : c->message) {
-                packet << str;
-            }
+            packet << c->message;
             break;
         }
     }

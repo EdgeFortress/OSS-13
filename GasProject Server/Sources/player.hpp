@@ -50,6 +50,8 @@ public:
     void AddCommandToClient(ServerCommand *);
     void AddCommandFromClient(PlayerCommand *);
 
+    void ChatMessage(std::wstring &message);
+
     ~Player();
 
     friend Connection;
