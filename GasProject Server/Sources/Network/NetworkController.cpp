@@ -132,17 +132,17 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
                 mob->MoveWest();
             break;
         }
-        //case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-        //    std::vector<std::wstring> message;
-        //    sf::Int32 size;
-        //    std::wstring str;
-        //    packet >> size;
-        //    for (int i = 0; i < int(size); i++)
-        //        packet >> str, message.push_back(str);
-        //    player->game->SendChatMessage(message, player);
-        //    player->game->GetChat()->AddMessage(message, player);
-        //    break;
-        //}
+        case ClientCommand::Code::SEND_CHAT_MESSAGE: {
+            std::vector<std::wstring> message;
+            sf::Int32 size;
+            std::wstring str;
+            packet >> size;
+            for (int i = 0; i < int(size); i++)
+                packet >> str, message.push_back(str);
+            player->game->SendChatMessage(message, player);
+            player->game->GetChat()->AddMessage(message, player);
+            break;
+        }
         case ClientCommand::Code::DISCONNECT: {
             Server::log << "Client" << player->GetCKey() << "disconnected" << endl;
             break;

@@ -6,6 +6,7 @@
 
 #include "Server.hpp"
 #include "Network/NetworkController.hpp"
+#include "Common/Ñommand.hpp"
 #include "World/World.hpp"
 #include "Player.hpp"
 #include "Database/UsersDB.hpp"
@@ -55,8 +56,8 @@ void Game::DeletePlayer(Player *player) { players.remove(player); }
 
 void Game::SendChatMessage(const std::vector<std::wstring> &message, Player *player) {
     for (auto &iter : players) {
-        if (iter != player);
-            //iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
+        if (iter != player)
+            iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
     }
 }
 
