@@ -9,7 +9,6 @@ Chat::Chat(const sf::Font &font) {
     entryText.setFont(font);
     entryText.setCharacterSize(20);
     entryText.setFillColor(sf::Color::Magenta);
-    //entryText.setString(L"Приветосы");
     entryText.setString("");
 }
 
@@ -29,12 +28,12 @@ void Chat::Draw(sf::RenderWindow *renderWindow) {
     }
 }
 
-void Chat::SetSymbol(const wstring &str) {
-    wstring text = entryText.getString() + str;
+void Chat::SetSymbol(const wchar_t c) {
+    wstring text = entryText.getString() + c;
     //CC::log << text.size() << endl;
 
     //if (text.size() * entryText.getCharacterSize() > entry.getSize().x) {
-    if (text.size() > 70) {
+    if (text.size() > 60) {
         wstring::iterator cut = text.begin();
         bool spaces = false;
         for (auto i = ++text.begin(); i < text.end(); i++)
@@ -47,8 +46,11 @@ void Chat::SetSymbol(const wstring &str) {
             wstring new_text;
             new_text.insert(new_text.end(), ++cut, text.end());
             text = move(new_text);
-        } else
-            text = move(str);
+        }
+        else {
+            text.resize(1);
+            text[0] = c;
+        }
 
         entryTextBuffer.push_back(entryText);
     }
@@ -71,6 +73,18 @@ void Chat::Send() {
     entryTextBuffer.erase(entryTextBuffer.begin(), entryTextBuffer.end());
     entryText.setString("");
     boxText.push_back(entryText);
+}
+
+void Chat::DeleteSymbol() {
+    wstring text = entryText.getString();
+    if (text.size())
+        text.resize(text.size() - 1);
+    else if (entryTextBuffer.size()) {
+        text = entryTextBuffer[entryTextBuffer.size() - 1].getString();
+        entryTextBuffer.erase(--entryTextBuffer.end());
+        text.resize(text.size() - 1);
+    }
+    entryText.setString(text);
 }
 
 void Chat::AddIncomingMessage(const vector<wstring> &message, const std::string &playerName) {

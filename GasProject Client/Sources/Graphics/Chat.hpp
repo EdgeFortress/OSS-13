@@ -29,7 +29,9 @@ public:
 
     void Draw(sf::RenderWindow *window);
 
-    void SetSymbol(const wstring &str);
+    void SetSymbol(const wchar_t c);
+    void DeleteSymbol();
+
     void Send();
     void AddIncomingMessage(const vector<wstring> &message, const std::string &playerName);
 };
