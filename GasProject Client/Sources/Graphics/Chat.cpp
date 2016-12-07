@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "Graphics/Chat.hpp"
 #include "Graphics/Window.hpp"
 #include "Network.hpp"
@@ -11,6 +13,7 @@ Chat::Chat(const sf::Font &font) {
     entryText.setFillColor(sf::Color::Magenta);
     entryText.setString("");
     showPos = 0;
+    resized = false;
 }
 
 void Chat::Draw(sf::RenderWindow *renderWindow) {
@@ -22,12 +25,16 @@ void Chat::Draw(sf::RenderWindow *renderWindow) {
     float size = 0;
     if (boxText.size())
         for (int i = int(boxText.size() - 1); i >= 0; i--) {
-            size += boxText[i].getLocalBounds().height + 15;
+            for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
+                size += boxText[i].text[j].getLocalBounds().height + 15;
+                if (size > box.getSize().y)
+                    break;
+                float boxTextXShift = box.getSize().x * 0.01f;
+                boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos - size);
+                renderWindow->draw(boxText[i].text[j]);
+            }
             if (size > box.getSize().y)
                 break;
-            float boxTextXShift = box.getSize().x * 0.01f;
-            boxText[i].setPosition(chatXPos + boxTextXShift, chatYPos - size);
-            renderWindow->draw(boxText[i]);
         }
 }
 
@@ -70,60 +77,37 @@ void Chat::DeleteSymbol() {
     entryText.setString(wstring(entryString.c_str() + showPos));
 }
 
-void Chat::AddIncomingMessage(wstring &message, const std::string &playerName) {
+void Chat::AddIncomingMessage(const wstring &message, const std::string &playerName) {
+    boxText.push_back(Message(playerName, message));
+}
+
+void Chat::Update() {
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(20);
     tempText.setFillColor(sf::Color::Magenta);
-    tempText.setString('>' + playerName + ':');
-    boxText.push_back(tempText);
 
-    static int counter = 0;
-    //CC::log << "GOT MESSAGE" << counter << endl;
+    int iter = int(boxText.size() - 1); 
+    if (iter < 0)
+        return;
 
-    unsigned startPos = 0, shiftPos = 0;
-    while (startPos < message.size()) {
-        do {
-            shiftPos++;
-            tempText.setString(message.substr(startPos, shiftPos));
-            float fieldSize = entry.getSize().x * 0.96f;
-            //wcout << message << endl;
-            unsigned messageSize = unsigned(message.size());
-            //wcout << message.substr(startPos, shiftPos) << endl;
-            //sf::FloatRect textRect = tempText.getGlobalBounds();
-            //CC::log << shiftPos << endl;
-            float textSize = shiftPos * 15.0f;//textRect.width;
-            //CC::log << "CYCLE" << counter << endl;
-            if (textSize >= fieldSize || startPos + shiftPos > messageSize)
-                break;
-        } while (true);
-
-        //CC::log << "PARSING MESSAGE" << counter << endl;
-
-        bool spaces = true;
-        if (startPos + shiftPos < message.size())
-            if (message[startPos + shiftPos] != ' ') {
-                spaces = false;
-                for (unsigned i = startPos + shiftPos; i > startPos; i--) {
-                    if (message[i] == ' ') {
-                        spaces = true;
-                        shiftPos = i - startPos;
-                        break;
-                    }
-                }
-                tempText.setString(message.substr(startPos, shiftPos));
-            }
-
-        boxText.push_back(tempText);
-        startPos += shiftPos;
-        if (spaces)
-            startPos++;
-        shiftPos = 1;
+    while (boxText[iter].text.empty()) {
+        tempText.setString('>' + boxText[iter].playerName + ':');
+        boxText[iter].text.push_back(tempText);
+        Parse(boxText[iter], tempText);
     }
 
-    //CC::log << "FINISHED PARSING" << counter << endl;
+    while (boxText.size() > 100)
+        boxText.erase(boxText.begin());
 
-    counter++;
+    if (resized) {
+        for (auto &message : boxText) {
+            message.text.erase(++message.text.begin(), message.text.end());
+            Parse(message, tempText);
+        }
+
+        resized = false;
+    }
 }
 
 void Chat::Resize(int width, int height) {
@@ -135,6 +119,9 @@ void Chat::Resize(int width, int height) {
     float entryHeight = height * 0.05f;
     float chatShift = entryHeight * 0.1f;
 
+    if (chatWidth != entry.getSize().x)
+        resized = true;
+
     entry.setSize(sf::Vector2f(chatWidth, entryHeight));
     box.setSize(sf::Vector2f(chatWidth, height * 0.5f - entryHeight));
 
@@ -144,4 +131,34 @@ void Chat::Resize(int width, int height) {
 
     float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
     entryText.setPosition(chatXPos + entryTextXShift, chatYPos + entryTextYShift);
+}
+
+void Chat::Parse(Message &message, sf::Text &tempText) {
+    unsigned startPos = 0, shiftPos = 0;
+    while (startPos < message.stringText.size()) {
+        do {
+            shiftPos++;
+            tempText.setString(message.stringText.substr(startPos, shiftPos));
+        } while (tempText.getLocalBounds().width < entry.getSize().x * 0.96f && startPos + shiftPos <= unsigned(message.stringText.size()));
+
+        bool spaces = true;
+        if (startPos + shiftPos < message.stringText.size())
+            if (message.stringText[startPos + shiftPos] != ' ') {
+                spaces = false;
+                for (unsigned i = startPos + shiftPos; i > startPos; i--) {
+                    if (message.stringText[i] == ' ') {
+                        spaces = true;
+                        shiftPos = i - startPos;
+                        break;
+                    }
+                }
+                tempText.setString(message.stringText.substr(startPos, shiftPos));
+            }
+
+        message.text.push_back(tempText);
+        startPos += shiftPos;
+        if (spaces)
+            startPos++;
+        shiftPos = 1;
+    }
 }

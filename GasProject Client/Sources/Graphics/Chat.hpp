@@ -10,15 +10,25 @@ using std::wstring;
 
 class Chat {
 private:
+    struct Message
+    {
+        std::string playerName;
+        wstring stringText;
+        vector<sf::Text> text;
+
+        Message(const std::string &playerName, const wstring &stringText) : playerName(playerName), stringText(stringText) { }
+    };
+
     sf::RectangleShape entry, box;
+    float chatXPos, chatYPos;
 
     unsigned showPos;
     wstring entryString;
     sf::Text entryText;
 
-    vector<sf::Text> boxText;
+    vector<Message> boxText;
 
-    float chatXPos, chatYPos;
+    bool resized;
 
 public:
     Chat(const sf::Font &font);
@@ -29,12 +39,14 @@ public:
     ~Chat() = default;
 
     void Resize(int width, int height);
+    void Parse(Message &, sf::Text &);
 
     void Draw(sf::RenderWindow *window);
+    void Update();
 
     void SetSymbol(const wchar_t c);
     void DeleteSymbol();
 
     void Send();
-    void AddIncomingMessage(wstring &message, const std::string &playerName);
+    void AddIncomingMessage(const wstring &message, const std::string &playerName);
 };
