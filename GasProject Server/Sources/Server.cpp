@@ -15,9 +15,10 @@ using namespace std;
 using namespace sf;
 
 Game::Game(string title, int id) : title(title),
-                                                   id(id),
-                                                   active(true),
-                                                   thread(new std::thread(gameProcess, this)) {
+                                   id(id),
+                                   active(true),
+                                   thread(new std::thread(gameProcess, this)) {
+
 }
 
 void Game::gameProcess(Game *inst) {
@@ -38,7 +39,7 @@ void Game::update(sf::Time timeElapsed) {
         for (Player *player : players)
             player->Update();
         for (Player *player : players)
-            player->SendUpdates();
+            player->SendGraphicsUpdates();
     }
 }
 
@@ -70,7 +71,6 @@ Server::Server() : UDB(new UsersDB()),
                    networkController(new NetworkController()),
                    new_game_id(1) {
     instance = this;
-    //ListeningSocket::Start(this);
     networkController->Start();
     CreateGame("One Super Test Game");
     while (true) {

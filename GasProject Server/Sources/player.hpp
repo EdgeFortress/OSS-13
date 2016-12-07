@@ -19,9 +19,7 @@ class Player {
 private:
     string ckey;
     bool connected;
-    //Server *server;
     Game *game;
-    //uptr<Connection> connection;
 
     Mob *mob;
     uptr<Camera> camera;
@@ -39,10 +37,9 @@ public:
     void JoinToGame(int id);
 
     void Update();
-    void SendUpdates();
+    void SendGraphicsUpdates();
 
     string GetCKey() { return ckey; }
-    //Connection *GetConnection() { return connection.get(); }
 
     void SetMob(Mob *mob);
     void SetCamera(Camera *camera) { this->camera.reset(camera); }
@@ -55,6 +52,5 @@ public:
     void AddCommandFromClient(PlayerCommand *);
 
     friend NetworkController;
-    //friend Connection;
     friend Server;
 };

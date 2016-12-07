@@ -1,15 +1,12 @@
 #include "Server.hpp"
 #include "Player.hpp"
-//#include "Network/Network.hpp"
 #include "World/World.hpp"
 #include "PlayerCommand.hpp"
 #include "Common/Ñommand.hpp"
 
 class Server;
 
-Player::Player() : ckey(""),
-                                        game(nullptr)
-{
+Player::Player() {
     ckey = "";
     game = nullptr;
     connected = true;
@@ -61,7 +58,7 @@ void Player::Update() {
     if (mob->GetTile() != camera->GetPosition()) camera->SetPosition(mob->GetTile());
 }
 
-void Player::SendUpdates() {
+void Player::SendGraphicsUpdates() {
     if (camera) {
         camera->UpdateView();
     }
