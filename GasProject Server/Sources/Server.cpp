@@ -64,12 +64,11 @@ bool Game::AddPlayer(wptr<Player> player) {
 //    players.remove(player); 
 //}
 
-void Game::SendChatMessage(const std::vector<std::wstring> &message, Player *player) {
-    //std::unique_lock<std::mutex> lock(playersLock);
-    //for (auto &player : players) {
-    //    if (iter != player)
-    //        iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
-    //}
+void Game::SendChatMessage(std::wstring &message, std::string &playerName) {
+    std::unique_lock<std::mutex> lock(playersLock);
+    for (auto &player : players)
+        if (sptr<Player> player_s = player.lock())
+            player_s->AddCommandToClient(new SendChatMessageServerCommand(message, playerName));
 }
 
 Game::~Game() {

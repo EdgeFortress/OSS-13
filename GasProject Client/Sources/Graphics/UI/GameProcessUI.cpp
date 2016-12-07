@@ -61,6 +61,10 @@ void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
     chat.Draw(renderWindow);
 }
 
+void GameProcessUI::Update() {
+    chat.Update();
+}
+
 void GameProcessUI::Show() {
     chatWindow->Show(true);
 }

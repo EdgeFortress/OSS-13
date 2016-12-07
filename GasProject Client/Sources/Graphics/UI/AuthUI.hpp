@@ -44,6 +44,7 @@ public:
 
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow* renderWindow) final {};
+    virtual void Update() final {};
 
     void SetServerAnswer(bool result) {
         mutex.lock();

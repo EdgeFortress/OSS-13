@@ -117,26 +117,26 @@ void Connection::parsePacket(Packet &packet) {
             CC::log << "Error join the game" << endl;
             break;
         case ServerCommand::Code::GRAPHICS_UPDATE: {
-            TileGrid &tileGrid = *CC::Get()->GetWindow()->GetTileGrid();
+            TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
             Int32 options;
             packet >> options;
-            tileGrid.LockDrawing();
+            tileGrid->LockDrawing();
             if (options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
                 Int32 x, y, blockNum;
                 packet >> x >> y >> blockNum;
-                tileGrid.ShiftBlocks(x, y);
+                tileGrid->ShiftBlocks(x, y);
                 while (blockNum) {
                     packet >> x >> y;
-                    Block *block = new Block(&tileGrid);
+                    Block *block = new Block(tileGrid);
                     packet >> *(block);
-                    tileGrid.SetBlock(x, y, block);
+                    tileGrid->SetBlock(x, y, block);
                     blockNum--;
                 }
             }
             if (options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
                 Int32 x, y;
                 packet >> x >> y;
-                tileGrid.SetCameraPosition(x, y);
+                tileGrid->SetCameraPosition(x, y);
             }
             if (options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
                 Int32 count;
@@ -148,18 +148,18 @@ void Connection::parsePacket(Packet &packet) {
                         case Diff::Type::MOVE: {
                             Int32 toX, toY, toObjectNum;
                             packet >> toX >> toY >> toObjectNum;
-                            tileGrid.Move(blockX, blockY, x, y, objectNum, toX, toY, toObjectNum);
+                            tileGrid->Move(blockX, blockY, x, y, objectNum, toX, toY, toObjectNum);
                             break;
                         }
                         case Diff::Type::ADD: {
                             Int32 sprite;
                             String name;
                             packet >> sprite >> name;
-                            tileGrid.Add(blockX, blockY, x, y, objectNum, Global::Sprite(sprite), name);
+                            tileGrid->Add(blockX, blockY, x, y, objectNum, Global::Sprite(sprite), name);
                             break;
                         }
                         case Diff::Type::REMOVE: {
-                            tileGrid.Remove(blockX, blockY, x, y, objectNum);
+                            tileGrid->Remove(blockX, blockY, x, y, objectNum);
                             break;
                         }
                         default:
@@ -168,18 +168,14 @@ void Connection::parsePacket(Packet &packet) {
                     }
                 }
             }
-            tileGrid.UnlockDrawing();
+            tileGrid->UnlockDrawing();
             break;
         }
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
-            std::vector<std::wstring> message;
-            sf::Int32 size;
-            std::wstring str;
             std::string playerName;
+            std::wstring message;
             packet >> playerName;
-            packet >> size;
-            for (int i = 0; i < int(size); i++)
-                packet >> str, message.push_back(str);
+            packet >> message;
             auto chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
             chat->AddIncomingMessage(message, playerName);
             break;
@@ -207,10 +203,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageClientCommand *>(command);
-            packet << sf::Int32(c->message.size());
-            for (auto &str : c->message) {
-                packet << str;
-            }
+            packet << c->message;
             break;
         }
     }

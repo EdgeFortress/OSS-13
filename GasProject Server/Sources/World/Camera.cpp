@@ -73,7 +73,8 @@ void Camera::UpdateView() {
 
     command->options = GraphicsUpdateServerCommand::Option(updateOptions);
     
-    player->AddCommandToClient(command);
+    if (updateOptions)
+        player->AddCommandToClient(command);
 }
 
 void Camera::SetPosition(const Tile * const tile) {

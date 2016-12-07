@@ -43,6 +43,11 @@ void Player::JoinToGame(int id) {
     }
 }
 
+void Player::ChatMessage(std::wstring &message) {
+    game->SendChatMessage(message, ckey);
+    game->GetChat()->AddMessage(message, this);
+}
+
 void Player::Update() {
     while (!commandsFromClient.Empty()) {
         PlayerCommand *temp = commandsFromClient.Pop();

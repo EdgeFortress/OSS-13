@@ -36,10 +36,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageServerCommand *>(serverCommand);
             packet << c->playerName;
-            packet << sf::Int32(c->message.size());
-            for (auto &str : c->message) {
-                packet << str;
-            }
+            packet << c->message;
             break;
         }
     }

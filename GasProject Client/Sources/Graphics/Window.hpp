@@ -28,11 +28,14 @@ private:
     int cur_FPS;
 
     bool fps_exceed() {
-        if (clock.getElapsedTime() >= sf::milliseconds(100)) {
+        cur_FPS++;
+        if (clock.getElapsedTime() >= sf::milliseconds(1000)) {
+            CC::log << "cur_FPS: " << cur_FPS << endl;
             cur_FPS = 0;
             clock.restart();
         }
-        if (cur_FPS >= req_FPS / 10) return true;
+        //if (cur_FPS >= req_FPS / 10) CC::Get().log << ;
+        //    return true;
         return false;
     }
 

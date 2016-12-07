@@ -43,9 +43,11 @@ void Window::Update(sf::Time timeElapsed) {
     window->clear(sf::Color::Black);
     if (state) {
         state->DrawTileGrid(window.get(), tileGrid.get());
+        state->UpdateUI();
         state->DrawUI(window.get(), timeElapsed);
     }
     window->display();
+    //fps_exceed();
     sf::sleep(sf::milliseconds(10));
 }
 
@@ -202,6 +204,15 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
                 chat->SetSymbol(c);
         }
     }
+}
+
+void MenuLoginState::UpdateUI() const { }
+void MenuGameListState::UpdateUI() const { }
+void GameLobbyState::UpdateUI() const { }
+void GameProcessState::UpdateUI() const {
+    Window *window = CC::Get()->GetWindow();
+    GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
+    gameProcessUI->Update();
 }
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {

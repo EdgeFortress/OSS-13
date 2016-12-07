@@ -27,6 +27,7 @@ public:
 
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow* renderWindow) final;
+    virtual void Update() final;
     InfoLabel * GetInfoLabel() { return &infoLabel; }
     Chat *GetChat() { return &chat; }
     virtual void Hide() final;
