@@ -122,7 +122,7 @@ private:
     // Protection against re-locking
     bool drawingLocked;
 
-    vector< vector<uptr<Block>> > blocks;
+    vector< vector<sptr<Block>> > blocks;
 
 public:
     explicit TileGrid();
@@ -152,7 +152,7 @@ public:
     void SetCameraPosition(const int x, const int y);
     void SetBlock(int x, int y, Block *);
 
-    Block *GetBlock(const int blockX, const int blockY) const;
+    wptr<Block> GetBlock(const int blockX, const int blockY) const;
     Tile *GetTile(int x, int y) const;
     Object *GetObjectByPixel(int x, int y) const;
 

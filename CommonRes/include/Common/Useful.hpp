@@ -13,6 +13,9 @@ template<class T>
 using sptr = std::shared_ptr<T>;
 
 template<class T>
+using wptr = std::weak_ptr<T>;
+
+template<class T>
 class ThreadSafeQueue {
 private:
     std::queue<T> queue;

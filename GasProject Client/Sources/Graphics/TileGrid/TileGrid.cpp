@@ -112,21 +112,15 @@ void TileGrid::Resize(const int windowWidth, const int windowHeight) {
 }
 
 void TileGrid::LockDrawing() {
-    //if (!drawingLocked) {
-        mutex.lock();
-    //    drawingLocked = true;
-    //}
+    mutex.lock();
 }
 
 void TileGrid::UnlockDrawing() {
-    //if (drawingLocked && !neededBlocks) {
-        mutex.unlock();
-    //    drawingLocked = false;
-    //}
+    mutex.unlock();
 }
 
 void TileGrid::Move(int blockX, int blockY, int x, int y, int objectNum, int toX, int toY, int toObjectNum) {
-    Block *block = GetBlock(blockX, blockY);
+    sptr<Block> block = GetBlock(blockX, blockY).lock();
     if (!block) {
         CC::log << "Wrong BlockID accepted: " << blockX << blockY << endl;
         return;
@@ -146,7 +140,7 @@ void TileGrid::Move(int blockX, int blockY, int x, int y, int objectNum, int toX
 }
 
 void TileGrid::Add(int blockX, int blockY, int x, int y, int objectNum, Global::Sprite sprite, string name) {
-    Block *block = GetBlock(blockX, blockY);
+    sptr<Block> block = GetBlock(blockX, blockY).lock();
     if (!block) {
         CC::log << "Wrong BlockID accepted: " << blockX << blockY << endl;
         return;
@@ -161,7 +155,7 @@ void TileGrid::Add(int blockX, int blockY, int x, int y, int objectNum, Global::
 }
 
 void TileGrid::Remove(int blockX, int blockY, int x, int y, int objectNum) {
-    Block *block = GetBlock(blockX, blockY);
+    sptr<Block> block = GetBlock(blockX, blockY).lock();
     if (!block) {
         CC::log << "Wrong BlockID accepted: " << blockX << blockY << endl;
         return;
@@ -179,7 +173,7 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
     int dx = newFirstX - firstBlockX;
     int dy = newFirstY - firstBlockY;
     
-    vector< vector<uptr<Block>> > newBlocks(numOfVisibleBlocks);
+    vector< vector<sptr<Block>> > newBlocks(numOfVisibleBlocks);
     for (auto &vect : newBlocks)
         vect.resize(numOfVisibleBlocks);
 
@@ -187,7 +181,7 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
         for (int x = 0; x < numOfVisibleBlocks; x++) {
             if (x - dx >= 0 && x - dx < numOfVisibleBlocks &&
                 y - dy >= 0 && y - dy < numOfVisibleBlocks)
-                newBlocks[y - dy][x - dx].reset(blocks[y][x].release());
+                newBlocks[y - dy][x - dx] = blocks[y][x];
         }
     }
 
@@ -209,15 +203,15 @@ void TileGrid::SetBlock(int x, int y, Block *block) {
     //if (!neededBlocks) UnlockDrawing();
 }
 
-Block *TileGrid::GetBlock(const int blockX, const int blockY) const {
+wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
     int relBlockX = blockX - firstBlockX;
     int relBlockY = blockY - firstBlockY;
 
     if (relBlockX < 0 || relBlockX >= numOfVisibleBlocks ||
         relBlockY < 0 || relBlockY >= numOfVisibleBlocks)
-        return nullptr;
+        return wptr<Block>();
 
-    return blocks[relBlockY][relBlockX].get();
+    return wptr<Block>(blocks[relBlockY][relBlockX]);
 }
 
 Tile *TileGrid::GetTile(int x, int y) const {
