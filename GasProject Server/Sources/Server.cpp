@@ -49,6 +49,7 @@ void Game::update(sf::Time timeElapsed) {
             if (sptr<Player> player_s = player.lock())
                 player_s->SendGraphicsUpdates();
     }
+    SendChatMessages();
 }
 
 const int Game::GetID() const { return id; }
@@ -64,11 +65,12 @@ bool Game::AddPlayer(wptr<Player> player) {
 //    players.remove(player); 
 //}
 
-void Game::SendChatMessage(std::wstring &message, std::string &playerName) {
-    std::unique_lock<std::mutex> lock(playersLock);
+void Game::SendChatMessages() {
+    std::vector<std::pair<std::string, std::wstring>> messages = chat.GetNewMessages();
     for (auto &player : players)
         if (sptr<Player> player_s = player.lock())
-            player_s->AddCommandToClient(new SendChatMessageServerCommand(message, playerName));
+            for (auto &message : messages)
+                player_s->AddCommandToClient(new SendChatMessageServerCommand(message.second, message.first));
 }
 
 Game::~Game() {

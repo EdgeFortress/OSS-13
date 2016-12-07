@@ -27,10 +27,11 @@ namespace std {
 class Chat {
 private:
     struct message {
-        Player *player;
+        std::string playerName;
         std::wstring text;
+        bool sended;
 
-        message(Player *player, const std::wstring &text) : player(player), text(text) { }
+        message(const std::string &playerName, const std::wstring &text) : playerName(playerName), text(text), sended(false) { }
     };
     std::vector<message> messages;
 
@@ -40,8 +41,20 @@ public:
     Chat& operator=(Chat &chat) = delete;
     ~Chat() = default;
 
-    void AddMessage(std::wstring &message, Player *player) {
-        messages.push_back(Chat::message(player, message));
+    void AddMessage(std::wstring &message, std::string &playerName) {
+        messages.push_back(Chat::message(playerName, message));
+    }
+
+    std::vector<std::pair<std::string, std::wstring>> GetNewMessages() {
+        std::vector<std::pair<std::string, std::wstring>> newMessages;
+
+        int i = int(messages.size());
+        while (--i >= 0 && !messages[i].sended);
+
+        while (++i < int(messages.size()))
+            newMessages.push_back(std::make_pair(messages[i].playerName, messages[i].text)), messages[i].sended = true;
+
+        return std::move(newMessages);
     }
 };
 
@@ -73,7 +86,7 @@ public:
     const int GetID() const;
     Chat *GetChat() { return &chat; }
 
-    void SendChatMessage(std::wstring &message, std::string &playerName);
+    void SendChatMessages();
     ~Game();
 
     friend sf::Packet &operator<<(sf::Packet &packet, Game &game);

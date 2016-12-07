@@ -44,8 +44,7 @@ void Player::JoinToGame(int id) {
 }
 
 void Player::ChatMessage(std::wstring &message) {
-    game->SendChatMessage(message, ckey);
-    game->GetChat()->AddMessage(message, this);
+    game->GetChat()->AddMessage(message, ckey);
 }
 
 void Player::Update() {
