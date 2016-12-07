@@ -17,17 +17,17 @@ using namespace sf;
 Game::Game(string title, int id) : title(title),
                                    id(id),
                                    active(true),
-                                   thread(new std::thread(gameProcess, this)) {
+                                   thread(new std::thread(&Game::gameProcess, this)) {
 
 }
 
-void Game::gameProcess(Game *inst) {
-    CurThreadGame = inst;
-    inst->world.reset(new World());
-    inst->world->FillingWorld();
+void Game::gameProcess() {
+    CurThreadGame = this;
+    world.reset(new World());
+    world->FillingWorld();
     Clock clock;
-    while (inst->active) {
-        inst->update(clock.restart());
+    while (active) {
+        update(clock.restart());
         sleep(seconds(0.1f));
     }
 }
@@ -36,30 +36,40 @@ void Game::update(sf::Time timeElapsed) {
     world->Update(timeElapsed);
     {
         std::unique_lock<std::mutex> lock(playersLock);
-        for (Player *player : players)
-            player->Update();
-        for (Player *player : players)
-            player->SendGraphicsUpdates();
+
+        for (auto iter = players.begin(); iter != players.end();) {
+            if (sptr<Player> player = iter->lock()) {
+                player->Update();
+                iter++;
+            } else
+                iter = players.erase(iter);
+        }
+
+        for (wptr<Player> player : players)
+            if (sptr<Player> player_s = player.lock())
+                player_s->SendGraphicsUpdates();
     }
 }
 
 const int Game::GetID() const { return id; }
 
-bool Game::AddPlayer(Player *player) {
+bool Game::AddPlayer(wptr<Player> player) {
     std::unique_lock<std::mutex> lock(playersLock);
     players.push_back(player);
-    //player->SetMob(world->CreateNewPlayerMob());
-    //player->AddCommandToClient(new GraphicsFullUpdateServerCommand(player->GetCamera()));
     return true;
 }
 
-void Game::DeletePlayer(Player *player) { players.remove(player); }
+//void Game::DeletePlayer(Player *player) { 
+//    std::unique_lock<std::mutex> lock(playersLock);
+//    players.remove(player); 
+//}
 
 void Game::SendChatMessage(const std::vector<std::wstring> &message, Player *player) {
-    for (auto &iter : players) {
-        if (iter != player)
-            iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
-    }
+    //std::unique_lock<std::mutex> lock(playersLock);
+    //for (auto &player : players) {
+    //    if (iter != player)
+    //        iter->AddCommandToClient(new SendChatMessageServerCommand(message, player->GetCKey()));
+    //}
 }
 
 Game::~Game() {
@@ -74,17 +84,16 @@ Server::Server() : UDB(new UsersDB()),
     networkController->Start();
     CreateGame("One Super Test Game");
     while (true) {
-        for (auto &game : games)
-            for (auto &player : players)
+        {
+            std::unique_lock<std::mutex> lock(playersLock);
+            for (auto iter = players.begin(); iter != players.end(); ) {
+                sptr<Player> player = *iter;
                 if (!(player->IsConnected())) {
-                    game->DeletePlayer(player.get());
-                    break;
-                }
-        for (auto &player : players)
-            if (!(player->IsConnected())) {
-                players.remove(player);
-                break;
+                    iter = players.erase(iter);
+                } else
+                    iter++;
             }
+        }
         sleep(seconds(1));
     }
 }
@@ -127,19 +136,27 @@ const std::list<uptr<Game>> * const Server::GetGamesList() const {
     return &games;
 }
 
-Game *Server::JoinGame(const int id, Player *player) const {
-    for (auto &game : games) {
-        if (game->GetID() == id) {
-            if (game->AddPlayer(player)) {
-                return game.get();
+Game *Server::JoinGame(const int id, Player *raw_player) const {
+    // Cast raw pointer to shared_ptr
+    for (auto player : players) {
+        if (player.get() == raw_player) {
+
+            for (auto &game : games) {
+                if (game->GetID() == id) {
+                    if (game->AddPlayer(player)) {
+                        return game.get();
+                    }
+                }
             }
+
         }
     }
     return nullptr;
 }
 
-void Server::AddPlayer(Player *player) {
-    players.push_back(uptr<Player>(player));
+void Server::AddPlayer(sptr<Player> player) {
+    std::unique_lock<std::mutex> lock(playersLock);
+    players.push_back(player);
 }
 
 int main() {

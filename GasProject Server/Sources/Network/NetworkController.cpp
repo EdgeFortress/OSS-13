@@ -14,7 +14,7 @@ void NetworkController::working() {
 
     selector.add(listener);
 
-    std::list< std::pair<Player *, uptr<sf::TcpSocket>> > sockets;
+    std::list< std::pair<wptr<Player>, uptr<sf::TcpSocket>> > sockets;
 
     while (active) {
         if (selector.wait(TIMEOUT)) {
@@ -22,26 +22,30 @@ void NetworkController::working() {
             if (selector.isReady(listener)) {
                 sf::TcpSocket *socket = new sf::TcpSocket;
                 if (listener.accept(*socket) == sf::TcpSocket::Done) {
-                    Player *player = new Player();
+                    sptr<Player> player = std::make_shared<Player>();
                     Server::Get()->AddPlayer(player);
                     selector.add(*socket);
-                    sockets.push_back(std::pair<Player *, uptr<sf::TcpSocket>>(player, uptr<sf::TcpSocket>(socket)));
-                }
-                else {
+                    sockets.push_back(std::pair<wptr<Player>, uptr<sf::TcpSocket>>(player, uptr<sf::TcpSocket>(socket)));
+                } else
                     Server::log << "New connection accepting error" << endl;
-                }
             }
             else {
                 for (auto iter = sockets.begin(); iter != sockets.end();) {
                     if (selector.isReady(*iter->second)) {
                         sf::TcpSocket *socket = iter->second.get();
-                        Player *player = iter->first;
+                        sptr<Player> player = iter->first.lock();
+
+                        if (!player || !(player->IsConnected())) {
+                            selector.remove(*socket);
+                            iter = sockets.erase(iter);
+                            continue;
+                        } 
 
                         sf::Packet packet;
                         sf::Socket::Status status = socket->receive(packet);
                         switch (status) {
                             case sf::Socket::Done:
-                                parsePacket(packet, player);
+                                parsePacket(packet, player.get());
                                 break;
                             case sf::Socket::Disconnected:
                                 Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
@@ -51,7 +55,9 @@ void NetworkController::working() {
                                 continue;
                                 break;
                         }
+
                     }
+
                     iter++;
                 }
             }
@@ -59,17 +65,13 @@ void NetworkController::working() {
 
         // Sending to client
         for (auto &pair : sockets) {
-            Player *player = pair.first;
+            sptr<Player> player = pair.first.lock();
             while (!player->commandsToClient.Empty()) {
                 sf::Packet packet;
                 ServerCommand *temp = player->commandsToClient.Pop();
                 packet << temp;
                 if (temp) delete temp;
                 pair.second->send(packet);
-                //if (status == sf::Socket::Disconnected) {
-                //    Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
-                //    player->connected = false;
-                //}
             }
         }
     }
@@ -145,6 +147,7 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
         }
         case ClientCommand::Code::DISCONNECT: {
             Server::log << "Client" << player->GetCKey() << "disconnected" << endl;
+            player->connected = false;
             break;
         }
         default:

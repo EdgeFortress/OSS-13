@@ -58,20 +58,20 @@ private:
     uptr<std::thread> thread;
     uptr<World> world;
 
-    std::list<Player *> players;
+    std::list<wptr<Player>> players;
     std::mutex playersLock;
 
     Chat chat;
 
-    static void gameProcess(Game *);
+    void gameProcess();
 
     void update(sf::Time timeElapsed);
 
 public:
     Game(std::string title, int id);
 
-    bool AddPlayer(Player *);
-    void DeletePlayer(Player *);
+    bool AddPlayer(wptr<Player>);
+    //void DeletePlayer(Player *);
 
     const uptr<World> &GetWorld() { return world; }
 
@@ -92,7 +92,9 @@ private:
 
     uptr<NetworkController> networkController;
 
-    std::list<uptr<Player>> players;
+    std::list<sptr<Player>> players;
+    std::mutex playersLock;
+
     std::list<uptr<Game>> games;
 
     static Server *instance;
@@ -106,7 +108,7 @@ public:
     bool CreateGame(std::string title);
     const std::list<uptr<Game>> * const GetGamesList() const;
     Game *JoinGame(const int id, Player *player) const;
-    void AddPlayer(Player *player);
+    void AddPlayer(sptr<Player> player);
 
     static Server *Get() { return instance; }
 
