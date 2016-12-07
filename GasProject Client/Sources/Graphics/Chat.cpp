@@ -23,19 +23,18 @@ void Chat::Draw(sf::RenderWindow *renderWindow) {
     renderWindow->draw(entryText);
 
     float size = 0;
-    if (boxText.size())
-        for (int i = int(boxText.size() - 1); i >= 0; i--) {
-            for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
-                size += boxText[i].text[j].getLocalBounds().height + 15;
-                if (size > box.getSize().y)
-                    break;
-                float boxTextXShift = box.getSize().x * 0.01f;
-                boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos - size);
-                renderWindow->draw(boxText[i].text[j]);
-            }
+    for (int i = int(boxText.size() - 1); i >= 0; i--) {
+        for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
+            size += boxText[i].text[j].getLocalBounds().height + 15;
             if (size > box.getSize().y)
                 break;
+            float boxTextXShift = box.getSize().x * 0.01f;
+            boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos - size);
+            renderWindow->draw(boxText[i].text[j]);
         }
+        if (size > box.getSize().y)
+            break;
+    }
 }
 
 void Chat::SetSymbol(const wchar_t c) {
@@ -43,7 +42,7 @@ void Chat::SetSymbol(const wchar_t c) {
 
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
-    tempText.setCharacterSize(20);
+    tempText.setCharacterSize(entryText.getCharacterSize());
     tempText.setString(wstring(entryString.c_str() + showPos));
 
     while (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
@@ -68,7 +67,7 @@ void Chat::DeleteSymbol() {
         showPos--;
         sf::Text tempText;
         tempText.setFont(*entryText.getFont());
-        tempText.setCharacterSize(20);
+        tempText.setCharacterSize(entryText.getCharacterSize());
         tempText.setString(wstring(entryString.c_str() + showPos));
         if (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
             showPos++;
@@ -84,8 +83,8 @@ void Chat::AddIncomingMessage(const wstring &message, const std::string &playerN
 void Chat::Update() {
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
-    tempText.setCharacterSize(20);
-    tempText.setFillColor(sf::Color::Magenta);
+    tempText.setCharacterSize(entryText.getCharacterSize());
+    tempText.setFillColor(entryText.getColor());
 
     int iter = int(boxText.size() - 1); 
     if (iter < 0)
