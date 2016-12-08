@@ -1,10 +1,10 @@
 #include <SFML/Network.hpp>
 
 #include "NetworkController.hpp"
+#include "Common/NetworkConst.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
-#include "Common/NetworkConst.hpp"
-#include "Common/Ñommand.hpp"
+#include "World/World.hpp"
 
 void NetworkController::working() {
     sf::TcpListener listener;

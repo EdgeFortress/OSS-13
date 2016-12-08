@@ -1,5 +1,6 @@
 #include "NetworkController.hpp"
-#include "Common/Ñommand.hpp"
+#include "Server.hpp"
+#include "World/World.hpp"
 
 using namespace sf;
 

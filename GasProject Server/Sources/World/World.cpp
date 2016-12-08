@@ -3,27 +3,11 @@
 #include "Common/Useful.hpp"
 #include "Common/NetworkConst.hpp"
 #include "World.hpp"
+#include "Objects.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
-
-Object::Object() {
-    tile = nullptr;
-    name = "";
-    CurThreadGame->GetWorld()->AddObject(this);
-}
-
-const ObjectInfo Object::GetObjectInfo() const {
-    return std::move(ObjectInfo(int(sprite), name));
-}
-
-void Mob::Update() {
-    if (moveX || moveY) {
-        Tile *dest_tile = tile->GetMap()->GetTile(tile->X() + moveX, tile->Y() + moveY);
-        if (dest_tile)
-            dest_tile->MoveTo(this);
-    }
-    moveY = 0; moveX = 0;
-}
+#include "Common/Differences.hpp"
+#include "Network/TileGrid_Info.hpp"
 
 Tile::Tile(Map *map, int x, int y) :
     map(map), x(x), y(y), local(nullptr)
@@ -172,6 +156,10 @@ Block::Block(Map *map, int blockX, int blockY) :
         }
         y++;
     }
+}
+
+void Block::AddDiff(Diff *diff) {
+    differences.push_back(sptr<Diff>(diff));
 }
 
 void Block::ClearDiffs() {

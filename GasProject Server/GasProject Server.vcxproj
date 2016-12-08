@@ -136,6 +136,10 @@
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\World\Camera.cpp" />
+    <ClCompile Include="Sources\World\Objects\Item.cpp" />
+    <ClCompile Include="Sources\World\Objects\Mob.cpp" />
+    <ClCompile Include="Sources\World\Objects\Object.cpp" />
+    <ClCompile Include="Sources\World\Objects\Turf.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +151,11 @@
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\World\Camera.hpp" />
+    <ClInclude Include="Sources\World\Objects.hpp" />
+    <ClInclude Include="Sources\World\Objects\Item.hpp" />
+    <ClInclude Include="Sources\World\Objects\Mob.hpp" />
+    <ClInclude Include="Sources\World\Objects\Object.hpp" />
+    <ClInclude Include="Sources\World\Objects\Turf.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

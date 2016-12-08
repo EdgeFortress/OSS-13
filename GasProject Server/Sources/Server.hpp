@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "Common/Useful.hpp"
-#include "World/World.hpp"
-#include "PlayerCommand.hpp"
 
 class Player;
 class Server;
@@ -79,7 +77,6 @@ public:
     Game(std::string title, int id);
 
     bool AddPlayer(wptr<Player>);
-    //void DeletePlayer(Player *);
 
     const uptr<World> &GetWorld() { return world; }
 

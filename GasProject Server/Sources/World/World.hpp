@@ -6,117 +6,22 @@
 
 #include <SFML/System/Time.hpp>
 
-#include "Common/NetworkConst.hpp"
-#include "Common/Differences.hpp"
-#include "Camera.hpp"
-#include "Network/TileGrid_Info.hpp"
+#include "Objects.hpp"
+#include "Common/Useful.hpp"
 
 using std::list;
 using std::vector;
 
 class Player;
+struct Diff;
 
-class Tile;
+class Block;
 class Map;
-
 class Gas;
 class Local;
 
-class Object {
-protected:
-    Tile *tile;
-    std::string name;
-    Global::Sprite sprite;
-    bool density;
-
-public:
-    Object();
-
-    virtual void Update() = 0;
-
-    bool GetDensity() const { return density; }
-    Global::Sprite GetSprite() const { return sprite; }
-    Tile *GetTile() const { return tile; }
-    std::string GetName() const { return name; }
-
-    // Just set tile pointer
-    void SetTile(Tile *tile) { this->tile = tile; }
-    
-    virtual void Interact(Object *) = 0;
-
-    const ObjectInfo GetObjectInfo() const;
-
-    friend sf::Packet &operator<<(sf::Packet &, const Object &);
-};
-
-class Item : public Object {
-public:
-    virtual void Update() { };
-    virtual void Interact(Object *) { };
-};
-
-class Turf : public Object {
-public:
-    Turf() {}
-
-    virtual void Update() { };
-    virtual void Interact(Object *) { };
-};
-
-class Mob : public Object {
-private:
-    int moveY, moveX;
-public:
-    explicit Mob() {
-        sprite = Global::Sprite::Mob;
-        name = "Mob";
-        density = false;
-        moveY = 0; moveX = 0;
-    }
-
-    void MoveNorth() { moveY = -1; }
-    void MoveSouth() { moveY = 1; }
-    void MoveEast() { moveX = 1 ; }
-    void MoveWest() { moveX = -1; }
-
-    virtual void Update() override;
-    virtual void Interact(Object *) { };
-};
-
-class Wall : public Turf {
-public:
-    Wall() {
-        sprite = Global::Sprite::Wall;
-        name = "Wall";
-        density = true;
-    }
-
-    Wall(const Wall &object) = default;
-    ~Wall() = default;
-};
-
-class Floor : public Turf {
-public:
-    Floor() {
-        sprite = Global::Sprite::Floor;
-        name = "Floor";
-        density = false;
-    }
-    
-    Floor(const Floor &object) = default;
-    ~Floor() = default;
-};
-
-class Airlock : public Turf {
-public:
-    explicit Airlock() {
-        sprite = Global::Sprite::Airlock;
-        density = true;
-    }
-
-    Airlock(const Airlock &object) = default;
-    ~Airlock() = default;
-};
+struct TileInfo;
+struct BlockInfo;
 
 class Tile {
 private:
@@ -171,9 +76,7 @@ private:
 public:
     explicit Block(Map *map, int blockX, int blockY);
 
-    void AddDiff(Diff *diff) {
-        differences.push_back(sptr<Diff>(diff));
-    }
+    void AddDiff(Diff *diff);
 
     Tile *GetTile(int x, int y) const { return tiles[y][x]; }
     int X() const { return blockX; }
