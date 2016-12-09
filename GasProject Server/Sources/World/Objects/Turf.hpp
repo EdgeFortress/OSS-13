@@ -6,7 +6,7 @@ class Turf : public Object {
 public:
     Turf() {}
 
-    virtual void Update() { };
+    virtual void Update(sf::Time timeElapsed) { };
     virtual void Interact(Object *) { };
 };
 

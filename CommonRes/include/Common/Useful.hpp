@@ -15,6 +15,10 @@ using sptr = std::shared_ptr<T>;
 template<class T>
 using wptr = std::weak_ptr<T>;
 
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
 template<class T>
 class ThreadSafeQueue {
 private:

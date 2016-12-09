@@ -4,20 +4,26 @@
 
 class Mob : public Object {
 private:
-    int moveY, moveX;
+    sf::Vector2f shift;
+    float speed; // speed (tiles/seconds)
+
+    sf::Vector2i moveOrder;
+    std::mutex orderLock;
+
 public:
     explicit Mob() {
         sprite = Global::Sprite::Mob;
         name = "Mob";
         density = false;
-        moveY = 0; moveX = 0;
+        speed = 4;
     }
 
-    void MoveNorth() { moveY = -1; }
-    void MoveSouth() { moveY = 1; }
-    void MoveEast() { moveX = 1; }
-    void MoveWest() { moveX = -1; }
+    void Move(sf::Vector2i order) { 
+        std::unique_lock<std::mutex> lock(orderLock);
+        if (order.x) moveOrder.x = order.x;
+        if (order.y) moveOrder.y = order.y;
+    }
 
-    virtual void Update() override;
+    virtual void Update(sf::Time timeElapsed) override;
     virtual void Interact(Object *) { };
 };

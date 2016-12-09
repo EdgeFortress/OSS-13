@@ -46,7 +46,7 @@ void Tile::AddObject(Object *obj) {
         }
     }
 
-    obj->SetTile(this);
+    obj->tile = this;
     content.push_back(obj);
 
     if (!moved) {
@@ -63,7 +63,7 @@ bool Tile::RemoveObject(Object *obj) {
             //i.release();
             i = nullptr;
             content.remove(i);
-            obj->SetTile(nullptr);
+            obj->tile = nullptr;
             //add local remove
             return true;
         }
@@ -74,8 +74,7 @@ void Tile::MoveTo(Object *obj) {
     bool available = true;
     for (auto &object : content)
         if (object)
-            if (object->GetDensity())
-            {
+            if (object->GetDensity()) {
                 available = false;
                 break;
             }
@@ -285,10 +284,9 @@ void World::Update(sf::Time timeElapsed) {
     
     map->Update();
 
-    for (unsigned i = 0; i < objects.size();)
-    {
+    for (unsigned i = 0; i < objects.size();) {
         size_t len = objects.size();
-        (objects.begin() + i)->get()->Update();
+        (objects.begin() + i)->get()->Update(timeElapsed);
         if (objects.size() == len)
             i++;
     }

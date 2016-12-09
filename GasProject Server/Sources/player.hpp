@@ -30,12 +30,15 @@ private:
 public:
     Player();
 
-    // Client interface
+    /// Client interface
     void Authorize(string login, string password);
     void Register(string login, string password);
     void UpdateServerList();
     void JoinToGame(int id);
     void ChatMessage(std::wstring &message);
+
+    void Move(int x, int y);
+    ///
 
     void Update();
     void SendGraphicsUpdates();

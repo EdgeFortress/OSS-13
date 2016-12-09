@@ -47,6 +47,10 @@ void Player::ChatMessage(std::wstring &message) {
     game->GetChat()->AddMessage(message, ckey);
 }
 
+void Player::Move(int x, int y) {
+    if (mob) mob->Move(sf::Vector2i(x, y));
+}
+
 void Player::Update() {
     while (!commandsFromClient.Empty()) {
         PlayerCommand *temp = commandsFromClient.Pop();

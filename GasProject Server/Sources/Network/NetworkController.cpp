@@ -111,27 +111,19 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             break;
         }
         case ClientCommand::Code::NORTH: {
-            auto mob = player->GetMob();
-            if (mob)
-                mob->MoveNorth();
+            player->Move(0, -1);
             break;
         }
         case ClientCommand::Code::SOUTH: {
-            auto mob = player->GetMob();
-            if (mob)
-                mob->MoveSouth();
+            player->Move(0, 1);
             break;
         }
         case ClientCommand::Code::EAST: {
-            auto mob = player->GetMob();
-            if (mob)
-                mob->MoveEast();
+            player->Move(1, 0);
             break;
         }
         case ClientCommand::Code::WEST: {
-            auto mob = player->GetMob();
-            if (mob)
-                mob->MoveWest();
+            player->Move(-1, 0);
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {

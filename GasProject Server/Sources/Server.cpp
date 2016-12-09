@@ -28,7 +28,7 @@ void Game::gameProcess() {
     Clock clock;
     while (active) {
         update(clock.restart());
-        sleep(seconds(0.1f));
+        //sleep(seconds(0.1f));
     }
 }
 
