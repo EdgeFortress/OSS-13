@@ -1,5 +1,3 @@
-#include <fstream>
-
 #include "Graphics/Chat.hpp"
 #include "Graphics/Window.hpp"
 #include "Network.hpp"
@@ -13,7 +11,6 @@ Chat::Chat(const sf::Font &font) {
     entryText.setFillColor(sf::Color::Magenta);
     entryText.setString("");
     showPos = 0;
-    resized = false;
 }
 
 void Chat::Draw(sf::RenderWindow *renderWindow) {
@@ -25,7 +22,7 @@ void Chat::Draw(sf::RenderWindow *renderWindow) {
     float size = 0;
     for (int i = int(boxText.size() - 1); i >= 0; i--) {
         for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
-            size += boxText[i].text[j].getLocalBounds().height + 15;
+            size += boxText[i].text[j].getGlobalBounds().height + 15;
             if (size > box.getSize().y)
                 break;
             float boxTextXShift = box.getSize().x * 0.01f;
@@ -44,8 +41,9 @@ void Chat::SetSymbol(const wchar_t c) {
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(entryText.getCharacterSize());
     tempText.setString(wstring(entryString.c_str() + showPos));
+    tempText.setScale(entryText.getScale());
 
-    while (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
+    while (tempText.getGlobalBounds().width >= entry.getSize().x * 0.98)
         showPos++, tempText.setString(wstring(entryString.c_str() + showPos));
 
     entryText.setString(wstring(entryString.c_str() + showPos));
@@ -68,8 +66,9 @@ void Chat::DeleteSymbol() {
         sf::Text tempText;
         tempText.setFont(*entryText.getFont());
         tempText.setCharacterSize(entryText.getCharacterSize());
+        tempText.setScale(entryText.getScale());
         tempText.setString(wstring(entryString.c_str() + showPos));
-        if (tempText.getLocalBounds().width >= entry.getSize().x * 0.98)
+        if (tempText.getGlobalBounds().width >= entry.getSize().x * 0.98)
             showPos++;
     }
     
@@ -85,6 +84,7 @@ void Chat::Update() {
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(entryText.getCharacterSize());
     tempText.setFillColor(entryText.getFillColor());
+    tempText.setScale(entryText.getScale());
 
     int iter = int(boxText.size() - 1); 
     if (iter < 0)
@@ -98,15 +98,6 @@ void Chat::Update() {
 
     while (boxText.size() > 100)
         boxText.erase(boxText.begin());
-
-    if (resized) {
-        for (auto &message : boxText) {
-            message.text.erase(++message.text.begin(), message.text.end());
-            Parse(message, tempText);
-        }
-
-        resized = false;
-    }
 }
 
 void Chat::Resize(int width, int height) {
@@ -118,8 +109,10 @@ void Chat::Resize(int width, int height) {
     float entryHeight = height * 0.05f;
     float chatShift = entryHeight * 0.1f;
 
-    if (chatWidth != entry.getSize().x)
-        resized = true;
+    sf::Vector2f scale = sf::Vector2f(float(chatWidth) / entry.getSize().x, float(chatWidth) / entry.getSize().x);
+    for (auto &message : boxText)
+        for (auto &text : message.text)
+            text.setScale(text.getScale().x * scale);
 
     entry.setSize(sf::Vector2f(chatWidth, entryHeight));
     box.setSize(sf::Vector2f(chatWidth, height * 0.5f - entryHeight));
@@ -130,6 +123,11 @@ void Chat::Resize(int width, int height) {
 
     float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
     entryText.setPosition(chatXPos + entryTextXShift, chatYPos + entryTextYShift);
+    static bool resize = false;
+    if (resize)
+        entryText.setScale(entryText.getScale().x * scale);
+    else
+        resize = true;
 }
 
 void Chat::Parse(Message &message, sf::Text &tempText) {
@@ -138,7 +136,7 @@ void Chat::Parse(Message &message, sf::Text &tempText) {
         do {
             shiftPos++;
             tempText.setString(message.stringText.substr(startPos, shiftPos));
-        } while (tempText.getLocalBounds().width < entry.getSize().x * 0.96f && startPos + shiftPos <= unsigned(message.stringText.size()));
+        } while (tempText.getGlobalBounds().width < entry.getSize().x * 0.96f && startPos + shiftPos <= unsigned(message.stringText.size()));
 
         bool spaces = true;
         if (startPos + shiftPos < message.stringText.size())

@@ -28,8 +28,6 @@ private:
 
     vector<Message> boxText;
 
-    bool resized;
-
 public:
     Chat(const sf::Font &font);
 
