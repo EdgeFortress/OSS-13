@@ -19,11 +19,14 @@ void Window::Initialize() {
 
 void Window::Update(sf::Time timeElapsed) {
     sf::Event event;
+
+    window->setKeyRepeatEnabled(true);
+
     State *state = CC::Get()->GetState();
     while (window->pollEvent(event)) {
         ui->HandleEvent(event);
         if (state) {          
-            state->HandleEvent(event, timeElapsed);
+            state->HandleEvent(event);
         }
         if (event.type == sf::Event::Resized)
             resize(event.size.width, event.size.height);
@@ -43,7 +46,7 @@ void Window::Update(sf::Time timeElapsed) {
     window->clear(sf::Color::Black);
     if (state) {
         state->DrawTileGrid(window.get(), tileGrid.get());
-        state->UpdateUI();
+        state->Update(timeElapsed);
         state->DrawUI(window.get(), timeElapsed);
     }
     window->display();
@@ -119,75 +122,26 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
     window->GetUI()->Unlock();
 }
 
-void MenuLoginState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
+void MenuLoginState::HandleEvent(sf::Event event) const {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->ChangeFocus();
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
 }
-void MenuGameListState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
-void GameLobbyState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
-void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
+void MenuGameListState::HandleEvent(sf::Event event) const { }
+void GameLobbyState::HandleEvent(sf::Event event) const { }
+
+void GameProcessState::HandleEvent(sf::Event event) const {
     static bool playing = true, chat = false;
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
         playing = !playing, chat = !chat;
 
-    static bool movingNorth = false, movingSouth = false, movingEast = false, movingWest = false;
-    static sf::Time moveTime = sf::Time::Zero;
-    static int moveX = 0, moveY = 0;
-    if (playing) {
-        if (event.type == sf::Event::KeyPressed) {
-                switch (event.key.code) {
-                    case sf::Keyboard::Up:
-                    case sf::Keyboard::W:
-                        movingNorth = true;
-                        break;
-                    case sf::Keyboard::Down:
-                    case sf::Keyboard::S:
-                        movingSouth = true;
-                        break;
-                    case sf::Keyboard::Right:
-                    case sf::Keyboard::D:
-                        movingEast = true;
-                        break;
-                    case sf::Keyboard::Left:
-                    case sf::Keyboard::A:
-                        movingWest = true;
-                        break;
-                    default:
-                        break;
-            }
-        }
-        moveTime += timeElapsed;
-        if (moveTime >= sf::seconds(0.01f)) {
-            moveTime = sf::Time::Zero;
-            if (movingNorth)
-                moveY--;
-            if (movingSouth)
-                moveY++;
-            if (movingEast)
-                moveX++;
-            if (movingWest)
-                moveX--;
-            movingNorth = movingSouth = movingEast = movingWest = false;
-            if (moveY < 0)
-                Connection::commandQueue.Push(new NorthClientCommand());
-            if (moveY > 0)
-                Connection::commandQueue.Push(new SouthClientCommand());
-            if (moveX > 0)
-                Connection::commandQueue.Push(new EastClientCommand());
-            if (moveX < 0)
-                Connection::commandQueue.Push(new WestClientCommand());
-            moveX = moveY = 0;
-        }
-    }
+    if (playing) CC::Get()->GetWindow()->GetTileGrid()->HandleEvent(event);
 
     if (event.type == sf::Event::MouseMoved) {
         Object *obj = CC::Get()->GetWindow()->GetTileGrid()->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
-        if (obj != nullptr)
-            CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
-        else 
-            CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
+        if (obj != nullptr) CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
+        else CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
     }
  
     if (chat) {
@@ -206,13 +160,13 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
     }
 }
 
-void MenuLoginState::UpdateUI() const { }
-void MenuGameListState::UpdateUI() const { }
-void GameLobbyState::UpdateUI() const { }
-void GameProcessState::UpdateUI() const {
+void MenuLoginState::Update(sf::Time timeElapsed) const { }
+void MenuGameListState::Update(sf::Time timeElapsed) const { }
+void GameLobbyState::Update(sf::Time timeElapsed) const { }
+void GameProcessState::Update(sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();
-    GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
-    gameProcessUI->Update();
+    window->GetUI()->GetGameProcessUI()->Update();
+    window->GetTileGrid()->Update(timeElapsed);
 }
 
 void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {

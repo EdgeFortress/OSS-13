@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/System.hpp>
+
 namespace Global {
     const int PORT = 55678;
 
@@ -16,4 +18,19 @@ namespace Global {
         Space,
         NextSprite = Space + 26,
     };
+
+    enum class Direction : char {
+        NONE = -1,
+        SOUTH,
+        WEST,
+        NORTH,
+        EAST,
+        SOUTH_WEST,
+        NORTH_WEST,
+        NORTH_EAST,
+        SOUTH_EAST
+    };
+
+    Direction VectToDirection(sf::Vector2i);
+    sf::Vector2i DirectionToVect(Direction);
 }

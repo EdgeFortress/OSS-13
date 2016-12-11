@@ -201,6 +201,12 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
             packet << Int32(c->id);
             break;
         }
+        case ClientCommand::Code::MOVE: {
+            auto c = dynamic_cast<MoveClientCommand *>(command);
+            sf::Vector2i vector = Global::DirectionToVect(c->direction);
+            packet << sf::Int32(vector.x) << sf::Int32(vector.y);
+            break;
+        }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageClientCommand *>(command);
             packet << c->message;

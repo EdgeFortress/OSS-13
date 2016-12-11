@@ -18,11 +18,7 @@ struct ClientCommand {
         JOIN_GAME,
         DISCONNECT,
 
-        NORTH,
-        SOUTH,
-        EAST,
-        WEST,
-
+        MOVE,
         SEND_CHAT_MESSAGE
     };
 
@@ -75,28 +71,12 @@ struct DisconnectionClientCommand : public ClientCommand {
     DisconnectionClientCommand() { }
 };
 
-struct NorthClientCommand : public ClientCommand {
-    virtual const Code GetCode() const override { return Code::NORTH; }
+struct MoveClientCommand : public ClientCommand {
+    Global::Direction direction;
+    virtual const Code GetCode() const override { return Code::MOVE; }
 
-    NorthClientCommand() { }
-};
-
-struct SouthClientCommand : public ClientCommand {
-    virtual const Code GetCode() const override { return Code::SOUTH; }
-
-    SouthClientCommand() { }
-};
-
-struct EastClientCommand : public ClientCommand {
-    virtual const Code GetCode() const override { return Code::EAST; }
-
-    EastClientCommand() { }
-};
-
-struct WestClientCommand : public ClientCommand {
-    virtual const Code GetCode() const override { return Code::WEST; }
-
-    WestClientCommand() { }
+    MoveClientCommand(Global::Direction direction = Global::Direction::NONE) :
+        direction(direction) { }
 };
 
 struct SendChatMessageClientCommand : public ClientCommand {
