@@ -18,8 +18,8 @@ public:
     virtual void Ending() const = 0;
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const = 0;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const = 0;
-    virtual void HandleEvent(sf::Event, sf::Time &timeElapsed) const = 0;
-    virtual void UpdateUI() const = 0;
+    virtual void HandleEvent(sf::Event) const = 0;
+    virtual void Update(sf::Time timeElapsed) const = 0;
 
     State() = default;
     State(const State &) = delete;
@@ -33,8 +33,8 @@ public:
     virtual void Ending() const final;
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const final;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const final;
-    virtual void HandleEvent(sf::Event, sf::Time &timeElapsed) const final;
-    virtual void UpdateUI() const final;
+    virtual void HandleEvent(sf::Event) const final;
+    virtual void Update(sf::Time timeElapsed) const final;
     
     MenuLoginState() = default;
     MenuLoginState(const MenuLoginState &) = delete;
@@ -48,8 +48,8 @@ public:
     virtual void Ending() const final;
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const final;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const final;
-    virtual void HandleEvent(sf::Event, sf::Time &timeElapsed) const final;
-    virtual void UpdateUI() const final;
+    virtual void HandleEvent(sf::Event) const final;
+    virtual void Update(sf::Time timeElapsed) const final;
 
     MenuGameListState() = default;
     MenuGameListState(const MenuGameListState &) = delete;
@@ -63,8 +63,8 @@ public:
     virtual void Ending() const final;
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const final;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const final;
-    virtual void HandleEvent(sf::Event, sf::Time &timeElapsed) const final;
-    virtual void UpdateUI() const final;
+    virtual void HandleEvent(sf::Event) const final;
+    virtual void Update(sf::Time timeElapsed) const final;
 
     GameLobbyState() = default;
     GameLobbyState(const GameLobbyState &) = delete;
@@ -78,8 +78,8 @@ public:
     virtual void Ending() const final;
     virtual void DrawUI(sf::RenderWindow *window, sf::Time timeElapsed) const final;
     virtual void DrawTileGrid(sf::RenderWindow *render_window, TileGrid *tileGrid) const final;
-    virtual void HandleEvent(sf::Event, sf::Time &timeElapsed) const final;
-    virtual void UpdateUI() const final;
+    virtual void HandleEvent(sf::Event) const final;
+    virtual void Update(sf::Time timeElapsed) const final;
 
     GameProcessState() = default;
 

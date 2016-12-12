@@ -111,20 +111,10 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             player->JoinToGame(id);
             break;
         }
-        case ClientCommand::Code::NORTH: {
-            player->Move(0, -1);
-            break;
-        }
-        case ClientCommand::Code::SOUTH: {
-            player->Move(0, 1);
-            break;
-        }
-        case ClientCommand::Code::EAST: {
-            player->Move(1, 0);
-            break;
-        }
-        case ClientCommand::Code::WEST: {
-            player->Move(-1, 0);
+        case ClientCommand::Code::MOVE: {
+            sf::Int32 x, y;
+            packet >> x >> y;
+            player->Move(x, y);
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {

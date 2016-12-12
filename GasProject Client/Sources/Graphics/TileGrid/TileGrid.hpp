@@ -9,6 +9,8 @@
 
 namespace sf {
     class Packet;
+    class Event;
+    class Time;
 }
 
 class Block;
@@ -124,6 +126,11 @@ private:
 
     vector< vector<sptr<Block>> > blocks;
 
+    // Controls
+    const sf::Time MOVE_TIMEOUT = sf::milliseconds(100);
+    sf::Vector2i moveCommand;
+    sf::Time moveSendPause;
+
 public:
     explicit TileGrid();
 
@@ -133,6 +140,8 @@ public:
 
     void Draw(sf::RenderWindow * const);
     void Resize(const int windowWidth, const int windowHeight);
+    void HandleEvent(sf::Event event);
+    void Update(sf::Time timeElapsed);
 
     //void Lock() { mutex.lock(); }
     //void Unlock() { mutex.unlock(); }

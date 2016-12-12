@@ -22,6 +22,7 @@ class GameProcessUI : public UIModule {
     sptr<sfg::Window> chatWindow;
 
     void generateChatWindow();
+
 public:
     GameProcessUI(UI *ui);
 

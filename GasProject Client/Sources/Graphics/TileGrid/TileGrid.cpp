@@ -1,9 +1,12 @@
 #include <vector>
 
+#include <SFML/Window/Event.hpp>
+
+#include "TileGrid.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "TileGrid.hpp"
 #include "Common/NetworkConst.hpp"
+#include "Network.hpp"
 
 Object::Object(const Global::Sprite key, const string name, const bool directed) {
     SetSprite(key);
@@ -109,6 +112,47 @@ void TileGrid::Resize(const int windowWidth, const int windowHeight) {
     yNumOfTiles = 15;
     xPadding = 0;
     yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
+}
+
+void TileGrid::HandleEvent(sf::Event event) {
+    if (event.type == sf::Event::KeyPressed) {
+        switch (event.key.code) {
+            case sf::Keyboard::Up:
+            case sf::Keyboard::W:
+                moveCommand.y = -1;
+                //CC::log << moveCommand.y << endl;
+                break;
+            case sf::Keyboard::Down:
+            case sf::Keyboard::S:
+                moveCommand.y = 1;
+                //CC::log << moveCommand.y << endl;
+                break;
+            case sf::Keyboard::Right:
+            case sf::Keyboard::D:
+                moveCommand.x = 1;
+                //CC::log << moveCommand.x << endl;
+                break;
+            case sf::Keyboard::Left:
+            case sf::Keyboard::A:
+                moveCommand.x = -1;
+                //CC::log << moveCommand.x << endl;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void TileGrid::Update(sf::Time timeElapsed) {
+    if (moveSendPause != sf::Time::Zero) {
+        moveSendPause -= timeElapsed;
+        if (moveSendPause < sf::Time::Zero) moveSendPause = sf::Time::Zero;
+    }
+    if (moveSendPause == sf::Time::Zero) {
+        Connection::commandQueue.Push(new MoveClientCommand(Global::VectToDirection(moveCommand)));
+        moveSendPause = MOVE_TIMEOUT;
+        moveCommand = sf::Vector2i();
+    }
 }
 
 void TileGrid::LockDrawing() {
