@@ -103,6 +103,7 @@
       <PreprocessorDefinitions>SFML_STATIC;SFGUI_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -166,6 +167,7 @@
     <ClInclude Include="Sources\Graphics\UI\AuthUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameListUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameProcessUI.hpp" />
+    <ClInclude Include="Sources\Graphics\Widget.hpp" />
     <ClInclude Include="Sources\Network.hpp" />
     <ClInclude Include="sources\State.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />

@@ -100,11 +100,11 @@ struct WestClientCommand : public ClientCommand {
 };
 
 struct SendChatMessageClientCommand : public ClientCommand {
-    std::wstring message;
+    std::string message;
 
     virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
 
-    SendChatMessageClientCommand(std::wstring &message) : message(message) { }
+    SendChatMessageClientCommand(std::string &message) : message(message) { }
 };
 
 struct ServerCommand {
@@ -191,12 +191,12 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {
-    std::wstring message;
+    std::string message;
     std::string playerName;
 
     virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
 
-    SendChatMessageServerCommand(std::wstring &message, std::string &playerName) : message(message), playerName(playerName) { }
+    SendChatMessageServerCommand(std::string &message, std::string &playerName) : message(message), playerName(playerName) { }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {

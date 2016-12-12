@@ -56,9 +56,10 @@ void GameProcessUI::Resize(const int width, const int height) {
                                             float(height / 2)));
 }
 
-void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
+void GameProcessUI::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
     infoLabel.Draw(renderWindow);
-    chat.Draw(renderWindow);
+    chat.Draw(renderWindow, timeElapsed);
+    //renderWindow->draw(chat);
 }
 
 void GameProcessUI::Update() {

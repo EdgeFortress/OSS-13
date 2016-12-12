@@ -43,7 +43,7 @@ void Player::JoinToGame(int id) {
     }
 }
 
-void Player::ChatMessage(std::wstring &message) {
+void Player::ChatMessage(std::string &message) {
     game->GetChat()->AddMessage(message, ckey);
 }
 

@@ -26,7 +26,8 @@ public:
     GameProcessUI(UI *ui);
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw(sf::RenderWindow* renderWindow) final;
+    virtual void Draw(sf::RenderWindow* renderWindow, sf::Time timeElapsed) final;
+    virtual void Draw(sf::RenderWindow* renderWindow) { }
     virtual void Update() final;
     InfoLabel * GetInfoLabel() { return &infoLabel; }
     Chat *GetChat() { return &chat; }

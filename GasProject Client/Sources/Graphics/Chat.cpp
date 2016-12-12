@@ -6,32 +6,49 @@ Chat::Chat(const sf::Font &font) {
     entry.setFillColor(sf::Color(31, 31, 31));
     box.setFillColor(sf::Color(60, 60, 60));
 
+    sf::Color textColor = sf::Color(193, 205, 205);
+    characterSize = 18;
+
     entryText.setFont(font);
-    entryText.setCharacterSize(20);
-    entryText.setFillColor(sf::Color::Magenta);
+    entryText.setCharacterSize(characterSize);
+    entryText.setFillColor(textColor);
     entryText.setString("");
+
     showPos = 0;
+
+    active = false;
+    cursorTime = sf::Time::Zero;
+    cursor.setFillColor(textColor);
+    cursor.setSize(sf::Vector2f(characterSize / 6.0f, characterSize + 4.0f));
 }
 
-void Chat::Draw(sf::RenderWindow *renderWindow) {
+void Chat::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
     renderWindow->draw(entry);
     renderWindow->draw(box);
 
     renderWindow->draw(entryText);
 
+    cursorTime += timeElapsed;
+    if (active && cursorTime >= sf::seconds(0.8f) && cursorTime <= sf::seconds(1))
+        renderWindow->draw(cursor);
+    if (cursorTime > sf::seconds(1))
+        cursorTime = sf::Time::Zero;
+
     float size = 0;
+    mtx.lock();
     for (int i = int(boxText.size() - 1); i >= 0; i--) {
         for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
-            size += boxText[i].text[j].getGlobalBounds().height + 15;
+            size += boxText[i].text[j].getGlobalBounds().height + characterSize - 5;
             if (size > box.getSize().y)
                 break;
             float boxTextXShift = box.getSize().x * 0.01f;
-            boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos - size);
+            boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos + box.getSize().y - size);
             renderWindow->draw(boxText[i].text[j]);
         }
         if (size > box.getSize().y)
             break;
     }
+    mtx.unlock();
 }
 
 void Chat::SetSymbol(const wchar_t c) {
@@ -46,37 +63,57 @@ void Chat::SetSymbol(const wchar_t c) {
     while (tempText.getGlobalBounds().width >= entry.getSize().x * 0.98)
         showPos++, tempText.setString(wstring(entryString.c_str() + showPos));
 
+    cursor.setPosition(cursor.getPosition().x + tempText.getGlobalBounds().width - entryText.getGlobalBounds().width, cursor.getPosition().y);
     entryText.setString(wstring(entryString.c_str() + showPos));
-}
-
-void Chat::Send() {
-    Connection::commandQueue.Push(new SendChatMessageClientCommand(entryString));
-
-    entryText.setString("");
-    entryString.erase(entryString.begin(), entryString.end());
-    showPos = 0;
 }
 
 void Chat::DeleteSymbol() {
     if (entryString.size())
         entryString.resize(entryString.size() - 1);
 
+    sf::Text tempText;
+    tempText.setFont(*entryText.getFont());
+    tempText.setCharacterSize(entryText.getCharacterSize());
+    tempText.setScale(entryText.getScale());
+    tempText.setString(wstring(entryString.c_str() + showPos));
+
     if (showPos) {
         showPos--;
-        sf::Text tempText;
-        tempText.setFont(*entryText.getFont());
-        tempText.setCharacterSize(entryText.getCharacterSize());
-        tempText.setScale(entryText.getScale());
         tempText.setString(wstring(entryString.c_str() + showPos));
         if (tempText.getGlobalBounds().width >= entry.getSize().x * 0.98)
             showPos++;
+        tempText.setString(wstring(entryString.c_str() + showPos));
     }
+
+    cursor.setPosition(cursor.getPosition().x + tempText.getGlobalBounds().width - entryText.getGlobalBounds().width, cursor.getPosition().y);
     
     entryText.setString(wstring(entryString.c_str() + showPos));
 }
 
-void Chat::AddIncomingMessage(const wstring &message, const std::string &playerName) {
-    boxText.push_back(Message(playerName, message));
+void Chat::Send() {
+    if (entryString.size()) {
+        std::string message(entryString.size() * 4, 0);
+        std::string::iterator end = sf::Utf<8>::fromWide(entryString.begin(), entryString.end(), message.begin());
+        message.erase(end, message.end());
+        Connection::commandQueue.Push(new SendChatMessageClientCommand(message));
+    }
+
+    entryText.setString("");
+    entryString.erase(entryString.begin(), entryString.end());
+    showPos = 0;
+
+    float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
+    cursor.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift - 2);
+}
+
+void Chat::AddIncomingMessage(const std::string &message, const std::string &playerName) {
+    wstring result(message.size(), 0);
+    wstring::iterator end = sf::Utf<8>::toWide(message.begin(), message.end(), result.begin());
+    result.erase(end, result.end());
+
+    mtx.lock();
+    boxText.push_back(Message(playerName, result));
+    mtx.unlock();
 }
 
 void Chat::Update() {
@@ -117,17 +154,19 @@ void Chat::Resize(int width, int height) {
     entry.setSize(sf::Vector2f(chatWidth, entryHeight));
     box.setSize(sf::Vector2f(chatWidth, height * 0.5f - entryHeight));
 
-    chatYPos = height - entry.getSize().y - chatShift;
-    entry.setPosition(chatXPos, chatYPos);
-    box.setPosition(chatXPos, chatYPos - box.getSize().y);
+    chatYPos = height - entry.getSize().y - box.getSize().y - chatShift;
+    entry.setPosition(chatXPos, chatYPos + box.getSize().y);
+    box.setPosition(chatXPos, chatYPos);
 
     float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
-    entryText.setPosition(chatXPos + entryTextXShift, chatYPos + entryTextYShift);
+    entryText.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift);
     static bool resize = false;
     if (resize)
         entryText.setScale(entryText.getScale().x * scale);
     else
         resize = true;
+
+    cursor.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift - 2);
 }
 
 void Chat::Parse(Message &message, sf::Text &tempText) {
@@ -158,4 +197,31 @@ void Chat::Parse(Message &message, sf::Text &tempText) {
             startPos++;
         shiftPos = 1;
     }
+}
+
+void Chat::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    target.draw(entry);
+    target.draw(box);
+    //renderWindow->draw(entry);
+    //renderWindow->draw(box);
+
+    //renderWindow->draw(entryText);
+    target.draw(entryText);
+
+    float size = 0;
+    //mtx.lock();
+    for (int i = int(boxText.size() - 1); i >= 0; i--) {
+        for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
+            size += boxText[i].text[j].getGlobalBounds().height + characterSize - 5;
+            if (size > box.getSize().y)
+                break;
+            float boxTextXShift = box.getSize().x * 0.01f;
+            //boxText[i].text[j].setPosition(chatXPos + boxTextXShift, chatYPos + box.getSize().y - size);
+            //renderWindow->draw(boxText[i].text[j]);
+            target.draw(boxText[i].text[j]);
+        }
+        if (size > box.getSize().y)
+            break;
+    }
+    //mtx.unlock();
 }

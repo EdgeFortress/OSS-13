@@ -66,7 +66,7 @@ bool Game::AddPlayer(wptr<Player> player) {
 //}
 
 void Game::SendChatMessages() {
-    std::vector<std::pair<std::string, std::wstring>> messages = chat.GetNewMessages();
+    std::vector<std::pair<std::string, std::string>> messages = chat.GetNewMessages();
     for (auto &player : players)
         if (sptr<Player> player_s = player.lock())
             for (auto &message : messages)

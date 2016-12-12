@@ -114,7 +114,7 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
     GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
-    gameProcessUI->Draw(render_window);
+    gameProcessUI->Draw(render_window, timeElapsed);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
@@ -128,9 +128,17 @@ void MenuLoginState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
 void MenuGameListState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
 void GameLobbyState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const { }
 void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const {
-    static bool playing = true, chat = false;
+    Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
+
+    static bool playing = true;
+    bool chatting = chat->GetState();
+
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
-        playing = !playing, chat = !chat;
+        playing = !playing, chatting = !chatting, chat->SetState(chatting);
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && event.mouseButton.x > chat->GetXPos() && event.mouseButton.y > chat->GetYPos())
+        playing = false, chatting = true, chat->SetState(chatting);
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && event.mouseButton.x < chat->GetXPos())
+        playing = true, chatting = false, chat->SetState(chatting);
 
     static bool movingNorth = false, movingSouth = false, movingEast = false, movingWest = false;
     static sf::Time moveTime = sf::Time::Zero;
@@ -190,8 +198,7 @@ void GameProcessState::HandleEvent(sf::Event event, sf::Time &timeElapsed) const
             CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
     }
  
-    if (chat) {
-        Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
+    if (chatting) {
         if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Return)
                 chat->Send();

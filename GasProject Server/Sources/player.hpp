@@ -35,7 +35,7 @@ public:
     void Register(string login, string password);
     void UpdateServerList();
     void JoinToGame(int id);
-    void ChatMessage(std::wstring &message);
+    void ChatMessage(std::string &message);
 
     void Move(int x, int y);
     ///

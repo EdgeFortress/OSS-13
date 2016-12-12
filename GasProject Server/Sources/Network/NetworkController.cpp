@@ -66,13 +66,14 @@ void NetworkController::working() {
         // Sending to client
         for (auto &pair : sockets) {
             sptr<Player> player = pair.first.lock();
-            while (!player->commandsToClient.Empty()) {
-                sf::Packet packet;
-                ServerCommand *temp = player->commandsToClient.Pop();
-                packet << temp;
-                if (temp) delete temp;
-                pair.second->send(packet);
-            }
+            if (player)
+                while (!player->commandsToClient.Empty()) {
+                    sf::Packet packet;
+                    ServerCommand *temp = player->commandsToClient.Pop();
+                    packet << temp;
+                    if (temp) delete temp;
+                    pair.second->send(packet);
+                }
         }
     }
 }
@@ -127,7 +128,7 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-            std::wstring message;
+            std::string message;
             packet >> message;
             player->ChatMessage(message);
             break;

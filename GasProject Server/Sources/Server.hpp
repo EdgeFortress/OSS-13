@@ -26,10 +26,10 @@ class Chat {
 private:
     struct message {
         std::string playerName;
-        std::wstring text;
+        std::string text;
         bool sended;
 
-        message(const std::string &playerName, const std::wstring &text) : playerName(playerName), text(text), sended(false) { }
+        message(const std::string &playerName, const std::string &text) : playerName(playerName), text(text), sended(false) { }
     };
     std::vector<message> messages;
 
@@ -39,12 +39,12 @@ public:
     Chat& operator=(Chat &chat) = delete;
     ~Chat() = default;
 
-    void AddMessage(std::wstring &message, std::string &playerName) {
+    void AddMessage(std::string &message, std::string &playerName) {
         messages.push_back(Chat::message(playerName, message));
     }
 
-    std::vector<std::pair<std::string, std::wstring>> GetNewMessages() {
-        std::vector<std::pair<std::string, std::wstring>> newMessages;
+    std::vector<std::pair<std::string, std::string>> GetNewMessages() {
+        std::vector<std::pair<std::string, std::string>> newMessages;
 
         int i = int(messages.size());
         while (--i >= 0 && !messages[i].sended);

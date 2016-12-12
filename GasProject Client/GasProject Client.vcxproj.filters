@@ -83,6 +83,9 @@
     <ClInclude Include="Sources\Graphics\Chat.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Graphics\Widget.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\Human.png">
