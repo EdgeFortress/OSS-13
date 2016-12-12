@@ -34,6 +34,7 @@ private:
     unsigned showPos;
     wstring entryString;
     sf::Text entryText;
+    float entryTextXShift, entryTextYShift;
 
     vector<Message> boxText;
     std::mutex mtx;

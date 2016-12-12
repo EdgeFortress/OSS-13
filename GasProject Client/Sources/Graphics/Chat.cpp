@@ -102,7 +102,6 @@ void Chat::Send() {
     entryString.erase(entryString.begin(), entryString.end());
     showPos = 0;
 
-    float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
     cursor.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift - 2);
 }
 
@@ -138,6 +137,8 @@ void Chat::Update() {
 }
 
 void Chat::Resize(int width, int height) {
+    float cursYPos = cursor.getPosition().y - chatYPos - box.getSize().y - entryTextYShift + 2;
+
     TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
 
     chatXPos = tileGrid->GetTileSize() * float(Global::FOV);
@@ -158,15 +159,17 @@ void Chat::Resize(int width, int height) {
     entry.setPosition(chatXPos, chatYPos + box.getSize().y);
     box.setPosition(chatXPos, chatYPos);
 
-    float entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
+    entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
     entryText.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift);
     static bool resize = false;
-    if (resize)
+    if (resize) {
         entryText.setScale(entryText.getScale().x * scale);
+        cursor.setScale(cursor.getScale().x * scale);
+    }
     else
         resize = true;
 
-    cursor.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift - 2);
+    cursor.setPosition(entryText.getGlobalBounds().width + chatXPos + entryTextXShift, cursYPos + chatYPos + box.getSize().y + entryTextYShift - 2);
 }
 
 void Chat::Parse(Message &message, sf::Text &tempText) {
