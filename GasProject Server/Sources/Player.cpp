@@ -44,7 +44,7 @@ void Player::JoinToGame(int id) {
 }
 
 void Player::ChatMessage(std::string &message) {
-    game->GetChat()->AddMessage(message, ckey);
+    game->GetChat()->AddMessage("<" + ckey + ">" + message);
 }
 
 void Player::Move(int x, int y) {
@@ -54,13 +54,15 @@ void Player::Move(int x, int y) {
 void Player::Update() {
     while (!commandsFromClient.Empty()) {
         PlayerCommand *temp = commandsFromClient.Pop();
-        switch (temp->GetCode()) {
-            case PlayerCommand::Code::JOIN: {
-                SetMob(game->GetWorld()->CreateNewPlayerMob());
-                break;
+        if (temp) {
+            switch (temp->GetCode()) {
+                case PlayerCommand::Code::JOIN: {
+                    SetMob(game->GetWorld()->CreateNewPlayerMob());
+                    break;
+                }
             }
+            delete temp;
         }
-        if (temp) delete temp;
     }
 
     if (mob->GetTile() != camera->GetPosition()) camera->SetPosition(mob->GetTile());

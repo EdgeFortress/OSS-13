@@ -172,11 +172,10 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 
 struct SendChatMessageServerCommand : public ServerCommand {
     std::string message;
-    std::string playerName;
 
     virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
 
-    SendChatMessageServerCommand(std::string &message, std::string &playerName) : message(message), playerName(playerName) { }
+    SendChatMessageServerCommand(std::string &message) : message(message) { }
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {

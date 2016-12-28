@@ -172,12 +172,10 @@ void Connection::parsePacket(Packet &packet) {
             break;
         }
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
-            std::string playerName;
             std::string message;
-            packet >> playerName;
             packet >> message;
             auto chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
-            chat->AddIncomingMessage(message, playerName);
+            chat->AddIncomingMessage(message);
             break;
         }
     };

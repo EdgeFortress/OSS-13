@@ -66,11 +66,11 @@ bool Game::AddPlayer(wptr<Player> player) {
 //}
 
 void Game::SendChatMessages() {
-    std::vector<std::pair<std::string, std::string>> messages = chat.GetNewMessages();
+    std::vector<std::string> messages = chat.GetNewMessages();
     for (auto &player : players)
         if (sptr<Player> player_s = player.lock())
             for (auto &message : messages)
-                player_s->AddCommandToClient(new SendChatMessageServerCommand(message.second, message.first));
+                player_s->AddCommandToClient(new SendChatMessageServerCommand(message));
 }
 
 Game::~Game() {
@@ -93,6 +93,7 @@ Server::Server() : UDB(new UsersDB()),
                     iter = players.erase(iter);
                 } else
                     iter++;
+                //player->AddCommandToClient(new SendChatMessageServerCommand(std::string("PRIVETOSI EPTA")));
             }
         }
         sleep(seconds(1));

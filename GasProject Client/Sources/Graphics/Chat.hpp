@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <string>
+#include <map>
 #include <mutex>
+#include <string>
+#include <vector>
 
 #include <SFML/Graphics.hpp>
 
@@ -15,11 +16,10 @@ class Chat : public Widget {
 private:
     struct Message
     {
-        std::string playerName;
         wstring stringText;
-        vector<sf::Text> text;
+        vector<vector<sf::Text>> text;
 
-        Message(const std::string &playerName, const wstring &stringText) : playerName(playerName), stringText(stringText) { }
+        Message(const wstring &stringText) : stringText(stringText) { }
     };
 
     bool active;
@@ -31,6 +31,8 @@ private:
     float chatXPos, chatYPos;
     int characterSize;
 
+    std::map<sf::Uint32, std::pair<float, float>> sizes;
+    bool resized;
     unsigned showPos;
     wstring entryString;
     sf::Text entryText;
@@ -59,7 +61,7 @@ public:
     void DeleteSymbol();
 
     void Send();
-    void AddIncomingMessage(const std::string &message, const std::string &playerName);
+    void AddIncomingMessage(const std::string &message);
 
     float GetXPos() { return chatXPos; }
     float GetYPos() { return chatYPos; }
