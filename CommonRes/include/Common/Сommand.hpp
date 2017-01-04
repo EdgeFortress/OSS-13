@@ -4,7 +4,9 @@
 #include <list>
 
 #include "Useful.hpp"
-#include "Differences.hpp"
+#include "NetworkConst.hpp"
+
+struct Diff;
 
 using std::string;
 

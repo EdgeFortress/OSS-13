@@ -6,7 +6,7 @@
 #include "Objects.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
-#include "Common/Differences.hpp"
+#include "Network/Differences.hpp"
 #include "Network/TileGrid_Info.hpp"
 
 Tile::Tile(Map *map, int x, int y) :
@@ -18,43 +18,26 @@ Tile::Tile(Map *map, int x, int y) :
 
 void Tile::AddObject(Object *obj) {
     Tile *lastTile;
-    bool moved = false;
+    Block *lastBlock = nullptr;
     if (lastTile = obj->GetTile()) {
-        int n = 0;
-        for (auto &i : lastTile->content) {
-            if (i == obj) {
-                //i.release();
-                i = nullptr;
-                lastTile->content.remove(i);
-
-                Block *block = lastTile->GetBlock();
-                int x = lastTile->X() % Global::BLOCK_SIZE;
-                int y = lastTile->Y() % Global::BLOCK_SIZE;
-                if (GetBlock() == block) {
-                    int toX = X() % Global::BLOCK_SIZE;
-                    int toY = Y() % Global::BLOCK_SIZE;
-                    block->AddDiff(new MoveDiff(block, x, y, n, toX, toY, int(content.size())));
-                    moved = true;
-                } else {
-                    //Server::log << "Block changed" << endl;
-                    block->AddDiff(new RemoveDiff(block, x, y, n));
-                }
-                
+        for (auto iter = lastTile->content.begin(); iter != lastTile->content.end(); iter++)
+            if (*iter == obj) {
+                lastTile->content.erase(iter);
                 break;
             }
-            n++;
-        }
+
+        lastBlock = lastTile->GetBlock();
     }
+
+    int position = 0;
+    auto iter = content.begin();
+    while (iter != content.end() && (*iter)->layer < obj->layer) 
+        iter++, position++;
+    content.insert(iter, obj);
 
     obj->tile = this;
-    content.push_back(obj);
 
-    if (!moved) {
-        Block *block = GetBlock();
-        int x = X() % Global::BLOCK_SIZE;
-        int y = Y() % Global::BLOCK_SIZE;
-        block->AddDiff(new AddDiff(block, x, y, int(content.size() - 1), obj->GetSprite(), obj->GetName()));
-    }
+    GetBlock()->AddDiff(new MoveDiff(obj->id, X(), Y(), position, lastBlock, obj));
 }
 
 bool Tile::RemoveObject(Object *obj) {

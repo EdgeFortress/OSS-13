@@ -147,7 +147,7 @@ void GameProcessState::HandleEvent(sf::Event event) const {
 
     if (event.type == sf::Event::MouseMoved) {
         Object *obj = CC::Get()->GetWindow()->GetTileGrid()->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
-        if (obj != nullptr) CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->name);
+        if (obj != nullptr) CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText(obj->GetName());
         else CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetInfoLabel()->SetText("");
     }
  

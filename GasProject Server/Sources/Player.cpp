@@ -47,8 +47,8 @@ void Player::ChatMessage(std::string &message) {
     game->GetChat()->AddMessage("<" + ckey + ">" + message);
 }
 
-void Player::Move(int x, int y) {
-    if (mob) mob->Move(sf::Vector2i(x, y));
+void Player::Move(Global::Direction direction) {
+    if (mob) mob->Move(Global::DirectionToVect(direction));
 }
 
 void Player::Update() {

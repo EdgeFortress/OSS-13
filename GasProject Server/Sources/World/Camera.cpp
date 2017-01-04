@@ -7,6 +7,7 @@
 #include "World.hpp"
 #include "Player.hpp"
 #include "Network/TileGrid_Info.hpp"
+#include "Network/Differences.hpp"
 
 Camera::Camera(const Tile * const tile) :
     suspense(true), unsuspensed(false), cameraMoved(false),
@@ -51,8 +52,20 @@ void Camera::UpdateView() {
             Block *block = visibleBlocks[y][x];
             if (block) {
                 if (blocksSync[y][x]) {
-                    for (auto &diff : block->GetDifferences())
+                    for (auto &diff : block->GetDifferences()) {
+                        // If client doesn't know about moved object, we need to add it
+                        if (diff->GetType() == Global::DiffType::MOVE) {
+                            MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
+                            Block *lastBlock = moveDiff->lastBlock;
+                            if (!lastBlock ||
+                                lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + visibleBlocksNum ||
+                                lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + visibleBlocksNum) 
+                            {
+                                command->diffs.push_back(sptr<Diff>(new AddDiff(moveDiff->object->GetObjectInfo())));
+                            }
+                        }
                         command->diffs.push_back(diff);
+                    }
                 } else {
                     command->blocksInfo.push_back(block->GetBlockInfo());
                     blocksSync[y][x] = true;

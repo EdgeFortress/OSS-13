@@ -112,9 +112,9 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             break;
         }
         case ClientCommand::Code::MOVE: {
-            sf::Int32 x, y;
-            packet >> x >> y;
-            player->Move(x, y);
+            sf::Int8 direction;
+            packet >> direction;
+            player->Move(Global::Direction(direction));
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {

@@ -48,7 +48,7 @@
     <ClCompile Include="Sources\Graphics\Chat.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Global.cpp">
+    <ClCompile Include="..\CommonRes\Sources\Global.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>

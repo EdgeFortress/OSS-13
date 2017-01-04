@@ -4,7 +4,9 @@
 
 class Turf : public Object {
 public:
-    Turf() {}
+    Turf() {
+        layer = 25;
+    }
 
     virtual void Update(sf::Time timeElapsed) { };
     virtual void Interact(Object *) { };
@@ -25,6 +27,7 @@ public:
 class Floor : public Turf {
 public:
     Floor() {
+        layer = 15;
         sprite = Global::Sprite::Floor;
         name = "Floor";
         density = false;

@@ -4,11 +4,13 @@
 #include <list>
 
 struct ObjectInfo {
+    const uint id;
     const int sprite;
     const std::string name;
+    const uint layer;
 
-    ObjectInfo(const int sprite, const std::string &name) :
-        sprite(sprite), name(name) { }
+    ObjectInfo(uint id, const int sprite, const std::string &name, uint layer) :
+        id(id), sprite(sprite), name(name), layer(layer) { }
 };
 
 struct TileInfo {

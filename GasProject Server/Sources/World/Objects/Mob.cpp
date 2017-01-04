@@ -2,15 +2,19 @@
 
 #include "Server.hpp"
 #include "World/World.hpp"
+#include "Network/Differences.hpp"
+
+void Mob::Move(sf::Vector2i order) {
+    if (!order.x && !order.y) return;
+    std::unique_lock<std::mutex> lock(orderLock);
+    if (order.x) moveOrder.x = order.x;
+    if (order.y) moveOrder.y = order.y;
+    tile->GetBlock()->AddDiff(new ShiftDiff(id, Global::VectToDirection(order), speed));
+}
 
 void Mob::Update(sf::Time timeElapsed) {
     std::unique_lock<std::mutex> lock(orderLock);
     if (moveOrder.x || moveOrder.y) {
-        //if (moveOrder.x) Server::log << "x";
-        //if (moveOrder.y) Server::log << "y";
-        //Server::log << endl;
-        //Server::log << "Move" << endl;
-
         shift += speed * sf::Vector2f(moveOrder) * (timeElapsed.asMilliseconds() / 1000.f);
 
         if (shift.x || shift.y) {

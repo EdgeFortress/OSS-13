@@ -15,10 +15,15 @@ namespace sf {
 }
 
 class Object {
+private:
+    void takeID();
+
 protected:
+    uint id;
     Tile *tile;
     std::string name;
     Global::Sprite sprite;
+    uint layer;
     bool density;
 
 public:

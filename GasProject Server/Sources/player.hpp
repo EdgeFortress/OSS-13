@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Common/Useful.hpp"
+#include "Common/NetworkConst.hpp"
 #include "World/Camera.hpp"
 #include "PlayerCommand.hpp"
 
@@ -37,7 +38,7 @@ public:
     void JoinToGame(int id);
     void ChatMessage(std::string &message);
 
-    void Move(int x, int y);
+    void Move(Global::Direction);
     ///
 
     void Update();

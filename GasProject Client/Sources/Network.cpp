@@ -122,44 +122,70 @@ void Connection::parsePacket(Packet &packet) {
             packet >> options;
             tileGrid->LockDrawing();
             if (options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
-                Int32 x, y, blockNum;
-                packet >> x >> y >> blockNum;
+                Int32 x, y, numOfBlocks;
+                packet >> x >> y >> numOfBlocks;
+
                 tileGrid->ShiftBlocks(x, y);
-                while (blockNum) {
+
+                while (numOfBlocks) {
                     packet >> x >> y;
                     Block *block = new Block(tileGrid);
                     packet >> *(block);
+
                     tileGrid->SetBlock(x, y, block);
-                    blockNum--;
+
+                    numOfBlocks--;
                 }
             }
             if (options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
                 Int32 x, y;
                 packet >> x >> y;
+
                 tileGrid->SetCameraPosition(x, y);
+
             }
             if (options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
                 Int32 count;
                 packet >> count;
                 for (int i = 0; i < count; i++) {
-                    Int32 type, blockX, blockY, x, y, objectNum;
-                    packet >> type >> blockX >> blockY >> x >> y >> objectNum;
-                    switch (Diff::Type(type)) {
-                        case Diff::Type::MOVE: {
+                    Int32 type;
+                    packet >> type;
+                    switch (Global::DiffType(type)) {
+                        case Global::DiffType::MOVE: {
+                            Int32 id;
+                            packet >> id;
                             Int32 toX, toY, toObjectNum;
                             packet >> toX >> toY >> toObjectNum;
-                            tileGrid->Move(blockX, blockY, x, y, objectNum, toX, toY, toObjectNum);
+
+                            tileGrid->MoveObject(id, toX, toY, toObjectNum);
+
                             break;
                         }
-                        case Diff::Type::ADD: {
-                            Int32 sprite;
-                            String name;
-                            packet >> sprite >> name;
-                            tileGrid->Add(blockX, blockY, x, y, objectNum, Global::Sprite(sprite), name);
+                        case Global::DiffType::ADD: {
+                            Object *object = new Object;
+                            packet >> *object;
+
+                            tileGrid->AddObject(object);
+
                             break;
                         }
-                        case Diff::Type::REMOVE: {
-                            tileGrid->Remove(blockX, blockY, x, y, objectNum);
+                        case Global::DiffType::REMOVE: {
+                            Int32 id;
+                            packet >> id;
+                            tileGrid->RemoveObject(id);
+
+                            break;
+                        }
+                        case Global::DiffType::SHIFT: {
+                            Int32 id;
+                            packet >> id;
+                            Int8 direction;
+                            float speed;
+                            packet >> direction >> speed;
+
+                            //tileGrid->ShiftObject(id, Global::Direction(direction), speed);
+
+                            //CC::log << direction << std::to_string(speed);
                             break;
                         }
                         default:
@@ -201,8 +227,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
         }
         case ClientCommand::Code::MOVE: {
             auto c = dynamic_cast<MoveClientCommand *>(command);
-            sf::Vector2i vector = Global::DirectionToVect(c->direction);
-            packet << sf::Int32(vector.x) << sf::Int32(vector.y);
+            packet << sf::Int8(c->direction);
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
@@ -215,10 +240,10 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 }
 
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
-    Int32 xPos, yPos;
-    packet >> xPos >> yPos;
-    tileGrid.xRelPos = xPos;
-    tileGrid.yRelPos = yPos;
+    Int32 xRelPos, yRelPos;
+    packet >> xRelPos >> yRelPos;
+    tileGrid.xRelPos = xRelPos;
+    tileGrid.yRelPos = yRelPos;
 
     for (auto &vect : tileGrid.blocks)
         for (auto &block : vect) {
@@ -226,16 +251,11 @@ Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
             packet >> id;
             if (id >= 0)
                 packet >> *block;
-            //else block->Clear();
-            //block-> = id;
         }
     return packet;
 }
 
 Packet &operator>>(Packet &packet, Block &block) {
-    //sf::Int32 id;
-    //packet >> id;
-    //block.id = id;
     for (auto &vect : block.tiles)
         for (auto &tile : vect)
             packet >> *tile;
@@ -254,17 +274,20 @@ Packet &operator>>(Packet &packet, Tile &tile) {
     for (int i = 0; i < size; i++) {
         Object *object = new Object();
         packet >> *object;
-        tile.content.push_back(uptr<Object>(object));
+        tile.block->GetTileGrid()->objects.push_back(uptr<Object>(object));
+        tile.AddObject(object);
     }
     return packet;
 }
 
 Packet &operator>>(Packet &packet, Object &object) {
-    sf::Int32 sprite;
+    sf::Int32 id, sprite, layer;
     sf::String name;
-    packet >> sprite >> name;
+    packet >> id >> sprite >> name >> layer;
+    object.id = id;
     object.SetSprite(Global::Sprite(sprite));
     object.name = name;
+    object.layer = layer;
     return packet;
 }
 

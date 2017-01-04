@@ -4,14 +4,12 @@
 
 #include <SFML/Network.hpp>
 
-//#include "Server.hpp"
-//#include "Player.hpp"
 #include "Common/Useful.hpp"
-#include "Common/Differences.hpp"
 #include "Common/Ñommand.hpp"
 #include "TileGrid_Info.hpp"
 
 class Player;
+struct Diff;
 
 class NetworkController {
 private:

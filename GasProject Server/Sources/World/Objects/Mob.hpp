@@ -12,17 +12,14 @@ private:
 
 public:
     explicit Mob() {
+        layer = 75;
         sprite = Global::Sprite::Mob;
         name = "Mob";
         density = false;
         speed = 4;
     }
 
-    void Move(sf::Vector2i order) { 
-        std::unique_lock<std::mutex> lock(orderLock);
-        if (order.x) moveOrder.x = order.x;
-        if (order.y) moveOrder.y = order.y;
-    }
+    void Move(sf::Vector2i order);
 
     virtual void Update(sf::Time timeElapsed) override;
     virtual void Interact(Object *) { };

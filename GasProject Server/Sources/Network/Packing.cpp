@@ -1,6 +1,8 @@
 #include "NetworkController.hpp"
 #include "Server.hpp"
 #include "World/World.hpp"
+#include "Common/NetworkConst.hpp"
+#include "Differences.hpp"
 
 using namespace sf;
 
@@ -52,26 +54,30 @@ Packet &operator<<(Packet &packet, Game &game) {
 }
 
 Packet &operator<<(Packet &packet, const Diff &diff) {
-    if (diff.GetType() == Diff::Type::NONE) return packet;
+    if (diff.GetType() == Global::DiffType::NONE) return packet;
     packet << Int32(diff.GetType());
-    packet << Int32(diff.block->X());
-    packet << Int32(diff.block->Y());
-    packet << Int32(diff.x) << Int32(diff.y);
-    packet << Int32(diff.objectNum);
     switch (diff.GetType()) {
-        case Diff::Type::MOVE: {
+        case Global::DiffType::MOVE: {
+            packet << Int32(diff.id);
             const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
             packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toObjectNum);
             break;
         }
-        case Diff::Type::ADD: {
+        case Global::DiffType::ADD: {
             const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
-            packet << Int32(addDiff.sprite);
-            packet << String(addDiff.name);
+            packet << addDiff.objectInfo;
             break;
         }
-        case Diff::Type::REMOVE: {
+        case Global::DiffType::REMOVE: {
+            packet << Int32(diff.id);
             const RemoveDiff &removeDiff = dynamic_cast<const RemoveDiff &>(diff);
+            break;
+        }
+        case Global::DiffType::SHIFT: {
+            packet << Int32(diff.id);
+            const ShiftDiff &shiftDiff = dynamic_cast<const ShiftDiff &>(diff);
+            packet << Int8(shiftDiff.direction);
+            packet << shiftDiff.speed;
             break;
         }
     }
@@ -94,6 +100,6 @@ Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
 }
 
 Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
-    packet << sf::Int32(objInfo.sprite) << sf::String(objInfo.name);
+    packet << sf::Int32(objInfo.id) << sf::Int32(objInfo.sprite) << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
     return packet;
 }

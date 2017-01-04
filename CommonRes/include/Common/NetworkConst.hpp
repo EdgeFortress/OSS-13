@@ -9,6 +9,14 @@ namespace Global {
     const int FOV = 15; // Field Of View
     const int MIN_PADDING = 3;
 
+    enum class DiffType : char {
+        NONE = 0,
+        MOVE,
+        ADD,
+        REMOVE,
+        SHIFT
+    };
+
     enum class Sprite : char {
         EMPTY = 0,
         Floor,

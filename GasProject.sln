@@ -13,10 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{4462
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0}"
 	ProjectSection(SolutionItems) = preProject
-		CommonRes\include\Common\Differences.hpp = CommonRes\include\Common\Differences.hpp
 		CommonRes\include\Common\NetworkConst.hpp = CommonRes\include\Common\NetworkConst.hpp
 		CommonRes\include\Common\Useful.hpp = CommonRes\include\Common\Useful.hpp
 		CommonRes\include\Common\Сommand.hpp = CommonRes\include\Common\Сommand.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{2D2C6465-F2F1-489C-AAB4-E34FCA614036}"
+	ProjectSection(SolutionItems) = preProject
+		CommonRes\Sources\Global.cpp = CommonRes\Sources\Global.cpp
 	EndProjectSection
 EndProject
 Global
@@ -50,5 +54,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{446251E9-B5B3-4603-B72B-23A1A97B7D76} = {F34248DC-EC1D-434B-B06D-DE4BEC858771}
 		{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0} = {446251E9-B5B3-4603-B72B-23A1A97B7D76}
+		{2D2C6465-F2F1-489C-AAB4-E34FCA614036} = {F34248DC-EC1D-434B-B06D-DE4BEC858771}
 	EndGlobalSection
 EndGlobal

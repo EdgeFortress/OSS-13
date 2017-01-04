@@ -6,6 +6,8 @@
 #include <string>
 #include <queue>
 
+typedef unsigned uint;
+
 template<class T>
 using uptr = std::unique_ptr<T>;
 
