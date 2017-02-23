@@ -5,7 +5,7 @@
 Chat::Chat(const sf::Font &font) {
     characterSize = 18;
 
-    cout << font.getLineSpacing(characterSize) << endl;
+    //cout << font.getLineSpacing(characterSize) << endl;
     for (sf::Uint32 c = L'a'; c <= L'z'; c++) {
         //sizes[c].first = font.getGlyph(c, characterSize, false).bounds.width;
         //sizes[c].second = font.getGlyph(c, characterSize, true).bounds.width;

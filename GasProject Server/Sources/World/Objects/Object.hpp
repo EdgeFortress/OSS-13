@@ -35,6 +35,7 @@ public:
     Global::Sprite GetSprite() const { return sprite; }
     Tile *GetTile() const { return tile; }
     std::string GetName() const { return name; }
+    uint ID() const { return id; }
 
     //// Just set tile pointer
     //void SetTile(Tile *tile) { this->tile = tile; }
@@ -44,5 +45,5 @@ public:
     const ObjectInfo GetObjectInfo() const;
 
     friend Tile;
-    friend sf::Packet &operator<<(sf::Packet &, const Object &);
+    //friend sf::Packet &operator<<(sf::Packet &, const Object &);
 };

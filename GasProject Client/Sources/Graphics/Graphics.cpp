@@ -45,8 +45,8 @@ void Window::Update(sf::Time timeElapsed) {
     window->resetGLStates();
     window->clear(sf::Color::Black);
     if (state) {
+		state->Update(timeElapsed);
         state->DrawTileGrid(window.get(), tileGrid.get());
-        state->Update(timeElapsed);
         state->DrawUI(window.get(), timeElapsed);
     }
     window->display();

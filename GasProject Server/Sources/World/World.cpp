@@ -16,7 +16,7 @@ Tile::Tile(Map *map, int x, int y) :
     sprite = Global::Sprite(unsigned(Global::Sprite::Space) + ((ux + uy) ^ ~(ux * uy)) % 25);
 }
 
-void Tile::AddObject(Object *obj) {
+void Tile::addObject(Object *obj) {
     Tile *lastTile;
     Block *lastBlock = nullptr;
     if (lastTile = obj->GetTile()) {
@@ -36,8 +36,6 @@ void Tile::AddObject(Object *obj) {
     content.insert(iter, obj);
 
     obj->tile = this;
-
-    GetBlock()->AddDiff(new MoveDiff(obj->id, X(), Y(), position, lastBlock, obj));
 }
 
 bool Tile::RemoveObject(Object *obj) {
@@ -62,8 +60,24 @@ void Tile::MoveTo(Object *obj) {
                 break;
             }
 
-    if (available && obj)
-        AddObject(obj);
+    if (available && obj) {
+        Block *lastBlock = obj->GetTile()->GetBlock();
+        int dx = X() - obj->GetTile()->X();
+        int dy = Y() - obj->GetTile()->Y();
+        if (abs(dx) > 1 || abs(dy) > 1)
+            Server::log << "Move delta warning" << endl;
+        Global::Direction direction = Global::VectToDirection(sf::Vector2i(dx, dy));
+        addObject(obj);
+        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, lastBlock));
+    }
+}
+
+void Tile::PlaceTo(Object *obj) {
+    Tile *lastTile = obj->GetTile();
+    Block *lastBlock = nullptr;
+    if (lastTile) lastBlock = lastTile->GetBlock();
+    addObject(obj);
+    GetBlock()->AddDiff(new ReplaceDiff(obj->id, X(), Y(), lastBlock, obj));
 }
 
 Block *Tile::GetBlock() const {
@@ -279,21 +293,21 @@ void World::FillingWorld() {
     for (int i = 45; i <= 55; i++) {
         for (int j = 45; j <= 55; j++) {
             Tile *tile = map->GetTile(i, j);
-            tile->AddObject(new Floor);
+            tile->PlaceTo(new Floor);
             if ((i == 45 || i == 55) && (j == 45 || j == 55))
-                tile->AddObject(new Wall);
+                tile->PlaceTo(new Wall);
         }
     }
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
-            map->GetTile(i, j)->AddObject(new Floor);
+            map->GetTile(i, j)->PlaceTo(new Floor);
         }
     }
 
     time_since_testMob_update = sf::Time::Zero;
     testMob = new Mob;
-    map->GetTile(49, 49)->AddObject(testMob);
+    map->GetTile(49, 49)->PlaceTo(testMob);
     test_dx = 1;
     test_dy = 0;
 
@@ -311,6 +325,6 @@ void World::AddObject(Object *obj) {
 
 Mob *World::CreateNewPlayerMob() {
     Mob *mob = new Mob();
-    map->GetTile(50, 50)->AddObject(mob);
+    map->GetTile(50, 50)->PlaceTo(mob);
     return mob;
 }

@@ -11,9 +11,10 @@ namespace Global {
 
     enum class DiffType : char {
         NONE = 0,
-        MOVE,
         ADD,
         REMOVE,
+        RELOCATE,
+        MOVE,
         SHIFT
     };
 
@@ -24,7 +25,7 @@ namespace Global {
         Airlock,
         Mob,
         Space,
-        NextSprite = Space + 26,
+        NextSprite = Space + 26
     };
 
     enum class Direction : char {

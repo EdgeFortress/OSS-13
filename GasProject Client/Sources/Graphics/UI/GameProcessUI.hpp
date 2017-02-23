@@ -30,7 +30,7 @@ public:
     virtual void Draw(sf::RenderWindow* renderWindow, sf::Time timeElapsed) final;
     virtual void Draw(sf::RenderWindow* renderWindow) { }
     virtual void Update() final;
-    InfoLabel * GetInfoLabel() { return &infoLabel; }
+    InfoLabel *GetInfoLabel() { return &infoLabel; }
     Chat *GetChat() { return &chat; }
     virtual void Hide() final;
     virtual void Show() final;

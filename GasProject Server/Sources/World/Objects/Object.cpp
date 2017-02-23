@@ -19,5 +19,5 @@ Object::Object() {
 }
 
 const ObjectInfo Object::GetObjectInfo() const {
-    return std::move(ObjectInfo(id, int(sprite), name, layer));
+    return std::move(ObjectInfo(id, int(sprite), name, layer, density));
 }

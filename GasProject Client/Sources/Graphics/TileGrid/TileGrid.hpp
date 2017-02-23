@@ -26,6 +26,7 @@ private:
     Sprite *sprite;
     int direction;
     int layer;
+	bool dense;
 
     sf::Vector2f shift;
     sf::Vector2i shiftingDirection;
@@ -41,9 +42,17 @@ public:
 
     void SetSprite(const Global::Sprite);
     void SetShifting(Global::Direction direction, float speed) {
-        shiftingDirection = Global::DirectionToVect(direction);
+        auto directionVect = Global::DirectionToVect(direction);
+        if (shiftingDirection.x != directionVect.x) shiftingDirection.x += directionVect.x;
+        if (shiftingDirection.y != directionVect.y) shiftingDirection.y += directionVect.y;
         shiftingSpeed = speed;
     }
+    void ResetShifting() {
+        shiftingDirection = sf::Vector2i(0, 0);
+        shift = sf::Vector2f(0, 0);
+        shiftingSpeed = 0;
+    }
+    void ReverseShifting(Global::Direction direction);
 
     bool checkObj(int x, int y);
 
@@ -53,6 +62,9 @@ public:
     int GetLayer() const { return layer; }
 
     Tile *GetTile() { return tile; }
+    sf::Vector2f GetShift() const { return shift; }
+	sf::Vector2i GetShiftingDirection() const { return shiftingDirection; }
+	bool IsDense() { return dense; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
     friend Tile;
@@ -127,6 +139,13 @@ public:
         return nullptr;
     }
 
+	bool IsBlocked() {
+		for (auto &obj : content)
+			if (obj->IsDense()) return true;
+		if (!sprite) return true;
+		return false;
+	}
+
     int GetRelX() const;
     int GetRelY() const;
     const list<Object *> &GetContent() const { return content; }
@@ -168,10 +187,13 @@ public:
 class TileGrid {
 private:
     int xNumOfTiles, yNumOfTiles;
+    int tileSize;
+
     // Camera position
     int xPos, yPos;
     int xRelPos, yRelPos;
-    int tileSize;
+    sf::Vector2f shift;
+    
     // TileGrid padding
     int xPadding, yPadding;
 
@@ -186,6 +208,8 @@ private:
     list< uptr<Object> > objects;
 
     // Controls
+    Object *controllable;
+    float controllableSpeed;
     const sf::Time MOVE_TIMEOUT = sf::milliseconds(100);
     sf::Vector2i moveCommand;
     sf::Time moveSendPause;
@@ -217,13 +241,14 @@ public:
 
         void AddObject(Object *object);
         void RemoveObject(uint id);
-        void MoveObject(uint id, int toX, int toY, int toObjectNum);
-        void ShiftObject(uint id, Global::Direction direction, float speed);
+        void RelocateObject(uint id, int toX, int toY, int toObjectNum);
+        void MoveObject(uint id, Global::Direction direction);
 
         void ShiftBlocks(const int newFirstX, const int newFirstY);
 
         void SetCameraPosition(const int x, const int y);
         void SetBlock(int x, int y, Block *);
+        void SetControllable(uint id, float speed);
 
     ////
 
