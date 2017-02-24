@@ -22,6 +22,7 @@ private:
     Player *player;
     //int relX, relY;
     bool suspense;
+    bool changeFocus;
 
     int visibleBlocksNum;
 
@@ -44,7 +45,7 @@ public:
 
     void UpdateView();
 
-    void SetPlayer(Player * const player) { this->player = player; }
+    void SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
     void SetPosition(const Tile * const tile);
     const Tile * const GetPosition() const { return tile; }
     void Suspend();

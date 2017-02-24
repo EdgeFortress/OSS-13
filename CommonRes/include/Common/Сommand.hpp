@@ -156,7 +156,8 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
         EMPTY = 0,
         BLOCKS_SHIFT = 1,
         CAMERA_MOVE = 1 << 1,
-        DIFFERENCES = 1 << 2
+        DIFFERENCES = 1 << 2,
+        NEW_CONTROLLABLE = 1 << 3
     };
 
     std::list<sptr<Diff>> diffs;
@@ -168,6 +169,8 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
     int cameraY;
     int firstBlockX;
     int firstBlockY;
+    int controllable_id;
+    float controllableSpeed;
 
     virtual const Code GetCode() const override { return Code::GRAPHICS_UPDATE; }
 };

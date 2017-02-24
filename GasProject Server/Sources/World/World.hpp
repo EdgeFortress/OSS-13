@@ -33,25 +33,33 @@ private:
     list<Object *> content;
     list<Gas> listGas;
 
+    // Add object to the tile, and change object.tile pointer
+    // If object was in content of other tile, generate MoveDiff,
+    // else generate AddDiff
+    void addObject(Object *obj);
+
 public:
     explicit Tile(Map *map, int x, int y);
 
     void CheckLocal();
     void Update();
 
-    // Add object to the tile, and change object.tile pointer
-    // If object was in content of other tile, generate MoveDiff,
-    // else generate AddDiff
-    void AddObject(Object *obj);
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
     void MoveTo(Object *);
+    void PlaceTo(Object *);
 
     int X() const { return x; }
     int Y() const { return y; }
     Block *GetBlock() const;
     Map *GetMap() const { return map; }
+
+	bool IsDense() {
+		for (auto &obj : content)
+			if (obj->GetDensity()) return true;
+		return false;
+	}
 
     void SetLocal(Local *local) { this->local = local; }
 

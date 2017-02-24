@@ -18,16 +18,17 @@ struct Diff {
     virtual Global::DiffType GetType() const { return Global::DiffType::NONE; }
 };
 
-struct MoveDiff : public Diff {
+struct ReplaceDiff : public Diff {
     Block *lastBlock;
     Object *object;
     int toX, toY, toObjectNum;
-    MoveDiff(uint id, int toX, int toY, int toObjectNum, Block *lastBlock, Object* object) :
+    ReplaceDiff(uint id, int toX, int toY, Block *lastBlock, Object *object) :
         Diff(id), lastBlock(lastBlock),
-        toX(toX), toY(toY), toObjectNum(toObjectNum)
+        toX(toX), toY(toY),
+        object(object)
     { }
 
-    virtual Global::DiffType GetType() const final { return Global::DiffType::MOVE; }
+    virtual Global::DiffType GetType() const final { return Global::DiffType::RELOCATE; }
 };
 
 struct AddDiff : public Diff {
@@ -45,9 +46,20 @@ struct RemoveDiff : public Diff {
     virtual Global::DiffType GetType() const final { return Global::DiffType::REMOVE; }
 };
 
+struct MoveDiff : public Diff {
+    Global::Direction direction;
+    Block *lastblock;
+    MoveDiff(uint id, Global::Direction direction, Block *lastblock) :
+        Diff(id), direction(direction), lastblock(lastblock)
+    { }
+
+    virtual Global::DiffType GetType() const final { return Global::DiffType::MOVE; }
+};
+
 struct ShiftDiff : public Diff {
     Global::Direction direction;
     float speed;
+    
     ShiftDiff(uint id, Global::Direction direction, float speed) :
         Diff(id), direction(direction), speed(speed)
     { }

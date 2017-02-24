@@ -31,8 +31,12 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
             }
             if (command->options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
                 packet << sf::Int32(command->diffs.size());
-                for (auto &diff : command->diffs)
-                    packet << *(diff);
+				for (auto &diff : command->diffs) {
+					packet << *(diff);
+				}
+            }
+            if (command->options & GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE) {
+                packet << command->controllable_id << command->controllableSpeed;
             }
             break;
         }
@@ -57,9 +61,9 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
     if (diff.GetType() == Global::DiffType::NONE) return packet;
     packet << Int32(diff.GetType());
     switch (diff.GetType()) {
-        case Global::DiffType::MOVE: {
+        case Global::DiffType::RELOCATE: {
             packet << Int32(diff.id);
-            const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
+            const ReplaceDiff &moveDiff = dynamic_cast<const ReplaceDiff &>(diff);
             packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toObjectNum);
             break;
         }
@@ -73,11 +77,10 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
             const RemoveDiff &removeDiff = dynamic_cast<const RemoveDiff &>(diff);
             break;
         }
-        case Global::DiffType::SHIFT: {
+        case Global::DiffType::MOVE: {
             packet << Int32(diff.id);
-            const ShiftDiff &shiftDiff = dynamic_cast<const ShiftDiff &>(diff);
+            const MoveDiff &shiftDiff = dynamic_cast<const MoveDiff &>(diff);
             packet << Int8(shiftDiff.direction);
-            packet << shiftDiff.speed;
             break;
         }
     }
@@ -101,5 +104,6 @@ Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
 
 Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
     packet << sf::Int32(objInfo.id) << sf::Int32(objInfo.sprite) << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
+	packet << objInfo.dense;
     return packet;
 }

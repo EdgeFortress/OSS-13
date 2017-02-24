@@ -11,6 +11,7 @@
 
 Camera::Camera(const Tile * const tile) :
     suspense(true), unsuspensed(false), cameraMoved(false),
+    changeFocus(false),
     tile(nullptr), lasttile(nullptr)
 {
     // num * size - (2 * pad + fov) >= size
@@ -54,8 +55,8 @@ void Camera::UpdateView() {
                 if (blocksSync[y][x]) {
                     for (auto &diff : block->GetDifferences()) {
                         // If client doesn't know about moved object, we need to add it
-                        if (diff->GetType() == Global::DiffType::MOVE) {
-                            MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
+                        if (diff->GetType() == Global::DiffType::RELOCATE) {
+                            ReplaceDiff *moveDiff = dynamic_cast<ReplaceDiff *>(diff.get());
                             Block *lastBlock = moveDiff->lastBlock;
                             if (!lastBlock ||
                                 lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + visibleBlocksNum ||
@@ -63,6 +64,9 @@ void Camera::UpdateView() {
                             {
                                 command->diffs.push_back(sptr<Diff>(new AddDiff(moveDiff->object->GetObjectInfo())));
                             }
+                        }
+                        if (diff->GetType() == Global::DiffType::SHIFT) {
+                            continue;
                         }
                         command->diffs.push_back(diff);
                     }
@@ -82,6 +86,13 @@ void Camera::UpdateView() {
 
     if (command->diffs.size()) {
         updateOptions |= GraphicsUpdateServerCommand::Option::DIFFERENCES;
+    }
+
+    if (changeFocus) {
+        updateOptions |= GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE;
+        command->controllable_id = player->GetMob()->ID();
+        command->controllableSpeed = player->GetMob()->GetSpeed();
+        changeFocus = false;
     }
 
     command->options = GraphicsUpdateServerCommand::Option(updateOptions);

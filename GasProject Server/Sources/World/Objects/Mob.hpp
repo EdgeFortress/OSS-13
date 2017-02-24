@@ -23,4 +23,6 @@ public:
 
     virtual void Update(sf::Time timeElapsed) override;
     virtual void Interact(Object *) { };
+
+    float GetSpeed() const { return speed; }
 };

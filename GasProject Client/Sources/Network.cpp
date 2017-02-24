@@ -151,16 +151,6 @@ void Connection::parsePacket(Packet &packet) {
                     Int32 type;
                     packet >> type;
                     switch (Global::DiffType(type)) {
-                        case Global::DiffType::MOVE: {
-                            Int32 id;
-                            packet >> id;
-                            Int32 toX, toY, toObjectNum;
-                            packet >> toX >> toY >> toObjectNum;
-
-                            tileGrid->MoveObject(id, toX, toY, toObjectNum);
-
-                            break;
-                        }
                         case Global::DiffType::ADD: {
                             Object *object = new Object;
                             packet >> *object;
@@ -176,12 +166,23 @@ void Connection::parsePacket(Packet &packet) {
 
                             break;
                         }
-                        case Global::DiffType::SHIFT: {
+                        case Global::DiffType::RELOCATE: {
+                            Int32 id;
+                            packet >> id;
+                            Int32 toX, toY, toObjectNum;
+                            packet >> toX >> toY >> toObjectNum;
+
+                            tileGrid->RelocateObject(id, toX, toY, toObjectNum);
+
+                            break;
+                        }
+                        case Global::DiffType::MOVE: {
                             Int32 id;
                             packet >> id;
                             Int8 direction;
-                            float speed;
-                            packet >> direction >> speed;
+                            packet >> direction;
+
+                            tileGrid->MoveObject(id, Global::Direction(direction));
 
                             //tileGrid->ShiftObject(id, Global::Direction(direction), speed);
 
@@ -193,6 +194,12 @@ void Connection::parsePacket(Packet &packet) {
                             break;
                     }
                 }
+            }
+            if (options & GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE) {
+                Int32 id;
+                float speed;
+                packet >> id >> speed;
+                tileGrid->SetControllable(id, speed);
             }
             tileGrid->UnlockDrawing();
             break;
@@ -283,11 +290,13 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 Packet &operator>>(Packet &packet, Object &object) {
     sf::Int32 id, sprite, layer;
     sf::String name;
-    packet >> id >> sprite >> name >> layer;
+	bool dense;
+    packet >> id >> sprite >> name >> layer >> dense;
     object.id = id;
     object.SetSprite(Global::Sprite(sprite));
     object.name = name;
     object.layer = layer;
+	object.dense = dense;
     return packet;
 }
 
