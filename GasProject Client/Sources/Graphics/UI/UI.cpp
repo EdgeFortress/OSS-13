@@ -19,11 +19,13 @@ UIModule::UIModule(UI *ui) : ui(ui) {
 
 UI::UI() :
     authUI(new AuthUI(this)),
-    gamelistUI(new GameListUI(this)),
-    gameProcessUI(new GameProcessUI(this))
+    gamelistUI(new GameListUI(this))
 {
     if (!font.loadFromFile("Arialuni.ttf"))
+    //if (!font.loadFromFile("agency.ttf"))
         CC::log << "Font load error!" << endl;
+    gameProcessUI = uptr<GameProcessUI>(new GameProcessUI(this));
+
     background.loadFromFile("Images/MenuBackground.jpg");
     background_sprite.setTexture(background);
 }

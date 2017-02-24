@@ -22,6 +22,8 @@ private:
         Message(const wstring &stringText) : stringText(stringText) { }
     };
 
+    sf::Font font;
+
     bool active;
 
     sf::Time cursorTime;
@@ -31,17 +33,20 @@ private:
     float chatXPos, chatYPos;
     int characterSize;
 
-    std::map<sf::Uint32, std::pair<float, float>> sizes;
+    std::map<sf::Uint32, vector<float>> sizes; //0. Normal size, 1. Bold size, 2. Normal advance size, 3. Bold advance size;
+    void SizeFiller(const sf::Font &font, sf::Uint32 c);
     bool resized;
     unsigned showPos;
     wstring entryString;
     sf::Text entryText;
-    float entryTextXShift, entryTextYShift;
+    float entryTextXShift, entryTextYShift, textXShift;
 
     vector<Message> boxText;
     std::mutex mtx;
 
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
+    
+    int cursorPos;
 
 public:
     Chat(const sf::Font &font);
@@ -59,6 +64,9 @@ public:
 
     void SetSymbol(const wchar_t c);
     void DeleteSymbol();
+
+    void MoveLeft();
+    void MoveRight();
 
     void Send();
     void AddIncomingMessage(const std::string &message);

@@ -157,6 +157,10 @@ void GameProcessState::HandleEvent(sf::Event event) const {
                 chat->Send();
             if (event.key.code == sf::Keyboard::BackSpace)
                 chat->DeleteSymbol();
+            if (event.key.code == sf::Keyboard::Left)
+                chat->MoveLeft();
+            if (event.key.code == sf::Keyboard::Right)
+                chat->MoveRight();
         }
         if (event.type == sf::Event::TextEntered) {
             wchar_t c = wchar_t(event.text.unicode);
