@@ -28,7 +28,8 @@ Chat::Chat(const sf::Font &font) : font(font) {
     active = false;
     cursorTime = sf::Time::Zero;
     cursor.setFillColor(textColor);
-    cursor.setSize(sf::Vector2f(characterSize / 6.0f, characterSize + 4.0f));
+    //cursor.setSize(sf::Vector2f(characterSize / 6.0f, characterSize + 4.0f));
+    cursor.setSize(sf::Vector2f(characterSize / 6.0f, float(characterSize)));
 }
 
 void Chat::SizeFiller(const sf::Font &font, sf::Uint32 c) {
@@ -125,15 +126,23 @@ void Chat::DeleteSymbol() {
     if (cursorPos < 0)
         return;
 
-    if (cursorPos + 1 == showPos && showPos) {
-        showPos--;
-        letter_sizes = std::move(sizes[entryString[cursorPos]]);
-        if (letter_sizes.size())
-            cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
+    int shift_size = 15;
+    if (cursorPos + 1 <= int(showPos) && showPos) {
+        if (int(showPos) >= shift_size)
+            showPos -= shift_size;
         else {
-            SizeFiller(font, entryString[cursorPos]);
-            letter_sizes = std::move(sizes[entryString[cursorPos]]);
-            cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
+            shift_size = showPos;
+            showPos -= shift_size;
+        }
+        for (unsigned i = showPos; i < showPos + shift_size; i++) {
+            letter_sizes = std::move(sizes[entryString[i]]);
+            if (letter_sizes.size())
+                cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
+            else {
+                SizeFiller(font, entryString[i]);
+                letter_sizes = std::move(sizes[entryString[i]]);
+                cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
+            }
         }
     }
     
