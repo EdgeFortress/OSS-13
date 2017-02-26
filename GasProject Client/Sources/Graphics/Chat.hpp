@@ -36,6 +36,7 @@ private:
     std::map<sf::Uint32, vector<float>> sizes; //0. Normal size, 1. Bold size, 2. Normal advance size, 3. Bold advance size;
     void SizeFiller(const sf::Font &font, sf::Uint32 c);
     bool resized;
+    int scrolled;
     unsigned showPos;
     wstring entryString;
     sf::Text entryText;
@@ -67,6 +68,9 @@ public:
 
     void MoveLeft();
     void MoveRight();
+
+    void ScrollUp();
+    void ScrollDown();
 
     void Send();
     void AddIncomingMessage(const std::string &message);

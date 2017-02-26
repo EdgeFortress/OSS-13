@@ -161,6 +161,10 @@ void GameProcessState::HandleEvent(sf::Event event) const {
                 chat->MoveLeft();
             if (event.key.code == sf::Keyboard::Right)
                 chat->MoveRight();
+            if (event.key.code == sf::Keyboard::Up)
+                chat->ScrollUp();
+            if (event.key.code == sf::Keyboard::Down)
+                chat->ScrollDown();
         }
         if (event.type == sf::Event::TextEntered) {
             wchar_t c = wchar_t(event.text.unicode);
