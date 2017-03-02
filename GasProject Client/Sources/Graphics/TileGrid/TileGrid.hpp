@@ -26,7 +26,7 @@ private:
     Sprite *sprite;
     int direction;
     int layer;
-	bool dense;
+    bool dense;
 
     sf::Vector2f shift;
     sf::Vector2i shiftingDirection;
@@ -63,8 +63,8 @@ public:
 
     Tile *GetTile() { return tile; }
     sf::Vector2f GetShift() const { return shift; }
-	sf::Vector2i GetShiftingDirection() const { return shiftingDirection; }
-	bool IsDense() { return dense; }
+    sf::Vector2i GetShiftingDirection() const { return shiftingDirection; }
+    bool IsDense() { return dense; }
 
     friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
     friend Tile;
@@ -139,12 +139,12 @@ public:
         return nullptr;
     }
 
-	bool IsBlocked() {
-		for (auto &obj : content)
-			if (obj->IsDense()) return true;
-		if (!sprite) return true;
-		return false;
-	}
+    bool IsBlocked() {
+        for (auto &obj : content)
+            if (obj->IsDense()) return true;
+        if (!sprite) return true;
+        return false;
+    }
 
     int GetRelX() const;
     int GetRelY() const;

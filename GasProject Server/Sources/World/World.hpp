@@ -55,11 +55,11 @@ public:
     Block *GetBlock() const;
     Map *GetMap() const { return map; }
 
-	bool IsDense() {
-		for (auto &obj : content)
-			if (obj->GetDensity()) return true;
-		return false;
-	}
+    bool IsDense() {
+        for (auto &obj : content)
+            if (obj->GetDensity()) return true;
+        return false;
+    }
 
     void SetLocal(Local *local) { this->local = local; }
 
