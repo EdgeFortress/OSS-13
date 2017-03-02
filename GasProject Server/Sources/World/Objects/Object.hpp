@@ -26,10 +26,13 @@ protected:
     uint layer;
     bool density;
 
+	sf::Vector2f shift;
+	float speed; // speed (tiles/seconds)
+
 public:
     Object();
 
-    virtual void Update(sf::Time timeElapsed) = 0;
+    virtual void Update(sf::Time timeElapsed);
 
     bool GetDensity() const { return density; }
     Global::Sprite GetSprite() const { return sprite; }

@@ -266,8 +266,9 @@ int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
 void World::Update(sf::Time timeElapsed) {
     map->ClearDiffs();
 
-    time_since_testMob_update += timeElapsed;
-    if (time_since_testMob_update >= sf::seconds(1)) {
+	// Simple walking mob AI for moving testing
+    if (testMob_lastPosition != testMob->GetTile()) {
+		testMob_lastPosition = testMob->GetTile();
         int x = testMob->GetTile()->X() + test_dx;
         int y = testMob->GetTile()->Y() + test_dy;
         if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
@@ -275,8 +276,8 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
+		testMob->MoveCommand(sf::Vector2i(test_dx, test_dy));
         //map->GetTile(x, y)->AddObject(testMob);
-        time_since_testMob_update = sf::Time::Zero;
     }
     
     map->Update();
@@ -305,9 +306,9 @@ void World::FillingWorld() {
         }
     }
 
-    time_since_testMob_update = sf::Time::Zero;
     testMob = new Mob;
-    map->GetTile(49, 49)->PlaceTo(testMob);
+	testMob_lastPosition = nullptr;
+    map->GetTile(49, 49)->PlaceTo(dynamic_cast<Mob *>(testMob));
     test_dx = 1;
     test_dy = 0;
 

@@ -153,6 +153,7 @@
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\World\Camera.hpp" />
+    <ClInclude Include="Sources\World\Controllable.hpp" />
     <ClInclude Include="Sources\World\Objects.hpp" />
     <ClInclude Include="Sources\World\Objects\Item.hpp" />
     <ClInclude Include="Sources\World\Objects\Mob.hpp" />

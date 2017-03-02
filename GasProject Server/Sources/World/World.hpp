@@ -128,9 +128,8 @@ class World {
 private:
     uptr<Map> map;
 
-    Mob* testMob;
-    sf::Time time_since_testMob_update;
-    sf::Time mobsUpdateTime;
+    Controllable *testMob;
+	Tile *testMob_lastPosition;
     int test_dx;
     int test_dy;
     int mobsVelocity;

@@ -4,29 +4,30 @@
 #include "World/World.hpp"
 #include "Network/Differences.hpp"
 
-void Mob::Move(sf::Vector2i order) {
-    if (!order.x && !order.y) return;
-    std::unique_lock<std::mutex> lock(orderLock);
-	
-	Tile *newTileDiag = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + order.y);
-	Tile *newTileX = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + moveOrder.x);
-	Tile *newTileY = tile->GetMap()->GetTile(tile->X() + moveOrder.y, tile->Y() + order.y);
-
-	if (order.x) moveOrder.x = order.x;
-	if (order.y) moveOrder.y = order.y;
-
-	if (!newTileDiag || newTileDiag->IsDense()) moveOrder = sf::Vector2i();
-	if (!newTileX || newTileX->IsDense()) moveOrder.x = 0;
-	if (!newTileY || newTileY->IsDense()) moveOrder.y = 0;
-	if (!moveOrder.x && !moveOrder.y) return;
-
-    tile->GetBlock()->AddDiff(new ShiftDiff(id, Global::VectToDirection(order), speed));
-}
-
 void Mob::Update(sf::Time timeElapsed) {
-    std::unique_lock<std::mutex> lock(orderLock);
-    if (moveOrder.x || moveOrder.y) {
-        shift += speed * sf::Vector2f(moveOrder) * timeElapsed.asSeconds();
+    //std::unique_lock<std::mutex> lock(orderLock);
+
+	// Check for new move order
+	sf::Vector2i order = getMoveOrder();
+	if (order != sf::Vector2i()) {
+		Tile *newTileDiag = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + order.y);
+		Tile *newTileX = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + moveIntent.x);
+		Tile *newTileY = tile->GetMap()->GetTile(tile->X() + moveIntent.y, tile->Y() + order.y);
+
+		if (order.x) moveIntent.x = order.x;
+		if (order.y) moveIntent.y = order.y;
+
+		if (!newTileDiag || newTileDiag->IsDense()) moveIntent = sf::Vector2i();
+		if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
+		if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
+		if (!moveIntent.x && !moveIntent.y) return;
+
+		tile->GetBlock()->AddDiff(new ShiftDiff(id, Global::VectToDirection(order), speed));
+	}
+
+	// If there is intention to move
+    if (moveIntent.x || moveIntent.y) {
+        shift += speed * sf::Vector2f(moveIntent) * timeElapsed.asSeconds();
 
         if (shift.x || shift.y) {
             int dx, dy;
@@ -46,17 +47,22 @@ void Mob::Update(sf::Time timeElapsed) {
 					dest_tile->MoveTo(this);
 				}
 
-                if (dx) moveOrder.x = 0;
-                if (dy) moveOrder.y = 0;
+                if (dx) moveIntent.x = 0;
+                if (dy) moveIntent.y = 0;
             }
         }
-    }
-    if (shift.x && !moveOrder.x) {
-        float newShiftX = shift.x - sgn(shift.x) * speed * timeElapsed.asSeconds();
-		shift.x = sgn(shift.x) * sgn(newShiftX) > 0 ? newShiftX : 0;
-    }
-    if (shift.y && !moveOrder.y) {
-        float newShiftY = shift.y - sgn(shift.y) * speed * timeElapsed.asSeconds();
-        shift.y = sgn(shift.y) * sgn(newShiftY) > 0 ? newShiftY : 0;
-    }
+
+		// If there is move intention only for Y
+		if (!moveIntent.x && shift.x) {
+			float newShiftX = shift.x - sgn(shift.x) * speed * timeElapsed.asSeconds();
+			shift.x = sgn(shift.x) * sgn(newShiftX) > 0 ? newShiftX : 0;
+		}
+		// If there is move intention only for X
+		if (!moveIntent.y && shift.y) {
+			float newShiftY = shift.y - sgn(shift.y) * speed * timeElapsed.asSeconds();
+			shift.y = sgn(shift.y) * sgn(newShiftY) > 0 ? newShiftY : 0;
+		}
+	}
+	else // No exist move intention
+		Object::Update(timeElapsed);
 }

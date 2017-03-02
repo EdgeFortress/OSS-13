@@ -48,7 +48,7 @@ void Player::ChatMessage(std::string &message) {
 }
 
 void Player::Move(Global::Direction direction) {
-    if (mob) mob->Move(Global::DirectionToVect(direction));
+	commandsFromClient.Push(new MovePlayerCommand(Global::DirectionToVect(direction)));
 }
 
 void Player::Update() {
@@ -60,6 +60,12 @@ void Player::Update() {
                     SetMob(game->GetWorld()->CreateNewPlayerMob());
                     break;
                 }
+				case PlayerCommand::Code::MOVE: {
+					if (mob) {
+						MovePlayerCommand *moveCommand = dynamic_cast<MovePlayerCommand *>(temp);
+						mob->MoveCommand(moveCommand->order);
+					}
+				}
             }
             delete temp;
         }

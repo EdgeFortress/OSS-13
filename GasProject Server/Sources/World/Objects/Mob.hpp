@@ -1,14 +1,11 @@
 #pragma once
 
 #include "Object.hpp"
+#include "World/Controllable.hpp"
 
-class Mob : public Object {
+class Mob : public Controllable {
 private:
-    sf::Vector2f shift;
-    float speed; // speed (tiles/seconds)
-
-    sf::Vector2i moveOrder;
-    std::mutex orderLock;
+    sf::Vector2i moveIntent;
 
 public:
     explicit Mob() {
@@ -18,8 +15,6 @@ public:
         density = false;
         speed = 4;
     }
-
-    void Move(sf::Vector2i order);
 
     virtual void Update(sf::Time timeElapsed) override;
     virtual void Interact(Object *) { };
