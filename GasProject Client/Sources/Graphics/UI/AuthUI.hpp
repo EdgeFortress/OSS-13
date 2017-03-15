@@ -3,6 +3,9 @@
 #include "UI.hpp"
 #include "State.hpp"
 
+#include "Widget/Container.hpp"
+#include "Widget/Label.hpp"
+
 class AuthUI : public UIModule {
 private:
     enum class ComState : char {
@@ -36,6 +39,8 @@ private:
     void login();
     void registration();
 
+	uptr<Container> container;
+
 public:
     AuthUI(UI *ui);
     AuthUI(const AuthUI &) = delete;
@@ -43,7 +48,7 @@ public:
     virtual ~AuthUI() = default;
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw(sf::RenderWindow* renderWindow) final {};
+	virtual void Draw(sf::RenderWindow *renderWindow) final { container->Draw(*renderWindow); };
     virtual void Update() final {};
 
     void SetServerAnswer(bool result) {

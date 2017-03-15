@@ -24,7 +24,7 @@ public:
     virtual ~UIModule() = default;
 
     virtual void Resize(int width, int height) = 0;
-    virtual void Draw(sf::RenderWindow* renderWindow) = 0;
+    virtual void Draw(sf::RenderWindow *renderWindow) = 0;
     virtual void Update() = 0;
 
     virtual void Hide() = 0;

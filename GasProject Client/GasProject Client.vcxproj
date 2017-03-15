@@ -156,6 +156,9 @@
     <ClCompile Include="Sources\Graphics\UI\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\GameListUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\GameProcessUI.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
     <ClCompile Include="sources\State.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />
@@ -168,7 +171,9 @@
     <ClInclude Include="Sources\Graphics\UI\AuthUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameListUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameProcessUI.hpp" />
-    <ClInclude Include="Sources\Graphics\Widget.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Network.hpp" />
     <ClInclude Include="sources\State.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />

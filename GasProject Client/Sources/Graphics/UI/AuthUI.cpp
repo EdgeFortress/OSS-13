@@ -75,6 +75,9 @@ void AuthUI::generateLoginWindow() {
         //(ui->GetRenderWindow()->getSize().y - logWindow->GetAllocation().height) / 3));
     logWindow->SetStyle(NULL);
     ui->GetDesktop()->Add(logWindow);
+
+	container.reset(new Container());
+	container->AddItem(new Label(L"Привет, блин", ui->GetFont()), sf::Vector2f());
 }
 
 void AuthUI::generateRegistrationWindow() {
