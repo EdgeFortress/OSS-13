@@ -49,7 +49,6 @@ void UI::Update(sf::Time timeElapsed) {
 }
 
 void UI::Draw(sf::RenderWindow *render_window) {
-	authUI->Draw(render_window);
     m_sfgui.Display(*render_window);
 }
 

@@ -6,29 +6,21 @@
 
 class Container : public Widget {
 private:
+	sf::Vector2f size;
+	sf::RenderTexture buffer;
+	//uptr<sf::Texture> buffer;
 	std::list<std::pair<sf::Vector2f, uptr<Widget>>> items;
 
+protected:
+	virtual void draw() const override;
+
 public:
-	Container() {
+	Container(const sf::Vector2f &size = sf::Vector2f());
+	
+	virtual void Update() final;
 
-	}
+	void AddItem(Widget *, sf::Vector2f position);
 
-	virtual void Draw(sf::RenderTarget &target) const override {
-		for (auto &item : items) item.second->Draw(target);
-	};
-
-	void AddItem(Widget *widget, sf::Vector2f position) {
-		items.push_back(std::pair<sf::Vector2f, uptr<Widget>>(position, uptr<Widget>(widget)));
-		widget->SetPosition(position + GetPosition());
-	}
-
-	virtual void SetPosition(const sf::Vector2f pos) final {
-		for (auto &item : items) item.second->SetPosition(pos + item.first);
-		Widget::SetPosition(pos);
-	}
-	virtual void SetPosition(const float x, const float y) final {
-		for (auto &item : items) item.second->SetPosition(x + item.first.x, y + item.first.y);
-		Widget::SetPosition(x, y);
-	}
-	virtual void Update() final { }
+	virtual void SetPosition(const sf::Vector2f) final;
+	virtual void SetPosition(const float x, const float y) final;
 };

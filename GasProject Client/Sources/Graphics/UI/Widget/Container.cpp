@@ -1,11 +1,12 @@
 #include "Container.hpp"
 
-Container::Container() {
+Container::Container(const sf::Vector2f &size) : Widget(size) { }
 
-}
-
-void Container::Draw(sf::RenderTarget &target) const {
-	for (auto &item : items) item.second->Draw(target);
+void Container::draw() const {
+	sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
+	buffer.clear(sf::Color::Transparent);
+	for (auto &item : items) item.second->Draw(buffer);
+	buffer.display();
 };
 
 void Container::AddItem(Widget *widget, sf::Vector2f position) {

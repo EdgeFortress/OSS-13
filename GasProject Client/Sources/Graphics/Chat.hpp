@@ -44,10 +44,11 @@ private:
 
     vector<Message> boxText;
     std::mutex mtx;
-
-	virtual void Draw(sf::RenderTarget &target) const final { }
     
     int cursorPos;
+
+protected:
+	virtual void draw() const final { }
 
 public:
     Chat(const sf::Font &font);

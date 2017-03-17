@@ -100,6 +100,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
     window->GetUI()->DrawMenuBackground(render_window);
+	authUI->Draw(render_window);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
