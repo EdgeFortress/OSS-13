@@ -4,6 +4,8 @@
 #include "AuthUI.hpp"
 #include "Network.hpp"
 
+#include "Widget/Label.hpp"
+#include "Widget/Button.hpp"
 
 void AuthUI::AccountDataEnter() {
     if (login_entry->HasFocus() || passw_entry->HasFocus())
@@ -18,6 +20,10 @@ AuthUI::AuthUI(UI *ui) : UIModule(ui) {
     generateLoginWindow();
     generateRegistrationWindow();
     Hide();
+}
+
+void OnButtonClick() {
+    CC::log << "ButtonPressed" << endl;
 }
 
 void AuthUI::generateLoginWindow() {
@@ -75,9 +81,19 @@ void AuthUI::generateLoginWindow() {
         //(ui->GetRenderWindow()->getSize().y - logWindow->GetAllocation().height) / 3));
     logWindow->SetStyle(NULL);
     ui->GetDesktop()->Add(logWindow);
+    
+    uptr<Container> container;
+	container.reset(new Container(sf::Vector2f(100, 50)));
+	container->AddItem(new Label(L"Login", ui->GetFont(), 16), sf::Vector2f(0, 0));
+    container->SetPosition(100, 100);
+    container->SetBackground(sf::Color::Green);
+    widgets.push_back(move(container));
 
-	container.reset(new Container(sf::Vector2f(200, 200)));
-	container->AddItem(new Label(L"Login", ui->GetFont(), 16), sf::Vector2f(100, 100));
+    container.reset(new Container(sf::Vector2f(100, 100)));
+    container->AddItem(new Button(sf::String("Button"), sf::Vector2f(50, 100), sf::Color::Blue, ui->GetFont(), std::function<void()>(OnButtonClick)), sf::Vector2f(0, 0));
+    container->SetPosition(400, 400);
+    container->SetBackground(sf::Color::Red);
+    widgets.push_back(move(container));
 }
 
 void AuthUI::generateRegistrationWindow() {

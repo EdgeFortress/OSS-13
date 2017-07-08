@@ -100,6 +100,7 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
     window->GetUI()->DrawMenuBackground(render_window);
+    authUI->Update();
 	authUI->Draw(render_window);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
@@ -128,6 +129,8 @@ void MenuLoginState::HandleEvent(sf::Event event) const {
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->ChangeFocus();
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
 }
 void MenuGameListState::HandleEvent(sf::Event event) const { }
 void GameLobbyState::HandleEvent(sf::Event event) const { }

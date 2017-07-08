@@ -2,11 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-class Widget : private sf::Transformable, private sf::Drawable {
+class Widget : private sf::Transformable, public sf::Drawable {
 private:
 	sf::Vector2f size;
-	// draw method for Drawable inheritance
-	void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
+    sf::Sprite bufferSprite;
 
 protected:
 	sf::RenderTexture buffer;
@@ -16,9 +15,13 @@ protected:
 public:
 	explicit Widget(const sf::Vector2f &size = sf::Vector2f());
 
+    // draw method for Drawable inheritance
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
+
 	// public method for Draw widget buffer to target
 	void Draw(sf::RenderTarget &target) const;
 	virtual void Update() = 0;
+    virtual void HandleEvent(sf::Event event) {}
 
 	virtual void SetPosition(const sf::Vector2f);
 	virtual void SetPosition(const float x, const float y);

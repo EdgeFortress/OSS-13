@@ -156,6 +156,7 @@
     <ClCompile Include="Sources\Graphics\UI\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\GameListUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\GameProcessUI.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Sources\Graphics\UI\AuthUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameListUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\GameProcessUI.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />

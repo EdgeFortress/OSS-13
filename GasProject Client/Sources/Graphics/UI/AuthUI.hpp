@@ -4,7 +4,6 @@
 #include "State.hpp"
 
 #include "Widget/Container.hpp"
-#include "Widget/Label.hpp"
 
 class AuthUI : public UIModule {
 private:
@@ -39,7 +38,10 @@ private:
     void login();
     void registration();
 
-	uptr<Container> container;
+	//uptr<Container> container;
+    //std::list<uptr<Container>> containers;
+    std::list<uptr<Widget>> widgets;
+    //uptr<Label> label;
 
 public:
     AuthUI(UI *ui);
@@ -48,8 +50,9 @@ public:
     virtual ~AuthUI() = default;
 
     virtual void Resize(int width, int height) final;
-	virtual void Draw(sf::RenderWindow *renderWindow) final { container->Draw(*renderWindow); };
-    virtual void Update() final {};
+    virtual void Draw(sf::RenderWindow *renderWindow) final { for (auto &widget : widgets) widget->Draw(*renderWindow); };
+    virtual void Update() final { for (auto &widget : widgets) widget->Update(); }
+    virtual void HandleEvent(sf::Event event) final { for (auto &widget : widgets) widget->HandleEvent(event); }
 
     void SetServerAnswer(bool result) {
         mutex.lock();
