@@ -48,22 +48,33 @@ struct RemoveDiff : public Diff {
 
 struct MoveDiff : public Diff {
     Global::Direction direction;
+	float speed;
     Block *lastblock;
-    MoveDiff(uint id, Global::Direction direction, Block *lastblock) :
-        Diff(id), direction(direction), lastblock(lastblock)
+
+    MoveDiff(uint id, Global::Direction direction, float speed, Block *lastblock) :
+        Diff(id), direction(direction), lastblock(lastblock), speed(speed)
     { }
 
     virtual Global::DiffType GetType() const final { return Global::DiffType::MOVE; }
 };
 
-struct ShiftDiff : public Diff {
-    Global::Direction direction;
-    float speed;
-    
-    ShiftDiff(uint id, Global::Direction direction, float speed) :
-        Diff(id), direction(direction), speed(speed)
-    { }
+//struct ShiftDiff : public Diff {
+//    Global::Direction direction;
+//	float speed;
+//    
+//    ShiftDiff(uint id, Global::Direction direction, float speed) :
+//        Diff(id), direction(direction), speed(speed)
+//    { }
+//
+//    virtual Global::DiffType GetType() const final { return Global::DiffType::SHIFT; }
+//};
 
-    virtual Global::DiffType GetType() const final { return Global::DiffType::SHIFT; }
+struct ChangeDirectionDiff : public Diff {
+	Global::Direction direction;
+
+	ChangeDirectionDiff(uint id, Global::Direction direction) :
+		Diff(id), direction(direction)
+	{ }
+
+	virtual Global::DiffType GetType() const final { return Global::DiffType::CHANGE_DIRECTION; }
 };
-

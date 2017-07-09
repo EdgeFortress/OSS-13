@@ -79,10 +79,17 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
         }
         case Global::DiffType::MOVE: {
             packet << Int32(diff.id);
-            const MoveDiff &shiftDiff = dynamic_cast<const MoveDiff &>(diff);
-            packet << Int8(shiftDiff.direction);
+            const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
+            packet << Int8(moveDiff.direction);
+			packet << moveDiff.speed;
             break;
         }
+		case Global::DiffType::CHANGE_DIRECTION: {
+			packet << Int32(diff.id);
+			const ChangeDirectionDiff &changeDirectionDiff = dynamic_cast<const ChangeDirectionDiff &>(diff);
+			packet << Int8(changeDirectionDiff.direction);
+			break;
+		}
     }
     return packet;
 }
@@ -104,6 +111,7 @@ Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
 
 Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
     packet << sf::Int32(objInfo.id) << sf::Int32(objInfo.sprite) << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
+	packet << sf::Int8(objInfo.direction);
 	packet << objInfo.dense;
     return packet;
 }

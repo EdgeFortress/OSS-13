@@ -69,7 +69,7 @@ public:
     Sprite();
     Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIndex, int frames, bool directed);
 
-    void Draw(sf::RenderWindow * const window, const int x, const int y, const int direction) const;
+    void Draw(sf::RenderWindow * const window, const int x, const int y, const Global::Direction direction) const;
 
     void Resize(int size);
 

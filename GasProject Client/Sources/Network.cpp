@@ -181,14 +181,25 @@ void Connection::parsePacket(Packet &packet) {
                             packet >> id;
                             Int8 direction;
                             packet >> direction;
+							float speed;
+							packet >> speed;
 
-                            tileGrid->MoveObject(id, Global::Direction(direction));
+                            tileGrid->MoveObject(id, Global::Direction(direction), speed);
 
                             //tileGrid->ShiftObject(id, Global::Direction(direction), speed);
 
-                            //CC::log << direction << std::to_string(speed);
                             break;
                         }
+						case Global::DiffType::CHANGE_DIRECTION: {
+							Int32 id;
+							packet >> id;
+							Int8 direction;
+							packet >> direction;
+
+							tileGrid->ChangeObjectDirection(id, Global::Direction(direction));
+
+							break;
+						}
                         default:
                             CC::log << "Wrong diff type: " << type << endl;
                             break;
@@ -289,13 +300,15 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 
 Packet &operator>>(Packet &packet, Object &object) {
     sf::Int32 id, sprite, layer;
+	sf::Int8 direction;
     sf::String name;
 	bool dense;
-    packet >> id >> sprite >> name >> layer >> dense;
+    packet >> id >> sprite >> name >> layer >> direction >> dense;
     object.id = id;
     object.SetSprite(Global::Sprite(sprite));
     object.name = name;
     object.layer = layer;
+	object.direction = Global::Direction(direction);
 	object.dense = dense;
     return packet;
 }

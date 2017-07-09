@@ -16,21 +16,28 @@ namespace sf {
 
 class Object {
 private:
+	Global::Direction direction;
     void takeID();
 
 protected:
     uint id;
+	std::string name;
+
     Tile *tile;
-    std::string name;
+	bool density;
+    
     Global::Sprite sprite;
     uint layer;
-    bool density;
-
+    
 	sf::Vector2f shift;
 	float speed; // speed (tiles/seconds)
 
+	void setDirection(Global::Direction);
+
 public:
     Object();
+
+	virtual void Interact(Object *) = 0;
 
     virtual void Update(sf::Time timeElapsed);
 
@@ -42,8 +49,6 @@ public:
 
     //// Just set tile pointer
     //void SetTile(Tile *tile) { this->tile = tile; }
-
-    virtual void Interact(Object *) = 0;
 
     const ObjectInfo GetObjectInfo() const;
 

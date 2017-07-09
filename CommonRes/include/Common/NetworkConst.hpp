@@ -15,7 +15,8 @@ namespace Global {
         REMOVE,
         RELOCATE,
         MOVE,
-        SHIFT
+        //SHIFT,
+		CHANGE_DIRECTION
     };
 
     enum class Sprite : char {

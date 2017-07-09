@@ -10,6 +10,8 @@ void Mob::Update(sf::Time timeElapsed) {
 	// Check for new move order
 	sf::Vector2i order = getMoveOrder();
 	if (order != sf::Vector2i()) {
+		setDirection(Global::VectToDirection(order));
+
 		Tile *newTileDiag = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + order.y);
 		Tile *newTileX = tile->GetMap()->GetTile(tile->X() + order.x, tile->Y() + moveIntent.x);
 		Tile *newTileY = tile->GetMap()->GetTile(tile->X() + moveIntent.y, tile->Y() + order.y);
@@ -22,7 +24,7 @@ void Mob::Update(sf::Time timeElapsed) {
 		if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
 		if (!moveIntent.x && !moveIntent.y) return;
 
-		tile->GetBlock()->AddDiff(new ShiftDiff(id, Global::VectToDirection(order), speed));
+		//tile->GetBlock()->AddDiff(new ShiftDiff(id, Global::VectToDirection(order), speed));
 	}
 
 	// If there is intention to move

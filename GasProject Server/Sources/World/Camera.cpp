@@ -65,9 +65,9 @@ void Camera::UpdateView() {
                                 command->diffs.push_back(sptr<Diff>(new AddDiff(moveDiff->object->GetObjectInfo())));
                             }
                         }
-                        if (diff->GetType() == Global::DiffType::SHIFT) {
-                            continue;
-                        }
+                        //if (diff->GetType() == Global::DiffType::SHIFT) {
+                        //    continue;
+                        //}
                         command->diffs.push_back(diff);
                     }
                 } else {

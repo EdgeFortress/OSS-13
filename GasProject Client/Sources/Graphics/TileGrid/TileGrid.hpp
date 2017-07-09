@@ -24,7 +24,7 @@ private:
     uint id;
     string name;
     Sprite *sprite;
-    int direction;
+    Global::Direction direction;
     int layer;
     bool dense;
 
@@ -41,6 +41,8 @@ public:
     void Update(sf::Time timeElapsed);
 
     void SetSprite(const Global::Sprite);
+	void SetDirection(const Global::Direction);
+	void SetSpeed(float speed);
     void SetShifting(Global::Direction direction, float speed) {
         auto directionVect = Global::DirectionToVect(direction);
         if (shiftingDirection.x != directionVect.x) shiftingDirection.x += directionVect.x;
@@ -242,7 +244,8 @@ public:
         void AddObject(Object *object);
         void RemoveObject(uint id);
         void RelocateObject(uint id, int toX, int toY, int toObjectNum);
-        void MoveObject(uint id, Global::Direction direction);
+        void MoveObject(uint id, Global::Direction direction, float speed);
+		void ChangeObjectDirection(uint id, Global::Direction direction);
 
         void ShiftBlocks(const int newFirstX, const int newFirstY);
 

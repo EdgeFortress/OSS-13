@@ -11,7 +11,7 @@
 Object::Object(const Global::Sprite key, const string name, const bool directed) {
     SetSprite(key);
     this->name = name;
-    direction = 0;
+	direction = Global::Direction::NONE;
 	dense = false;
 }
 
@@ -24,6 +24,15 @@ void Object::SetSprite(const Global::Sprite key) {
                 return;
             }
 }
+
+void Object::SetDirection(const Global::Direction direction) {
+	this->direction = direction;
+}
+
+void Object::SetSpeed(float speed) {
+	shiftingSpeed = speed;
+}
+
 bool Object::checkObj(int x, int y) {
     return !(sprite->PixelTransparent(x, y));
 }
@@ -78,7 +87,7 @@ Tile::Tile(Block *block, const int x, const int y) :
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
-    if (sprite) sprite->Draw(window, x, y, 0);
+    if (sprite) sprite->Draw(window, x, y, Global::Direction::NONE);
 
     //for (auto &obj : content)
     //    obj->Draw(window, x, y);
@@ -283,7 +292,7 @@ void TileGrid::RelocateObject(uint id, int toX, int toY, int toObjectNum) {
     CC::log << "Wrong object ID:" << id << endl;
 }
 
-void TileGrid::MoveObject(uint id, Global::Direction direction) {
+void TileGrid::MoveObject(uint id, Global::Direction direction, float speed) {
     for (auto &obj : objects)
         if (obj->GetID() == id) {
             sf::Vector2i dir = Global::DirectionToVect(direction);
@@ -298,13 +307,23 @@ void TileGrid::MoveObject(uint id, Global::Direction direction) {
                 return;
             }
 
+			obj->SetSpeed(speed);
+
             //obj->SetShifting(direction, speed);
             tile->AddObject(obj.get(), 0);
-            obj->ReverseShifting(direction);
+			obj->ReverseShifting(direction);
 			if (obj.get() == controllable) shift = controllable->GetShift();
 
             return;
         }
+}
+
+void TileGrid::ChangeObjectDirection(uint id, Global::Direction direction) {
+	for (auto &obj : objects)
+		if (obj->GetID() == id) {
+			obj->SetDirection(direction);
+			return;
+		}
 }
 
 void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {

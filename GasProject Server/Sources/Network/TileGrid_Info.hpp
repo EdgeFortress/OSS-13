@@ -8,10 +8,11 @@ struct ObjectInfo {
     const int sprite;
     const std::string name;
     const uint layer;
+	const Global::Direction direction;
     const bool dense;
 
-    ObjectInfo(uint id, const int sprite, const std::string &name, uint layer, bool dense = false) :
-        id(id), sprite(sprite), name(name), layer(layer), dense(dense) { }
+	ObjectInfo(uint id, const int sprite, const std::string &name, const uint layer, const Global::Direction direction, const bool dense = false) :
+        id(id), sprite(sprite), name(name), layer(layer), direction(direction), dense(dense) { }
 };
 
 struct TileInfo {

@@ -68,7 +68,7 @@ void Tile::MoveTo(Object *obj) {
             Server::log << "Move delta warning" << endl;
         Global::Direction direction = Global::VectToDirection(sf::Vector2i(dx, dy));
         addObject(obj);
-        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, lastBlock));
+        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, obj->speed, lastBlock));
     }
 }
 

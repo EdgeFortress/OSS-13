@@ -3,6 +3,7 @@
 #include "Server.hpp"
 #include "World/World.hpp"
 #include "Network/TileGrid_Info.hpp"
+#include "Network/Differences.hpp"
 
 void Object::takeID() {
     static uint lastID = 0;
@@ -11,10 +12,18 @@ void Object::takeID() {
     id = lastID;
 }
 
+void Object::setDirection(Global::Direction direction) {
+	this->direction = direction;
+	if (tile) {
+		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(id, direction));
+	}
+}
+
 Object::Object() {
     takeID();
     tile = nullptr;
     name = "";
+	direction = Global::Direction::NONE;
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
@@ -32,5 +41,5 @@ void Object::Update(sf::Time timeElapsed) {
 }
 
 const ObjectInfo Object::GetObjectInfo() const {
-    return std::move(ObjectInfo(id, int(sprite), name, layer, density));
+    return std::move(ObjectInfo(id, int(sprite), name, layer, direction, density));
 }
