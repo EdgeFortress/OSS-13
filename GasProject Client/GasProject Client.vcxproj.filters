@@ -103,5 +103,11 @@
     <Image Include="Images\lobby_background.jpg">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="Images\Ghost.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Images\MenuBackground.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

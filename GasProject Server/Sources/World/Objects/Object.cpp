@@ -31,13 +31,26 @@ void Object::Update(sf::Time timeElapsed) {
 	}
 }
 
+bool Object::GetDensity() const { return density; }
+Global::Sprite Object::GetSprite() const { return sprite; }
+
+bool Object::CheckVisibility(uint visibility) const { 
+	return !(~(~invisibility | visibility)); // if invisible flag then visible flag
+}
+uint Object::GetInvisibility() const { return invisibility; }
+
+Tile *Object::GetTile() const { return tile; }
+std::string Object::GetName() const { return name; }
+uint Object::ID() const { return id; }
+
+
 sf::Vector2f Object::GetShift() const { return shift; }
 //float Object::GetSpeed() const { return speed; }
 
 void Object::SetDirection(Global::Direction direction) {
 	this->direction = direction;
 	if (tile) {
-		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(id, direction));
+		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(this, direction));
 	}
 }
 

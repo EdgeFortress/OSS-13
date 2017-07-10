@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\CommonRes\Sources\Global.cpp" />
+    <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="Sources\World\Camera.cpp" />
     <ClCompile Include="Sources\World\Objects\Control.cpp" />
     <ClCompile Include="Sources\World\Objects\Creature.cpp" />
+    <ClCompile Include="Sources\World\Objects\Ghost.cpp" />
     <ClCompile Include="Sources\World\Objects\Human.cpp" />
     <ClCompile Include="Sources\World\Objects\Item.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
@@ -160,6 +162,7 @@
     <ClInclude Include="Sources\World\Objects.hpp" />
     <ClInclude Include="Sources\World\Objects\Control.hpp" />
     <ClInclude Include="Sources\World\Objects\Creature.hpp" />
+    <ClInclude Include="Sources\World\Objects\Ghost.hpp" />
     <ClInclude Include="Sources\World\Objects\Human.hpp" />
     <ClInclude Include="Sources\World\Objects\Item.hpp" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />

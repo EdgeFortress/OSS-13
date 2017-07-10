@@ -55,15 +55,18 @@ void Camera::UpdateView() {
             if (block) {
                 if (blocksSync[y][x]) {
                     for (auto &diff : block->GetDifferences()) {
+						// Check diff visibility
+						if (!diff->CheckVisibility(seeInvisibleAbility)) continue;
+
                         // If client doesn't know about moved object, we need to add it
                         if (diff->GetType() == Global::DiffType::RELOCATE) {
-                            ReplaceDiff *moveDiff = dynamic_cast<ReplaceDiff *>(diff.get());
-                            Block *lastBlock = moveDiff->lastBlock;
+                            ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
+                            Block *lastBlock = replaceDiff->lastBlock;
                             if (!lastBlock ||
                                 lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + visibleBlocksNum ||
                                 lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + visibleBlocksNum) 
                             {
-                                command->diffs.push_back(sptr<Diff>(new AddDiff(moveDiff->object->GetObjectInfo())));
+                                command->diffs.push_back(sptr<Diff>(new AddDiff(*replaceDiff)));
                             }
                         }
                         //if (diff->GetType() == Global::DiffType::SHIFT) {
@@ -72,7 +75,7 @@ void Camera::UpdateView() {
                         command->diffs.push_back(diff);
                     }
                 } else {
-                    command->blocksInfo.push_back(block->GetBlockInfo());
+                    command->blocksInfo.push_back(block->GetBlockInfo(seeInvisibleAbility));
                     blocksSync[y][x] = true;
                 }
             }

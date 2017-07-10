@@ -17,25 +17,26 @@ namespace sf {
 
 class Camera {
 private:
+	Player *player;
+
+	uint seeInvisibleAbility;
+
+	// View information
     const Tile *tile;
     const Tile *lasttile;
-    Player *player;
-    //int relX, relY;
+	int visibleBlocksNum;
+	int firstBlockX;
+	int firstBlockY;
+	std::vector< std::vector<Block *> > visibleBlocks;
+	std::vector< std::vector<bool> > blocksSync;
+    
     bool suspense;
     bool changeFocus;
-
-    int visibleBlocksNum;
-
-    int firstBlockX;
-    int firstBlockY;
 
     // Update options
     bool blockShifted;
     bool unsuspensed;
     bool cameraMoved;
-
-    std::vector< std::vector<Block *> > visibleBlocks;
-    std::vector< std::vector<bool> > blocksSync;
 
     void fullRecountVisibleBlocks(const Tile * const tile);
     void refreshVisibleBlocks(const Tile * const tile);
@@ -47,8 +48,10 @@ public:
 
     void SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
     void SetPosition(const Tile * const tile);
-    const Tile * const GetPosition() const { return tile; }
     void Suspend();
+	void SetInvisibleVisibility(uint visibility) { seeInvisibleAbility = visibility; }
 
     bool IsSuspense() const { return suspense; }
+	const Tile * const GetPosition() const { return tile; }
+	uint GetInvisibleVisibility() { return seeInvisibleAbility; }
 };

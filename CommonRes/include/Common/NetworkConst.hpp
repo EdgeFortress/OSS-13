@@ -25,6 +25,7 @@ namespace Global {
         Wall,
         Airlock,
         Mob,
+		Ghost,
         Space,
         NextSprite = Space + 26
     };

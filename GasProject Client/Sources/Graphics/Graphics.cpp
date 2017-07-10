@@ -191,6 +191,8 @@ void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &spr
     sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Wall, 0, 0, false, 1)));
     sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Floor, 1, 1, false, 1)));
     textures.push_back(uptr<Texture>(t));
+	t = new Texture("Images/Ghost.png", 32, 1);
+	sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Ghost, 0, 0, false, 1)));
     t = new Texture("Images/Space.png", 32, 26);
     sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Space, 0, 0, false, 1)));
     sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite(int(Global::Sprite::Space) + 1), 1, 1, false, 1)));

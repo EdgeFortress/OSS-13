@@ -316,6 +316,7 @@ void TileGrid::MoveObject(uint id, Global::Direction direction, float speed) {
 
             return;
         }
+	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << endl;
 }
 
 void TileGrid::ChangeObjectDirection(uint id, Global::Direction direction) {

@@ -69,7 +69,7 @@ void Tile::MoveTo(Object *obj) {
             Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << endl;
         Global::Direction direction = Global::VectToDirection(sf::Vector2i(dx, dy));
         addObject(obj);
-        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
+        GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
     }
 }
 
@@ -78,7 +78,7 @@ void Tile::PlaceTo(Object *obj) {
     Block *lastBlock = nullptr;
     if (lastTile) lastBlock = lastTile->GetBlock();
     addObject(obj);
-    GetBlock()->AddDiff(new ReplaceDiff(obj->id, X(), Y(), lastBlock, obj));
+    GetBlock()->AddDiff(new ReplaceDiff(obj, X(), Y(), lastBlock));
 }
 
 Block *Tile::GetBlock() const {
@@ -130,10 +130,11 @@ void Tile::Update() {
     }*/
 }
 
-const TileInfo Tile::GetTileInfo() const {
+const TileInfo Tile::GetTileInfo(uint visibility) const {
     std::list<ObjectInfo> content;
     for (auto &obj : this->content) {
-        content.push_back(obj->GetObjectInfo());
+		if (obj->CheckVisibility(visibility))
+			content.push_back(obj->GetObjectInfo());
     }
     return std::move(TileInfo(int(sprite), content));
 }
@@ -163,11 +164,11 @@ void Block::ClearDiffs() {
     differences.clear();
 }
 
-const BlockInfo Block::GetBlockInfo() {
+const BlockInfo Block::GetBlockInfo(uint visibility) {
     std::list<TileInfo> tilesInfo;
     for (auto &vect : tiles)
         for (auto &tile : vect)
-            if (tile) tilesInfo.push_back(tile->GetTileInfo());
+            if (tile) tilesInfo.push_back(tile->GetTileInfo(visibility));
             else {
                 TileInfo tileInfo;
                 tilesInfo.push_back(tileInfo);
@@ -307,7 +308,7 @@ void World::FillingWorld() {
         }
     }
 
-    testMob = new Human;
+    testMob = new Ghost;
 	testMob_lastPosition = nullptr;
     map->GetTile(49, 49)->PlaceTo(testMob);
     test_dx = 1;

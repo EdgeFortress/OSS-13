@@ -66,7 +66,7 @@ public:
     //Test
     const list<Object *> GetContentCopy() { return content; };
 
-    const TileInfo GetTileInfo() const;
+    const TileInfo GetTileInfo(uint visibility) const;
 
     friend sf::Packet &operator<<(sf::Packet &, const Tile &);
 };
@@ -92,7 +92,7 @@ public:
     int ID() const { return id; }
 
     const list<sptr<Diff>> GetDifferences() { return differences; }
-    const BlockInfo GetBlockInfo();
+    const BlockInfo GetBlockInfo(uint visibility);
     void ClearDiffs();
 
     friend sf::Packet &operator<<(sf::Packet &, const Block &);
@@ -128,7 +128,7 @@ class World {
 private:
     uptr<Map> map;
 
-    Human *testMob;
+    Creature *testMob;
 	Tile *testMob_lastPosition;
     int test_dx;
     int test_dy;

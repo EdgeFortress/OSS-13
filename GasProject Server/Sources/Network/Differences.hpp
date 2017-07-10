@@ -10,40 +10,33 @@ class Block;
 class Object;
 
 struct Diff {
+	Global::DiffType diffType;
     uint id;
+	uint invisibility;
 
-    Diff(uint id = -1) : id(id)
-    { }
+	Diff(const Object *object, Global::DiffType diffType = Global::DiffType::NONE);
+	Diff(uint id, uint invisibility, Global::DiffType diffType);
 
-    virtual Global::DiffType GetType() const { return Global::DiffType::NONE; }
+	virtual Global::DiffType GetType() const;
+	bool CheckVisibility(uint visibility) const;
 };
 
 struct ReplaceDiff : public Diff {
     Block *lastBlock;
-    Object *object;
+	ObjectInfo objectInfo;
     int toX, toY, toObjectNum;
-    ReplaceDiff(uint id, int toX, int toY, Block *lastBlock, Object *object) :
-        Diff(id), lastBlock(lastBlock),
-        toX(toX), toY(toY),
-        object(object)
-    { }
 
-    virtual Global::DiffType GetType() const final { return Global::DiffType::RELOCATE; }
+	ReplaceDiff(const Object *object, int toX, int toY, Block *lastBlock);
 };
 
 struct AddDiff : public Diff {
-    ObjectInfo objectInfo;
-    AddDiff(ObjectInfo objectInfo) : objectInfo(objectInfo)
-    { }
-
-    virtual Global::DiffType GetType() const final { return Global::DiffType::ADD; }
+	ObjectInfo objectInfo;
+	explicit AddDiff(const Object *object);
+	explicit AddDiff(const ReplaceDiff &replaceDiff);
 };
 
 struct RemoveDiff : public Diff {
-    RemoveDiff(uint id) : Diff(id)
-    { }
-        
-    virtual Global::DiffType GetType() const final { return Global::DiffType::REMOVE; }
+	RemoveDiff(const Object *object);
 };
 
 struct MoveDiff : public Diff {
@@ -51,30 +44,11 @@ struct MoveDiff : public Diff {
 	float speed;
     Block *lastblock;
 
-    MoveDiff(uint id, Global::Direction direction, float speed, Block *lastblock) :
-        Diff(id), direction(direction), lastblock(lastblock), speed(speed)
-    { }
-
-    virtual Global::DiffType GetType() const final { return Global::DiffType::MOVE; }
+	MoveDiff(const Object *object, Global::Direction direction, float speed, Block *lastblock);
 };
-
-//struct ShiftDiff : public Diff {
-//    Global::Direction direction;
-//	float speed;
-//    
-//    ShiftDiff(uint id, Global::Direction direction, float speed) :
-//        Diff(id), direction(direction), speed(speed)
-//    { }
-//
-//    virtual Global::DiffType GetType() const final { return Global::DiffType::SHIFT; }
-//};
 
 struct ChangeDirectionDiff : public Diff {
 	Global::Direction direction;
 
-	ChangeDirectionDiff(uint id, Global::Direction direction) :
-		Diff(id), direction(direction)
-	{ }
-
-	virtual Global::DiffType GetType() const final { return Global::DiffType::CHANGE_DIRECTION; }
+	ChangeDirectionDiff(const Object *object, Global::Direction direction);
 };

@@ -3,3 +3,4 @@
 #include "Objects/Item.hpp"
 #include "Objects/Creature.hpp"
 #include "Objects/Human.hpp"
+#include "Objects/Ghost.hpp"

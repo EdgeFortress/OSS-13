@@ -21,7 +21,8 @@ struct ClientCommand {
         DISCONNECT,
 
         MOVE,
-        SEND_CHAT_MESSAGE
+        SEND_CHAT_MESSAGE,
+		GHOST
     };
 
     virtual const Code GetCode() const = 0;
@@ -87,6 +88,10 @@ struct SendChatMessageClientCommand : public ClientCommand {
     virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
 
     SendChatMessageClientCommand(std::string &message) : message(message) { }
+};
+
+struct GhostClientCommand : public ClientCommand {
+	virtual const Code GetCode() const override { return Code::GHOST; }
 };
 
 struct ServerCommand {

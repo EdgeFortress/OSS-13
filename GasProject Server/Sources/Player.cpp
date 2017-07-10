@@ -87,6 +87,10 @@ void Player::SetControl(Control *control) {
     this->control = control;
     SetCamera(new Camera(control->GetOwner()->GetTile()));
     camera->SetPlayer(this);
+	// Get Ability to see Invisibile from the mob (if control owner is mob)
+	if (Creature *creature = dynamic_cast<Creature *>(control->GetOwner()))
+		camera->SetInvisibleVisibility(creature->GetInvisibleVisibility());
+	camera->SetInvisibleVisibility(1);
 };
 
 void Player::AddCommandToClient(ServerCommand *command) {

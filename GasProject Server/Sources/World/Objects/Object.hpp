@@ -33,6 +33,12 @@ protected:
     
     Global::Sprite sprite;
     uint layer;
+
+	// Invisibility
+	//// 8 bits for different kinds of invisibility
+	//// Last bit - ghost invisibility
+		uint invisibility;
+	//
     
 	sf::Vector2f shift;
 	//float speed; // speed (tiles/seconds)
@@ -47,11 +53,13 @@ public:
 	void AddComponent(Component *);
 	template <class T> T *GetComponent();
 
-    bool GetDensity() const { return density; }
-    Global::Sprite GetSprite() const { return sprite; }
-    Tile *GetTile() const { return tile; }
-    std::string GetName() const { return name; }
-    uint ID() const { return id; }
+	bool GetDensity() const;
+	Global::Sprite GetSprite() const;
+	bool CheckVisibility(uint visibility) const;
+	uint GetInvisibility() const;
+	Tile *GetTile() const;
+	std::string GetName() const;
+	uint ID() const;
 
 	//
 	// For control purposes
