@@ -12,13 +12,6 @@ void Object::takeID() {
     id = lastID;
 }
 
-void Object::setDirection(Global::Direction direction) {
-	this->direction = direction;
-	if (tile) {
-		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(id, direction));
-	}
-}
-
 Object::Object() {
     takeID();
     tile = nullptr;
@@ -27,17 +20,33 @@ Object::Object() {
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
+void Object::AddComponent(Component *new_component) {
+	new_component->SetOwner(this);
+	components.push_back(uptr<Component>(new_component));
+}
+
 void Object::Update(sf::Time timeElapsed) {
-	if (speed) {
-		if (shift.x) {
-			float newShiftX = shift.x - sgn(shift.x) * speed * timeElapsed.asSeconds();
-			shift.x = sgn(shift.x) * sgn(newShiftX) > 0 ? newShiftX : 0;
-		}
-		if (shift.y) {
-			float newShiftY = shift.y - sgn(shift.y) * speed * timeElapsed.asSeconds();
-			shift.y = sgn(shift.y) * sgn(newShiftY) > 0 ? newShiftY : 0;
-		}
+	for (auto &component : components) {
+		component->Update(timeElapsed);
 	}
+}
+
+sf::Vector2f Object::GetShift() const { return shift; }
+//float Object::GetSpeed() const { return speed; }
+
+void Object::SetDirection(Global::Direction direction) {
+	this->direction = direction;
+	if (tile) {
+		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(id, direction));
+	}
+}
+
+void Object::AddShift(sf::Vector2f shift) {
+	this->shift += shift;
+}
+
+void Object::SetShift(sf::Vector2f shift) {
+	this->shift = shift;
 }
 
 const ObjectInfo Object::GetObjectInfo() const {

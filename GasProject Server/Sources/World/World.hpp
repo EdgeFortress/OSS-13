@@ -128,7 +128,7 @@ class World {
 private:
     uptr<Map> map;
 
-    Controllable *testMob;
+    Human *testMob;
 	Tile *testMob_lastPosition;
     int test_dx;
     int test_dy;
@@ -146,7 +146,7 @@ public:
     void AddObject(Object *);
 
     void FillingWorld();
-    Mob *CreateNewPlayerMob();
+    Creature *CreateNewPlayerCreature();
 };
 
 class Local {

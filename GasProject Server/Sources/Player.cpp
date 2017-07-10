@@ -1,6 +1,8 @@
 #include "Server.hpp"
 #include "Player.hpp"
 #include "World/World.hpp"
+#include "World/Objects/Control.hpp"
+#include "World/Objects/Creature.hpp"
 #include "PlayerCommand.hpp"
 #include "Common/Ñommand.hpp"
 
@@ -57,13 +59,14 @@ void Player::Update() {
         if (temp) {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
-                    SetMob(game->GetWorld()->CreateNewPlayerMob());
+					Creature *mob = game->GetWorld()->CreateNewPlayerCreature();
+                    SetControl(mob->GetComponent<Control>());
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
-					if (mob) {
+					if (control) {
 						MovePlayerCommand *moveCommand = dynamic_cast<MovePlayerCommand *>(temp);
-						mob->MoveCommand(moveCommand->order);
+						control->MoveCommand(moveCommand->order);
 					}
 				}
             }
@@ -71,7 +74,7 @@ void Player::Update() {
         }
     }
 
-    if (mob->GetTile() != camera->GetPosition()) camera->SetPosition(mob->GetTile());
+    if (control->GetOwner()->GetTile() != camera->GetPosition()) camera->SetPosition(control->GetOwner()->GetTile());
 }
 
 void Player::SendGraphicsUpdates() {
@@ -80,9 +83,9 @@ void Player::SendGraphicsUpdates() {
     }
 }
 
-void Player::SetMob(Mob *mob) {
-    this->mob = mob;
-    SetCamera(new Camera(mob->GetTile()));
+void Player::SetControl(Control *control) {
+    this->control = control;
+    SetCamera(new Camera(control->GetOwner()->GetTile()));
     camera->SetPlayer(this);
 };
 

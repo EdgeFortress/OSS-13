@@ -14,7 +14,7 @@ class Game;
 class NetworkController;
 struct ServerCommand;
 
-class Mob;
+class Control;
 
 class Player {
 private:
@@ -22,7 +22,7 @@ private:
     bool connected;
     Game *game;
 
-    Mob *mob;
+    Control *control;
     uptr<Camera> camera;
 
     ThreadSafeQueue<ServerCommand *> commandsToClient;
@@ -46,10 +46,10 @@ public:
 
     string GetCKey() { return ckey; }
 
-    void SetMob(Mob *mob);
+    void SetControl(Control *control);
     void SetCamera(Camera *camera) { this->camera.reset(camera); }
 
-    Mob *GetMob() { return mob; }
+    Control *GetControl() { return control; }
     Camera *GetCamera() { return camera.get(); }
     bool IsConnected() { return connected; }
 

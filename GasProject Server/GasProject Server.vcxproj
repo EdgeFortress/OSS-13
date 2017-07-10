@@ -131,19 +131,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\CommonRes\Sources\Global.cpp" />
+    <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
     <ClCompile Include="Sources\Network\Packing.cpp" />
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\World\Camera.cpp" />
+    <ClCompile Include="Sources\World\Objects\Control.cpp" />
+    <ClCompile Include="Sources\World\Objects\Creature.cpp" />
+    <ClCompile Include="Sources\World\Objects\Human.cpp" />
     <ClCompile Include="Sources\World\Objects\Item.cpp" />
-    <ClCompile Include="Sources\World\Objects\Mob.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\Turf.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Differences.hpp" />
@@ -153,10 +157,11 @@
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\World\Camera.hpp" />
-    <ClInclude Include="Sources\World\Controllable.hpp" />
     <ClInclude Include="Sources\World\Objects.hpp" />
+    <ClInclude Include="Sources\World\Objects\Control.hpp" />
+    <ClInclude Include="Sources\World\Objects\Creature.hpp" />
+    <ClInclude Include="Sources\World\Objects\Human.hpp" />
     <ClInclude Include="Sources\World\Objects\Item.hpp" />
-    <ClInclude Include="Sources\World\Objects\Mob.hpp" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />
     <ClInclude Include="Sources\World\Objects\Turf.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />

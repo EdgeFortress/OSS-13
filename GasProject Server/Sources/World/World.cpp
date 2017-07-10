@@ -4,6 +4,7 @@
 #include "Common/NetworkConst.hpp"
 #include "World.hpp"
 #include "Objects.hpp"
+#include "World/Objects/Control.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
 #include "Network/Differences.hpp"
@@ -65,10 +66,10 @@ void Tile::MoveTo(Object *obj) {
         int dx = X() - obj->GetTile()->X();
         int dy = Y() - obj->GetTile()->Y();
         if (abs(dx) > 1 || abs(dy) > 1)
-            Server::log << "Move delta warning" << endl;
+            Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << endl;
         Global::Direction direction = Global::VectToDirection(sf::Vector2i(dx, dy));
         addObject(obj);
-        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, obj->speed, lastBlock));
+        GetBlock()->AddDiff(new MoveDiff(obj->id, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
     }
 }
 
@@ -276,7 +277,7 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-		testMob->MoveCommand(sf::Vector2i(test_dx, test_dy));
+		testMob->GetComponent<Control>()->MoveCommand(sf::Vector2i(test_dx, test_dy));
         //map->GetTile(x, y)->AddObject(testMob);
     }
     
@@ -306,9 +307,9 @@ void World::FillingWorld() {
         }
     }
 
-    testMob = new Mob;
+    testMob = new Human;
 	testMob_lastPosition = nullptr;
-    map->GetTile(49, 49)->PlaceTo(dynamic_cast<Mob *>(testMob));
+    map->GetTile(49, 49)->PlaceTo(testMob);
     test_dx = 1;
     test_dy = 0;
 
@@ -324,8 +325,8 @@ void World::AddObject(Object *obj) {
     objects.push_back(uptr<Object>(obj));
 }
 
-Mob *World::CreateNewPlayerMob() {
-    Mob *mob = new Mob();
-    map->GetTile(50, 50)->PlaceTo(mob);
-    return mob;
+Creature *World::CreateNewPlayerCreature() {
+    Creature *creature = new Human();
+    map->GetTile(50, 50)->PlaceTo(creature);
+    return creature;
 }

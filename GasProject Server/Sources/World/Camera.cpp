@@ -5,6 +5,7 @@
 
 #include "Server.hpp"
 #include "World.hpp"
+#include "World/Objects/Control.hpp"
 #include "Player.hpp"
 #include "Network/TileGrid_Info.hpp"
 #include "Network/Differences.hpp"
@@ -90,8 +91,8 @@ void Camera::UpdateView() {
 
     if (changeFocus) {
         updateOptions |= GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE;
-        command->controllable_id = player->GetMob()->ID();
-        command->controllableSpeed = player->GetMob()->GetSpeed();
+        command->controllable_id = player->GetControl()->GetOwner()->ID();
+        command->controllableSpeed = player->GetControl()->GetSpeed();
         changeFocus = false;
     }
 
