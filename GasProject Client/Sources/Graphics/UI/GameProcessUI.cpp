@@ -62,8 +62,8 @@ void GameProcessUI::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
     //renderWindow->draw(chat);
 }
 
-void GameProcessUI::Update() {
-    chat.Update();
+void GameProcessUI::Update(sf::Time timeElapsed) {
+    chat.Update(timeElapsed);
 }
 
 void GameProcessUI::Show() {

@@ -7,6 +7,8 @@ private:
 	sf::Vector2f size;
     sf::Sprite bufferSprite;
 
+    Widget *parent;
+
 protected:
 	sf::RenderTexture buffer;
 	// method for drawing to buffer
@@ -20,13 +22,16 @@ public:
 
 	// public method for Draw widget buffer to target
 	void Draw(sf::RenderTarget &target) const;
-	virtual void Update() = 0;
+	virtual void Update(sf::Time timeElapsed) = 0;
     virtual void HandleEvent(sf::Event event) {}
 
 	virtual void SetPosition(const sf::Vector2f);
 	virtual void SetPosition(const float x, const float y);
 	virtual const sf::Vector2f GetPosition() const;
+    virtual const sf::Vector2f GetAbsPosition() const;
 
 	virtual void SetSize(const sf::Vector2f &);
 	const virtual sf::Vector2f GetSize() const;
+
+    virtual void SetParent(Widget *widget) { parent = widget; }
 };

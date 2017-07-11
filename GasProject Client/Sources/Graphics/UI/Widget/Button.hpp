@@ -20,7 +20,7 @@ protected:
 public:
     Button(sf::String &name, sf::Vector2f &size, const sf::Color &, const sf::Font &, std::function<void()> &);
 
-    virtual void Update() final;
+    virtual void Update(sf::Time timeElapsed) final;
     virtual void HandleEvent(sf::Event event) final;
     
     void SetPosition(const sf::Vector2f);

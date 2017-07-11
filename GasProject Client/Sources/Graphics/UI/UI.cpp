@@ -17,14 +17,14 @@ UIModule::UIModule(UI *ui) : ui(ui) {
 
 }
 
-UI::UI() :
-    gamelistUI(new GameListUI(this))
-{
+UI::UI() {
     if (!font.loadFromFile("Arialuni.ttf"))
     //if (!font.loadFromFile("agency.ttf"))
         CC::log << "Font load error!" << endl;
+    //CC::log << "Font loaded!" << endl;
     authUI = uptr<AuthUI>(new AuthUI(this)),
     gameProcessUI = uptr<GameProcessUI>(new GameProcessUI(this));
+    gamelistUI = uptr<GameListUI>(new GameListUI(this));
 
     background.loadFromFile("Images/MenuBackground.jpg");
     background_sprite.setTexture(background);

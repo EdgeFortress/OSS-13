@@ -158,6 +158,7 @@
     <ClCompile Include="Sources\Graphics\UI\GameProcessUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Sources\Graphics\UI\GameProcessUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Network.hpp" />

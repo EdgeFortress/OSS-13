@@ -38,10 +38,7 @@ private:
     void login();
     void registration();
 
-	//uptr<Container> container;
-    //std::list<uptr<Container>> containers;
     std::list<uptr<Widget>> widgets;
-    //uptr<Label> label;
 
 public:
     AuthUI(UI *ui);
@@ -51,7 +48,7 @@ public:
 
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow *renderWindow) final { for (auto &widget : widgets) widget->Draw(*renderWindow); };
-    virtual void Update() final { for (auto &widget : widgets) widget->Update(); }
+    virtual void Update(sf::Time timeElapsed) final { for (auto &widget : widgets) widget->Update(timeElapsed); }
     virtual void HandleEvent(sf::Event event) final { for (auto &widget : widgets) widget->HandleEvent(event); }
 
     void SetServerAnswer(bool result) {

@@ -240,7 +240,7 @@ void Chat::AddIncomingMessage(const std::string &message) {
     mtx.unlock();
 }
 
-void Chat::Update() {
+void Chat::Update(sf::Time timeElapsed) {
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(entryText.getCharacterSize());

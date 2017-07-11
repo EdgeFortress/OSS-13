@@ -39,7 +39,7 @@ public:
 
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow* renderWindow) final {};
-    virtual void Update() final {};
+    virtual void Update(sf::Time timeElapsed) final {};
 
     virtual void Hide() final;
     virtual void Show() final;

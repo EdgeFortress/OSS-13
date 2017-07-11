@@ -1,7 +1,7 @@
 #include "Label.hpp"
 
-Label::Label(const sf::String &string, const sf::Font &font, const unsigned &size, const sf::Color &color) :
-	text(string, font, size)
+Label::Label(const sf::String &string, const sf::Font &font, const unsigned &size, const sf::Color &color)
+	: text(string, font, size)
 {
 	text.setFillColor(color);
 	text.setOutlineColor(color);
@@ -15,7 +15,7 @@ void Label::draw() const {
 	buffer.display();
 }
 
-void Label::Update() {}
+void Label::Update(sf::Time timeElapsed) {}
 
 void Label::SetPosition(const sf::Vector2f pos) {
 	//text.setPosition(pos);

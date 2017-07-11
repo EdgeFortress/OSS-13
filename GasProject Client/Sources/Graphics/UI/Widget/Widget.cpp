@@ -2,7 +2,7 @@
 
 #include "Graphics/Window.hpp"
 
-Widget::Widget(const sf::Vector2f &size) : size(size) {
+Widget::Widget(const sf::Vector2f &size) : size(size), parent(nullptr) {
 	if (size.x || size.y)
 		buffer.create(unsigned(size.x), unsigned(size.y));
     bufferSprite.setTexture(buffer.getTexture());
@@ -29,6 +29,9 @@ void Widget::SetPosition(const float x, const float y) {
 }
 const sf::Vector2f Widget::GetPosition() const {
 	return getPosition();
+}
+const sf::Vector2f Widget::GetAbsPosition() const {
+    return sf::Vector2f(getPosition().x + parent->GetPosition().x, getPosition().y + parent->GetPosition().y);
 }
 
 void Widget::SetSize(const sf::Vector2f &size) {

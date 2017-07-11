@@ -87,5 +87,5 @@ public:
 
     //virtual void setSize(const sf::Vector2f &size) { }
 
-	virtual void Update();
+	virtual void Update(sf::Time timeElapsed);
 };

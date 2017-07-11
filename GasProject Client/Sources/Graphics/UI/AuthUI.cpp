@@ -6,6 +6,7 @@
 
 #include "Widget/Label.hpp"
 #include "Widget/Button.hpp"
+#include "Widget//Entry.hpp"
 
 void AuthUI::AccountDataEnter() {
     if (login_entry->HasFocus() || passw_entry->HasFocus())
@@ -35,12 +36,12 @@ void AuthUI::generateLoginWindow() {
     auto enter_button = sfg::Button::Create("Enter");
     enter_button->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&AuthUI::login, this));
 
-    login_entry = sfg::Entry::Create();
-    passw_entry = sfg::Entry::Create();
-    login_entry->SetRequisition(sf::Vector2f(100, 0));
-    passw_entry->SetRequisition(sf::Vector2f(100, 0));
+    //login_entry = sfg::Entry::Create();
+    //passw_entry = sfg::Entry::Create();
+    //login_entry->SetRequisition(sf::Vector2f(100, 0));
+    //passw_entry->SetRequisition(sf::Vector2f(100, 0));
 
-    passw_entry->HideText('*');
+    //passw_entry->HideText('*');
 
     auto table = sfg::Table::Create();
 
@@ -54,16 +55,16 @@ void AuthUI::generateLoginWindow() {
         NULL,
         sfg::Table::AttachOption::FILL,
         sf::Vector2f(5, 0));
-    table->Attach(login_entry,
-        sf::Rect<unsigned>(2, 0, 3, 1),
-        sfg::Table::AttachOption::FILL,
-        NULL,
-        sf::Vector2f(5, 2));
-    table->Attach(passw_entry,
-        sf::Rect<unsigned>(2, 2, 3, 1),
-        sfg::Table::AttachOption::FILL,
-        NULL,
-        sf::Vector2f(5, 2));
+    //table->Attach(login_entry,
+    //    sf::Rect<unsigned>(2, 0, 3, 1),
+    //    sfg::Table::AttachOption::FILL,
+    //    NULL,
+    //    sf::Vector2f(5, 2));
+    //table->Attach(passw_entry,
+    //    sf::Rect<unsigned>(2, 2, 3, 1),
+    //    sfg::Table::AttachOption::FILL,
+    //    NULL,
+    //    sf::Vector2f(5, 2));
     table->Attach(enter_button,
         sf::Rect<unsigned>(3, 3, 2, 1),
         sfg::Table::AttachOption::FILL,
@@ -89,10 +90,16 @@ void AuthUI::generateLoginWindow() {
     container->SetBackground(sf::Color::Green);
     widgets.push_back(move(container));
 
-    container.reset(new Container(sf::Vector2f(100, 100)));
-    container->AddItem(new Button(sf::String("Button"), sf::Vector2f(50, 100), sf::Color::Blue, ui->GetFont(), std::function<void()>(OnButtonClick)), sf::Vector2f(0, 0));
+    container.reset(new Container(sf::Vector2f(100, 70)));
+    container->AddItem(new Button(sf::String("Button"), sf::Vector2f(80, 50), sf::Color::Blue, ui->GetFont(), std::function<void()>(OnButtonClick)), sf::Vector2f(0, 0));
     container->SetPosition(400, 400);
     container->SetBackground(sf::Color::Red);
+    widgets.push_back(move(container));
+
+    container.reset(new Container(sf::Vector2f(500, 100)));
+    container->AddItem(new Entry(sf::Vector2f(400, 50), sf::Color::Red, ui->GetFont()), sf::Vector2f(0, 0));
+    container->SetPosition(600, 600);
+    container->SetBackground(sf::Color::Blue);
     widgets.push_back(move(container));
 }
 
@@ -151,13 +158,13 @@ void AuthUI::openLogin() {
     regWindow->Show(false);
     new_login_entry->SetText("");
     new_passw_entry->SetText("");
-    login_entry->GrabFocus();
-    logWindow->Show(true);
+    //login_entry->GrabFocus();
+    //logWindow->Show(true);
 }
 
 void AuthUI::openReg() {
-    login_entry->SetText("");
-    passw_entry->SetText("");
+    //login_entry->SetText("");
+    //passw_entry->SetText("");
     new_login_entry->GrabFocus();
     regWindow->Show(true);
 }
@@ -201,12 +208,12 @@ void AuthUI::Hide() {
 }
 
 void AuthUI::ChangeFocus() {
-    if (login_entry->HasFocus())
-        passw_entry->GrabFocus();
-    else if (passw_entry->HasFocus())
-        login_entry->GrabFocus();
-    if (new_login_entry->HasFocus())
-        new_passw_entry->GrabFocus();
-    else if (new_passw_entry->HasFocus())
-        new_login_entry->GrabFocus();
+    //if (login_entry->HasFocus())
+    //    passw_entry->GrabFocus();
+    //else if (passw_entry->HasFocus())
+    //    login_entry->GrabFocus();
+    //if (new_login_entry->HasFocus())
+    //    new_passw_entry->GrabFocus();
+    //else if (new_passw_entry->HasFocus())
+    //    new_login_entry->GrabFocus();
 }

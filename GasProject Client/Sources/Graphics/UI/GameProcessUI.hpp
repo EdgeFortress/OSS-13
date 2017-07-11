@@ -29,7 +29,7 @@ public:
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow* renderWindow, sf::Time timeElapsed) final;
     virtual void Draw(sf::RenderWindow* renderWindow) { }
-    virtual void Update() final;
+    virtual void Update(sf::Time timeElapsed) final;
     InfoLabel *GetInfoLabel() { return &infoLabel; }
     Chat *GetChat() { return &chat; }
     virtual void Hide() final;
