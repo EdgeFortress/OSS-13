@@ -1,27 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Client", "GasProject Client\GasProject Client.vcxproj", "{8A227764-8BA1-4007-AF4F-B66AA5B36445}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7434416A-7972-4353-AF2F-709A7ECA887B} = {7434416A-7972-4353-AF2F-709A7ECA887B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasProject Server", "GasProject Server\GasProject Server.vcxproj", "{D678DA42-ECAA-4A64-99BE-8C7971DAE941}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonRes", "CommonRes", "{F34248DC-EC1D-434B-B06D-DE4BEC858771}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{446251E9-B5B3-4603-B72B-23A1A97B7D76}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0}"
-	ProjectSection(SolutionItems) = preProject
-		CommonRes\include\Common\NetworkConst.hpp = CommonRes\include\Common\NetworkConst.hpp
-		CommonRes\include\Common\Useful.hpp = CommonRes\include\Common\Useful.hpp
-		CommonRes\include\Common\Сommand.hpp = CommonRes\include\Common\Сommand.hpp
+	ProjectSection(ProjectDependencies) = postProject
+		{7434416A-7972-4353-AF2F-709A7ECA887B} = {7434416A-7972-4353-AF2F-709A7ECA887B}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{2D2C6465-F2F1-489C-AAB4-E34FCA614036}"
-	ProjectSection(SolutionItems) = preProject
-		CommonRes\Sources\Global.cpp = CommonRes\Sources\Global.cpp
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedLibrary", "SharedLibrary\SharedLibrary.vcxproj", "{7434416A-7972-4353-AF2F-709A7ECA887B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,13 +39,16 @@ Global
 		{D678DA42-ECAA-4A64-99BE-8C7971DAE941}.Release|x64.Build.0 = Release|x64
 		{D678DA42-ECAA-4A64-99BE-8C7971DAE941}.Release|x86.ActiveCfg = Release|Win32
 		{D678DA42-ECAA-4A64-99BE-8C7971DAE941}.Release|x86.Build.0 = Release|Win32
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Debug|x64.ActiveCfg = Debug|x64
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Debug|x64.Build.0 = Debug|x64
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Debug|x86.ActiveCfg = Debug|Win32
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Debug|x86.Build.0 = Debug|Win32
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Release|x64.ActiveCfg = Release|x64
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Release|x64.Build.0 = Release|x64
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Release|x86.ActiveCfg = Release|Win32
+		{7434416A-7972-4353-AF2F-709A7ECA887B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{446251E9-B5B3-4603-B72B-23A1A97B7D76} = {F34248DC-EC1D-434B-B06D-DE4BEC858771}
-		{E2985A61-70DA-4DCB-B0B7-FEBEEA6565C0} = {446251E9-B5B3-4603-B72B-23A1A97B7D76}
-		{2D2C6465-F2F1-489C-AAB4-E34FCA614036} = {F34248DC-EC1D-434B-B06D-DE4BEC858771}
 	EndGlobalSection
 EndGlobal

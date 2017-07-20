@@ -3,7 +3,6 @@
 
 #include "UsersDB.hpp"
 #include "global.hpp"
-#include "Common/Useful.hpp"
 #include "Server.hpp"
 
 using namespace std;

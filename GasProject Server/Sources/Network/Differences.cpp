@@ -24,7 +24,7 @@ ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, Block *lastBloc
 	objectInfo(object->GetObjectInfo())
 { }
 
-MoveDiff::MoveDiff(const Object *object, Global::Direction direction, float speed, Block *lastblock) :
+MoveDiff::MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock) :
 	Diff(object, Global::DiffType::MOVE), 
 	direction(direction), lastblock(lastblock), speed(speed)
 { }
@@ -43,7 +43,7 @@ RemoveDiff::RemoveDiff(const Object *object) :
 	Diff(object, Global::DiffType::REMOVE)
 { }
 
-ChangeDirectionDiff::ChangeDirectionDiff(const Object *object, Global::Direction direction) :
+ChangeDirectionDiff::ChangeDirectionDiff(const Object *object, uf::Direction direction) :
 	Diff(object, Global::DiffType::CHANGE_DIRECTION), 
 	direction(direction)
 { }

@@ -4,7 +4,7 @@
 #include "World/Objects/Control.hpp"
 #include "World/Objects/Creature.hpp"
 #include "PlayerCommand.hpp"
-#include "Common/Ñommand.hpp"
+#include "Shared/Command.hpp"
 
 class Server;
 
@@ -49,8 +49,8 @@ void Player::ChatMessage(std::string &message) {
     game->GetChat()->AddMessage("<" + ckey + ">" + message);
 }
 
-void Player::Move(Global::Direction direction) {
-	commandsFromClient.Push(new MovePlayerCommand(Global::DirectionToVect(direction)));
+void Player::Move(uf::Direction direction) {
+	commandsFromClient.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
 void Player::Update() {

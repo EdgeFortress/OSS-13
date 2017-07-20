@@ -5,13 +5,14 @@
 #include "TileGrid.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Common/NetworkConst.hpp"
 #include "Network.hpp"
+
+#include "Shared/Math.hpp"
 
 Object::Object(const Global::Sprite key, const string name, const bool directed) {
     SetSprite(key);
     this->name = name;
-	direction = Global::Direction::NONE;
+	direction = uf::Direction::NONE;
 	dense = false;
 }
 
@@ -25,7 +26,7 @@ void Object::SetSprite(const Global::Sprite key) {
             }
 }
 
-void Object::SetDirection(const Global::Direction direction) {
+void Object::SetDirection(const uf::Direction direction) {
 	this->direction = direction;
 }
 
@@ -47,15 +48,15 @@ void Object::Update(sf::Time timeElapsed) {
     if (shiftingDirection.x) {
         shift.x += shiftingDirection.x * timeElapsed.asSeconds() * shiftingSpeed;
     } else {
-        if (shift.x * sgn(shift.x) > timeElapsed.asSeconds() * shiftingSpeed)
-            shift.x -= sgn(shift.x) * timeElapsed.asSeconds() * shiftingSpeed;
+        if (shift.x * uf::sgn(shift.x) > timeElapsed.asSeconds() * shiftingSpeed)
+            shift.x -= uf::sgn(shift.x) * timeElapsed.asSeconds() * shiftingSpeed;
         else shift.x = 0;
     }
     if (shiftingDirection.y) {
         shift.y += shiftingDirection.y * timeElapsed.asSeconds() * shiftingSpeed;
     } else {
-        if (shift.y * sgn(shift.y) > timeElapsed.asSeconds() * shiftingSpeed)
-            shift.y -= sgn(shift.y) * timeElapsed.asSeconds() * shiftingSpeed;
+        if (shift.y * uf::sgn(shift.y) > timeElapsed.asSeconds() * shiftingSpeed)
+            shift.y -= uf::sgn(shift.y) * timeElapsed.asSeconds() * shiftingSpeed;
         else shift.y = 0;
     }
 
@@ -73,8 +74,8 @@ void Object::Update(sf::Time timeElapsed) {
         //ResetShifting();
 }
 
-void Object::ReverseShifting(Global::Direction direction) {
-	sf::Vector2i directionVect = Global::DirectionToVect(direction);
+void Object::ReverseShifting(uf::Direction direction) {
+	sf::Vector2i directionVect = uf::DirectionToVect(direction);
 	if (directionVect.x) shiftingDirection.x = 0;
 	if (directionVect.y) shiftingDirection.y = 0;
     shift -= sf::Vector2f(directionVect);
@@ -87,7 +88,7 @@ Tile::Tile(Block *block, const int x, const int y) :
 };
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
-    if (sprite) sprite->Draw(window, x, y, Global::Direction::NONE);
+    if (sprite) sprite->Draw(window, x, y, uf::Direction::NONE);
 
     //for (auto &obj : content)
     //    obj->Draw(window, x, y);
@@ -215,7 +216,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
     if (moveSendPause == sf::Time::Zero) {
 		if (moveCommand.x || moveCommand.y) {
-			Connection::commandQueue.Push(new MoveClientCommand(Global::VectToDirection(moveCommand)));
+			Connection::commandQueue.Push(new MoveClientCommand(uf::VectToDirection(moveCommand)));
 
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();
@@ -232,7 +233,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				if (!newTileY || newTileY->IsBlocked()) moveCommand.y = 0;
 				if (!newTileDiag || newTileDiag->IsBlocked()) moveCommand = sf::Vector2i();
 
-				controllable->SetShifting(Global::VectToDirection(moveCommand), controllableSpeed);
+				controllable->SetShifting(uf::VectToDirection(moveCommand), controllableSpeed);
 			}
 			else
 				CC::log << "Controllable not determine" << endl;
@@ -292,10 +293,10 @@ void TileGrid::RelocateObject(uint id, int toX, int toY, int toObjectNum) {
     CC::log << "Wrong object ID:" << id << endl;
 }
 
-void TileGrid::MoveObject(uint id, Global::Direction direction, float speed) {
+void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
     for (auto &obj : objects)
         if (obj->GetID() == id) {
-            sf::Vector2i dir = Global::DirectionToVect(direction);
+            sf::Vector2i dir = uf::DirectionToVect(direction);
             Tile *lastTile = obj->GetTile();
             if (!lastTile) {
                 CC::log << "Move of unplaced object" << endl;
@@ -319,7 +320,7 @@ void TileGrid::MoveObject(uint id, Global::Direction direction, float speed) {
 	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << endl;
 }
 
-void TileGrid::ChangeObjectDirection(uint id, Global::Direction direction) {
+void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
 	for (auto &obj : objects)
 		if (obj->GetID() == id) {
 			obj->SetDirection(direction);

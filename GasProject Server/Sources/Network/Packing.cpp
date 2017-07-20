@@ -1,7 +1,6 @@
 #include "NetworkController.hpp"
 #include "Server.hpp"
 #include "World/World.hpp"
-#include "Common/NetworkConst.hpp"
 #include "Differences.hpp"
 
 using namespace sf;

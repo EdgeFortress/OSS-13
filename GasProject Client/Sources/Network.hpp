@@ -4,8 +4,8 @@
 
 #include <SFML/Network.hpp>
 
-#include "Common/Useful.hpp"
-#include "Common/Ñommand.hpp"
+#include "Shared/Command.hpp"
+#include "Shared/ThreadSafeQueue.hpp"
 
 class std::thread;
 namespace sf {
@@ -35,7 +35,7 @@ class Connection {
     static void parsePacket(sf::Packet &);
 
 public:
-    static ThreadSafeQueue<ClientCommand *> commandQueue;
+    static uf::ThreadSafeQueue<ClientCommand *> commandQueue;
 
     static bool Start(const string ip, const int port);
     static void Stop();

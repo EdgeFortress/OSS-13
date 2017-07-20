@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;$(ProjectDir)\..\SharedLibrary\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;SFGUI_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
@@ -135,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)\..\sfgui-0.3.1\include;$(ProjectDir)\..\CommonRes\include;$(ProjectDir)\Sources;$(ProjectDir)\..\SharedLibrary\Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;SFGUI_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
@@ -148,7 +148,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\CommonRes\Sources\Global.cpp" />
     <ClCompile Include="sources\Client.cpp" />
     <ClCompile Include="Sources\Graphics\Chat.cpp" />
     <ClCompile Include="Sources\Graphics\Graphics.cpp" />
@@ -182,6 +181,11 @@
     <Image Include="Images\MenuBackground.jpg" />
     <Image Include="Images\Space.png" />
     <Image Include="Images\Turfs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedLibrary\SharedLibrary.vcxproj">
+      <Project>{7434416a-7972-4353-af2f-709a7eca887b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

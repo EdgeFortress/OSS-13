@@ -7,7 +7,6 @@
 #include <SFML/System/Time.hpp>
 
 #include "Objects.hpp"
-#include "Common/Useful.hpp"
 
 using std::list;
 using std::vector;

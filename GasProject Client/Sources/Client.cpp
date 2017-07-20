@@ -1,11 +1,9 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "State.hpp"
-#include "Common/NetworkConst.hpp"
 #include "Network.hpp"
 
 #include <iostream>
-//#include <ctime>
 
 using std::endl;
 
@@ -48,9 +46,9 @@ void ClientController::Run() {
 int main() {
     ClientController clientController;
     clientController.Run();
-    
+
     return 0;
 }
 
-Log CC::log;
+uf::Log CC::log;
 ClientController *ClientController::instance;

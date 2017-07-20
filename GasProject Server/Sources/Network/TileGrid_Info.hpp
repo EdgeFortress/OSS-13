@@ -3,15 +3,18 @@
 #include <string>
 #include <list>
 
+#include "Shared/Types.hpp"
+#include "Shared/Geometry.hpp"
+
 struct ObjectInfo {
     const uint id;
     const int sprite;
     const std::string name;
     const uint layer;
-	const Global::Direction direction;
+	const uf::Direction direction;
     const bool dense;
 
-	ObjectInfo(uint id, const int sprite, const std::string &name, const uint layer, const Global::Direction direction, const bool dense = false) :
+	ObjectInfo(uint id, const int sprite, const std::string &name, const uint layer, const uf::Direction direction, const bool dense = false) :
         id(id), sprite(sprite), name(name), layer(layer), direction(direction), dense(dense) { }
 };
 

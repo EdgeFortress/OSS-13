@@ -1,7 +1,6 @@
 #include <SFML/Network.hpp>
 
 #include "NetworkController.hpp"
-#include "Common/NetworkConst.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
 #include "World/World.hpp"
@@ -27,7 +26,7 @@ void NetworkController::working() {
                     selector.add(*socket);
                     sockets.push_back(std::pair<wptr<Player>, uptr<sf::TcpSocket>>(player, uptr<sf::TcpSocket>(socket)));
                 } else
-                    Server::log << "New connection accepting error" << endl;
+                    Server::log << "New connection accepting error" << std::endl;
             }
             else {
                 for (auto iter = sockets.begin(); iter != sockets.end();) {
@@ -48,7 +47,7 @@ void NetworkController::working() {
                                 parsePacket(packet, player.get());
                                 break;
                             case sf::Socket::Disconnected:
-                                Server::log << "Lost client" << player->GetCKey() << "signal" << endl;
+                                Server::log << "Lost client" << player->GetCKey() << "signal" << std::endl;
                                 player->connected = false;
                                 selector.remove(*socket);
                                 iter = sockets.erase(iter);
@@ -98,7 +97,7 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
         case ClientCommand::Code::CREATE_GAME: {
             sf::String title;
             packet >> title;
-            Server::log << "Request for creating game" << endl;
+            Server::log << "Request for creating game" << std::endl;
             break;
         }
         case ClientCommand::Code::SERVER_LIST_REQ: {
@@ -114,7 +113,7 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
         case ClientCommand::Code::MOVE: {
             sf::Int8 direction;
             packet >> direction;
-            player->Move(Global::Direction(direction));
+            player->Move(uf::Direction(direction));
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
@@ -124,12 +123,12 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             break;
         }
         case ClientCommand::Code::DISCONNECT: {
-            Server::log << "Client" << player->GetCKey() << "disconnected" << endl;
+            Server::log << "Client" << player->GetCKey() << "disconnected" << std::endl;
             player->connected = false;
             break;
         }
         default:
-            Server::log << "Unknown Command received from" << player->GetCKey() << endl;
+            Server::log << "Unknown Command received from" << player->GetCKey() << std::endl;
     }
 }
 

@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "Common/NetworkConst.hpp"
-#include "Common/Useful.hpp"
+#include "Shared/Geometry.hpp"
+#include "Shared/Global.hpp"
 #include "TileGrid_Info.hpp"
 
 class Block;
@@ -40,15 +40,15 @@ struct RemoveDiff : public Diff {
 };
 
 struct MoveDiff : public Diff {
-    Global::Direction direction;
+    uf::Direction direction;
 	float speed;
     Block *lastblock;
 
-	MoveDiff(const Object *object, Global::Direction direction, float speed, Block *lastblock);
+	MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock);
 };
 
 struct ChangeDirectionDiff : public Diff {
-	Global::Direction direction;
+	uf::Direction direction;
 
-	ChangeDirectionDiff(const Object *object, Global::Direction direction);
+	ChangeDirectionDiff(const Object *object, uf::Direction direction);
 };

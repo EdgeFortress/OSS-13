@@ -1,5 +1,4 @@
-#include "Common/Useful.hpp"
-#include "Common/Ñommand.hpp"
+#include "Shared/Command.hpp"
 
 #include "Camera.hpp"
 
@@ -34,7 +33,7 @@ Camera::Camera(const Tile * const tile) :
 
 void Camera::UpdateView() {
     if (unsuspensed && cameraMoved) 
-        Server::log << "Logic error: camera unsuspensed and moved at one time" << endl;
+        Server::log << "Logic error: camera unsuspensed and moved at one time" << std::endl;
 
     int updateOptions = GraphicsUpdateServerCommand::Option::EMPTY;
     GraphicsUpdateServerCommand *command = new GraphicsUpdateServerCommand();
@@ -128,7 +127,7 @@ void Camera::Suspend() {
 // Fill Visible Blocks vector by actual blocks pointers
 void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     if (!tile) {
-        Server::log << "Error: fullRecountVisibleBlocks called with nullptr param" << endl;
+        Server::log << "Error: fullRecountVisibleBlocks called with nullptr param" << std::endl;
         return;
     }
 
@@ -158,11 +157,11 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
 // Commit shift to Visible Blocks vector, saving seen blocks with their sync param
 void Camera::refreshVisibleBlocks(const Tile * const tile) {
     if (suspense) {
-        Server::log << "Error: refreshVisibleBlocks called by suspensed camera" << endl;
+        Server::log << "Error: refreshVisibleBlocks called by suspensed camera" << std::endl;
         return;
     }
     if (!tile) {
-        Server::log << "Error: refreshVisibleBlocks called with nullptr param" << endl;
+        Server::log << "Error: refreshVisibleBlocks called with nullptr param" << std::endl;
         return;
     }
 

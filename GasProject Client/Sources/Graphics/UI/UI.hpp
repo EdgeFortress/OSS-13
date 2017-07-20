@@ -1,11 +1,13 @@
 #pragma once
 
+#include <mutex>
+
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "Common/Useful.hpp"
+#include "Shared/Types.hpp"
 
 class GameListUI;
 class AuthUI;

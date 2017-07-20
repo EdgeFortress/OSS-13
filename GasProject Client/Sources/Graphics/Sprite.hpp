@@ -3,10 +3,9 @@
 #include <vector>
 #include <string>
 
-//#include <SFML/Graphics.hpp>
-
-#include "Common/Useful.hpp"
-#include "Common/NetworkConst.hpp"
+#include "Shared/Types.hpp"
+#include "Shared/Global.hpp"
+#include "Shared/Geometry.hpp"
 
 using std::vector;
 using std::string;
@@ -69,7 +68,7 @@ public:
     Sprite();
     Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIndex, int frames, bool directed);
 
-    void Draw(sf::RenderWindow * const window, const int x, const int y, const Global::Direction direction) const;
+    void Draw(sf::RenderWindow * const window, const int x, const int y, const uf::Direction direction) const;
 
     void Resize(int size);
 

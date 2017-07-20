@@ -2,7 +2,8 @@
 
 #include <string>
 
-#include "Common/Useful.hpp"
+#include "Shared/Types.hpp"
+#include "Shared/Log.hpp"
 
 using std::string;
 
@@ -44,7 +45,7 @@ public:
     State *GetState() { return state.get(); }
     static ClientController *const Get() { return instance; }
 
-    static Log log;
+    static uf::Log log;
 };
 
 using CC = ClientController;

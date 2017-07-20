@@ -4,8 +4,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "Common/Useful.hpp"
-#include "Common/Ñommand.hpp"
+#include "Shared/Command.hpp"
 #include "TileGrid_Info.hpp"
 
 class Player;

@@ -69,11 +69,11 @@ Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIn
 
 }
 
-void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const Global::Direction direction) const {
+void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const uf::Direction direction) const {
     sf::Rect<int> rect;
 
     int realState = firstFrameIndex;
-    if (directed && direction != Global::Direction::NONE) realState += int(direction) * frames;
+    if (directed && direction != uf::Direction::NONE) realState += int(direction) * frames;
     if (frames > 1) realState += curFrame;
 
     rect.left = realState % texture->GetXNumOfTiles() * texture->GetSizeOfTile();

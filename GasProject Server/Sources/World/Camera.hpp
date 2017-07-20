@@ -3,7 +3,7 @@
 #include <vector>
 #include <list>
 
-#include "Common/Useful.hpp"
+#include "Shared/Types.hpp"
 
 class Tile;
 class Block;

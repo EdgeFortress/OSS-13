@@ -5,8 +5,9 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Time.hpp>
 
-#include "Common/NetworkConst.hpp"
-#include "Common/Useful.hpp"
+#include "Shared/Types.hpp"
+#include "Shared/Geometry.hpp"
+#include "Shared/Global.hpp"
 
 #include "Component.hpp"
 
@@ -19,7 +20,7 @@ namespace sf {
 
 class Object {
 private:
-	Global::Direction direction;
+	uf::Direction direction;
     void takeID();
 
 	std::list<uptr<Component>> components;
@@ -67,7 +68,7 @@ public:
 		sf::Vector2f GetShift() const;
 		float GetSpeed() const;
 
-		void SetDirection(Global::Direction);
+		void SetDirection(uf::Direction);
 		void AddShift(sf::Vector2f);
 		void SetShift(sf::Vector2f);
 	//

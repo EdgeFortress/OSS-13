@@ -8,7 +8,7 @@
 void Object::takeID() {
     static uint lastID = 0;
     lastID++;
-    if (!lastID) Server::log << "Error: object ID overflow" << endl;
+    if (!lastID) Server::log << "Error: object ID overflow" << std::endl;
     id = lastID;
 }
 
@@ -16,7 +16,7 @@ Object::Object() {
     takeID();
     tile = nullptr;
     name = "";
-	direction = Global::Direction::NONE;
+	direction = uf::Direction::NONE;
     CurThreadGame->GetWorld()->AddObject(this);
 }
 
@@ -47,7 +47,7 @@ uint Object::ID() const { return id; }
 sf::Vector2f Object::GetShift() const { return shift; }
 //float Object::GetSpeed() const { return speed; }
 
-void Object::SetDirection(Global::Direction direction) {
+void Object::SetDirection(uf::Direction direction) {
 	this->direction = direction;
 	if (tile) {
 		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(this, direction));

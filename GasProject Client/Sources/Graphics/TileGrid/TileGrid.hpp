@@ -2,10 +2,13 @@
 
 #include <vector>
 #include <list>
+#include <mutex>
 
 #include "Client.hpp"
 #include "Graphics/Sprite.hpp"
 #include "State.hpp"
+
+#include "Shared/Types.hpp"
 
 namespace sf {
     class Packet;
@@ -24,7 +27,7 @@ private:
     uint id;
     string name;
     Sprite *sprite;
-    Global::Direction direction;
+    uf::Direction direction;
     int layer;
     bool dense;
 
@@ -41,12 +44,11 @@ public:
     void Update(sf::Time timeElapsed);
 
     void SetSprite(const Global::Sprite);
-	void SetDirection(const Global::Direction);
+	void SetDirection(const uf::Direction);
 	void SetSpeed(float speed);
-    void SetShifting(Global::Direction direction, float speed) {
-        auto directionVect = Global::DirectionToVect(direction);
-        if (shiftingDirection.x != directionVect.x) shiftingDirection.x += directionVect.x;
-        if (shiftingDirection.y != directionVect.y) shiftingDirection.y += directionVect.y;
+    void SetShifting(uf::Direction direction, float speed) {
+        auto directionVect = sf::Vector2i(uf::DirectionToVect(direction));
+		if (shiftingDirection != directionVect) shiftingDirection += directionVect;
         shiftingSpeed = speed;
     }
     void ResetShifting() {
@@ -54,7 +56,7 @@ public:
         shift = sf::Vector2f(0, 0);
         shiftingSpeed = 0;
     }
-    void ReverseShifting(Global::Direction direction);
+    void ReverseShifting(uf::Direction direction);
 
     bool checkObj(int x, int y);
 
@@ -239,13 +241,13 @@ public:
         //void Move(int blockX, int blockY, int x, int y, int objectNum, int toX, int toY, int toObjectNum);
         //void Add(int blockX, int blockY, int x, int y, int objectNum, Global::Sprite sprite, string name);
         //void Remove(int blockX, int blockY, int x, int y, int objectNum);
-        //void Shift(int blockX, int blockY, int x, int y, int objectNum, Global::Direction direction, float speed);
+        //void Shift(int blockX, int blockY, int x, int y, int objectNum, uf::Direction direction, float speed);
 
         void AddObject(Object *object);
         void RemoveObject(uint id);
         void RelocateObject(uint id, int toX, int toY, int toObjectNum);
-        void MoveObject(uint id, Global::Direction direction, float speed);
-		void ChangeObjectDirection(uint id, Global::Direction direction);
+        void MoveObject(uint id, uf::Direction direction, float speed);
+		void ChangeObjectDirection(uint id, uf::Direction direction);
 
         void ShiftBlocks(const int newFirstX, const int newFirstY);
 

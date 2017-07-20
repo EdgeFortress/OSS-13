@@ -2,6 +2,8 @@
 #include "Object.hpp"
 #include "World/World.hpp"
 
+#include "Shared/Math.hpp"
+
 //#include "Server.hpp"
 
 Control::Control(float speed) : 
@@ -17,7 +19,7 @@ void Control::Update(sf::Time timeElapsed) {
 
 	// Form the intent based on the order
 	if (order != sf::Vector2i()) {
-		owner->SetDirection(Global::VectToDirection(order));
+		owner->SetDirection(uf::VectToDirection(order));
 
 		Tile *tile = owner->GetTile();
 
@@ -44,11 +46,11 @@ void Control::Update(sf::Time timeElapsed) {
 			sf::Vector2f shiftChange;
 			dx = dy = 0;
 			if (abs(shift.x) >= 0.5f) {
-				dx += int(sgn(shift.x) * floor(abs(shift.x) - 0.5f + 1.f));
+				dx += int(uf::sgn(shift.x) * floor(abs(shift.x) - 0.5f + 1.f));
 				shiftChange.x -= dx;
 			}
 			if (abs(shift.y) >= 0.5f) {
-				dy += int(sgn(shift.y) * floor(abs(shift.y) - 0.5f + 1.f));
+				dy += int(uf::sgn(shift.y) * floor(abs(shift.y) - 0.5f + 1.f));
 				shiftChange.y -= dy;
 			}
 			owner->AddShift(shiftChange);
@@ -69,13 +71,13 @@ void Control::Update(sf::Time timeElapsed) {
 
 		// If there is move intention only for Y
 		if (!moveIntent.x && shift.x) {
-			float newShiftX = shift.x - sgn(shift.x) * speed * timeElapsed.asSeconds();
-			shift.x = sgn(shift.x) * sgn(newShiftX) > 0 ? newShiftX : 0;
+			float newShiftX = shift.x - uf::sgn(shift.x) * speed * timeElapsed.asSeconds();
+			shift.x = uf::sgn(shift.x) * uf::sgn(newShiftX) > 0 ? newShiftX : 0;
 		}
 		// If there is move intention only for X
 		if (!moveIntent.y && shift.y) {
-			float newShiftY = shift.y - sgn(shift.y) * speed * timeElapsed.asSeconds();
-			shift.y = sgn(shift.y) * sgn(newShiftY) > 0 ? newShiftY : 0;
+			float newShiftY = shift.y - uf::sgn(shift.y) * speed * timeElapsed.asSeconds();
+			shift.y = uf::sgn(shift.y) * uf::sgn(newShiftY) > 0 ? newShiftY : 0;
 		}
 		owner->SetShift(shift);
 	}
@@ -84,12 +86,12 @@ void Control::Update(sf::Time timeElapsed) {
 		if (speed) {
 			sf::Vector2f shift = owner->GetShift();
 			if (shift.x) {
-				float newShiftX = shift.x - sgn(shift.x) * speed * timeElapsed.asSeconds();
-				shift.x = sgn(shift.x) * sgn(newShiftX) > 0 ? newShiftX : 0;
+				float newShiftX = shift.x - uf::sgn(shift.x) * speed * timeElapsed.asSeconds();
+				shift.x = uf::sgn(shift.x) * uf::sgn(newShiftX) > 0 ? newShiftX : 0;
 			}
 			if (shift.y) {
-				float newShiftY = shift.y - sgn(shift.y) * speed * timeElapsed.asSeconds();
-				shift.y = sgn(shift.y) * sgn(newShiftY) > 0 ? newShiftY : 0;
+				float newShiftY = shift.y - uf::sgn(shift.y) * speed * timeElapsed.asSeconds();
+				shift.y = uf::sgn(shift.y) * uf::sgn(newShiftY) > 0 ? newShiftY : 0;
 			}
 			owner->SetShift(shift);
 		}

@@ -11,7 +11,6 @@
 #include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Common/Useful.hpp"
 #include "Graphics/TileGrid/TileGrid.hpp"
 
 using namespace std;
@@ -184,9 +183,9 @@ void Connection::parsePacket(Packet &packet) {
 							float speed;
 							packet >> speed;
 
-                            tileGrid->MoveObject(id, Global::Direction(direction), speed);
+                            tileGrid->MoveObject(id, uf::Direction(direction), speed);
 
-                            //tileGrid->ShiftObject(id, Global::Direction(direction), speed);
+                            //tileGrid->ShiftObject(id, uf::Direction(direction), speed);
 
                             break;
                         }
@@ -196,7 +195,7 @@ void Connection::parsePacket(Packet &packet) {
 							Int8 direction;
 							packet >> direction;
 
-							tileGrid->ChangeObjectDirection(id, Global::Direction(direction));
+							tileGrid->ChangeObjectDirection(id, uf::Direction(direction));
 
 							break;
 						}
@@ -308,7 +307,7 @@ Packet &operator>>(Packet &packet, Object &object) {
     object.SetSprite(Global::Sprite(sprite));
     object.name = name;
     object.layer = layer;
-	object.direction = Global::Direction(direction);
+	object.direction = uf::Direction(direction);
 	object.dense = dense;
     return packet;
 }
@@ -318,4 +317,4 @@ int Connection::serverPort;
 Connection::Status Connection::status = Connection::Status::INACTIVE;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
-ThreadSafeQueue<ClientCommand *> Connection::commandQueue;
+uf::ThreadSafeQueue<ClientCommand *> Connection::commandQueue;

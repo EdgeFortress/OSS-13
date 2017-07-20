@@ -6,7 +6,7 @@
 
 #include "Server.hpp"
 #include "Network/NetworkController.hpp"
-#include "Common/Ñommand.hpp"
+#include "Shared/Command.hpp"
 #include "World/World.hpp"
 #include "Player.hpp"
 #include "Database/UsersDB.hpp"
@@ -167,6 +167,6 @@ int main() {
     return 0;
 }
 
-Log Server::log;
+uf::Log Server::log;
 Server *Server::instance;
 thread_local Game *CurThreadGame = nullptr;

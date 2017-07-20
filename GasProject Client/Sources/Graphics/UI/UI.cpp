@@ -23,7 +23,7 @@ UI::UI() :
 {
     if (!font.loadFromFile("Arialuni.ttf"))
     //if (!font.loadFromFile("agency.ttf"))
-        CC::log << "Font load error!" << endl;
+        CC::log << "Font load error!" << std::endl;
     gameProcessUI = uptr<GameProcessUI>(new GameProcessUI(this));
 
     background.loadFromFile("Images/MenuBackground.jpg");

@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Common/Useful.hpp"
-#include "Common/NetworkConst.hpp"
+#include "Shared/Global.hpp"
+#include "Shared/Geometry.hpp"
 #include "World.hpp"
 #include "Objects.hpp"
 #include "World/Objects/Control.hpp"
@@ -66,8 +66,8 @@ void Tile::MoveTo(Object *obj) {
         int dx = X() - obj->GetTile()->X();
         int dy = Y() - obj->GetTile()->Y();
         if (abs(dx) > 1 || abs(dy) > 1)
-            Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << endl;
-        Global::Direction direction = Global::VectToDirection(sf::Vector2i(dx, dy));
+            Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
+        uf::Direction direction = uf::VectToDirection(sf::Vector2i(dx, dy));
         addObject(obj);
         GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
     }
@@ -220,7 +220,7 @@ void Map::GenerateLocals() {
         for (auto &tile : vect)
             tile->CheckLocal();
 
-    Server::log << "Num of locals:" << locals.size() << endl;
+    Server::log << "Num of locals:" << locals.size() << std::endl;
 }
 
 void Map::NewLocal(Tile *tile) {

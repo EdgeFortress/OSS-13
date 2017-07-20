@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "Common/Useful.hpp"
-#include "Common/NetworkConst.hpp"
+#include "Shared/Geometry.hpp"
+#include "Shared/ThreadSafeQueue.hpp"
 #include "World/Camera.hpp"
 #include "PlayerCommand.hpp"
 
@@ -25,8 +25,8 @@ private:
     Control *control;
     uptr<Camera> camera;
 
-    ThreadSafeQueue<ServerCommand *> commandsToClient;
-    ThreadSafeQueue<PlayerCommand *> commandsFromClient;
+    uf::ThreadSafeQueue<ServerCommand *> commandsToClient;
+    uf::ThreadSafeQueue<PlayerCommand *> commandsFromClient;
 
 public:
     Player();
@@ -38,7 +38,7 @@ public:
     void JoinToGame(int id);
     void ChatMessage(std::string &message);
 
-    void Move(Global::Direction);
+    void Move(uf::Direction);
     ///
 
     void Update();

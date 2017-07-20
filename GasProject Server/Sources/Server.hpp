@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "Common/Useful.hpp"
+#include "Shared/Types.hpp"
+#include "Shared/Log.hpp"
 
 class Player;
 class Server;
@@ -116,5 +117,5 @@ public:
 
     static Server *Get() { return instance; }
 
-    static Log log;
+    static uf::Log log;
 };

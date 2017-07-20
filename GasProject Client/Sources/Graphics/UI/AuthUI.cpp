@@ -153,7 +153,7 @@ void AuthUI::login() {
         comState = ComState::LOGIN;
     }
     else
-        CC::log << "Wait for answer to previous command" << endl;
+        CC::log << "Wait for answer to previous command" << std::endl;
 }
 
 void AuthUI::registration() {
@@ -162,7 +162,7 @@ void AuthUI::registration() {
         comState = ComState::REGISTRATION;
     }
     else
-        CC::log << "Wait for answer to previous command" << endl;
+        CC::log << "Wait for answer to previous command" << std::endl;
 }
 
 void AuthUI::Resize(int width, int height) {
