@@ -33,7 +33,7 @@ struct AuthorizationClientCommand : public ClientCommand {
 
     virtual const Code GetCode() const override { return Code::AUTH_REQ; }
 
-    AuthorizationClientCommand(string login, string password) : login(login),
+    AuthorizationClientCommand(const string &login, const string &password) : login(login),
                                                                 password(password) { }
 };
 
@@ -43,7 +43,7 @@ struct RegistrationClientCommand : public ClientCommand {
 
     virtual const Code GetCode() const override { return Code::REG_REQ; }
 
-    RegistrationClientCommand(string login, string password) : login(login),
+    RegistrationClientCommand(const string &login, const string &password) : login(login),
                                                                password(password) { }
 };
 

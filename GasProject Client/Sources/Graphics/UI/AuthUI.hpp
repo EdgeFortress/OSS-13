@@ -4,6 +4,7 @@
 #include "State.hpp"
 
 #include "Widget/Container.hpp"
+#include "Widget/Entry.hpp"
 
 class AuthUI : public UIModule {
 private:
@@ -23,8 +24,10 @@ private:
         ServerAnswer &operator=(const ServerAnswer &serverAnswer) = default;
     };
 
-    sfg::Window::Ptr logWindow, regWindow;
-    sfg::Entry::Ptr login_entry, passw_entry, new_login_entry, new_passw_entry;
+    //sfg::Window::Ptr logWindow, regWindow;
+    //sfg::Entry::Ptr login_entry, passw_entry, new_login_entry, new_passw_entry;
+    Container *logWindow, *regWindow;
+    Entry *my_login_entry, *my_passw_entry, *my_new_login_entry, *my_new_passw_entry;
 
     ServerAnswer serverAnswer;
     std::mutex mutex;
@@ -49,7 +52,15 @@ public:
     virtual void Resize(int width, int height) final;
     virtual void Draw(sf::RenderWindow *renderWindow) final { for (auto &widget : widgets) widget->Draw(*renderWindow); };
     virtual void Update(sf::Time timeElapsed) final { for (auto &widget : widgets) widget->Update(timeElapsed); }
-    virtual void HandleEvent(sf::Event event) final { for (auto &widget : widgets) widget->HandleEvent(event); }
+    virtual void HandleEvent(sf::Event event) final {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            my_login_entry->LoseFocus();
+            my_passw_entry->LoseFocus();
+            my_new_login_entry->LoseFocus();
+            my_new_passw_entry->LoseFocus();
+        }
+        for (auto &widget : widgets) widget->HandleEvent(event);
+    }
 
     void SetServerAnswer(bool result) {
         mutex.lock();

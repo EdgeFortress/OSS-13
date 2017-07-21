@@ -5,8 +5,8 @@
 using std::vector;
 using std::wstring;
 
-Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font)
-    : Widget(size), size(size), color(color), font(font), text("", font, 16) {
+Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
+    : Widget(size), size(size), color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
 
     //std::cout << "Filling sizes" << std::endl;
 
@@ -18,7 +18,7 @@ Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font)
     //for (auto i : sizes)
     //    std::cout << i.second[0] << ' ';
 
-    active = true;
+    active = false;
 
     showPos = 0;
     cursorPos = -1;
@@ -33,32 +33,46 @@ Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font)
     text.setOutlineColor(color);
 }
 
-void Entry::SizeFiller(const sf::Font &font, sf::Uint32 c) {
+void Entry::sizeFiller(const sf::Font &font, sf::Uint32 c) {
     sizes[c].push_back(font.getGlyph(c, characterSize, false).bounds.width);
     sizes[c].push_back(font.getGlyph(c, characterSize, true).bounds.width);
     sizes[c].push_back(font.getGlyph(c, characterSize, false).advance);
     sizes[c].push_back(font.getGlyph(c, characterSize, true).advance);
 }
 
+void Entry::GrabFocus() { active = true; }
+void Entry::LoseFocus() { active = false; }
+bool Entry::HasFocus() { return active; }
+
 void Entry::draw() const {
     sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
-    buffer.clear(sf::Color::White);
+    //buffer.clear(sf::Color(31, 31, 31));
+    buffer.clear(sf::Color(60, 60, 60));
+    //buffer.clear(sf::Color::White);
     buffer.draw(text);
 
-    if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
+    //std::cout << color.toInteger() << ' ' << cursor.getPosition().x << ' ' << cursor.getPosition().y << ' ' << GetAbsPosition().x << ' ' << GetAbsPosition().y << std::endl;
+   
+   if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
         buffer.draw(cursor);
 
     buffer.display();
 }
 
 void Entry::Update(sf::Time timeElapsed) {
-    cursorTime += timeElapsed;
+    if (active) {
+        cursorTime += timeElapsed;
 
-    if (cursorTime > sf::seconds(0.8f))
-        cursorTime = sf::Time::Zero;
+        if (cursorTime > sf::seconds(0.8f))
+            cursorTime = sf::Time::Zero;
+    }
 }
 
-void Entry::SetSymbol(const wchar_t c) {
+void Entry::SetSymbol(wchar_t c) {
+    if (hidingSymbols) {
+        hidingString += c;
+        c = hidingSymbol;
+    }
     if (cursorPos == entryString.size() - 1)
         entryString += c;
     else
@@ -71,7 +85,7 @@ void Entry::SetSymbol(const wchar_t c) {
         cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
     else {
         //std::cout << "Loading" << std::endl;
-        SizeFiller(font, c);
+        sizeFiller(font, c);
         letter_sizes = std::move(sizes[c]);
         cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
     }
@@ -83,7 +97,7 @@ void Entry::SetSymbol(const wchar_t c) {
         if (letter_sizes.size())
             cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
         else {
-            SizeFiller(font, entryString[showPos - 1]);
+            sizeFiller(font, entryString[showPos - 1]);
             letter_sizes = std::move(sizes[entryString[showPos - 1]]);
             cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
         }
@@ -101,7 +115,7 @@ void Entry::DeleteSymbol() {
         cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
     }
     else {
-        SizeFiller(font, entryString[cursorPos]);
+        sizeFiller(font, entryString[cursorPos]);
         letter_sizes = std::move(sizes[entryString[cursorPos]]);
         cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
     }
@@ -127,7 +141,7 @@ void Entry::DeleteSymbol() {
             if (letter_sizes.size())
                 cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
             else {
-                SizeFiller(font, entryString[i]);
+                sizeFiller(font, entryString[i]);
                 letter_sizes = std::move(sizes[entryString[i]]);
                 cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
             }
@@ -144,7 +158,7 @@ void Entry::MoveLeft() {
     if (letter_sizes.size())
         cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
     else {
-        SizeFiller(font, entryString[cursorPos]);
+        sizeFiller(font, entryString[cursorPos]);
         letter_sizes = std::move(sizes[entryString[cursorPos]]);
         cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
     }
@@ -165,7 +179,7 @@ void Entry::MoveRight() {
     if (letter_sizes.size())
         cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
     else {
-        SizeFiller(font, entryString[cursorPos]);
+        sizeFiller(font, entryString[cursorPos]);
         letter_sizes = std::move(sizes[entryString[cursorPos]]);
         cursor.setPosition(cursor.getPosition().x + letter_sizes[2], cursor.getPosition().y);
     }
@@ -177,26 +191,71 @@ void Entry::MoveRight() {
         if (letter_sizes.size())
             cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
         else {
-            SizeFiller(font, entryString[showPos - 1]);
+            sizeFiller(font, entryString[showPos - 1]);
             letter_sizes = std::move(sizes[entryString[showPos - 1]]);
             cursor.setPosition(cursor.getPosition().x - letter_sizes[2], cursor.getPosition().y);
         }
     }
 }
 
+void Entry::Clear() {
+    text.setString("");
+    entryString.erase(entryString.begin(), entryString.end());
+    hidingString.erase(hidingString.begin(), hidingString.end());
+    showPos = 0;
+    cursorPos = -1;
+
+    cursor.setPosition(text.getGlobalBounds().width, cursor.getPosition().y);
+}
+
+std::string Entry::GetText() {
+    std::string returnedString(entryString.size() * 4, 0);
+    std::string::iterator end = sf::Utf<8>::fromWide(entryString.begin(), entryString.end(), returnedString.begin());
+    if (hidingSymbols)
+        end = sf::Utf<8>::fromWide(hidingString.begin(), hidingString.end(), returnedString.begin());
+    returnedString.erase(end, returnedString.end());
+
+    text.setString("");
+    entryString.erase(entryString.begin(), entryString.end());
+    hidingString.erase(hidingString.begin(), hidingString.end());
+    showPos = 0;
+    cursorPos = -1;
+
+    cursor.setPosition(text.getGlobalBounds().width, cursor.getPosition().y);
+
+    //std::cout << returnedString << std::endl;
+
+    return returnedString;
+}
+
+void Entry::HideSymbols(wchar_t hider) {
+    hidingSymbol = hider;
+    hidingSymbols = true;
+    hidingString = entryString;
+    entryString = std::wstring(entryString.size(), hidingSymbol);
+}
+
 void Entry::HandleEvent(sf::Event event) {
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::BackSpace)
-            DeleteSymbol();
-        if (event.key.code == sf::Keyboard::Left)
-            MoveLeft();
-        if (event.key.code == sf::Keyboard::Right)
-            MoveRight();
-    }
-    if (event.type == sf::Event::TextEntered) {
-        wchar_t c = wchar_t(event.text.unicode);
-        if (c != '\r' && c != '\t' && c != '\b')
-            SetSymbol(c);
+    int x = event.mouseButton.x,
+        y = event.mouseButton.y;
+
+    if (event.type == sf::Event::MouseButtonPressed && x >= GetAbsPosition().x && x <= GetAbsPosition().x + GetSize().x && y >= GetAbsPosition().y && y <= GetAbsPosition().y + GetSize().y)
+        GrabFocus();
+
+    if (active) {
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::BackSpace)
+                DeleteSymbol();
+            if (event.key.code == sf::Keyboard::Left)
+                MoveLeft();
+            if (event.key.code == sf::Keyboard::Right)
+                MoveRight();
+        }
+        if (event.type == sf::Event::TextEntered) {
+            wchar_t c = wchar_t(event.text.unicode);
+            if (c != '\r' && c != '\t' && c != '\b')
+                SetSymbol(c);
+        }
     }
 }
 
@@ -204,11 +263,11 @@ void Entry::SetPosition(const sf::Vector2f pos) {
     //text.setPosition(pos);
     Widget::SetPosition(pos);
 
-    cursor.setPosition(text.getGlobalBounds().width + pos.x, pos.y + 2);
+    cursor.setPosition(text.getGlobalBounds().width, 2);
 }
 void Entry::SetPosition(const float x, const float y) {
     //text.setPosition(x, y);
     Widget::SetPosition(x, y);
 
-    cursor.setPosition(text.getGlobalBounds().width + x, y + 2);
+    cursor.setPosition(text.getGlobalBounds().width, 2);
 }

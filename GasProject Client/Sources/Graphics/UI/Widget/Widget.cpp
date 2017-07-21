@@ -6,10 +6,20 @@ Widget::Widget(const sf::Vector2f &size) : size(size), parent(nullptr) {
 	if (size.x || size.y)
 		buffer.create(unsigned(size.x), unsigned(size.y));
     bufferSprite.setTexture(buffer.getTexture());
+    hiding = false;
+}
+
+void Widget::Hide() {
+    hiding = true;
+}
+
+void Widget::Show() {
+    hiding = false;
 }
 
 void Widget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-	Draw(target);
+    if (!hiding)
+	    Draw(target);
 }
 
 void Widget::Draw(sf::RenderTarget &target) const {

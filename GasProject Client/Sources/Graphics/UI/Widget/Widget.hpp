@@ -9,6 +9,8 @@ private:
 
     Widget *parent;
 
+    bool hiding;
+
 protected:
 	sf::RenderTexture buffer;
 	// method for drawing to buffer
@@ -17,6 +19,8 @@ protected:
 public:
 	explicit Widget(const sf::Vector2f &size = sf::Vector2f());
 
+    virtual void Hide();
+    virtual void Show();
     // draw method for Drawable inheritance
     void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
 

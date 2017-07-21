@@ -131,6 +131,8 @@ void MenuLoginState::HandleEvent(sf::Event event) const {
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
+    if (event.type == sf::Event::MouseMoved)
+        CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
     if (event.type == sf::Event::TextEntered)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
     if (event.type == sf::Event::KeyPressed)

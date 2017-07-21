@@ -3,6 +3,10 @@
 
 Container::Container(const sf::Vector2f &size) : Widget(size), backgroundColor(sf::Color::Transparent) { }
 
+void Container::Hide() { for (auto &item : items) item.second->Hide(); }
+
+void Container::Show() { for (auto &item : items) item.second->Show(); }
+
 void Container::Update(sf::Time timeElapsed) { for (auto &item : items) item.second->Update(timeElapsed); }
 
 void Container::HandleEvent(sf::Event event) { for (auto &item : items) item.second->HandleEvent(event); }

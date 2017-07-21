@@ -20,19 +20,31 @@ private:
     sf::Time cursorTime;
 
     std::map < sf::Uint32, std::vector<float >> sizes; //0. Normal size, 1. Bold size, 2. Normal advance size, 3. Bold advance size;
-    void SizeFiller(const sf::Font &font, sf::Uint32 c);
+    void sizeFiller(const sf::Font &font, sf::Uint32 c);
 
     std::wstring entryString;
 
     bool active;
+    bool hidingSymbols;
+    
+    wchar_t hidingSymbol;
+    std::wstring hidingString;
 
 protected:
     virtual void draw() const final;
 
 public:
-    Entry(sf::Vector2f &size, const sf::Color &, const sf::Font &);
+    Entry(sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
 
-    void SetSymbol(const wchar_t c);
+    void GrabFocus();
+    void LoseFocus();
+    bool HasFocus();
+
+    void Clear();
+    std::string GetText();
+    void HideSymbols(wchar_t hider);
+
+    void SetSymbol(wchar_t c);
     void DeleteSymbol();
 
     void MoveLeft();

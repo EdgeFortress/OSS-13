@@ -18,7 +18,10 @@ protected:
 
 public:
 	Container(const sf::Vector2f &size = sf::Vector2f());
-	
+    
+    virtual void Hide();
+    virtual void Show();
+
 	virtual void Update(sf::Time timeElapsed) final;
     virtual void HandleEvent(sf::Event event) final;
 
