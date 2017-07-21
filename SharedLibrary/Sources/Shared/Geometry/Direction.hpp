@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vec2f.hpp"
+#include "Vec2.hpp"
 
 namespace uf {
 	enum class Direction : char {

@@ -1,4 +1,4 @@
 #pragma once
 
 #include "Geometry/Direction.hpp"
-#include "Geometry/Vec2f.hpp"
+#include "Geometry/Vec2.hpp"

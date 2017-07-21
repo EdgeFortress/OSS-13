@@ -20,19 +20,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
-    <ClCompile Include="Sources\Shared\Geometry\Vec2f.cpp" />
     <ClCompile Include="Sources\Shared\Log.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Command.hpp" />
     <ClInclude Include="Sources\Shared\Geometry.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
-    <ClInclude Include="Sources\Shared\Geometry\Vec2f.hpp" />
+    <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
+    <ClInclude Include="Sources\Shared\Geometry\1.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\Log.hpp" />
     <ClInclude Include="Sources\Shared\Math.hpp" />
     <ClInclude Include="Sources\Shared\Types.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sources\Shared\Geometry\Vec2.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7434416A-7972-4353-AF2F-709A7ECA887B}</ProjectGuid>
