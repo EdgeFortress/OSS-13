@@ -5,7 +5,7 @@
 #include <SFML/Network.hpp>
 
 #include "Shared/Command.hpp"
-#include "TileGrid_Info.hpp"
+#include "Shared/TileGrid_Info.hpp"
 
 class Player;
 struct Diff;

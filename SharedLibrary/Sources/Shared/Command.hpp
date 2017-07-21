@@ -6,10 +6,6 @@
 #include "Types.hpp"
 #include "Geometry.hpp"
 
-struct Diff;
-
-using std::string;
-
 struct ClientCommand {
 	enum class Code : char {
 		AUTH_REQ = 1,
@@ -25,73 +21,62 @@ struct ClientCommand {
 		GHOST
 	};
 
-	virtual const Code GetCode() const = 0;
+	virtual Code GetCode() const final;
+
+protected:
+	explicit ClientCommand(Code code);
+private:
+	Code code;
 };
 
 struct AuthorizationClientCommand : public ClientCommand {
-	string login;
-	string password;
+	std::string login;
+	std::string password;
 
-	virtual const Code GetCode() const override { return Code::AUTH_REQ; }
-
-	AuthorizationClientCommand(string login, string password) : login(login),
-		password(password) { }
+	AuthorizationClientCommand(const std::string &login, const std::string &password);
 };
 
 struct RegistrationClientCommand : public ClientCommand {
-	string login;
-	string password;
+	std::string login;
+	std::string password;
 
-	virtual const Code GetCode() const override { return Code::REG_REQ; }
-
-	RegistrationClientCommand(string login, string password) : login(login),
-		password(password) { }
+	RegistrationClientCommand(const std::string &login, const std::string &password);
 };
 
 struct GameListClientRequest : public ClientCommand {
-	virtual const Code GetCode() const override { return Code::SERVER_LIST_REQ; }
+	GameListClientRequest();
 };
 
 struct CreateGameClientCommand : public ClientCommand {
-	string title;
+	std::string title;
 
-	virtual const Code GetCode() const override { return Code::CREATE_GAME; }
-
-	CreateGameClientCommand(string title) : title(title) { }
+	CreateGameClientCommand(const std::string &title);
 };
 
 struct JoinGameClientCommand : public ClientCommand {
 	int id;
 
-	virtual const Code GetCode() const override { return Code::JOIN_GAME; }
-
-	JoinGameClientCommand(int id) : id(id) { }
+	JoinGameClientCommand(int id);
 };
 
 struct DisconnectionClientCommand : public ClientCommand {
-	virtual const Code GetCode() const override { return Code::DISCONNECT; }
-
-	DisconnectionClientCommand() { }
+	DisconnectionClientCommand();
 };
 
 struct MoveClientCommand : public ClientCommand {
 	uf::Direction direction;
-	virtual const Code GetCode() const override { return Code::MOVE; }
 
-	MoveClientCommand(uf::Direction direction = uf::Direction::NONE) :
-		direction(direction) { }
+	MoveClientCommand(uf::Direction direction);
 };
 
 struct SendChatMessageClientCommand : public ClientCommand {
 	std::string message;
 
-	virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
-
-	SendChatMessageClientCommand(std::string &message) : message(message) { }
+	SendChatMessageClientCommand(std::string &message);
 };
 
 struct GhostClientCommand : public ClientCommand {
-	virtual const Code GetCode() const override { return Code::GHOST; }
+	GhostClientCommand();
 };
 
 struct ServerCommand {
@@ -112,49 +97,54 @@ struct ServerCommand {
 		SEND_CHAT_MESSAGE,
 
 		COMMAND_CODE_ERROR
-		//CONNECTION_ERROR,
 	};
 
-	virtual const Code GetCode() const = 0;
+	virtual Code GetCode() const final;
+
+protected:
+	ServerCommand(Code code);
+private:
+	Code code;
 };
 
 struct AuthSuccessServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::AUTH_SUCCESS; }
+	AuthSuccessServerCommand();
 };
 
 struct RegSuccessServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::REG_SUCCESS; }
+	RegSuccessServerCommand();
 };
 
 struct AuthErrorServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::AUTH_ERROR; }
+	AuthErrorServerCommand();
 };
 
 struct RegErrorServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::REG_ERROR; }
+	RegErrorServerCommand();
 };
 
 struct GameCreateSuccessServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::GAME_CREATE_SUCCESS; }
+	GameCreateSuccessServerCommand();
 };
 
 struct GameCreateErrorServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::GAME_CREATE_ERROR; }
+	GameCreateErrorServerCommand();
 };
 
 struct GameJoinSuccessServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::GAME_JOIN_SUCCESS; }
+	GameJoinSuccessServerCommand();
 };
 
 struct GameJoinErrorServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::GAME_JOIN_ERROR; }
+	GameJoinErrorServerCommand();
 };
 
 struct GameListServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::GAME_LIST; }
+	GameListServerCommand();
 };
 
 struct BlockInfo;
+struct Diff;
 
 struct GraphicsUpdateServerCommand : public ServerCommand {
 	enum Option {
@@ -177,21 +167,15 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 	int controllable_id;
 	float controllableSpeed;
 
-	virtual const Code GetCode() const override { return Code::GRAPHICS_UPDATE; }
+	GraphicsUpdateServerCommand();
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {
 	std::string message;
 
-	virtual const Code GetCode() const override { return Code::SEND_CHAT_MESSAGE; }
-
-	SendChatMessageServerCommand(std::string &message) : message(message) { }
+	SendChatMessageServerCommand(std::string &message);
 };
 
 struct CommandCodeErrorServerCommand : public ServerCommand {
-	virtual const Code GetCode() const override { return Code::COMMAND_CODE_ERROR; }
+	CommandCodeErrorServerCommand();
 };
-
-//struct ConnectionErrorServerCommand : public ServerCommand {
-//    virtual const Code GetCode() const override { return Code::CONNECTION_ERROR; }
-//};

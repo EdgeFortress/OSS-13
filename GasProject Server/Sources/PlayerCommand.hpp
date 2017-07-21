@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/System.hpp>
+#include "Shared/Geometry/Vec2.hpp"
 
 class Player;
 
@@ -11,16 +11,19 @@ struct PlayerCommand {
 		MOVE
     };
 
-    virtual const Code GetCode() const = 0;
+    virtual const Code GetCode() const final;
+
+protected:
+	explicit PlayerCommand(Code code);
+private:
+	Code code;
 };
 
 struct JoinPlayerCommand : public PlayerCommand {
-    virtual const Code GetCode() const override { return Code::JOIN; }
+	JoinPlayerCommand();
 };
 
 struct MovePlayerCommand : public PlayerCommand {
-	sf::Vector2i order;
-	MovePlayerCommand(sf::Vector2i(order)) : 
-		order(order) { }
-	virtual const Code GetCode() const override { return Code::MOVE; }
+	uf::vec2i order;
+	MovePlayerCommand(uf::vec2i order);
 };

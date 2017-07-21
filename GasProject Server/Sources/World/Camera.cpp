@@ -6,7 +6,7 @@
 #include "World.hpp"
 #include "World/Objects/Control.hpp"
 #include "Player.hpp"
-#include "Network/TileGrid_Info.hpp"
+#include "Shared/TileGrid_Info.hpp"
 #include "Network/Differences.hpp"
 
 Camera::Camera(const Tile * const tile) :

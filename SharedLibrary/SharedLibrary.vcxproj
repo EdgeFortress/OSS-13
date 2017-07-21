@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Shared\Command.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\Log.cpp" />
   </ItemGroup>
@@ -27,10 +28,10 @@
     <ClInclude Include="Sources\Shared\Geometry.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
-    <ClInclude Include="Sources\Shared\Geometry\1.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\Log.hpp" />
     <ClInclude Include="Sources\Shared\Math.hpp" />
+    <ClInclude Include="Sources\Shared\TileGrid_Info.hpp" />
     <ClInclude Include="Sources\Shared\Types.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />
   </ItemGroup>
@@ -110,7 +111,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)/Sources/Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)/Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +149,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)/Sources/Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\SFML-2.4.0\include;$(ProjectDir)/Sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

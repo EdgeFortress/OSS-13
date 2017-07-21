@@ -2,7 +2,7 @@
 
 #include "Server.hpp"
 #include "World/World.hpp"
-#include "Network/TileGrid_Info.hpp"
+#include "Shared/TileGrid_Info.hpp"
 #include "Network/Differences.hpp"
 
 void Object::takeID() {

@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Network\Differences.cpp" />
+    <ClCompile Include="Sources\PlayerCommand.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
@@ -153,7 +154,6 @@
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Differences.hpp" />
     <ClInclude Include="Sources\Network\NetworkController.hpp" />
-    <ClInclude Include="Sources\Network\TileGrid_Info.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Server.hpp" />

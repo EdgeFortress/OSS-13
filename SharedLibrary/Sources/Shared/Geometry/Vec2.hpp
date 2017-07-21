@@ -3,7 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 
-#include "Types.hpp"
+#include "Shared/Types.hpp"
 
 namespace uf {
 

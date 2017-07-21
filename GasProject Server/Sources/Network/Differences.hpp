@@ -4,21 +4,22 @@
 
 #include "Shared/Geometry.hpp"
 #include "Shared/Global.hpp"
-#include "TileGrid_Info.hpp"
+#include "Shared/TileGrid_Info.hpp"
 
 class Block;
 class Object;
 
 struct Diff {
-	Global::DiffType diffType;
     uint id;
 	uint invisibility;
 
+	virtual Global::DiffType GetType() const final;
+	bool CheckVisibility(uint visibility) const;
+protected:
 	Diff(const Object *object, Global::DiffType diffType = Global::DiffType::NONE);
 	Diff(uint id, uint invisibility, Global::DiffType diffType);
-
-	virtual Global::DiffType GetType() const;
-	bool CheckVisibility(uint visibility) const;
+private:
+	Global::DiffType diffType;
 };
 
 struct ReplaceDiff : public Diff {

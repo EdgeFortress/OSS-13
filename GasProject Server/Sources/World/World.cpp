@@ -8,7 +8,7 @@
 #include "Server.hpp"
 #include "Player.hpp"
 #include "Network/Differences.hpp"
-#include "Network/TileGrid_Info.hpp"
+#include "Shared/TileGrid_Info.hpp"
 
 Tile::Tile(Map *map, int x, int y) :
     map(map), x(x), y(y), local(nullptr)
