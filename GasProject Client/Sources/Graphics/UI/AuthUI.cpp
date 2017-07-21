@@ -174,8 +174,6 @@ void AuthUI::generateRegistrationWindow() {
     regWindow->SetPosition(400, 400);
     regWindow->SetBackground(sf::Color::Transparent);
     widgets.push_back(uptr<Container>(regWindow));
-
-    regWindow->Hide();
 }
 
 void AuthUI::openLogin() {
@@ -218,10 +216,10 @@ void AuthUI::registration() {
 }
 
 void AuthUI::Resize(int width, int height) {
-    //logWindow->SetPosition(sf::Vector2f((width - logWindow->GetAllocation().width) / 10,
-    //                                    (height - logWindow->GetAllocation().height) / 3));
-    //regWindow->SetPosition(sf::Vector2f((width - regWindow->GetAllocation().width) / 2,
-    //                                    (height - regWindow->GetAllocation().height) / 2));
+    logWindow->SetPosition(sf::Vector2f((width - logWindow->GetPosition().x) / 10,
+                                        (height - logWindow->GetPosition().y) / 3));
+    //regWindow->SetPosition(sf::Vector2f((width - regWindow->GetPosition().x) / 10,
+    //                                    (height - regWindow->GetPosition().y) / 3));
 }
 
 void AuthUI::Show() {

@@ -41,7 +41,10 @@ const sf::Vector2f Widget::GetPosition() const {
 	return getPosition();
 }
 const sf::Vector2f Widget::GetAbsPosition() const {
-    return sf::Vector2f(getPosition().x + parent->GetPosition().x, getPosition().y + parent->GetPosition().y);
+    if (parent)
+        return sf::Vector2f(getPosition().x + parent->GetPosition().x, getPosition().y + parent->GetPosition().y);
+    else
+        return sf::Vector2f(getPosition().x, getPosition().y);
 }
 
 void Widget::SetSize(const sf::Vector2f &size) {

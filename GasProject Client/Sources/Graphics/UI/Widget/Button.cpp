@@ -19,11 +19,11 @@ void Button::draw() const {
     buffer.display();
 }
 
-void Button::Update(sf::Time timeElapsed) {
+void Button::updateCursorPointing(sf::Time timeElapsed) {
     if (diffBackColor) {
         diffBackColorTime += timeElapsed;
 
-        if (diffBackColorTime > sf::seconds(0.3f)) {
+        if (diffBackColorTime > sf::seconds(0.03f)) {
             int x = sf::Mouse::getPosition().x - CC::Get()->GetWindow()->GetPosition().x - 9,
                 y = sf::Mouse::getPosition().y - CC::Get()->GetWindow()->GetPosition().y - 38;
             //std::cout << x << ' ' << y << ' ' << GetAbsPosition().x << ' ' << GetAbsPosition().y << ' ' << GetAbsPosition().x + GetSize().x << ' ' << GetAbsPosition().y + GetSize().y << std::endl;
@@ -36,6 +36,10 @@ void Button::Update(sf::Time timeElapsed) {
             }
         }
     }
+}
+
+void Button::Update(sf::Time timeElapsed) {
+    updateCursorPointing(timeElapsed);
 }
 
 void Button::HandleEvent(sf::Event event) {

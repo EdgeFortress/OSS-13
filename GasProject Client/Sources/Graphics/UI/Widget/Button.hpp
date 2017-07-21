@@ -17,6 +17,8 @@ private:
 
     std::function<void()> func;
 
+    void updateCursorPointing(sf::Time);
+
 protected:
     virtual void draw() const final;
 
