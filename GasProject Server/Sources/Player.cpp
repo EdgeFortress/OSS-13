@@ -1,48 +1,34 @@
-#include "Server.hpp"
 #include "Player.hpp"
+
+#include "Server.hpp"
+#include "Network/Connection.hpp"
 #include "World/World.hpp"
+#include "World/Objects.hpp"
 #include "World/Objects/Control.hpp"
-#include "World/Objects/Creature.hpp"
 #include "PlayerCommand.hpp"
 #include "Shared/Command.hpp"
 
 class Server;
 
-Player::Player() {
-    ckey = "";
+Player::Player(std::string ckey) : ckey(ckey) {
     game = nullptr;
-    connected = true;
 }
 
-void Player::Authorize(string login, string password) {
-    if (Server::Get()->Authorization(string(login), string(password))) {
-        ckey = string(login);
-        commandsToClient.Push(new AuthSuccessServerCommand());
-        commandsToClient.Push(new GameListServerCommand());
-    } else {
-        commandsToClient.Push(new AuthErrorServerCommand());
-    }
-}
-
-void Player::Register(string login, string password) {
-    if (Server::Get()->Registration(string(login), string(password)))
-        commandsToClient.Push(new RegSuccessServerCommand());
-    else
-        commandsToClient.Push(new RegErrorServerCommand());
+void Player::SetConnection(sptr<Connection> &connection) {
+	this->connection = connection;
+	if (camera && control) {
+		camera->SetPosition(control->GetOwner()->GetTile());
+	}
 }
 
 void Player::UpdateServerList() {
-    commandsToClient.Push(new GameListServerCommand());
+	if (sptr<Connection> connect = connection.lock())
+		connect->commandsToClient.Push(new GameListServerCommand());
 }
 
-void Player::JoinToGame(int id) {
-    if (Game *game = Server::Get()->JoinGame(id, this)) {
-        this->game = game;
-        commandsFromClient.Push(new JoinPlayerCommand);
-        commandsToClient.Push(new GameJoinSuccessServerCommand());
-    } else {
-        commandsToClient.Push(new GameJoinErrorServerCommand());
-    }
+void Player::JoinToGame(Game *game) {
+	this->game = game;
+	actions.Push(new JoinPlayerCommand);
 }
 
 void Player::ChatMessage(std::string &message) {
@@ -50,17 +36,16 @@ void Player::ChatMessage(std::string &message) {
 }
 
 void Player::Move(uf::Direction direction) {
-	commandsFromClient.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
+	actions.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
 void Player::Update() {
-    while (!commandsFromClient.Empty()) {
-        PlayerCommand *temp = commandsFromClient.Pop();
+    while (!actions.Empty()) {
+        PlayerCommand *temp = actions.Pop();
         if (temp) {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
-					Creature *mob = game->GetWorld()->CreateNewPlayerCreature();
-                    SetControl(mob->GetComponent<Control>());
+                    SetControl(game->GetStartControl(this));
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
@@ -83,6 +68,10 @@ void Player::SendGraphicsUpdates() {
     }
 }
 
+void Player::Suspend() {
+	camera->Suspend();
+}
+
 void Player::SetControl(Control *control) {
     this->control = control;
     SetCamera(new Camera(control->GetOwner()->GetTile()));
@@ -93,10 +82,17 @@ void Player::SetControl(Control *control) {
 	camera->SetInvisibleVisibility(1);
 };
 
-void Player::AddCommandToClient(ServerCommand *command) {
-    commandsToClient.Push(command);
+void Player::SetCamera(Camera *camera) { this->camera.reset(camera); }
+
+sptr<Connection> Player::GetConnection() {
+	return connection.lock();
 }
 
-void Player::AddCommandFromClient(PlayerCommand *command) {
-    commandsFromClient.Push(command);
+Control *Player::GetControl() { return control; }
+Camera *Player::GetCamera() { return camera.get(); }
+bool Player::IsConnected() { return !connection.expired(); }
+
+void Player::AddCommandToClient(ServerCommand *command) {
+	if (sptr<Connection> connect = connection.lock())
+		connect->commandsToClient.Push(command);
 }

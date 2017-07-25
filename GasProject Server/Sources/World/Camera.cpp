@@ -110,6 +110,7 @@ void Camera::SetPosition(const Tile * const tile) {
     if (suspense && !unsuspensed) {
         suspense = false;
         unsuspensed = true;
+		changeFocus = true;
     } else {
         lasttile = this->tile;
         cameraMoved = true;

@@ -13,6 +13,7 @@ class NetworkController;
 class World;
 class Chat;
 class UsersDB;
+class Control;
 
 namespace sf {
     class Packet;
@@ -64,7 +65,8 @@ private:
     uptr<std::thread> thread;
     uptr<World> world;
 
-    std::list<wptr<Player>> players;
+    std::list<sptr<Player>> players;
+	std::list<sptr<Player>> disconnectedPlayers;
     std::mutex playersLock;
 
     Chat chat;
@@ -76,7 +78,10 @@ private:
 public:
     Game(std::string title, int id);
 
-    bool AddPlayer(wptr<Player>);
+	// True if new player created, false if exist player reconnected
+    bool AddPlayer(sptr<Player> &);
+
+	Control *GetStartControl(Player *);
 
     const uptr<World> &GetWorld() { return world; }
 
@@ -97,9 +102,6 @@ private:
 
     uptr<NetworkController> networkController;
 
-    std::list<sptr<Player>> players;
-    std::mutex playersLock;
-
     std::list<uptr<Game>> games;
 
     static Server *instance;
@@ -108,12 +110,11 @@ public:
     uptr<UsersDB> UDB;
 
     Server();
-    bool Authorization(std::string &login, std::string &password) const;
+    Player *Authorization(std::string &login, std::string &password);
     bool Registration(std::string &login, std::string &password) const;
     bool CreateGame(std::string title);
     const std::list<uptr<Game>> * const GetGamesList() const;
-    Game *JoinGame(const int id, Player *player) const;
-    void AddPlayer(sptr<Player> player);
+    Game *JoinGame(const int id, sptr<Player> &player) const;
 
     static Server *Get() { return instance; }
 

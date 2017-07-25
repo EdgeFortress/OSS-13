@@ -1,9 +1,10 @@
 #include <SFML/Network.hpp>
 
 #include "NetworkController.hpp"
+#include "Shared/Global.hpp"
+#include "Connection.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
-#include "World/World.hpp"
 
 void NetworkController::working() {
     sf::TcpListener listener;
@@ -13,44 +14,42 @@ void NetworkController::working() {
 
     selector.add(listener);
 
-    std::list< std::pair<wptr<Player>, uptr<sf::TcpSocket>> > sockets;
-
     while (active) {
         if (selector.wait(TIMEOUT)) {
             // Receiving from client
             if (selector.isReady(listener)) {
                 sf::TcpSocket *socket = new sf::TcpSocket;
                 if (listener.accept(*socket) == sf::TcpSocket::Done) {
-                    sptr<Player> player = std::make_shared<Player>();
-                    Server::Get()->AddPlayer(player);
                     selector.add(*socket);
-                    sockets.push_back(std::pair<wptr<Player>, uptr<sf::TcpSocket>>(player, uptr<sf::TcpSocket>(socket)));
+					Connection *new_connection = new Connection();
+					new_connection->socket.reset(socket);
+					connections.push_back(sptr<Connection>(new_connection));
                 } else
                     Server::log << "New connection accepting error" << std::endl;
-            }
-            else {
-                for (auto iter = sockets.begin(); iter != sockets.end();) {
-                    if (selector.isReady(*iter->second)) {
-                        sf::TcpSocket *socket = iter->second.get();
-                        sptr<Player> player = iter->first.lock();
-
-                        if (!player || !(player->IsConnected())) {
-                            selector.remove(*socket);
-                            iter = sockets.erase(iter);
-                            continue;
-                        } 
+            } else {
+                for (auto iter = connections.begin(); iter != connections.end();) {
+					
+                    if (selector.isReady(*iter->get()->socket)) {
+                        sf::TcpSocket *socket = iter->get()->socket.get();
+                        sptr<Player> player = (*iter)->player;
 
                         sf::Packet packet;
                         sf::Socket::Status status = socket->receive(packet);
                         switch (status) {
                             case sf::Socket::Done:
-                                parsePacket(packet, player.get());
+								if (!parsePacket(packet, *iter)) {
+									selector.remove(*socket);
+									iter = connections.erase(iter);
+									continue;
+								}
                                 break;
                             case sf::Socket::Disconnected:
-                                Server::log << "Lost client" << player->GetCKey() << "signal" << std::endl;
-                                player->connected = false;
+								if (player) {
+									Server::log << "Lost client" << player->GetCKey() << "signal" << std::endl;
+								} else
+									Server::log << "Lost unregistered client signal" << std::endl;
                                 selector.remove(*socket);
-                                iter = sockets.erase(iter);
+                                iter = connections.erase(iter);
                                 continue;
                                 break;
                         }
@@ -63,21 +62,19 @@ void NetworkController::working() {
         }
 
         // Sending to client
-        for (auto &pair : sockets) {
-            sptr<Player> player = pair.first.lock();
-            if (player)
-                while (!player->commandsToClient.Empty()) {
-                    sf::Packet packet;
-                    ServerCommand *temp = player->commandsToClient.Pop();
-                    packet << temp;
-                    if (temp) delete temp;
-                    pair.second->send(packet);
-                }
+        for (auto &connection : connections) {
+            while (!connection->commandsToClient.Empty()) {
+				sf::Packet packet;
+                ServerCommand *temp = connection->commandsToClient.Pop();
+                packet << temp;
+                if (temp) delete temp;
+				connection->socket->send(packet);
+            }
         }
     }
 }
 
-void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
+bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connection) {
     sf::Int32 code;
     packet >> code;
 
@@ -85,13 +82,35 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
         case ClientCommand::Code::AUTH_REQ: {
             sf::String login, password;
             packet >> login >> password;
-            player->Authorize(login, password);
+			
+			bool secondConnection = false;
+			for (auto &connection : connections) {
+				if (connection->player && connection->player->GetCKey() == login) {
+					secondConnection = true;
+					Server::log << "Player" << login << password << "is trying to authorize second time" << std::endl;
+					break;
+				}
+			}
+
+			if (!secondConnection) {
+				if (Player *player = Server::Get()->Authorization(string(login), string(password))) {
+					player->SetConnection(connection);
+					connection->player = sptr<Player>(player);
+					connection->commandsToClient.Push(new AuthSuccessServerCommand());
+					connection->commandsToClient.Push(new GameListServerCommand());
+					break;
+				}
+			}
+			connection->commandsToClient.Push(new AuthErrorServerCommand());
             break;
         }
         case ClientCommand::Code::REG_REQ: {
             sf::String login, password;
             packet >> login >> password;
-            player->Register(login, password);
+			if (Server::Get()->Registration(std::string(login), std::string(password)))
+				connection->commandsToClient.Push(new RegSuccessServerCommand());
+			else
+				connection->commandsToClient.Push(new RegErrorServerCommand());
             break;
         }
         case ClientCommand::Code::CREATE_GAME: {
@@ -101,35 +120,49 @@ void NetworkController::parsePacket(sf::Packet &packet, Player *player) {
             break;
         }
         case ClientCommand::Code::SERVER_LIST_REQ: {
-            player->UpdateServerList();
+			
+				connection->player->UpdateServerList();
             break;
         }
         case ClientCommand::Code::JOIN_GAME: {
             sf::Int32 id;
             packet >> id;
-            player->JoinToGame(id);
+			if (connection->player) {
+				if (Game *game = Server::Get()->JoinGame(id, connection->player)) {
+					connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
+				} else {
+					connection->commandsToClient.Push(new GameJoinErrorServerCommand());
+				}
+			}
             break;
         }
         case ClientCommand::Code::MOVE: {
             sf::Int8 direction;
             packet >> direction;
-            player->Move(uf::Direction(direction));
+			if (connection->player)
+				connection->player->Move(uf::Direction(direction));
             break;
         }
         case ClientCommand::Code::SEND_CHAT_MESSAGE: {
             std::string message;
             packet >> message;
-            player->ChatMessage(message);
+			if (connection->player)
+				connection->player->ChatMessage(message);
             break;
         }
         case ClientCommand::Code::DISCONNECT: {
-            Server::log << "Client" << player->GetCKey() << "disconnected" << std::endl;
-            player->connected = false;
+			if (connection->player)
+				Server::log << "Client" << connection->player->GetCKey() << "disconnected" << std::endl;
+			return false;
             break;
         }
         default:
-            Server::log << "Unknown Command received from" << player->GetCKey() << std::endl;
+			if (connection->player)
+				Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;
+			else
+				Server::log << "Unknown Command received from unregistered client" << std::endl; 
     }
+	return true;
 }
 
 NetworkController::NetworkController() {

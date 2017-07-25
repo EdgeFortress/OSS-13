@@ -122,5 +122,8 @@
     <ClInclude Include="Sources\World\Objects\Ghost.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Network\Connection.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

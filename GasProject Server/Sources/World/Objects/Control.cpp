@@ -103,3 +103,4 @@ void Control::MoveCommand(sf::Vector2i order) {
 }
 
 float Control::GetSpeed() const { return speed; }
+Player *Control::GetPlayer() const { return player; }

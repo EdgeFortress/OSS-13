@@ -149,6 +149,7 @@
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Network\Connection.hpp" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\Global.hpp" />

@@ -12,6 +12,7 @@ using std::string;
 class Server;
 class Game;
 class NetworkController;
+struct Connection;
 struct ServerCommand;
 
 class Control;
@@ -19,23 +20,23 @@ class Control;
 class Player {
 private:
     string ckey;
-    bool connected;
+    //bool connected;
     Game *game;
 
     Control *control;
     uptr<Camera> camera;
 
-    uf::ThreadSafeQueue<ServerCommand *> commandsToClient;
-    uf::ThreadSafeQueue<PlayerCommand *> commandsFromClient;
+	wptr<Connection> connection;
+    uf::ThreadSafeQueue<PlayerCommand *> actions;
 
 public:
-    Player();
+	explicit Player(std::string ckey);
+
+	void SetConnection(sptr<Connection> &connection);
 
     /// Client interface
-    void Authorize(string login, string password);
-    void Register(string login, string password);
     void UpdateServerList();
-    void JoinToGame(int id);
+    void JoinToGame(Game *game);
     void ChatMessage(std::string &message);
 
     void Move(uf::Direction);
@@ -46,15 +47,16 @@ public:
 
     string GetCKey() { return ckey; }
 
+	void Suspend();
     void SetControl(Control *control);
-    void SetCamera(Camera *camera) { this->camera.reset(camera); }
+	void SetCamera(Camera *camera);
 
-    Control *GetControl() { return control; }
-    Camera *GetCamera() { return camera.get(); }
-    bool IsConnected() { return connected; }
+	sptr<Connection> GetConnection();
+	Control *GetControl();
+	Camera *GetCamera();
+	bool IsConnected();
 
     void AddCommandToClient(ServerCommand *);
-    void AddCommandFromClient(PlayerCommand *);
 
     friend NetworkController;
     friend Server;

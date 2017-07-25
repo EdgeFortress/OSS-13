@@ -7,7 +7,7 @@
 #include "Shared/Command.hpp"
 #include "Shared/TileGrid_Info.hpp"
 
-class Player;
+struct Connection;
 struct Diff;
 
 class NetworkController {
@@ -15,11 +15,12 @@ private:
     const sf::Time TIMEOUT = sf::microseconds(100);
 
     bool active;
-
     uptr<std::thread> thread;
+	std::list< sptr<Connection> > connections;
 
     void working();
-    void parsePacket(sf::Packet &, Player *player);
+	// return false if received "disconnect" packet
+    bool parsePacket(sf::Packet &, sptr<Connection> &connection);
 
 public:
     NetworkController();

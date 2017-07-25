@@ -22,4 +22,5 @@ public:
 	void MoveCommand(sf::Vector2i order);
 
 	float GetSpeed() const;
+	Player *GetPlayer() const;
 };
