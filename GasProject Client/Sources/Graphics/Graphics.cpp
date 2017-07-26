@@ -99,11 +99,11 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
     }
 
     window->GetUI()->Lock();
-    window->GetUI()->Update(timeElapsed);
+    //window->GetUI()->Update(timeElapsed);
     window->GetUI()->DrawMenuBackground(render_window);
     authUI->Update(timeElapsed);
 	authUI->Draw(render_window);
-    window->GetUI()->Draw(render_window);
+    //window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
@@ -120,10 +120,10 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
     Window *window = CC::Get()->GetWindow();
     GameProcessUI* gameProcessUI = window->GetUI()->GetGameProcessUI();
     window->GetUI()->Lock();
-    window->GetUI()->Update(timeElapsed);
+    //window->GetUI()->Update(timeElapsed);
     gameProcessUI->Draw(render_window, timeElapsed);
     gameProcessUI->Draw(render_window);
-    window->GetUI()->Draw(render_window);
+    //window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
 
