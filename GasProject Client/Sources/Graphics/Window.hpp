@@ -67,6 +67,7 @@ public:
 
     int GetWidth() const { return width; }
     int GetHeight() const { return height; }
+    sf::Vector2i GetPosition() const { return window->getPosition(); }
     UI *GetUI() const { return ui.get(); }
     TileGrid *GetTileGrid() const { return tileGrid.get(); }
 };

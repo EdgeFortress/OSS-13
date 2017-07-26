@@ -2,8 +2,6 @@
 
 #include <mutex>
 
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widgets.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -26,8 +24,8 @@ public:
     virtual ~UIModule() = default;
 
     virtual void Resize(int width, int height) = 0;
-    virtual void Draw(sf::RenderWindow* renderWindow) = 0;
-    virtual void Update() = 0;
+    virtual void Draw(sf::RenderWindow *renderWindow) = 0;
+    virtual void Update(sf::Time timeElapsed) = 0;
 
     virtual void Hide() = 0;
     virtual void Show() = 0;
@@ -36,9 +34,6 @@ public:
 
 class UI {
 private:
-    sfg::SFGUI m_sfgui;
-    sfg::Desktop desktop;
-
     sf::Font font;
 
     sf::Texture background;
@@ -67,7 +62,6 @@ public:
     void Unlock();
 
     const sf::Font &GetFont() const { return font; }
-    sfg::Desktop *GetDesktop() { return &desktop; }
 
     AuthUI *GetAuthUI() { return authUI.get(); }
     GameListUI *GetGameListUI() { return gamelistUI.get(); }

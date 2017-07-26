@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Widget.hpp"
+#include "UI/Widget/Widget.hpp"
 
 using std::vector;
 using std::wstring;
@@ -44,10 +44,11 @@ private:
 
     vector<Message> boxText;
     std::mutex mtx;
-
-    virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
     
     int cursorPos;
+
+protected:
+	virtual void draw() const final { }
 
 public:
     Chat(const sf::Font &font);
@@ -61,7 +62,7 @@ public:
     void Parse(Message &, sf::Text &);
 
     void Draw(sf::RenderWindow *window, sf::Time timeElapsed);
-    void Update();
+    //void Update();
 
     void SetSymbol(const wchar_t c);
     void DeleteSymbol();
@@ -81,10 +82,10 @@ public:
     bool GetState() { return active; }
     void SetState(bool active) { this->active = active; }
 
-    virtual void setPosition(float x, float y) { }
-    virtual void setScale(float factorX, float factorY) { }
+    //virtual void setPosition(float x, float y) { }
+    //virtual void setScale(float factorX, float factorY) { }
 
-    virtual void setSize(const sf::Vector2f &size) { }
+    //virtual void setSize(const sf::Vector2f &size) { }
 
-    virtual void update() { }
+	virtual void Update(sf::Time timeElapsed);
 };

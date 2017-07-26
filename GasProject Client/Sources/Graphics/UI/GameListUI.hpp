@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Widget/Container.hpp"
 #include "UI.hpp"
-#include <SFML\Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 using std::string;
 
@@ -10,7 +11,9 @@ struct GameRow {
     string title;
     int num_of_players;
 
-    std::shared_ptr<sfg::Box> box;
+    bool finihedCreation;
+
+    Container *game;
 
     GameRow(int id, string title, int num_of_players);
 
@@ -19,8 +22,13 @@ struct GameRow {
 
 class GameListUI : public UIModule {
 private:
-    sfg::Window::Ptr gamelistWindow;
-    sfg::Box::Ptr gamesBox;
+    std::list<uptr<Widget>> widgets;
+    Container *gameList;
+
+    bool clearList;
+    bool newGames;
+
+    float lastGamePos;
 
     std::list<uptr<GameRow>> games;
 
@@ -38,8 +46,9 @@ public:
     void Clear();
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw(sf::RenderWindow* renderWindow) final {};
-    virtual void Update() final {};
+    virtual void Draw(sf::RenderWindow* renderWindow) final { for (auto &widget : widgets) widget->Draw(*renderWindow); };
+    virtual void Update(sf::Time timeElapsed) final;
+    virtual void HandleEvent(sf::Event event) final { for (auto &widget : widgets) widget->HandleEvent(event); }
 
     virtual void Hide() final;
     virtual void Show() final;

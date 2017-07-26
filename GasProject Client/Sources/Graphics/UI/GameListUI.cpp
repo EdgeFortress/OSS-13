@@ -1,36 +1,28 @@
 #include "GameListUI.hpp"
 #include "Network.hpp"
+#include "Widget/Label.hpp"
+#include "Widget/Button.hpp"
+#include "Client.hpp"
+#include "Graphics/Window.hpp"
 
 GameListUI::GameListUI(UI *ui) : UIModule(ui) {
+    lastGamePos = 0;
     generateGamelistWindow();
-    Hide();
+    
+    clearList = false;
+    newGames = false;
 }
 
 void GameListUI::generateGamelistWindow() {
-    auto designation_label = sfg::Label::Create("Games");
-    designation_label->SetAlignment(sf::Vector2f(0, 0.5));
-
-    auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 10.f);
-    box->Pack(designation_label, false, false);
-
-    auto frame = sfg::Frame::Create();
-    gamesBox = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 0);
-    frame->Add(gamesBox);
-    box->Pack(frame);
-
-    auto updateBox = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 0);
-    auto updateButton = sfg::Button::Create("Update");
-    updateButton->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&GameListUI::update, this));
-    auto updateSpaceLabel = sfg::Label::Create("");
-    updateSpaceLabel->SetRequisition(sf::Vector2f(1, 0));
-    updateBox->Pack(updateSpaceLabel);
-    updateBox->Pack(updateButton, false, false);
-    box->Pack(updateBox, false, false);
-
-    gamelistWindow = sfg::Window::Create();
-    gamelistWindow->Add(box);
-    gamelistWindow->SetStyle(sfg::Window::Style::BACKGROUND);
-    ui->GetDesktop()->Add(gamelistWindow);
+    gameList = new Container(sf::Vector2f(400, 500));
+    gameList->SetBackground(sf::Color::Transparent);
+    Container *gameBox = new Container(sf::Vector2f(500, 600));
+    gameBox->AddItem(new Label(L"Games", ui->GetFont(), 16), sf::Vector2f(10, 10));
+    gameBox->AddItem(new Button(L"Update", sf::Vector2f(100, 20), sf::Color::White, ui->GetFont(), std::bind(&GameListUI::update, this)), sf::Vector2f(390, 570));
+    gameBox->AddItem(gameList, sf::Vector2f(50, 50));
+    gameBox->SetPosition(500, 150);
+    gameBox->SetBackground(sf::Color(69, 69, 69));
+    widgets.push_back(uptr<Container>(gameBox));
 }
 
 void GameListUI::update() {
@@ -39,62 +31,54 @@ void GameListUI::update() {
 
 void GameListUI::AddGame(int id, string title, int num_of_players) {
     games.push_back(uptr<GameRow>(new GameRow(id, title, num_of_players)));
-    gamesBox->Pack(sfg::Separator::Create(sfg::Separator::Orientation::HORIZONTAL), false, false);
-    gamesBox->Pack(games.back()->box, false, true);
-    gamesBox->Pack(sfg::Separator::Create(sfg::Separator::Orientation::HORIZONTAL), false, false);
+    newGames = true;
 }
 
 void GameListUI::Clear() {
     games.clear();
-    gamesBox->RemoveAll();
+    clearList = true;
 }
 
 void GameListUI::Resize(int width, int height) {
-    gamelistWindow->SetRequisition(sf::Vector2f(float(width) / 2,
-                                                float(height) / 2));
-    gamelistWindow->SetPosition(sf::Vector2f((width - gamelistWindow->GetAllocation().width) / 2,
-                                             (height - gamelistWindow->GetAllocation().height) / 2));
+    //gamelistWindow->SetRequisition(sf::Vector2f(float(width) / 2,
+    //                                            float(height) / 2));
+    //gamelistWindow->SetPosition(sf::Vector2f((width - gamelistWindow->GetAllocation().width) / 2,
+    //                                         (height - gamelistWindow->GetAllocation().height) / 2));
+}
+
+void GameListUI::Update(sf::Time timeElapsed) {
+    if (clearList) {
+        gameList->Clear();
+        clearList = false;
+    }
+    if (newGames) {
+        for (auto &game : games)
+            if (!game->finihedCreation) {
+                game->game = new Container(sf::Vector2f(400, 30));
+                game->game->SetBackground(sf::Color::Transparent);
+                game->game->AddItem(new Label(game->title, ui->GetFont(), 16), sf::Vector2f(0, 0));
+                game->game->AddItem(new Label(std::to_string(game->num_of_players), ui->GetFont(), 16), sf::Vector2f(300, 0));
+                game->game->AddItem(new Button(L"  join", sf::Vector2f(50, 20), sf::Color::White, ui->GetFont(), std::bind(&GameRow::join, game.get())), sf::Vector2f(350, 0));
+                gameList->AddItem(game->game, sf::Vector2f(0, lastGamePos));
+                game->finihedCreation = true;
+            }
+        newGames = false;
+    }
+    for (auto &widget : widgets)
+        widget->Update(timeElapsed);
 }
 
 void GameListUI::Show() {
-    gamelistWindow->Show(true);
+    //gamelistWindow->Show(true);
 }
 
 void GameListUI::Hide() {
-    gamelistWindow->Show(false);
+    //gamelistWindow->Show(false);
 }
 
 GameRow::GameRow(int id, string title, int num_of_players) :
-    id(id),
-    box(sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL, 0))
-{
-    auto icon = sfg::Button::Create();
-    icon->SetRequisition(sf::Vector2f(32, 32));
-    box->Pack(icon, false, false);
-
-    auto title_label = sfg::Label::Create(title);
-    title_label->SetAlignment(sf::Vector2f(0.05f, 0.5f));
-    box->Pack(title_label, true, true);
-
-    box->Pack(sfg::Separator::Create(sfg::Separator::Orientation::VERTICAL), false, false);
-
-    auto space = sfg::Label::Create();
-    space->SetRequisition(sf::Vector2f(10, 0));
-    box->Pack(space, false, false);
-
-    auto num_of_players_label = sfg::Label::Create(std::to_string(num_of_players));
-    num_of_players_label->SetRequisition(sf::Vector2f(35, 0));
-    box->Pack(num_of_players_label, false, false);
-
-    space = sfg::Label::Create();
-    space->SetRequisition(sf::Vector2f(20, 0));
-    box->Pack(space, false, false);
-
-    auto join_button = sfg::Button::Create("join");
-    join_button->SetRequisition(sf::Vector2f(50, 32));
-    join_button->GetSignal(sfg::Widget::OnLeftClick).Connect(std::bind(&GameRow::join, this));
-    box->Pack(join_button, false, true);
-}
+    id(id), title(title), num_of_players(num_of_players), finihedCreation(false)
+{ }
 
 void GameRow::join() {
     Connection::commandQueue.Push(new JoinGameClientCommand(id));

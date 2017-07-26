@@ -140,7 +140,7 @@ bool Server::Registration(string &login, string &password) const {
         Server::log << "New player is registrated:" << login << password << endl;
         return true;
     }
-    Server::log << "Player is trying make second accoun with same login:" << login << password << endl;
+    Server::log << "Player is trying make account with wrong account data:" << login << password << endl;
     return false;
 }
 
