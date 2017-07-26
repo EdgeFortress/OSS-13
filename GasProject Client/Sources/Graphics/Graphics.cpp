@@ -5,6 +5,7 @@
 
 #include "Graphics/UI/UI.hpp"
 #include "Graphics/UI/AuthUI.hpp"
+#include "UI/GameListUI.hpp"
 #include "Graphics/UI/GameProcessUI.hpp"
 
 #include "State.hpp"
@@ -108,9 +109,10 @@ void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapse
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();
     window->GetUI()->Lock();
-    window->GetUI()->Update(timeElapsed);
+    //window->GetUI()->Update(timeElapsed);
     window->GetUI()->DrawMenuBackground(render_window);
-    window->GetUI()->Draw(render_window);
+    //window->GetUI()->Draw(render_window);
+    window->GetUI()->GetGameListUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
 void GameLobbyState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const { }
@@ -120,6 +122,7 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
     window->GetUI()->Lock();
     window->GetUI()->Update(timeElapsed);
     gameProcessUI->Draw(render_window, timeElapsed);
+    gameProcessUI->Draw(render_window);
     window->GetUI()->Draw(render_window);
     window->GetUI()->Unlock();
 }
@@ -139,9 +142,12 @@ void MenuLoginState::HandleEvent(sf::Event event) const {
     if (event.type == sf::Event::MouseMoved)
         CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
 }
-void MenuGameListState::HandleEvent(sf::Event event) const { }
+void MenuGameListState::HandleEvent(sf::Event event) const { 
+    CC::Get()->GetWindow()->GetUI()->GetGameListUI()->HandleEvent(event);
+}
 void GameLobbyState::HandleEvent(sf::Event event) const { }
 void GameProcessState::HandleEvent(sf::Event event) const {
+    CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->HandleEvent(event);
     Chat *chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
 
     static bool playing = true;
@@ -186,7 +192,9 @@ void GameProcessState::HandleEvent(sf::Event event) const {
 }
 
 void MenuLoginState::Update(sf::Time timeElapsed) const { }
-void MenuGameListState::Update(sf::Time timeElapsed) const { }
+void MenuGameListState::Update(sf::Time timeElapsed) const {
+    CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Update(timeElapsed);
+}
 void GameLobbyState::Update(sf::Time timeElapsed) const { }
 void GameProcessState::Update(sf::Time timeElapsed) const {
     Window *window = CC::Get()->GetWindow();

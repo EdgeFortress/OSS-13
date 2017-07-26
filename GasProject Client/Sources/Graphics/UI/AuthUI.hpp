@@ -24,8 +24,6 @@ private:
         ServerAnswer &operator=(const ServerAnswer &serverAnswer) = default;
     };
 
-    //sfg::Window::Ptr logWindow, regWindow;
-    //sfg::Entry::Ptr login_entry, passw_entry, new_login_entry, new_passw_entry;
     Container *logWindow, *regWindow;
     Entry *my_login_entry, *my_passw_entry, *my_new_login_entry, *my_new_passw_entry;
 

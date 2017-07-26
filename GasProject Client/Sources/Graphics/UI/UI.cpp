@@ -40,17 +40,11 @@ void UI::Resize(int width, int height) {
     gameProcessUI->Resize(width, height);
 }
 
-void UI::HandleEvent(sf::Event event) {
-    desktop.HandleEvent(event);
-}
+void UI::HandleEvent(sf::Event event) {}
 
-void UI::Update(sf::Time timeElapsed) {
-    desktop.Update(timeElapsed.asSeconds());
-}
+void UI::Update(sf::Time timeElapsed) {}
 
-void UI::Draw(sf::RenderWindow *render_window) {
-    m_sfgui.Display(*render_window);
-}
+void UI::Draw(sf::RenderWindow *render_window) {}
 
 void UI::DrawMenuBackground(sf::RenderWindow *render_window) {
     render_window->draw(background_sprite);

@@ -12,6 +12,14 @@ Button::Button(const sf::String &name, sf::Vector2f &size, const sf::Color &colo
     backColor = sf::Color::Transparent;
 }
 
+Button::Button(const sf::String &name, sf::Vector2f &size, const sf::Color &color, std::function<void()> func)
+    : Widget(size), name(name), size(size), color(color), func(func) {
+    text.setFillColor(color);
+    text.setOutlineColor(color);
+    //SetSize(sf::Vector2f(text.getGlobalBounds().width + text.getGlobalBounds().left, text.getGlobalBounds().height + text.getGlobalBounds().top));
+    backColor = sf::Color::Transparent;
+}
+
 void Button::draw() const {
     sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
     buffer.clear(backColor);
@@ -59,7 +67,7 @@ void Button::HandleEvent(sf::Event event) {
     if (event.type == sf::Event::MouseMoved &&
         mouseX >= GetAbsPosition().x && mouseX <= GetAbsPosition().x + GetSize().x &&
         mouseY >= GetAbsPosition().y && mouseY <= GetAbsPosition().y + GetSize().y) {
-        backColor = sf::Color::Magenta;
+        backColor = sf::Color::Blue;
         diffBackColorTime = sf::Time::Zero;
         diffBackColor = true;
     }
@@ -72,4 +80,9 @@ void Button::SetPosition(const sf::Vector2f pos) {
 void Button::SetPosition(const float x, const float y) {
     Widget::SetPosition(x, y);
     //text.setPosition(x + GetSize().x / 2, y + GetSize().y / 2);
+}
+
+void Button::SetFont(const sf::Font &font) {
+    this->font = font;
+    text = sf::Text(name, font, 16);
 }

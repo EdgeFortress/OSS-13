@@ -1,6 +1,3 @@
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widgets.hpp>
-
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid/TileGrid.hpp"
@@ -31,45 +28,39 @@ void InfoLabel::SetText(const string &s) {
     text.setString(s);
 }
 
-void GameProcessUI::generateChatWindow() {
-    chatWindow = sfg::Window::Create();
-    chatWindow->SetStyle(sfg::Window::Style::TOPLEVEL ^ sfg::Window::Style::RESIZE ^ sfg::Window::Style::TITLEBAR);
-
-    ui->GetDesktop()->Add(chatWindow);
+void GameProcessUI::generateFunctionWindow() {
+    functionWindow = new Container(sf::Vector2f(0, 0));
+    functionWindow->SetBackground(sf::Color(69, 69, 69));
+    widgets.push_back(uptr<Container>(functionWindow));
 }
 
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     infoLabel(ui->GetFont()), chat(ui->GetFont())
 { 
-    generateChatWindow();
+    generateFunctionWindow();
 
-    Hide();
+    //Hide();
 }
 
 void GameProcessUI::Resize(const int width, const int height) { 
     infoLabel.CountPosition(width, height);
     chat.Resize(width, height);
-    TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
-    chatWindow->SetAllocation(sf::FloatRect(float(tileGrid->GetTileSize() * Global::FOV),
-                                            0, 
-                                            float(width - tileGrid->GetTileSize() * Global::FOV), 
-                                            float(height / 2)));
+    functionWindow->SetPosition(CC::Get()->GetWindow()->GetTileGrid()->GetTileSize() * float(Global::FOV), 0);
+    functionWindow->SetSize(sf::Vector2f(width - functionWindow->GetAbsPosition().x, chat.GetYPos()));
+    //TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
     infoLabel.Draw(renderWindow);
     chat.Draw(renderWindow, timeElapsed);
-    //renderWindow->draw(chat);
 }
 
 void GameProcessUI::Update(sf::Time timeElapsed) {
     chat.Update(timeElapsed);
+    for (auto &widget : widgets) 
+        widget->Update(timeElapsed);
 }
 
-void GameProcessUI::Show() {
-    chatWindow->Show(true);
-}
+void GameProcessUI::Show() {}
 
-void GameProcessUI::Hide() {
-    chatWindow->Show(false);
-}
+void GameProcessUI::Hide() {}

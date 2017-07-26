@@ -32,6 +32,7 @@ void Container::HandleEvent(sf::Event event) {
 void Container::draw() const {
 	sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
 	buffer.clear(backgroundColor);
+    //std::cout << GetPosition().x << ' ' << GetPosition().y << std::endl;
     for (auto &item : items) //item.second->Draw(buffer);
         buffer.draw(*(item.second.get()));
 	buffer.display();
@@ -43,6 +44,10 @@ void Container::AddItem(Widget *widget, sf::Vector2f position) {
     widget->SetParent(this);
 }
 
+void Container::Clear() {
+    items.erase(items.begin(), items.end());
+}
+
 void Container::SetPosition(const sf::Vector2f pos) {
 	Widget::SetPosition(pos);
 }
@@ -52,4 +57,9 @@ void Container::SetPosition(const float x, const float y) {
 
 void Container::SetBackground(sf::Color color) {
     backgroundColor = color;
+}
+
+void Container::SetFont(const sf::Font &font) {
+    for (auto &item : items)
+        item.second->SetFont(font);
 }

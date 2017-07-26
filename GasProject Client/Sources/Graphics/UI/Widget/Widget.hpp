@@ -38,4 +38,6 @@ public:
 	const virtual sf::Vector2f GetSize() const;
 
     virtual void SetParent(Widget *widget) { parent = widget; }
+
+    virtual void SetFont(const sf::Font &font) {}
 };

@@ -24,10 +24,13 @@ protected:
 
 public:
     Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, const sf::Font &, std::function<void()>);
+    Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, std::function<void()>);
 
     virtual void Update(sf::Time timeElapsed) final;
     virtual void HandleEvent(sf::Event event) final;
     
     void SetPosition(const sf::Vector2f);
     void SetPosition(const float x, const float y);
+
+    virtual void SetFont(const sf::Font &font);
 };

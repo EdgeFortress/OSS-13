@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widgets.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -34,9 +32,6 @@ public:
 
 class UI {
 private:
-    sfg::SFGUI m_sfgui;
-    sfg::Desktop desktop;
-
     sf::Font font;
 
     sf::Texture background;
@@ -65,7 +60,6 @@ public:
     void Unlock();
 
     const sf::Font &GetFont() const { return font; }
-    sfg::Desktop *GetDesktop() { return &desktop; }
 
     AuthUI *GetAuthUI() { return authUI.get(); }
     GameListUI *GetGameListUI() { return gamelistUI.get(); }

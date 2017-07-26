@@ -18,7 +18,7 @@ protected:
 
 public:
 	Container(const sf::Vector2f &size = sf::Vector2f());
-    
+
     virtual void Hide();
     virtual void Show();
 
@@ -26,9 +26,12 @@ public:
     virtual void HandleEvent(sf::Event event) final;
 
 	void AddItem(Widget *, sf::Vector2f position);
+    void Clear();
 
 	virtual void SetPosition(const sf::Vector2f) final;
 	virtual void SetPosition(const float x, const float y) final;
 
     void SetBackground(sf::Color);
+
+    virtual void SetFont(const sf::Font &font);
 };
