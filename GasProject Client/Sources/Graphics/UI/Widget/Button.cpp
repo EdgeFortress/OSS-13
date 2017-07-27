@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Button::Button(const sf::String &name, sf::Vector2f &size, const sf::Color &color, const sf::Font &font, std::function<void()> func)
+Button::Button(const sf::String &name, const sf::Vector2f &size, const sf::Color &color, const sf::Font &font, std::function<void()> func)
     : Widget(size), name(name), size(size), color(color), font(font), func(func), text(name, font, 16) {
     text.setFillColor(color);
     text.setOutlineColor(color);
@@ -12,7 +12,7 @@ Button::Button(const sf::String &name, sf::Vector2f &size, const sf::Color &colo
     backColor = sf::Color::Transparent;
 }
 
-Button::Button(const sf::String &name, sf::Vector2f &size, const sf::Color &color, std::function<void()> func)
+Button::Button(const sf::String &name, const sf::Vector2f &size, const sf::Color &color, std::function<void()> func)
     : Widget(size), name(name), size(size), color(color), func(func) {
     text.setFillColor(color);
     text.setOutlineColor(color);

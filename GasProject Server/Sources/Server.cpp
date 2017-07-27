@@ -118,7 +118,7 @@ Server::Server() : UDB(new UsersDB()),
     }
 }
 
-Player *Server::Authorization(string &login, string &password) {
+Player *Server::Authorization(const string &login, const string &password) {
     if (UDB->Check(login, password)) {
 		Server::log << "Player is authorized:" << login << password << endl;
 		return new Player(login);
@@ -127,7 +127,7 @@ Player *Server::Authorization(string &login, string &password) {
 	return nullptr;
 }
 
-bool Server::Registration(string &login, string &password) const {
+bool Server::Registration(const string &login, const string &password) const {
     if (UDB->Add(login, password)) {
         Server::log << "New player is registrated:" << login << password << endl;
         return true;

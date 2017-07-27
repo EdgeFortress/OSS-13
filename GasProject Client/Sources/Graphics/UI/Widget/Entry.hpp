@@ -34,7 +34,7 @@ protected:
     virtual void draw() const final;
 
 public:
-    Entry(sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
+    Entry(const sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
 
     void GrabFocus();
     void LoseFocus();

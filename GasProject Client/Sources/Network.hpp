@@ -7,7 +7,10 @@
 #include "Shared/Command.hpp"
 #include "Shared/ThreadSafeQueue.hpp"
 
-class std::thread;
+namespace std {
+    class thread;
+}
+
 namespace sf {
     class TcpSocket;
     class Packet;

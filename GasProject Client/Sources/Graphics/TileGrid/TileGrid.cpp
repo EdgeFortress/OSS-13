@@ -261,7 +261,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
     }
 
     
-    for (auto &iter = objects.begin(); iter != objects.end();) {
+    for (auto iter = objects.begin(); iter != objects.end();) { //????
         (*iter)->Update(timeElapsed);
         if (!(*iter)->GetTile()) iter = objects.erase(iter);
         else iter++;

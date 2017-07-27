@@ -40,7 +40,7 @@ public:
     Chat& operator=(Chat &chat) = delete;
     ~Chat() = default;
 
-    void AddMessage(std::string &message) {
+    void AddMessage(const std::string &message) {
         messages.push_back(Chat::message(message));
     }
 
@@ -110,8 +110,8 @@ public:
     uptr<UsersDB> UDB;
 
     Server();
-    Player *Authorization(std::string &login, std::string &password);
-    bool Registration(std::string &login, std::string &password) const;
+    Player *Authorization(const std::string &login, const std::string &password);
+    bool Registration(const std::string &login, const std::string &password) const;
     bool CreateGame(std::string title);
     const std::list<uptr<Game>> * const GetGamesList() const;
     Game *JoinGame(const int id, sptr<Player> &player) const;

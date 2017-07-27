@@ -1,42 +1,44 @@
 #include "Direction.hpp"
 
-uf::Direction uf::VectToDirection(uf::vec2f vector) {
-	if (vector.x > 0) {
-		if (vector.y > 0)  return uf::Direction::SOUTH_EAST;
-		if (vector.y == 0) return uf::Direction::EAST;
-		if (vector.y < 0)  return uf::Direction::NORTH_EAST;
+namespace uf {
+	Direction VectToDirection(vec2f vector) {
+		if (vector.x > 0) {
+			if (vector.y > 0) return Direction::SOUTH_EAST;
+			if (vector.y == 0) return Direction::EAST;
+			if (vector.y < 0) return Direction::NORTH_EAST;
+		}
+		if (vector.x == 0) {
+			if (vector.y > 0) return Direction::SOUTH;
+			if (vector.y == 0) return Direction::NONE;
+			if (vector.y < 0) return Direction::NORTH;
+		}
+		if (vector.x < 0) {
+			if (vector.y > 0) return Direction::SOUTH_WEST;
+			if (vector.y == 0) return Direction::WEST;
+			if (vector.y < 0) return Direction::NORTH_WEST;
+		}
+		return Direction::NONE;
 	}
-	if (vector.x == 0) {
-		if (vector.y > 0)  return uf::Direction::SOUTH;
-		if (vector.y == 0) return uf::Direction::NONE;
-		if (vector.y < 0)  return uf::Direction::NORTH;
-	}
-	if (vector.x < 0) {
-		if (vector.y > 0)  return uf::Direction::SOUTH_WEST;
-		if (vector.y == 0) return uf::Direction::WEST;
-		if (vector.y < 0)  return uf::Direction::NORTH_WEST;
-	}
-	return uf::Direction::NONE;
-}
 
-uf::vec2f uf::DirectionToVect(uf::Direction direction) {
-	switch (direction) {
-	case uf::Direction::SOUTH:
-		return uf::vec2f(0, 1);
-	case uf::Direction::WEST:
-		return uf::vec2f(-1, 0);
-	case uf::Direction::NORTH:
-		return uf::vec2f(0, -1);
-	case uf::Direction::EAST:
-		return uf::vec2f(1, 0);
-	case uf::Direction::SOUTH_WEST:
-		return uf::vec2f(-1, 1);
-	case uf::Direction::NORTH_WEST:
-		return uf::vec2f(-1, -1);
-	case uf::Direction::NORTH_EAST:
-		return uf::vec2f(1, -1);
-	case uf::Direction::SOUTH_EAST:
-		return uf::vec2f(1, 1);
+	vec2f DirectionToVect(Direction direction) {
+		switch (direction) {
+			case Direction::SOUTH:
+				return vec2f(0, 1);
+			case Direction::WEST:
+				return vec2f(-1, 0);
+			case Direction::NORTH:
+				return vec2f(0, -1);
+			case Direction::EAST:
+				return vec2f(1, 0);
+			case Direction::SOUTH_WEST:
+				return vec2f(-1, 1);
+			case Direction::NORTH_WEST:
+				return vec2f(-1, -1);
+			case Direction::NORTH_EAST:
+				return vec2f(1, -1);
+			case Direction::SOUTH_EAST:
+				return vec2f(1, 1);
+		}
+		return vec2f(0, 0);
 	}
-	return uf::vec2f(0, 0);
 }

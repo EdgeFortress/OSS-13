@@ -7,6 +7,9 @@
 
 #include "TileGrid/TileGrid.hpp"
 #include "UI/UI.hpp"
+#include "UI/AuthUI.hpp"
+#include "UI/GameListUI.hpp"
+#include "UI/GameProcessUI.hpp"
 
 using sf::RenderWindow;
 

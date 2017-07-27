@@ -1,4 +1,4 @@
-
+#include <math.h> //????
 
 template<typename T>
 vec2<T>::vec2() : x(0), y(0) { }
@@ -16,11 +16,11 @@ vec2<T>::vec2(const sf::Vector2<U> &vect) : x(T(vect.x)), y(T(vect.y)) {}
 
 template<typename T>
 double vec2<T>::length() const {
-	return ::length<T>(*this);
+	return uf::length<T>(*this);
 }
 template<typename T>
 vec2<double> vec2<T>::normalize() const {
-	return ::normalize<T>(*this);
+	return uf::normalize<T>(*this);
 }
 
 template<typename T>
@@ -31,8 +31,8 @@ double vec2<T>::GetAngle() const {
 		else       return M_PI * 3 / 2;
 	}
 	float angle = 0;
-	if (x > 0) angle = std::atan(y / x);
-	if (x < 0) angle = M_PI - std::atan(y / -x);
+	if (x > 0) angle = atan(y / x);
+	if (x < 0) angle = M_PI - atan(y / -x);
 	return angle;
 }
 
@@ -96,12 +96,14 @@ std::ostream &operator<<(std::ostream &os, const uf::vec2<T> &vec) {
 	return os;
 }
 
-template<typename T>
-double uf::length(const vec2<T> &vec) {
-	return std::sqrt(vec.x * vec.x + vec.y * vec.y);
-}
+namespace uf {
+    template<typename T>
+    double length(const vec2 <T> &vec) {
+        return sqrt(vec.x * vec.x + vec.y * vec.y);
+    }
 
-template<typename T>
-vec2<double> uf::normalize(const vec2<T> &vec) {
-	return vec / length(vec);
+    template<typename T>
+    vec2<double> normalize(const vec2 <T> &vec) {
+        return vec / length(vec);
+    }
 }

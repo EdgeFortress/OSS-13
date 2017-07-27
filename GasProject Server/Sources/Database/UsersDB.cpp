@@ -2,7 +2,7 @@
 #include <fstream>
 
 #include "UsersDB.hpp"
-#include "global.hpp"
+#include "Global.hpp"
 #include "Server.hpp"
 
 using namespace std;

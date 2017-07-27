@@ -5,7 +5,7 @@
 using std::vector;
 using std::wstring;
 
-Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
+Entry::Entry(const sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
     : Widget(size), size(size), color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
 
     //std::cout << "Filling sizes" << std::endl;
@@ -28,7 +28,7 @@ Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, b
     cursorTime = sf::Time::Zero;
     cursor.setSize(sf::Vector2f(characterSize / 8.0f, float(characterSize)));
     cursor.setFillColor(color);
-
+    
     text.setFillColor(color);
     text.setOutlineColor(color);
 }

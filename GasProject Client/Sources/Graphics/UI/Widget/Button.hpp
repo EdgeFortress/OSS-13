@@ -23,8 +23,8 @@ protected:
     virtual void draw() const final;
 
 public:
-    Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, const sf::Font &, std::function<void()>);
-    Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, std::function<void()>);
+    Button(const sf::String &name, const sf::Vector2f &size, const sf::Color &, const sf::Font &, std::function<void()>);
+    Button(const sf::String &name, const sf::Vector2f &size, const sf::Color &, std::function<void()>);
 
     virtual void Update(sf::Time timeElapsed) final;
     virtual void HandleEvent(sf::Event event) final;
