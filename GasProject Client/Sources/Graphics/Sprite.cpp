@@ -43,7 +43,7 @@ Sprite *Texture::SetInfo(Global::Sprite key, int num, int firstFrame, bool direc
     int firstFrameIndex = 0;
     for (int i = 0; i < num; i++) {
         if (spritesInfo[i].firstFrame == -1) {
-            CC::log << "Wrong order of sprites info setting" << endl;
+            CC::log << "Wrong order of sprites info setting" << std::endl;
             break;
         }
         firstFrameIndex += spritesInfo[i].frames * (static_cast<int>(spritesInfo[i].directed) * 3 + 1);

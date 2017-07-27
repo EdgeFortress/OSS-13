@@ -1,73 +1,59 @@
 #pragma once
 
-#include <memory>
-#include <iostream>
+#include <list>
+#include <SFML/System.hpp>
 
-#include <SFML/Graphics.hpp>
+#include "Shared/Types.hpp"
 
-#include "TileGrid/TileGrid.hpp"
-#include "UI/UI.hpp"
+class UI;
+class TileGrid;
+class Sprite;
+class Texture;
 
-using sf::RenderWindow;
+namespace sf {
+	class RenderWindow;
+}
 
 class Window {
 private:
     uptr<TileGrid> tileGrid;
     uptr<UI> ui;
 
-    list<uptr<Texture>> textures;
-    list<uptr<Sprite>> sprites;
+    std::list<uptr<Texture>> textures;
+    std::list<uptr<Sprite>> sprites;
 
-    uptr<RenderWindow> window;
+    uptr<sf::RenderWindow> window;
     int width, height;
 
     sf::Time animationTime;
 
-    const int req_FPS = 100;
-    sf::Clock clock;
-    int cur_FPS;
+    const int req_FPS = 60;
+    sf::Clock frame_clock;
+	sf::Time lastFrameTime;
 
-    bool fps_exceed() {
-        cur_FPS++;
-        if (clock.getElapsedTime() >= sf::milliseconds(1000)) {
-            CC::log << "cur_FPS: " << cur_FPS << endl;
-            cur_FPS = 0;
-            clock.restart();
-        }
-        //if (cur_FPS >= req_FPS / 10) CC::Get().log << ;
-        //    return true;
-        return false;
-    }
+	// sleep, if frame was drawed so fast
+	void fps_sleep();
 
     void resize(const int newWidth, const int newHeight);
-    void loadTextures(list<uptr<Texture>> &, list<uptr<Sprite>> &);
+    void loadTextures(std::list<uptr<Texture>> &, std::list<uptr<Sprite>> &);
 
 public:
-    Window() : 
-        cur_FPS(0) ,
-        animationTime(sf::Time::Zero)
-    {
-        loadTextures(textures, sprites);
-
-        tileGrid.reset(new TileGrid);
-        ui.reset(new UI);
-    }
+	Window();
 
     Window(const Window &) = delete;
     Window &operator=(const Window &) = delete;
     virtual ~Window() = default;
 
     void Initialize();
-    void Update(sf::Time);
+    void Update();
 
-    bool isOpen() const { return window->isOpen(); }
+	// TODO: Remove this
+	std::list<uptr<Sprite>> &GetSprites();
 
-    //list<uptr<Texture>> &GetTextures() { return textures;  }
-    list<uptr<Sprite>> &GetSprites() { return sprites; }
-
-    int GetWidth() const { return width; }
-    int GetHeight() const { return height; }
-    sf::Vector2i GetPosition() const { return window->getPosition(); }
-    UI *GetUI() const { return ui.get(); }
-    TileGrid *GetTileGrid() const { return tileGrid.get(); }
+	bool isOpen() const;
+	int GetWidth() const;
+	int GetHeight() const;
+	sf::Vector2i GetPosition() const;
+	UI *GetUI() const;
+	TileGrid *GetTileGrid() const;
 };

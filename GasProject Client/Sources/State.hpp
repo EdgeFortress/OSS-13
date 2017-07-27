@@ -1,16 +1,12 @@
 #pragma once
 
-#include <SFML/System.hpp>
-
 class TileGrid;
 
 namespace sf {
     class RenderWindow;
+	class Event;
+	class Time;
 }
-
-/*  Just states, nothing expecial. Each state must have unique realization of functions.
-    ClientContoller can change states and use this functions. 
-    State has pointer to ClientController for Access main objects, such as Window. */
 
 class State {
 public:

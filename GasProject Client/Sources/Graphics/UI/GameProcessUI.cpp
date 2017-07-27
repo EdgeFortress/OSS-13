@@ -13,7 +13,7 @@ InfoLabel::InfoLabel(const sf::Font &font) {
     text.setFillColor(sf::Color(255, 69, 0));
 }
 
-void InfoLabel::Draw(RenderWindow *renderWindow) {
+void InfoLabel::Draw(sf::RenderWindow *renderWindow) {
     renderWindow->draw(rectangle);
 
     renderWindow->draw(text);

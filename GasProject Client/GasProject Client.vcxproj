@@ -150,7 +150,6 @@
   <ItemGroup>
     <ClCompile Include="sources\Client.cpp" />
     <ClCompile Include="Sources\Graphics\Chat.cpp" />
-    <ClCompile Include="Sources\Graphics\Graphics.cpp" />
     <ClCompile Include="Sources\Graphics\Sprite.cpp" />
     <ClCompile Include="Sources\Graphics\UI\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\GameListUI.cpp" />
@@ -160,6 +159,7 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
+    <ClCompile Include="Sources\Graphics\Window.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
     <ClCompile Include="sources\State.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />

@@ -33,17 +33,14 @@ public:
     
     ClientController(const ClientController &) = delete;
     ClientController &operator=(const ClientController &) = delete;
-    virtual ~ClientController() = default;
+    ~ClientController() = default;
 
-    void SetState(State *state) { newState = state; }
+	void SetState(State *state);
 
-    Player *GetClient() { return player.get(); }
-    Window *GetWindow() { 
-        if(this) return window.get();
-        else return nullptr;
-    }
-    State *GetState() { return state.get(); }
-    static ClientController *const Get() { return instance; }
+	Player *GetClient();
+	Window *GetWindow();
+	State *GetState();
+	static ClientController *const Get();
 
     static uf::Log log;
 };

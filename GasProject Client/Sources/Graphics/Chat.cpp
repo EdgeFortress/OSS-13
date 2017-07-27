@@ -1,7 +1,10 @@
 #include "Graphics/Chat.hpp"
-#include "Graphics/Window.hpp"
 
+#include "Client.hpp"
 #include "Network.hpp"
+#include "Graphics/Window.hpp"
+#include "Graphics/TileGrid/TileGrid.hpp"
+#include "Shared/Global.hpp"
 
 Chat::Chat(const sf::Font &font) : font(font) {
     characterSize = 18;

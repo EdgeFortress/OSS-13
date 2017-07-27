@@ -1,6 +1,7 @@
 #include "Widget.hpp"
 
 #include "Graphics/Window.hpp"
+#include "Client.hpp"
 
 Widget::Widget(const sf::Vector2f &size) : size(size), parent(nullptr) {
 	if (size.x || size.y)
@@ -55,7 +56,7 @@ const sf::Vector2f Widget::GetAbsPosition() const {
 void Widget::SetSize(const sf::Vector2f &size) {
 	this->size = size;
 	if (!buffer.create(unsigned(size.x), unsigned(size.y)))
-		CC::log << "error" << endl;
+		CC::log << "error" << std::endl;
 }
 const sf::Vector2f Widget::GetSize() const {
 	return size;
