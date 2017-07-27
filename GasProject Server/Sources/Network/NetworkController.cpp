@@ -143,13 +143,18 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 				connection->player->Move(uf::Direction(direction));
             break;
         }
-        case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-            std::string message;
-            packet >> message;
+		case ClientCommand::Code::SEND_CHAT_MESSAGE: {
+			std::string message;
+			packet >> message;
 			if (connection->player)
 				connection->player->ChatMessage(message);
-            break;
-        }
+			break;
+		}
+		case ClientCommand::Code::GHOST: {
+			if (connection->player)
+				connection->player->Ghost();
+			break;
+		}
         case ClientCommand::Code::DISCONNECT: {
 			if (connection->player)
 				Server::log << "Client" << connection->player->GetCKey() << "disconnected" << std::endl;

@@ -47,21 +47,25 @@ bool Tile::RemoveObject(Object *obj) {
             content.remove(i);
             obj->tile = nullptr;
             //add local remove
+			GetBlock()->AddDiff(new RemoveDiff(obj));
             return true;
         }
     return false;
 }
 
 void Tile::MoveTo(Object *obj) {
-    bool available = true;
-    for (auto &object : content)
-        if (object)
-            if (object->GetDensity()) {
-                available = false;
-                break;
-            }
+	if (!obj) return;
 
-    if (available && obj) {
+    bool available = true;
+	if (obj->GetDensity())
+		for (auto &object : content)
+			if (object)
+				if (object->GetDensity()) {
+					available = false;
+					break;
+				}
+
+    if (available) {
         Block *lastBlock = obj->GetTile()->GetBlock();
         int dx = X() - obj->GetTile()->X();
         int dy = Y() - obj->GetTile()->Y();
@@ -70,6 +74,8 @@ void Tile::MoveTo(Object *obj) {
         uf::Direction direction = uf::VectToDirection(sf::Vector2i(dx, dy));
         addObject(obj);
         GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
+		//if (obj->GetComponent<Control>()->GetPlayer())
+		//	Server::log << x << y << std::endl;
     }
 }
 
@@ -286,9 +292,14 @@ void World::Update(sf::Time timeElapsed) {
 
     for (unsigned i = 0; i < objects.size();) {
         size_t len = objects.size();
-        (objects.begin() + i)->get()->Update(timeElapsed);
-        if (objects.size() == len)
-            i++;
+		Object *object = (objects.begin() + i)->get();
+		if (object->GetTile())
+			object->Update(timeElapsed);
+		else
+			objects.erase(objects.begin() + i);
+		int delta = int(objects.size() - len + 1);
+		if (delta < 0) delta = 0;
+		i += delta;
     }
 }
 

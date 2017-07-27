@@ -208,7 +208,7 @@ void Connection::parsePacket(Packet &packet) {
             if (options & GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE) {
                 Int32 id;
                 float speed;
-                packet >> id >> speed;
+				packet >> id >> speed;
                 tileGrid->SetControllable(id, speed);
             }
             tileGrid->UnlockDrawing();

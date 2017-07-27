@@ -8,7 +8,8 @@ struct PlayerCommand {
     enum class Code : char {
         NONE = 0,
         JOIN,
-		MOVE
+		MOVE,
+		GHOST
     };
 
     virtual const Code GetCode() const final;
@@ -26,4 +27,8 @@ struct JoinPlayerCommand : public PlayerCommand {
 struct MovePlayerCommand : public PlayerCommand {
 	uf::vec2i order;
 	MovePlayerCommand(uf::vec2i order);
+};
+
+struct GhostPlayerCommand : public PlayerCommand {
+	GhostPlayerCommand();
 };

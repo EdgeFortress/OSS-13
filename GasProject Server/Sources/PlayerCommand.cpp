@@ -6,8 +6,12 @@ const PlayerCommand::Code PlayerCommand::GetCode() const {
 
 PlayerCommand::PlayerCommand(PlayerCommand::Code code) : code(code) { }
 
-JoinPlayerCommand::JoinPlayerCommand() : PlayerCommand(Code::JOIN) { }
+JoinPlayerCommand::JoinPlayerCommand() : 
+	PlayerCommand(Code::JOIN) { }
 
 MovePlayerCommand::MovePlayerCommand(uf::vec2i order) :
 	PlayerCommand(Code::MOVE),
 	order(order) { }
+
+GhostPlayerCommand::GhostPlayerCommand() :
+	PlayerCommand(Code::GHOST) { }

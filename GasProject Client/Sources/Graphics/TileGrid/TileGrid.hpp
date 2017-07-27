@@ -85,7 +85,7 @@ public:
     Tile(Block *block, const int x, const int y);
     Tile(const Tile &) = delete;
     Tile &operator=(const Tile &) = delete;
-    ~Tile() = default;
+	~Tile();
 
     void Draw(sf::RenderWindow * const, const int x, const int y) const;
     void Update(sf::Time timeElapsed) {
@@ -172,6 +172,7 @@ public:
     Block(const Block &) = delete;
     Block &operator=(const Block &) = delete;
     ~Block() = default;
+	//~Block() { CC::log << "Block removed" << relX << relY << std::endl; }
 
     void Update(sf::Time timeElapsed) {
         for (auto &vect : tiles)
@@ -208,7 +209,7 @@ private:
 
     std::mutex mutex;
 
-    vector< vector<sptr<Block>> > blocks;
+    vector< vector< sptr<Block> > > blocks;
     list< uptr<Object> > objects;
 
     // Controls
@@ -217,6 +218,7 @@ private:
     const sf::Time MOVE_TIMEOUT = sf::milliseconds(100);
     sf::Vector2i moveCommand;
     sf::Time moveSendPause;
+	bool ghostButtonPressed;
 
 public:
     explicit TileGrid();

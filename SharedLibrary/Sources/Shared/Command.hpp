@@ -79,6 +79,10 @@ struct GhostClientCommand : public ClientCommand {
 	GhostClientCommand();
 };
 
+
+
+
+
 struct ServerCommand {
 	enum class Code : char {
 		AUTH_SUCCESS = 1,

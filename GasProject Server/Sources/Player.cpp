@@ -39,6 +39,10 @@ void Player::Move(uf::Direction direction) {
 	actions.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
+void Player::Ghost() {
+	actions.Push(new GhostPlayerCommand());
+}
+
 void Player::Update() {
     while (!actions.Empty()) {
         PlayerCommand *temp = actions.Pop();
@@ -53,6 +57,20 @@ void Player::Update() {
 						MovePlayerCommand *moveCommand = dynamic_cast<MovePlayerCommand *>(temp);
 						control->MoveCommand(moveCommand->order);
 					}
+					break;
+				}
+				case PlayerCommand::Code::GHOST: {
+					::Ghost *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
+					if (!ghost) {
+						::Ghost *ghost = new ::Ghost();
+						control->GetOwner()->GetTile()->PlaceTo(ghost);
+						ghost->SetHostControl(control);
+						SetControl(ghost->GetComponent<Control>());
+					} else {
+						SetControl(ghost->GetHostControl());
+						ghost->GetTile()->RemoveObject(ghost);
+					}
+					break;
 				}
             }
             delete temp;
@@ -73,13 +91,14 @@ void Player::Suspend() {
 }
 
 void Player::SetControl(Control *control) {
+	if (this->control) this->control->player = nullptr;
     this->control = control;
+	control->player = this;
     SetCamera(new Camera(control->GetOwner()->GetTile()));
     camera->SetPlayer(this);
 	// Get Ability to see Invisibile from the mob (if control owner is mob)
 	if (Creature *creature = dynamic_cast<Creature *>(control->GetOwner()))
 		camera->SetInvisibleVisibility(creature->GetInvisibleVisibility());
-	camera->SetInvisibleVisibility(1);
 };
 
 void Player::SetCamera(Camera *camera) { this->camera.reset(camera); }

@@ -30,9 +30,12 @@ void Control::Update(sf::Time timeElapsed) {
 		if (order.x) moveIntent.x = order.x;
 		if (order.y) moveIntent.y = order.y;
 
-		if (!newTileDiag || newTileDiag->IsDense()) moveIntent = sf::Vector2i();
-		if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
-		if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
+		if (owner->GetDensity()) {
+			if (!newTileDiag || newTileDiag->IsDense()) moveIntent = sf::Vector2i();
+			if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
+			if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
+		}
+
 		if (!moveIntent.x && !moveIntent.y) return;
 	}
 

@@ -83,9 +83,15 @@ void Object::ReverseShifting(uf::Direction direction) {
 
 Tile::Tile(Block *block, const int x, const int y) : 
     block(block), x(x), y(y),
-    sprite(nullptr) 
-{
-};
+    sprite(nullptr) { };
+
+Tile::~Tile() {
+	for (auto &object : content) {
+		object->tile = nullptr;
+		// TODO: too much cycles. Need to be removed
+		CC::Get()->GetWindow()->GetTileGrid()->RemoveObject(object->GetID());
+	}
+}
 
 void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
     if (sprite) sprite->Draw(window, x, y, uf::Direction::NONE);
@@ -163,9 +169,10 @@ void TileGrid::Draw(sf::RenderWindow * const window) {
                     objects.insert(std::pair<int, Object *>(obj->GetLayer(), obj));
             }
         }
-    for (auto &pair : objects)
-        pair.second->Draw(window, int(xPadding + (pair.second->GetTile()->GetRelX() - xRelPos + Global::FOV / 2 - shift.x) * tileSize),
-                                  int(yPadding + (pair.second->GetTile()->GetRelY() - yRelPos + Global::FOV / 2 - shift.y) * tileSize));
+	for (auto &pair : objects) {
+		pair.second->Draw(window, int(xPadding + (pair.second->GetTile()->GetRelX() - xRelPos + Global::FOV / 2 - shift.x) * tileSize),
+								  int(yPadding + (pair.second->GetTile()->GetRelY() - yRelPos + Global::FOV / 2 - shift.y) * tileSize));
+	}
     mutex.unlock();
 }
 
@@ -200,6 +207,9 @@ void TileGrid::HandleEvent(sf::Event event) {
                 moveCommand.x = -1;
                 //CC::log << moveCommand.x << endl;
                 break;
+			case sf::Keyboard::G:
+				ghostButtonPressed = true;
+				break;
             default:
                 break;
         }
@@ -229,9 +239,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				Tile *newTileY = GetTileRel(lastTile->GetRelX() + controllable->GetShiftingDirection().x, lastTile->GetRelY() + moveCommand.y);
 				Tile *newTileDiag = GetTileRel(lastTile->GetRelX() + moveCommand.x, lastTile->GetRelY() + moveCommand.y);
 
-				if (!newTileX || newTileX->IsBlocked()) moveCommand.x = 0;
-				if (!newTileY || newTileY->IsBlocked()) moveCommand.y = 0;
-				if (!newTileDiag || newTileDiag->IsBlocked()) moveCommand = sf::Vector2i();
+				if (controllable->IsDense()) {
+					if (!newTileX || newTileX->IsBlocked()) moveCommand.x = 0;
+					if (!newTileY || newTileY->IsBlocked()) moveCommand.y = 0;
+					if (!newTileDiag || newTileDiag->IsBlocked()) moveCommand = sf::Vector2i();
+				}
 
 				controllable->SetShifting(uf::VectToDirection(moveCommand), controllableSpeed);
 			}
@@ -240,6 +252,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
 			moveSendPause = MOVE_TIMEOUT;
 			moveCommand = sf::Vector2i();
+		}
+		if (ghostButtonPressed) {
+			Connection::commandQueue.Push(new GhostClientCommand());
+			moveSendPause = MOVE_TIMEOUT;
+			ghostButtonPressed = false;
 		}
     }
 
@@ -267,14 +284,17 @@ void TileGrid::AddObject(Object *object) {
 }
 
 void TileGrid::RemoveObject(uint id) {
-    for (auto iter = objects.begin(); iter != objects.end(); iter++)
-        if ((*iter)->GetID() == id) {
-            Object *obj = iter->get();
-            if (obj->GetTile()) obj->GetTile()->RemoveObject(obj);
-            objects.erase(iter);
-            return;
-        }
-    CC::log << "Error: object with id" << id << "is not exist" << endl;
+	// TODO: Crutch to be removed
+	if (!objects.empty()) {
+		for (auto iter = objects.begin(); iter != objects.end(); iter++)
+			if ((*iter)->GetID() == id) {
+				Object *obj = iter->get();
+				if (obj->GetTile()) obj->GetTile()->RemoveObject(obj);
+				objects.erase(iter);
+				return;
+			}
+		CC::log << "Error: object with id" << id << "is not exist" << endl;
+	}
 }
 
 void TileGrid::RelocateObject(uint id, int toX, int toY, int toObjectNum) {
@@ -332,7 +352,7 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
     int dx = newFirstX - firstBlockX;
     int dy = newFirstY - firstBlockY;
     
-    vector< vector<sptr<Block>> > newBlocks(numOfVisibleBlocks);
+    vector< vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
     for (auto &vect : newBlocks)
         vect.resize(numOfVisibleBlocks);
 
@@ -373,13 +393,14 @@ void TileGrid::SetBlock(int x, int y, Block *block) {
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
-    for (auto &obj : objects)
-        if (obj->GetID() == id) {
-            controllable = obj.get();
-            controllableSpeed = speed;
-            return;
-        }
-    CC::log << "Error! New controllable not founded" << endl;
+	for (auto &obj : objects) {
+		if (obj->GetID() == id) {
+			controllable = obj.get();
+			controllableSpeed = speed;
+			return;
+		}
+	}
+	CC::log << "Error! New controllable wasn't founded" << endl;
 }
 
 wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {

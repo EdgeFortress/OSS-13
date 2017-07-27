@@ -4,7 +4,6 @@
 Creature::Creature() {
 	layer = 75;
 	name = "Creature";
-	density = false;
 	float speed = 4;
 	AddComponent(new Control(speed));
 }

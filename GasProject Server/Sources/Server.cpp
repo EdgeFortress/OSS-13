@@ -40,14 +40,6 @@ void Game::update(sf::Time timeElapsed) {
     world->Update(timeElapsed);
     {
         std::unique_lock<std::mutex> lock(playersLock);
-		for (auto &player : players) {
-			if (player->IsConnected()) {
-				player->Update();
-			} else {
-
-			}
-		}
-
         for (auto iter = players.begin(); iter != players.end();) {
 			sptr<Player> player = *iter;
 			if (player->IsConnected()) {

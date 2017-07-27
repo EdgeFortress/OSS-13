@@ -23,4 +23,6 @@ public:
 
 	float GetSpeed() const;
 	Player *GetPlayer() const;
+
+	friend Player;
 };
