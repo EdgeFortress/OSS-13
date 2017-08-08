@@ -3,24 +3,22 @@
 #include "Shared/Global.hpp"
 #include "Shared/Geometry.hpp"
 #include "World.hpp"
-#include "Objects.hpp"
 #include "World/Objects/Control.hpp"
 #include "Server.hpp"
 #include "Player.hpp"
 #include "Network/Differences.hpp"
-#include "Shared/TileGrid_Info.hpp"
 
 Tile::Tile(Map *map, int x, int y) :
     map(map), x(x), y(y), local(nullptr)
 {
-    unsigned ux = x, uy = y;
+    uint ux = uint(x), uy = uint(y);
     sprite = Global::Sprite(unsigned(Global::Sprite::Space) + ((ux + uy) ^ ~(ux * uy)) % 25);
 }
 
 void Tile::addObject(Object *obj) {
-    Tile *lastTile;
+    Tile *lastTile = obj->GetTile();
     Block *lastBlock = nullptr;
-    if (lastTile = obj->GetTile()) {
+    if (lastTile) {
         for (auto iter = lastTile->content.begin(); iter != lastTile->content.end(); iter++)
             if (*iter == obj) {
                 lastTile->content.erase(iter);
@@ -182,7 +180,7 @@ const BlockInfo Block::GetBlockInfo(uint visibility) {
             return std::move(BlockInfo(blockX, blockY, tilesInfo));
 }
 
-Map::Map(const int sizeX, const int sizeY) : 
+Map::Map(const uint sizeX, const uint sizeY) :
     sizeX(sizeX), sizeY(sizeY),
     numOfBlocksX(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0)),
     numOfBlocksY(sizeY / Global::BLOCK_SIZE + (sizeY % Global::BLOCK_SIZE ? 1 : 0)),

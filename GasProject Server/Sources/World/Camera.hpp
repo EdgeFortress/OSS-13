@@ -24,7 +24,7 @@ private:
 	// View information
     const Tile *tile;
     const Tile *lasttile;
-	int visibleBlocksNum;
+	uint visibleBlocksNum;
 	int firstBlockX;
 	int firstBlockY;
 	std::vector< std::vector<Block *> > visibleBlocks;

@@ -3,9 +3,6 @@
 #include "Object.hpp"
 
 class Creature : public Object {
-private:
-	sf::Vector2i moveIntent;
-
 protected:
 	uint seeInvisibleAbility;
 

@@ -15,6 +15,7 @@ set(SOURCE_FILES
         Sources/Shared/Geometry/Direction.cpp
         Sources/Shared/Geometry/Direction.hpp
         Sources/Shared/Geometry/Vec2.hpp
+        Sources/Shared/Geometry/Vec2.inl
         Sources/Shared/Command.cpp
         Sources/Shared/Command.hpp
         Sources/Shared/Geometry.hpp
@@ -30,6 +31,8 @@ set(LIBRARY_NAME "Shared")
 add_library(${LIBRARY_NAME} ${SOURCE_FILES})
 
 include_directories(Sources)
+target_link_libraries(${LIBRARY_NAME} pthread)
+set_property(TARGET ${LIBRARY_NAME} PROPERTY CXX_STANDARD 14)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 find_package(SFML 2 REQUIRED system window graphics network) #audio

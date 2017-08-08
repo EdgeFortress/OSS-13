@@ -103,7 +103,7 @@ void Connection::parsePacket(Packet &packet) {
                 Int32 id, num_of_players;
                 String title;
                 packet >> id >> title >> num_of_players;
-                CC::Get()->GetWindow()->GetUI()->GetGameListUI()->AddGame(id, title, num_of_players);
+                CC::Get()->GetWindow()->GetUI()->GetGameListUI()->AddGame(id, title.toAnsiString(), num_of_players);
             }
             CC::Get()->GetWindow()->GetUI()->Unlock();
             break;
@@ -305,7 +305,7 @@ Packet &operator>>(Packet &packet, Object &object) {
     packet >> id >> sprite >> name >> layer >> direction >> dense;
     object.id = id;
     object.SetSprite(Global::Sprite(sprite));
-    object.name = name;
+    object.name = name.toAnsiString();
     object.layer = layer;
 	object.direction = uf::Direction(direction);
 	object.dense = dense;

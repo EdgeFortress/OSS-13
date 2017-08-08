@@ -87,13 +87,13 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 			for (auto &connection : connections) {
 				if (connection->player && connection->player->GetCKey() == login) {
 					secondConnection = true;
-					Server::log << "Player" << login << password << "is trying to authorize second time" << std::endl;
+					Server::log << "Player" << login.toAnsiString() << password.toAnsiString() << "is trying to authorize second time" << std::endl;
 					break;
 				}
 			}
 
 			if (!secondConnection) {
-				if (Player *player = Server::Get()->Authorization(string(login), string(password))) {
+				if (Player *player = Server::Get()->Authorization(string(login.toAnsiString()), string(password.toAnsiString()))) {
 					player->SetConnection(connection);
 					connection->player = sptr<Player>(player);
 					connection->commandsToClient.Push(new AuthSuccessServerCommand());
@@ -107,7 +107,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
         case ClientCommand::Code::REG_REQ: {
             sf::String login, password;
             packet >> login >> password;
-			if (Server::Get()->Registration(std::string(login), std::string(password)))
+			if (Server::Get()->Registration(login.toAnsiString(), password.toAnsiString()))
 				connection->commandsToClient.Push(new RegSuccessServerCommand());
 			else
 				connection->commandsToClient.Push(new RegErrorServerCommand());

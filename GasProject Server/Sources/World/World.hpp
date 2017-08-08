@@ -75,7 +75,7 @@ private:
     Map *map;
     int id;
     int blockX, blockY;
-    int size;
+    uint size;
 
     vector< vector<Tile *> > tiles;
     list<sptr<Diff>> differences;
@@ -99,15 +99,15 @@ public:
 
 class Map {
 private:
-    int sizeX, sizeY;
-    int numOfBlocksX, numOfBlocksY;
+    uint sizeX, sizeY;
+    uint numOfBlocksX, numOfBlocksY;
 
     vector< vector<uptr<Tile>> > tiles;
     vector< vector<uptr<Block>> > blocks;
     list<uptr<Local>> locals;
 
 public:
-    explicit Map(const int sizeX, const int sizeY);
+    explicit Map(const uint sizeX, const uint sizeY);
 
     void GenerateLocals();
 

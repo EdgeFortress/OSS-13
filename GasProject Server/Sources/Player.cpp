@@ -3,15 +3,14 @@
 #include "Server.hpp"
 #include "Network/Connection.hpp"
 #include "World/World.hpp"
-#include "World/Objects.hpp"
 #include "World/Objects/Control.hpp"
-#include "PlayerCommand.hpp"
 #include "Shared/Command.hpp"
 
 class Server;
 
 Player::Player(std::string ckey) : ckey(ckey) {
     game = nullptr;
+	control = nullptr;
 }
 
 void Player::SetConnection(sptr<Connection> &connection) {
@@ -62,7 +61,7 @@ void Player::Update() {
 				case PlayerCommand::Code::GHOST: {
 					::Ghost *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
 					if (!ghost) {
-						::Ghost *ghost = new ::Ghost();
+						ghost = new ::Ghost();
 						control->GetOwner()->GetTile()->PlaceTo(ghost);
 						ghost->SetHostControl(control);
 						SetControl(ghost->GetComponent<Control>());
@@ -72,6 +71,8 @@ void Player::Update() {
 					}
 					break;
 				}
+                default:
+                    break;
             }
             delete temp;
         }

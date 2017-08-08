@@ -10,6 +10,7 @@
 #include "Shared/Math.hpp"
 
 Object::Object(const Global::Sprite key, const string name, const bool directed) {
+    this->tile = nullptr;
     SetSprite(key);
     this->name = name;
 	direction = uf::Direction::NONE;
