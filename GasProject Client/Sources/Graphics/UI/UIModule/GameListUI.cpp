@@ -1,24 +1,30 @@
 #include "GameListUI.hpp"
+
+#include "../UI.hpp"
 #include "Network.hpp"
-#include "Widget/Label.hpp"
-#include "Widget/Button.hpp"
+#include "../Widget/Label.hpp"
+#include "../Widget/Button.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
+
+#include <SFML/Graphics.hpp>
 
 GameListUI::GameListUI(UI *ui) : UIModule(ui) {
     lastGamePos = 0;
     generateGamelistWindow();
-    
+
     clearList = false;
     newGames = false;
 }
 
 void GameListUI::generateGamelistWindow() {
-    gameList = new Container(sf::Vector2f(400, 500));
+    gameList = new Container();
+	gameList->SetSize(sf::Vector2f(400, 500));
+	gameList->SetSize(sf::Vector2f(400, 500));
     gameList->SetBackground(sf::Color::Transparent);
     Container *gameBox = new Container(sf::Vector2f(500, 600));
     gameBox->AddItem(new Label(L"Games", ui->GetFont(), 16), sf::Vector2f(10, 10));
-    gameBox->AddItem(new Button(L"Update", sf::Vector2f(100, 20), sf::Color::White, ui->GetFont(), std::bind(&GameListUI::update, this)), sf::Vector2f(390, 570));
+    gameBox->AddItem(new Button(L"Update", sf::Vector2f(100, 20), sf::Color::White, ui->GetFont(), 16, std::bind(&GameListUI::update, this)), sf::Vector2f(390, 570));
     gameBox->AddItem(gameList, sf::Vector2f(50, 50));
     gameBox->SetPosition(500, 150);
     gameBox->SetBackground(sf::Color(69, 69, 69));
@@ -58,7 +64,7 @@ void GameListUI::Update(sf::Time timeElapsed) {
                 game->game->SetBackground(sf::Color::Transparent);
                 game->game->AddItem(new Label(game->title, ui->GetFont(), 16), sf::Vector2f(0, 0));
                 game->game->AddItem(new Label(std::to_string(game->num_of_players), ui->GetFont(), 16), sf::Vector2f(300, 0));
-                game->game->AddItem(new Button(L"  join", sf::Vector2f(50, 20), sf::Color::White, ui->GetFont(), std::bind(&GameRow::join, game.get())), sf::Vector2f(350, 0));
+                game->game->AddItem(new Button(L"  join", sf::Vector2f(50, 20), sf::Color::White, ui->GetFont(), 16, std::bind(&GameRow::join, game.get())), sf::Vector2f(350, 0));
                 gameList->AddItem(game->game, sf::Vector2f(0, lastGamePos));
                 game->finihedCreation = true;
             }
@@ -67,6 +73,9 @@ void GameListUI::Update(sf::Time timeElapsed) {
     for (auto &widget : widgets)
         widget->Update(timeElapsed);
 }
+
+void GameListUI::Draw(sf::RenderWindow* renderWindow) { for (auto &widget : widgets) widget->Draw(*renderWindow); };
+void GameListUI::HandleEvent(sf::Event event) { for (auto &widget : widgets) widget->HandleEvent(event); }
 
 void GameListUI::Show() {
     //gamelistWindow->Show(true);

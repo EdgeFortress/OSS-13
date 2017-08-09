@@ -1,65 +1,89 @@
 #include "Container.hpp"
+
+#include <typeindex>
+#include <typeinfo>
+
+#include "Shared/Geometry/Vec2.hpp"
 #include "Client.hpp"
+#include "Entry.hpp"
 
-Container::Container(const sf::Vector2f &size) : Widget(size), backgroundColor(sf::Color::Transparent) { }
+Container::Container(sf::Vector2f size) :
+    Widget(size), backgroundColor(sf::Color::Transparent), curInputEntry(nullptr)
+	{ }
 
-void Container::Hide() { for (auto &item : items) item.second->Hide(); }
+void Container::Update(sf::Time timeElapsed) { 
+	for (auto &item : items) 
+		item->Update(timeElapsed); 
+}
 
-void Container::Show() { for (auto &item : items) item.second->Show(); }
-
-void Container::Update(sf::Time timeElapsed) { for (auto &item : items) item.second->Update(timeElapsed); }
-
-void Container::HandleEvent(sf::Event event) {
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        int buttonX = event.mouseButton.x,
-            buttonY = event.mouseButton.y;
-        if (buttonX >= GetAbsPosition().x && buttonX <= GetAbsPosition().x + GetSize().x &&
-            buttonY >= GetAbsPosition().y && buttonY <= GetAbsPosition().y + GetSize().y)
+bool Container::HandleEvent(sf::Event event) {
+	switch (event.type) {
+	    case sf::Event::MouseButtonPressed: {
             for (auto &item : items)
-                item.second->HandleEvent(event);
-    } else if (event.type == sf::Event::MouseMoved) {
-        int mouseX = event.mouseMove.x,
-            mouseY = event.mouseMove.y;
-        if (mouseX >= GetAbsPosition().x && mouseX <= GetAbsPosition().x + GetSize().x &&
-            mouseY >= GetAbsPosition().y && mouseY <= GetAbsPosition().y + GetSize().y)
-            for (auto &item : items)
-                item.second->HandleEvent(event);
-    } else
+                if (std::type_index(typeid(*item.get())) == std::type_index(typeid(Entry)))
+                    reinterpret_cast<Entry *>(item.get())->LoseFocus();
+		    //uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		    //if (mousePosition < GetAbsPosition() || mousePosition >= GetAbsPosition() + GetSize())
+			    //return true;
+		    break;
+	    }
+	    case sf::Event::MouseMoved: {
+		    //uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
+		    //if (mousePosition < GetAbsPosition() && mousePosition >= GetAbsPosition() + GetSize())
+			   // return true;
+		    break;
+	    }
+        case sf::Event::KeyPressed: {
+            if (event.key.code == sf::Keyboard::Tab) {
+                for (auto &item : items)
+                    if (item.get() != curInputEntry && std::type_index(typeid(*item.get())) == std::type_index(typeid(Entry))) {
+                        curInputEntry->LoseFocus();
+                        curInputEntry = reinterpret_cast<Entry *>(item.get());
+                        curInputEntry->GrabFocus();
+                        break;
+                    }
+                return true;
+            }
+            break;
+        }
+	}
+
+    if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseMoved) {
         for (auto &item : items)
-            item.second->HandleEvent(event);
+            item->HandleEvent(event);
+    } else {
+        if (!(curInputEntry->HandleEvent(event))) {
+            for (auto &item : items)
+                if (item->HandleEvent(event)) {
+                    curInputEntry = reinterpret_cast<Entry *>(item.get());
+                    return true;
+                }
+        } else
+            return true;
+    }
+    return false;
 }
 
 void Container::draw() const {
 	sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
 	buffer.clear(backgroundColor);
-    //std::cout << GetPosition().x << ' ' << GetPosition().y << std::endl;
-    for (auto &item : items) //item.second->Draw(buffer);
-        buffer.draw(*(item.second.get()));
+    for (auto &item : items)
+        buffer.draw(*(item.get()));
 	buffer.display();
 }
 
 void Container::AddItem(Widget *widget, sf::Vector2f position) {
-	items.push_back(std::pair<sf::Vector2f, uptr<Widget>>(position, uptr<Widget>(widget)));
-	widget->SetPosition(position/* + GetPosition()*/);
-    widget->SetParent(this);
+	items.push_back(uptr<Widget>(widget));
+    if (curInputEntry == nullptr && (std::type_index(typeid(*widget)) == std::type_index(typeid(Entry))))
+        curInputEntry = reinterpret_cast<Entry *>(widget);
+	widget->SetPosition(position);
+    widget->setParent(this);
 }
 
 void Container::Clear() {
     items.erase(items.begin(), items.end());
 }
 
-void Container::SetPosition(const sf::Vector2f pos) {
-	Widget::SetPosition(pos);
-}
-void Container::SetPosition(const float x, const float y) {
-	Widget::SetPosition(x, y);
-}
-
 void Container::SetBackground(sf::Color color) {
     backgroundColor = color;
-}
-
-void Container::SetFont(const sf::Font &font) {
-    for (auto &item : items)
-        item.second->SetFont(font);
 }

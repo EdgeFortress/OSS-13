@@ -78,6 +78,23 @@ vec2<T> vec2<T>::operator/=(double a) {
 }
 
 template<typename T>
+bool vec2<T>::operator<=(const vec2<T> &other) const {
+	return x <= other.x && y <= other.y;
+}
+template<typename T>
+bool vec2<T>::operator<(const vec2<T> &other) const {
+	return x < other.x && y < other.y;
+}
+template<typename T>
+bool vec2<T>::operator>=(const vec2<T> &other) const {
+	return x >= other.x && y >= other.y;
+}
+template<typename T>
+bool vec2<T>::operator>(const vec2<T> &other) const {
+	return x > other.x && y > other.y;
+}
+
+template<typename T>
 vec2<T>::operator sf::Vector2<float>() const {
 	return sf::Vector2<float>(float(x), float(y));
 }

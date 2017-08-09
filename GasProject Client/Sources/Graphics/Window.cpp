@@ -36,6 +36,7 @@ void Window::Initialize() {
 	sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 	width = int(0.8 * videoMode.width);
 	height = int(0.8 * videoMode.height);
+	CC::log << width << height << std::endl;
 	window.reset(new sf::RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
 	resize(window->getSize().x, window->getSize().y);
 }
@@ -76,11 +77,14 @@ void Window::Update() {
 	}
 
 	window->clear(sf::Color::Black);
-	if (state) {
-		state->Update(lastFrameTime);
-		state->DrawTileGrid(window.get(), tileGrid.get());
-		state->DrawUI(window.get(), lastFrameTime);
-	}
+	ui->Update(lastFrameTime);
+	ui->Draw(window.get());
+
+	//if (state) {
+	//	state->Update(lastFrameTime);
+	//	state->DrawTileGrid(window.get(), tileGrid.get());
+	//	state->DrawUI(window.get(), lastFrameTime);
+	//}
 	window->display();
 	fps_sleep();
 }

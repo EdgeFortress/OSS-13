@@ -1,7 +1,9 @@
+#include "GameProcessUI.hpp"
+
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid/TileGrid.hpp"
-#include "GameProcessUI.hpp"
+#include "../UI.hpp"
 
 InfoLabel::InfoLabel(const sf::Font &font) {
     rectangle.setSize(sf::Vector2f(100, 15));
@@ -29,7 +31,7 @@ void InfoLabel::SetText(const string &s) {
 }
 
 void GameProcessUI::generateFunctionWindow() {
-    functionWindow = new Container(sf::Vector2f(0, 0));
+    functionWindow = new Container();
     functionWindow->SetBackground(sf::Color(69, 69, 69));
     widgets.push_back(uptr<Container>(functionWindow));
 }
@@ -64,3 +66,8 @@ void GameProcessUI::Update(sf::Time timeElapsed) {
 void GameProcessUI::Show() {}
 
 void GameProcessUI::Hide() {}
+
+void GameProcessUI::Draw(sf::RenderWindow* renderWindow) { for (auto &widget : widgets) widget->Draw(*renderWindow); }
+void GameProcessUI::HandleEvent(sf::Event event) { for (auto &widget : widgets) widget->HandleEvent(event); }
+InfoLabel *GameProcessUI::GetInfoLabel() { return &infoLabel; }
+Chat *GameProcessUI::GetChat() { return &chat; }

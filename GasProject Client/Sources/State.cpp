@@ -4,9 +4,9 @@
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid/TileGrid.hpp"
 #include "Graphics/UI/UI.hpp"
-#include "Graphics/UI/AuthUI.hpp"
-#include "Graphics/UI/GameListUI.hpp"
-#include "Graphics/UI/GameProcessUI.hpp"
+#include "Graphics/UI/UIModule/AuthUI.hpp"
+#include "Graphics/UI/UIModule/GameListUI.hpp"
+#include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
 void MenuLoginState::Initialize() const { 
     CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Show();
@@ -96,19 +96,20 @@ void GameProcessState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElap
 }
 
 void MenuLoginState::HandleEvent(sf::Event event) const {
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
-		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->ChangeFocus();
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
-		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->AccountDataEnter();
-	if (event.type == sf::Event::TextEntered)
-		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
-	if (event.type == sf::Event::KeyPressed)
-		if (event.key.code == sf::Keyboard::BackSpace || sf::Keyboard::Left || sf::Keyboard::Right)
-			CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
-	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
-	if (event.type == sf::Event::MouseMoved)
-		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
+	////////if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab)
+	////////	CC::Get()->GetWindow()->GetUI()->GetAuthUI()->changeFocus();
+	////////if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+	////////	CC::Get()->GetWindow()->GetUI()->GetAuthUI()->accountDataEnter();
+
+	//if (event.type == sf::Event::TextEntered)
+	//	CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
+	//if (event.type == sf::Event::KeyPressed)
+	//	if (event.key.code == sf::Keyboard::BackSpace || sf::Keyboard::Left || sf::Keyboard::Right)
+	//		CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
+	//if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+	//	CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
+	//if (event.type == sf::Event::MouseMoved)
+	//	CC::Get()->GetWindow()->GetUI()->GetAuthUI()->HandleEvent(event);
 }
 void MenuGameListState::HandleEvent(sf::Event event) const {
 	CC::Get()->GetWindow()->GetUI()->GetGameListUI()->HandleEvent(event);

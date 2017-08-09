@@ -23,7 +23,7 @@ void ClientController::Run() {
         CC::log << "Connected" << std::endl;
     };
 
-    SetState(new MenuLoginState);  
+    //SetState(new MenuLoginState);  
 
     window->Initialize();
 

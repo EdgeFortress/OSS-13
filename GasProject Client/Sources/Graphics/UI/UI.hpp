@@ -1,36 +1,10 @@
 #pragma once
 
 #include <mutex>
-
-#include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
 #include "Shared/Types.hpp"
-
-class GameListUI;
-class AuthUI;
-class GameProcessUI;
-
-class UI;
-
-class UIModule {
-protected:
-    UI *ui;
-
-public:
-    UIModule(UI *ui);
-    UIModule(const UIModule &) = delete;
-    UIModule &operator=(const UIModule &) = delete;
-    virtual ~UIModule() = default;
-
-    virtual void Resize(int width, int height) = 0;
-    virtual void Draw(sf::RenderWindow *renderWindow) = 0;
-    virtual void Update(sf::Time timeElapsed) = 0;
-
-    virtual void Hide() = 0;
-    virtual void Show() = 0;
-};
-
+#include "UIModules.hpp"
 
 class UI {
 private:
@@ -38,6 +12,9 @@ private:
 
     sf::Texture background;
     sf::Sprite background_sprite;
+
+	uptr<UIModule> curUIModule;
+	UIModule *newUIModule;
 
     uptr<AuthUI> authUI;
     uptr<GameListUI> gamelistUI;
@@ -58,12 +35,14 @@ public:
 
     void DrawMenuBackground(sf::RenderWindow *render_window);
 
+	template<class ModuleType>
+	void ChangeModule() { newUIModule = new ModuleType(this); };
+
     void Lock();
     void Unlock();
 
-    const sf::Font &GetFont() const { return font; }
-
-    AuthUI *GetAuthUI() { return authUI.get(); }
-    GameListUI *GetGameListUI() { return gamelistUI.get(); }
-    GameProcessUI *GetGameProcessUI() { return gameProcessUI.get(); }
+	const sf::Font &GetFont() const;
+	AuthUI *GetAuthUI();
+	GameListUI *GetGameListUI();
+	GameProcessUI *GetGameProcessUI();
 };

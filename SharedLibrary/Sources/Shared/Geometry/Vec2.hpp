@@ -33,6 +33,10 @@ namespace uf {
 		vec2<T> operator*=(T a);
 		vec2<T> operator/(double a) const;
 		vec2<T> operator/=(double a);
+		bool operator<=(const vec2<T> &other) const;
+		bool operator<(const vec2<T> &other) const;
+		bool operator>=(const vec2<T> &other) const;
+		bool operator>(const vec2<T> &other) const;
 
 		operator sf::Vector2<float>() const;
 		operator sf::Vector2<uint>() const;

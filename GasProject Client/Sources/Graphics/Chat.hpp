@@ -62,6 +62,7 @@ public:
     void Parse(Message &, sf::Text &);
 
     void Draw(sf::RenderWindow *window, sf::Time timeElapsed);
+    virtual bool HandleEvent(sf::Event) override { return true; }
     //void Update();
 
     void SetSymbol(const wchar_t c);

@@ -6,31 +6,39 @@
 
 class Button : public Widget {
 private:
-    sf::Color color, backColor;
-    sf::Font font;
-    sf::String name;
-    sf::Text text;
-    sf::Time diffBackColorTime;
-    sf::Vector2f size;
+	sf::Text text;
 
-    bool diffBackColor;
+	// text options
+	sf::String string;
+	sf::Color textColor;
+    const sf::Font *font;
+	unsigned fontSize;
+	bool needToUpdateText;
 
-    std::function<void()> func;
+	sf::Color backgroundColor;
 
-    void updateCursorPointing(sf::Time);
+	// underCursor options
+	bool underCursorColorChanging;
+	sf::Color underCursor_textColor;
+	sf::Color underCursor_backgroundColor;
+    sf::Time underCursor_time;
+    bool underCursor;
+	const sf::Time underCursor_newEventWaitingTime = sf::seconds(0.1f);
+
+    std::function<void()> onPressFunc;
 
 protected:
     virtual void draw() const final;
 
 public:
-    Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, const sf::Font &, std::function<void()>);
-    Button(const sf::String &name, sf::Vector2f &size, const sf::Color &, std::function<void()>);
+	Button(sf::Vector2f size = sf::Vector2f());
+    Button(const sf::String &, sf::Vector2f &size, const sf::Color &textColor, const sf::Font &, unsigned fontSize, std::function<void()>);
 
     virtual void Update(sf::Time timeElapsed) final;
-    virtual void HandleEvent(sf::Event event) final;
-    
-    void SetPosition(const sf::Vector2f);
-    void SetPosition(const float x, const float y);
+    virtual bool HandleEvent(sf::Event event) final;
 
-    virtual void SetFont(const sf::Font &font);
+	void SetString(const sf::String &string);
+	void SetFont(const sf::Font &font);
+	void SetTextColor(const sf::Color &color);
+	void SetFontSize(unsigned size);
 };

@@ -4,9 +4,9 @@
 #include <SFML/Network.hpp>
 
 #include "Graphics/UI/UI.hpp"
-#include "Graphics/UI/AuthUI.hpp"
-#include "Graphics/UI/GameListUI.hpp"
-#include "Graphics/UI/GameProcessUI.hpp"
+#include "Graphics/UI/UIModule/AuthUI.hpp"
+#include "Graphics/UI/UIModule/GameListUI.hpp"
+#include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
 #include "Network.hpp"
 #include "Client.hpp"
@@ -228,6 +228,7 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
     packet << Int32(command->GetCode());
     switch (command->GetCode()) {
         case ClientCommand::Code::AUTH_REQ: {
+			CC::log << "AUTH_REQ" << std::endl;
             auto c = dynamic_cast<AuthorizationClientCommand *>(command);
             packet << String(c->login) << String(c->password);
             break;
