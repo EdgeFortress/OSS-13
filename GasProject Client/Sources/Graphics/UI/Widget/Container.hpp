@@ -11,7 +11,8 @@ private:
 	std::list<uptr<Widget>> items;
     sf::Color backgroundColor;
 
-    Entry *curInputEntry;
+	std::list<uptr<Widget>>::iterator curInputEntryIterator;
+    //Entry *curInputEntry;
 
 protected:
 	virtual void draw() const override;

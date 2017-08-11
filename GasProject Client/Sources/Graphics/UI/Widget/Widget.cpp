@@ -15,14 +15,13 @@ void Widget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 void Widget::Draw(sf::RenderTarget &target) const {
 	if (hiding) return;
 	draw();
-    auto &bufferSprite = const_cast<sf::Sprite &>(this->bufferSprite);
     bufferSprite.setTexture(buffer.getTexture(), true);
     target.draw(bufferSprite);
 }
 
 void Widget::Hide() { hiding = true; }
 void Widget::Show() { hiding = false; }
-bool Widget::Visibility() { return !hiding; }
+bool Widget::IsVisible() { return !hiding; }
 
 void Widget::SetPosition(const sf::Vector2f pos) {
 	setPosition(pos);

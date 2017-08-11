@@ -15,7 +15,6 @@ Label::Label(const sf::String &string, const sf::Font &font, const unsigned size
 }
 
 void Label::draw() const {
-	sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
 	buffer.clear(sf::Color::Transparent);
 	buffer.draw(text);
 	buffer.display();

@@ -20,7 +20,7 @@ private:
     uptr<GameListUI> gamelistUI;
     uptr<GameProcessUI> gameProcessUI;
 
-    std::mutex UImutex;
+    mutable std::mutex mutex;
 
 public:
     UI();
@@ -42,6 +42,7 @@ public:
     void Unlock();
 
 	const sf::Font &GetFont() const;
+	UIModule *GetCurrentUIModule();
 	AuthUI *GetAuthUI();
 	GameListUI *GetGameListUI();
 	GameProcessUI *GetGameProcessUI();

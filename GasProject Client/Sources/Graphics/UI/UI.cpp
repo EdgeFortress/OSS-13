@@ -38,6 +38,7 @@ void UI::Update(sf::Time timeElapsed) {
 	if (newUIModule) {
 		curUIModule.reset(newUIModule);
 		newUIModule = nullptr;
+		curUIModule->Initialize();
 	}
 	curUIModule->Update(timeElapsed);
 }
@@ -50,14 +51,15 @@ void UI::DrawMenuBackground(sf::RenderWindow *render_window) {
 }
 
 void UI::Lock() {
-    UImutex.lock();
+    mutex.lock();
 };
 
 void UI::Unlock() {
-    UImutex.unlock();
+    mutex.unlock();
 }
 
 const sf::Font &UI::GetFont() const { return font; }
+UIModule *UI::GetCurrentUIModule() { return curUIModule.get(); }
 AuthUI *UI::GetAuthUI() { return authUI.get(); }
 GameListUI *UI::GetGameListUI() { return gamelistUI.get(); }
 GameProcessUI *UI::GetGameProcessUI() { return gameProcessUI.get(); }

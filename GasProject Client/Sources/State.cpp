@@ -9,24 +9,24 @@
 #include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
 void MenuLoginState::Initialize() const { 
-    CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Show();
+    //CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Show();
 }
 
 void MenuGameListState::Initialize() const { 
-    CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Show();
+    //CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Show();
 }
 
 void GameLobbyState::Initialize() const { }
 void GameProcessState::Initialize() const { 
-    CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->Show();
+    //CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->Show();
 }
 
 void MenuLoginState::Ending() const {  
-    CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Hide();
+    //CC::Get()->GetWindow()->GetUI()->GetAuthUI()->Hide();
 }
 
 void MenuGameListState::Ending() const { 
-    CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Hide();
+    //CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Hide();
 }
 
 void GameLobbyState::Ending() const { }
@@ -40,39 +40,39 @@ void GameProcessState::DrawTileGrid(sf::RenderWindow *render_window, TileGrid *t
 }
 
 void MenuLoginState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
-	Window *window = CC::Get()->GetWindow();
-	AuthUI *authUI = window->GetUI()->GetAuthUI();
+	//Window *window = CC::Get()->GetWindow();
+	//AuthUI *authUI = window->GetUI()->GetAuthUI();
 
-	if (authUI->comState != AuthUI::ComState::NOTHING) {
-		AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
-		if (answer.isAnswer) {
-			if (authUI->comState == AuthUI::ComState::LOGIN) {
-				if (answer.result) {
-					CC::log << "You logged in succesfully" << endl;
-					CC::Get()->SetState(new MenuGameListState);
-				}
-				else {
-					CC::log << "You did not log in" << endl;
-				}
-			}
-			if (authUI->comState == AuthUI::ComState::REGISTRATION) {
-				if (answer.result)
-					CC::log << "You are succesfully registered" << endl;
-				else
-					CC::log << "Problems with registration" << endl;
-				authUI->openLogin();
-			}
-			authUI->comState = AuthUI::ComState::NOTHING;
-		}
-	}
+	//if (authUI->comState != AuthUI::ComState::NOTHING) {
+	//	AuthUI::ServerAnswer answer = window->GetUI()->GetAuthUI()->GetAnswer();
+	//	if (answer.isAnswer) {
+	//		if (authUI->comState == AuthUI::ComState::LOGIN) {
+	//			if (answer.result) {
+	//				CC::log << "You logged in succesfully" << endl;
+	//				CC::Get()->SetState(new MenuGameListState);
+	//			}
+	//			else {
+	//				CC::log << "You did not log in" << endl;
+	//			}
+	//		}
+	//		if (authUI->comState == AuthUI::ComState::REGISTRATION) {
+	//			if (answer.result)
+	//				CC::log << "You are succesfully registered" << endl;
+	//			else
+	//				CC::log << "Problems with registration" << endl;
+	//			authUI->openLogin();
+	//		}
+	//		authUI->comState = AuthUI::ComState::NOTHING;
+	//	}
+	//}
 
-	window->GetUI()->Lock();
-	//window->GetUI()->Update(timeElapsed);
-	window->GetUI()->DrawMenuBackground(render_window);
-	authUI->Update(timeElapsed);
-	authUI->Draw(render_window);
-	//window->GetUI()->Draw(render_window);
-	window->GetUI()->Unlock();
+	//window->GetUI()->Lock();
+	////window->GetUI()->Update(timeElapsed);
+	//window->GetUI()->DrawMenuBackground(render_window);
+	//authUI->Update(timeElapsed);
+	//authUI->Draw(render_window);
+	////window->GetUI()->Draw(render_window);
+	//window->GetUI()->Unlock();
 }
 void MenuGameListState::DrawUI(sf::RenderWindow *render_window, sf::Time timeElapsed) const {
 	Window *window = CC::Get()->GetWindow();

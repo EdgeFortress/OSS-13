@@ -26,7 +26,6 @@ Button::Button(const sf::String &string,
 }
 
 void Button::draw() const {
-    sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
     buffer.clear(!underCursor ? backgroundColor : underCursor_backgroundColor);
     buffer.draw(text);
     buffer.display();

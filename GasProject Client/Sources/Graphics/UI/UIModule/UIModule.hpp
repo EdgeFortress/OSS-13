@@ -1,6 +1,11 @@
 #pragma once
 
+#include <list>
+
+#include "Shared/Types.hpp"
+
 class UI;
+class Widget;
 
 namespace sf {
 	class RenderWindow;
@@ -11,6 +16,8 @@ namespace sf {
 class UIModule {
 protected:
 	UI *ui;
+	std::list<uptr<Widget>> widgets;
+	Widget *curInputWidget;
 
 public:
 	UIModule(UI *ui);
@@ -18,11 +25,10 @@ public:
 	UIModule &operator=(const UIModule &) = delete;
 	virtual ~UIModule() = default;
 
-	virtual void Resize(int width, int height) = 0;
-	virtual void Draw(sf::RenderWindow *renderWindow) = 0;
-	virtual void Update(sf::Time timeElapsed) = 0;
-	virtual void HandleEvent(sf::Event event) = 0;
+	virtual void Initialize() = 0;
 
-	virtual void Hide() = 0;
-	virtual void Show() = 0;
+	virtual void Resize(int width, int height) = 0;
+	virtual void Draw(sf::RenderWindow *renderWindow);
+	virtual void Update(sf::Time timeElapsed);
+	virtual void HandleEvent(sf::Event event);
 };

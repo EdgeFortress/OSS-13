@@ -36,7 +36,6 @@ void Window::Initialize() {
 	sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
 	width = int(0.8 * videoMode.width);
 	height = int(0.8 * videoMode.height);
-	CC::log << width << height << std::endl;
 	window.reset(new sf::RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
 	resize(window->getSize().x, window->getSize().y);
 }

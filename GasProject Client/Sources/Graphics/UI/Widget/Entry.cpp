@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-using std::vector;
-using std::wstring;
+#include "Shared/Geometry/Vec2.hpp"
+
+#include "Client.hpp"
 
 Entry::Entry(sf::Vector2f &size) {
     SetSize(size);
@@ -17,7 +18,7 @@ Entry::Entry(sf::Vector2f &size) {
 }
 
 Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
-    : size(size), color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
+    : color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
 	SetSize(size);
 
     active = false;
@@ -37,18 +38,18 @@ Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, b
     cursor.setPosition(text.getGlobalBounds().width, 2);
 }
 
-void Entry::AddOnEnterFunc(std::function<void()> func) {
+void Entry::SetOnEnterFunc(std::function<void()> func) {
     onEnterFunc = func;
 }
 
-vector<float> Entry::getLetterSizes(wchar_t c) {
+std::vector<float> Entry::getLetterSizes(wchar_t c) {
     //vector<float> letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
     //if (letter_sizes.size())
         //return std::move(letter_sizes);
     //std::cout << "Loading" << std::endl;
     //sizeFiller(font, c);
     //letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
-    vector<float> letter_sizes;
+    std::vector<float> letter_sizes;
     letter_sizes.push_back(font.getGlyph(c, characterSize, false).advance);
     letter_sizes.push_back(font.getGlyph(c, characterSize, true).advance);
     return std::move(letter_sizes);
@@ -70,18 +71,12 @@ void Entry::moveCursorRight(wchar_t c) {
     //}
 }
 
-void Entry::GrabFocus() { active = true; }
-void Entry::LoseFocus() { active = false; }
-bool Entry::HasFocus() { return active; }
+void Entry::SetActive(bool active) { this->active = active; }
+bool Entry::IsActive() { return active; }
 
 void Entry::draw() const {
-    sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
-    //buffer.clear(sf::Color(31, 31, 31));
     buffer.clear(sf::Color(60, 60, 60));
-    //buffer.clear(sf::Color::White);
     buffer.draw(text);
-
-    //std::cout << color.toInteger() << ' ' << cursor.getPosition().x << ' ' << cursor.getPosition().y << ' ' << GetAbsPosition().x << ' ' << GetAbsPosition().y << std::endl;
    
    if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
         buffer.draw(cursor);
@@ -111,13 +106,13 @@ void Entry::setSymbol(wchar_t c) {
     cursorPos += 1;
     moveCursorRight(c);
 
-    while (cursor.getPosition().x >= text.getGlobalBounds().left + size.x * 0.96f) {
+    while (cursor.getPosition().x >= text.getGlobalBounds().left + GetSize().x * 0.96f) {
         showPos++;
-        text.setString(wstring(entryString.c_str() + showPos));
+        text.setString(std::wstring(entryString.c_str() + showPos));
         moveCursorLeft(entryString[showPos - 1]);
     }
 
-    text.setString(wstring(entryString.c_str() + showPos));
+    text.setString(std::wstring(entryString.c_str() + showPos));
 }
 
 void Entry::deleteSymbol() {
@@ -125,7 +120,7 @@ void Entry::deleteSymbol() {
         return;
     moveCursorLeft(entryString[cursorPos]);
     entryString.erase(entryString.begin() + cursorPos);
-    text.setString(wstring(entryString.c_str() + showPos));
+    text.setString(std::wstring(entryString.c_str() + showPos));
 
     cursorPos--;
     if (cursorPos < 0)
@@ -143,19 +138,19 @@ void Entry::deleteSymbol() {
             moveCursorRight(entryString[i]);
     }
 
-    text.setString(wstring(entryString.c_str() + showPos));
+    text.setString(std::wstring(entryString.c_str() + showPos));
 }
 
 void Entry::moveLeft() {
     if (cursorPos < 0)
         return;
     moveCursorLeft(entryString[cursorPos]);
-    vector<float> letter_sizes = getLetterSizes(entryString[cursorPos]);
+    std::vector<float> letter_sizes = getLetterSizes(entryString[cursorPos]);
     cursorPos--;
 
     if (cursorPos + 1 < int(showPos)) {
         showPos--;
-        text.setString(wstring(entryString.c_str() + showPos));
+        text.setString(std::wstring(entryString.c_str() + showPos));
         cursor.setPosition(cursor.getPosition().x + letter_sizes[0], cursor.getPosition().y);
     }
 }
@@ -167,9 +162,9 @@ void Entry::moveRight() {
     cursorPos++;
     moveCursorRight(entryString[cursorPos]);
 
-    while (cursor.getPosition().x >= text.getGlobalBounds().left + size.x * 0.96f) {
+    while (cursor.getPosition().x >= text.getGlobalBounds().left + GetSize().x * 0.96f) {
         showPos++;
-        text.setString(wstring(entryString.c_str() + showPos));
+        text.setString(std::wstring(entryString.c_str() + showPos));
         moveCursorLeft(entryString[showPos - 1]);
     }
 }
@@ -217,53 +212,45 @@ void Entry::ShowSymbols() {
 }
 
 bool Entry::HandleEvent(sf::Event event) {
-    int x = event.mouseButton.x,
-        y = event.mouseButton.y;
-
-    if (event.type == sf::Event::MouseButtonPressed && x >= GetAbsPosition().x && x <= GetAbsPosition().x + GetSize().x &&
-        y >= GetAbsPosition().y && y <= GetAbsPosition().y + GetSize().y) {
-        GrabFocus();
-        return true;
-    }
-
-    if (active) {
-        if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::BackSpace)
-                deleteSymbol();
-            if (event.key.code == sf::Keyboard::Left)
-                moveLeft();
-            if (event.key.code == sf::Keyboard::Right)
-                moveRight();
-            if (event.key.code == sf::Keyboard::Return)
-                onEnterFunc();
-        }
-        if (event.type == sf::Event::TextEntered) {
-            wchar_t c = wchar_t(event.text.unicode);
-            if (c != '\r' && c != '\t' && c != '\b')
-                setSymbol(c);
-        }
-        return true;
-    }
+	switch (event.type) {
+	case sf::Event::MouseButtonPressed: {
+		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
+			SetActive(true);
+			return true;
+		}
+		return false;
+	}
+	case sf::Event::KeyPressed: {
+		if (active) {
+			switch (event.key.code) {
+			case sf::Keyboard::BackSpace:
+				deleteSymbol();
+				break;
+			case sf::Keyboard::Left:
+				moveLeft();
+				break;
+			case sf::Keyboard::Right:
+				moveRight();
+				break;
+			case sf::Keyboard::Return:
+				onEnterFunc();
+				break;
+			default:
+				return false;
+			}
+			return true;
+		}
+	}
+	case sf::Event::TextEntered: {
+		if (active) {
+			wchar_t c = wchar_t(event.text.unicode);
+			if (c != '\r' && c != '\t' && c != '\b')
+				setSymbol(c);
+			return true;
+		}
+	}
+	}
 
     return false;
 }
-
-//void Entry::SetPosition(const sf::Vector2f pos) {
-//    //text.setPosition(pos);
-//    Widget::SetPosition(pos);
-//
-//    cursor.setPosition(text.getGlobalBounds().width, 2);
-//}
-//void Entry::SetPosition(const float x, const float y) {
-//    //text.setPosition(x, y);
-//    Widget::SetPosition(x, y);
-//
-//    cursor.setPosition(text.getGlobalBounds().width, 2);
-//}
-
-//void Entry::sizeFiller(const sf::Font &font, sf::Uint32 c) {
-//    //sizes[c].push_back(font.getGlyph(c, characterSize, false).bounds.width);
-//    //sizes[c].push_back(font.getGlyph(c, characterSize, true).bounds.width);
-//    font.getGlyph(c, characterSize, false).advance;
-//    font.getGlyph(c, characterSize, true).advance;
-//}

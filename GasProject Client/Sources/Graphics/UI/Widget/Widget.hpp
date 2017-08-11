@@ -7,7 +7,7 @@ class Container;
 class Widget : private sf::Transformable, public sf::Drawable {
 private:
 	sf::Vector2f size;
-    sf::Sprite bufferSprite;
+    mutable sf::Sprite bufferSprite;
 
     Widget *parent;
 	// Only container needs this function
@@ -16,7 +16,7 @@ private:
     bool hiding;
 
 protected:
-	sf::RenderTexture buffer;
+	mutable sf::RenderTexture buffer;
 	// method for drawing to buffer
 	virtual void draw() const = 0;
 
@@ -33,7 +33,7 @@ public:
 
 	void Hide();
 	void Show();
-	bool Visibility();
+	bool IsVisible();
 
 	void SetPosition(const sf::Vector2f);
 	void SetPosition(const float x, const float y);

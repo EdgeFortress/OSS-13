@@ -13,7 +13,7 @@ struct GameRow {
     std::string title;
     int num_of_players;
 
-    bool finihedCreation;
+    bool finishedCreation;
 
     Container *game;
 
@@ -24,9 +24,9 @@ struct GameRow {
 
 class GameListUI : public UIModule {
 private:
-    std::list<uptr<Widget>> widgets;
     Container *gameList;
 
+	bool waitingNewGames;
     bool clearList;
     bool newGames;
 
@@ -44,14 +44,11 @@ public:
     GameListUI &operator=(const GameListUI &) = delete;
     virtual ~GameListUI() = default;
 
+	virtual void Initialize() final;
+
     void AddGame(int id, std::string title, int num_of_players);
     void Clear();
 
     virtual void Resize(int width, int height) final;
-	virtual void Draw(sf::RenderWindow* renderWindow) final;
     virtual void Update(sf::Time timeElapsed) final;
-	virtual void HandleEvent(sf::Event event) final;
-
-    virtual void Hide() final;
-    virtual void Show() final;
 };
