@@ -42,13 +42,12 @@ void Chat::SizeFiller(const sf::Font &font, sf::Uint32 c) {
     sizes[c].push_back(font.getGlyph(c, characterSize, true).advance);
 }
 
-void Chat::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
+void Chat::Draw(sf::RenderWindow *renderWindow) {
     renderWindow->draw(entry);
     renderWindow->draw(box);
 
     renderWindow->draw(entryText);
 
-    cursorTime += timeElapsed;
     if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
         renderWindow->draw(cursor);
     if (cursorTime > sf::seconds(0.8f))
@@ -244,6 +243,8 @@ void Chat::AddIncomingMessage(const std::string &message) {
 }
 
 void Chat::Update(sf::Time timeElapsed) {
+	cursorTime += timeElapsed;
+
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(entryText.getCharacterSize());

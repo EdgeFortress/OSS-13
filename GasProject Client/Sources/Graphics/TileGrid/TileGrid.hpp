@@ -6,7 +6,6 @@
 
 #include "Client.hpp"
 #include "Graphics/Sprite.hpp"
-#include "State.hpp"
 
 #include "Shared/Types.hpp"
 

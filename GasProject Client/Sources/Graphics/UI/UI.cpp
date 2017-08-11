@@ -24,11 +24,9 @@ void UI::Resize(int width, int height) {
     float scaleY = float(height) / background.getSize().y;
     background_sprite.setScale(scaleX, scaleY);
 
-    //authUI->Resize(width, height);
-    //gamelistUI->Resize(width, height);
-    //gameProcessUI->Resize(width, height);
+	curUIModule->Resize(width, height);
 
-	//curUIModule->Resize(width, height);
+	size = sf::Vector2i(width, height);
 }
 
 void UI::HandleEvent(sf::Event event) { 
@@ -38,6 +36,7 @@ void UI::Update(sf::Time timeElapsed) {
 	if (newUIModule) {
 		curUIModule.reset(newUIModule);
 		newUIModule = nullptr;
+		curUIModule->Resize(size.x, size.y);
 		curUIModule->Initialize();
 	}
 	curUIModule->Update(timeElapsed);
@@ -60,7 +59,4 @@ void UI::Unlock() {
 
 const sf::Font &UI::GetFont() const { return font; }
 UIModule *UI::GetCurrentUIModule() { return curUIModule.get(); }
-AuthUI *UI::GetAuthUI() { return authUI.get(); }
-GameListUI *UI::GetGameListUI() { return gamelistUI.get(); }
-GameProcessUI *UI::GetGameProcessUI() { return gameProcessUI.get(); }
 

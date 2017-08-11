@@ -162,7 +162,6 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Graphics\Window.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
-    <ClCompile Include="sources\State.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UI.cpp" />
   </ItemGroup>
@@ -181,7 +180,6 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Network.hpp" />
-    <ClInclude Include="sources\State.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UI.hpp" />
     <ClInclude Include="Sources\Graphics\Window.hpp" />

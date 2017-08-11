@@ -8,7 +8,6 @@
 using std::string;
 
 class Window;
-class State;
 
 class Player {
 private:
@@ -21,8 +20,6 @@ private:
     But unique_ptr can be just one for it content. So we need to use links. See Get-functions. */
     uptr<Player> player;
     uptr<Window> window;
-    uptr<State> state;
-    State *newState;
     static ClientController * instance;
 
 public:
@@ -35,11 +32,8 @@ public:
     ClientController &operator=(const ClientController &) = delete;
     ~ClientController() = default;
 
-	void SetState(State *state);
-
 	Player *GetClient();
 	Window *GetWindow();
-	State *GetState();
 	static ClientController *const Get();
 
     static uf::Log log;

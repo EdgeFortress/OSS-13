@@ -55,12 +55,8 @@ void Window::Update() {
 
 	sf::Event event;
 
-	State *state = CC::Get()->GetState();
 	while (window->pollEvent(event)) {
 		ui->HandleEvent(event);
-		if (state) {
-			state->HandleEvent(event);
-		}
 		if (event.type == sf::Event::Resized)
 			resize(event.size.width, event.size.height);
 		if (event.type == sf::Event::Closed)

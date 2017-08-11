@@ -12,7 +12,7 @@
 using std::vector;
 using std::wstring;
 
-class Chat : public Widget {
+class Chat {
 private:
     struct Message
     {
@@ -61,9 +61,8 @@ public:
     void Resize(int width, int height);
     void Parse(Message &, sf::Text &);
 
-    void Draw(sf::RenderWindow *window, sf::Time timeElapsed);
-    virtual bool HandleEvent(sf::Event) override { return true; }
-    //void Update();
+    virtual void Draw(sf::RenderWindow *window) final;
+    virtual bool HandleEvent(sf::Event) { return true; }
 
     void SetSymbol(const wchar_t c);
     void DeleteSymbol();
@@ -82,11 +81,6 @@ public:
 
     bool GetState() { return active; }
     void SetState(bool active) { this->active = active; }
-
-    //virtual void setPosition(float x, float y) { }
-    //virtual void setScale(float factorX, float factorY) { }
-
-    //virtual void setSize(const sf::Vector2f &size) { }
 
 	virtual void Update(sf::Time timeElapsed);
 };

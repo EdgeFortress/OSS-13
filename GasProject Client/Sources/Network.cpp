@@ -124,7 +124,6 @@ void Connection::parsePacket(Packet &packet) {
 	}
 	case ServerCommand::Code::GAME_JOIN_SUCCESS:
         CC::log << "You join the game" << endl;
-        CC::Get()->SetState(new GameProcessState());
         break;
     case ServerCommand::Code::GAME_JOIN_ERROR:
         CC::log << "Error join the game" << endl;
@@ -231,8 +230,8 @@ void Connection::parsePacket(Packet &packet) {
 	case ServerCommand::Code::SEND_CHAT_MESSAGE: {
 		std::string message;
 		packet >> message;
-		auto chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
-		chat->AddIncomingMessage(message);
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (gameProcessUI) gameProcessUI->GetChat()->AddIncomingMessage(message);
 		break;
 	}
     };

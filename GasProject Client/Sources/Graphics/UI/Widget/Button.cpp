@@ -18,7 +18,7 @@ Button::Button(const sf::String &string,
 	             const sf::Font &font, 
 	                   unsigned  fontSize, 
 	       std::function<void()> onPressFunc)
-    : Widget(size), string(string), textColor(textColor), font(&font), onPressFunc(onPressFunc) 
+    : Widget(size), string(string), textColor(textColor), font(&font), fontSize(fontSize), onPressFunc(onPressFunc) 
 {
 	needToUpdateText = true;
 	underCursor = false;
@@ -57,7 +57,7 @@ bool Button::HandleEvent(sf::Event event) {
 	switch (event.type) {
 	    case sf::Event::MouseButtonPressed: {
 		    uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-            if (mousePosition >= GetAbsPosition() && mousePosition <= GetAbsPosition() + GetSize()) {
+            if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
                 onPressFunc();
                 return true;
             }
@@ -65,7 +65,7 @@ bool Button::HandleEvent(sf::Event event) {
 	    }
 	    case sf::Event::MouseMoved: {
 		    uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
-		    if (mousePosition < GetAbsPosition() && mousePosition >= GetAbsPosition() + GetSize()) {
+		    if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
 			    underCursor = true;
 			    underCursor_time = sf::Time::Zero;
 			    needToUpdateText = true;

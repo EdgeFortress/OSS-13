@@ -103,4 +103,5 @@ GameRow::GameRow(int id, string title, int num_of_players) :
 
 void GameRow::join() {
     Connection::commandQueue.Push(new JoinGameClientCommand(id));
+	CC::Get()->GetWindow()->GetUI()->ChangeModule<GameProcessUI>();
 }

@@ -31,14 +31,17 @@ class GameProcessUI : public UIModule {
 
 public:
     GameProcessUI(UI *ui);
+	GameProcessUI(const GameProcessUI &) = delete;
+	GameProcessUI &operator=(const GameProcessUI &) = delete;
+	virtual ~GameProcessUI() = default;
+
+	virtual void Initialize() final;
 
     virtual void Resize(int width, int height) final;
-    virtual void Draw(sf::RenderWindow* renderWindow, sf::Time timeElapsed) final;
 	virtual void Draw(sf::RenderWindow* renderWindow);
+	virtual void Update(sf::Time timeElapsed) final;
 	virtual void HandleEvent(sf::Event event);
-    virtual void Update(sf::Time timeElapsed) final;
+
 	InfoLabel *GetInfoLabel();
 	Chat *GetChat();
-    virtual void Hide() final;
-    virtual void Show() final;
 };

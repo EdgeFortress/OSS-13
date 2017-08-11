@@ -1,7 +1,6 @@
 #include "Client.hpp"
 
 #include "Graphics/Window.hpp"
-#include "State.hpp"
 #include "Network.hpp"
 #include "Shared/Global.hpp"
 
@@ -9,9 +8,7 @@
 
 ClientController::ClientController() : 
     player(new Player),
-    window(new Window()),
-    state(nullptr),
-    newState(nullptr) 
+    window(new Window())
 {
     instance = this;
 }
@@ -29,24 +26,15 @@ void ClientController::Run() {
 
     while (window->isOpen()) {
         window->Update();
-        if (newState) {
-            if (state) state->Ending();
-            state.reset(newState);
-            state->Initialize();
-            newState = nullptr;
-        }
     }
     Connection::Stop();
 }
-
-void ClientController::SetState(State *state) { newState = state; }
 
 Player *ClientController::GetClient() { return player.get(); }
 Window *ClientController::GetWindow() {
 	if (this) return window.get();
 	else return nullptr;
 }
-State *ClientController::GetState() { return state.get(); }
 ClientController * const ClientController::Get() { return instance; }
 
 

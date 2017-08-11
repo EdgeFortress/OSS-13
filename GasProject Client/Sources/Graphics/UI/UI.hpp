@@ -8,6 +8,7 @@
 
 class UI {
 private:
+	sf::Vector2i size;
     sf::Font font;
 
     sf::Texture background;
@@ -15,10 +16,6 @@ private:
 
 	uptr<UIModule> curUIModule;
 	UIModule *newUIModule;
-
-    uptr<AuthUI> authUI;
-    uptr<GameListUI> gamelistUI;
-    uptr<GameProcessUI> gameProcessUI;
 
     mutable std::mutex mutex;
 
@@ -43,7 +40,4 @@ public:
 
 	const sf::Font &GetFont() const;
 	UIModule *GetCurrentUIModule();
-	AuthUI *GetAuthUI();
-	GameListUI *GetGameListUI();
-	GameProcessUI *GetGameProcessUI();
 };
