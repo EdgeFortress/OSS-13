@@ -31,10 +31,9 @@ void ClientController::Run() {
 }
 
 Player *ClientController::GetClient() { return player.get(); }
-Window *ClientController::GetWindow() {
-	if (this) return window.get();
-	else return nullptr;
-}
+Window *ClientController::GetWindow() { return window.get(); }
+UI *ClientController::GetUI() { return window->GetUI(); }
+
 ClientController * const ClientController::Get() { return instance; }
 
 

@@ -14,6 +14,7 @@ namespace uf {
 
 		vec2();
 		vec2(T x, T y);
+		vec2(T xy);
 		template<typename U>
 		vec2(const vec2<U> &vect);
 		template<typename U>

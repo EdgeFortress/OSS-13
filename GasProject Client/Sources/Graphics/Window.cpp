@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
 #include "Client.hpp"
-#include "TileGrid/TileGrid.hpp"
+#include "TileGrid.hpp"
 #include "UI/UI.hpp"
 
 void Window::fps_sleep() {
@@ -17,10 +17,7 @@ void Window::resize(const int newWidth, const int newHeight) {
 	width = newWidth; height = newHeight;
 	sf::FloatRect visibleArea(0, 0, float(width), float(height));
 	window->setView(sf::View(visibleArea));
-	tileGrid->Resize(width, height);
 	ui->Resize(width, height);
-	for (auto &sprite : sprites)
-		sprite->Resize(tileGrid->GetTileSize());
 }
 
 Window::Window() :
@@ -28,7 +25,6 @@ Window::Window() :
 {
 	loadTextures(textures, sprites);
 
-	tileGrid.reset(new TileGrid);
 	ui.reset(new UI);
 }
 
@@ -75,25 +71,24 @@ void Window::Update() {
 	ui->Update(lastFrameTime);
 	ui->Draw(window.get());
 
-	//if (state) {
-	//	state->Update(lastFrameTime);
-	//	state->DrawTileGrid(window.get(), tileGrid.get());
-	//	state->DrawUI(window.get(), lastFrameTime);
-	//}
 	window->display();
 	fps_sleep();
 }
 
-list<uptr<Sprite>> &Window::GetSprites() { return sprites; }
+void Window::SetSpriteSize(uint size) {
+	for (auto &sprite : sprites)
+		sprite->Resize(size);
+}
+
+std::list<uptr<Sprite>> &Window::GetSprites() { return sprites; }
 
 bool Window::isOpen() const { return window->isOpen(); }
 int Window::GetWidth() const { return width; }
 int Window::GetHeight() const { return height; }
 sf::Vector2i Window::GetPosition() const { return window->getPosition(); }
 UI *Window::GetUI() const { return ui.get(); }
-TileGrid *Window::GetTileGrid() const { return tileGrid.get(); }
 
-void Window::loadTextures(list<uptr<Texture>> &textures, list<uptr<Sprite>> &sprites) {
+void Window::loadTextures(std::list<uptr<Texture>> &textures, std::list<uptr<Sprite>> &sprites) {
 	Texture *t = new Texture("Images/Human.png", 32, 1);
 	sprites.push_back(uptr<Sprite>(t->SetInfo(Global::Sprite::Mob, 0, 0, true, 1)));
 	textures.push_back(uptr<Texture>(t));

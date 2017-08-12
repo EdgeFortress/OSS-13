@@ -8,6 +8,7 @@
 using std::string;
 
 class Window;
+class UI;
 
 class Player {
 private:
@@ -34,6 +35,7 @@ public:
 
 	Player *GetClient();
 	Window *GetWindow();
+	UI *GetUI();
 	static ClientController *const Get();
 
     static uf::Log log;

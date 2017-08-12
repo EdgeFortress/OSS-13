@@ -151,6 +151,9 @@
     <ClCompile Include="sources\Client.cpp" />
     <ClCompile Include="Sources\Graphics\Chat.cpp" />
     <ClCompile Include="Sources\Graphics\Sprite.cpp" />
+    <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp" />
+    <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
+    <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\UIModule.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameListUI.cpp" />
@@ -169,6 +172,10 @@
     <ClInclude Include="sources\Client.hpp" />
     <ClInclude Include="Sources\Graphics\Chat.hpp" />
     <ClInclude Include="Sources\Graphics\Sprite.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\Tile.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModules.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\UIModule.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp" />

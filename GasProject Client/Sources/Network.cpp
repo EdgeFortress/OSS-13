@@ -11,7 +11,7 @@
 #include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Graphics/TileGrid/TileGrid.hpp"
+#include "Graphics/TileGrid.hpp"
 
 using namespace std;
 using namespace sf;
@@ -129,7 +129,9 @@ void Connection::parsePacket(Packet &packet) {
         CC::log << "Error join the game" << endl;
         break;
 	case ServerCommand::Code::GRAPHICS_UPDATE: {
-		TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!gameProcessUI) break;
+		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
 		Int32 options;
 		packet >> options;
 		tileGrid->LockDrawing();

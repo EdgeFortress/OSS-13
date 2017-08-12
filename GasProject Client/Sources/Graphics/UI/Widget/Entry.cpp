@@ -9,7 +9,7 @@
 Entry::Entry(sf::Vector2f &size) {
     SetSize(size);
 
-    active = false;
+	canBeActive = true;
 
     showPos = 0;
     cursorPos = -1;
@@ -21,7 +21,7 @@ Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, b
     : color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
 	SetSize(size);
 
-    active = false;
+	canBeActive = true;
 
     showPos = 0;
     cursorPos = -1;
@@ -71,21 +71,20 @@ void Entry::moveCursorRight(wchar_t c) {
     //}
 }
 
-void Entry::SetActive(bool active) { this->active = active; }
-bool Entry::IsActive() { return active; }
+
 
 void Entry::draw() const {
     buffer.clear(sf::Color(60, 60, 60));
     buffer.draw(text);
    
-   if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
+   if (IsActive() && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
         buffer.draw(cursor);
 
     buffer.display();
 }
 
 void Entry::Update(sf::Time timeElapsed) {
-    if (active) {
+    if (IsActive()) {
         cursorTime += timeElapsed;
 
         if (cursorTime > sf::seconds(0.8f))
@@ -216,13 +215,13 @@ bool Entry::HandleEvent(sf::Event event) {
 	case sf::Event::MouseButtonPressed: {
 		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
 		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-			SetActive(true);
+			//SetActive(true);
 			return true;
 		}
 		return false;
 	}
 	case sf::Event::KeyPressed: {
-		if (active) {
+		if (IsActive()) {
 			switch (event.key.code) {
 			case sf::Keyboard::BackSpace:
 				deleteSymbol();
@@ -243,7 +242,7 @@ bool Entry::HandleEvent(sf::Event event) {
 		}
 	}
 	case sf::Event::TextEntered: {
-		if (active) {
+		if (IsActive()) {
 			wchar_t c = wchar_t(event.text.unicode);
 			if (c != '\r' && c != '\t' && c != '\b')
 				setSymbol(c);

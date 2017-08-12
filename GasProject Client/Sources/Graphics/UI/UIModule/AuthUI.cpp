@@ -23,7 +23,6 @@ AuthUI::AuthUI(UI *ui) : UIModule(ui) {
 void AuthUI::generateLoginWindow() {
     logWindow = new Container();
 	logWindow->SetSize(sf::Vector2f(600, 103));
-	logWindow->SetPosition(200, 200);
 	logWindow->SetBackground(sf::Color::Transparent);
 	widgets.push_back(uptr<Container>(logWindow));
 
@@ -51,7 +50,6 @@ void AuthUI::generateLoginWindow() {
 void AuthUI::generateRegistrationWindow() {
     regWindow = new Container();
 	regWindow->SetSize(sf::Vector2f(650, 72));
-	regWindow->SetPosition(400, 400);
 	regWindow->SetBackground(sf::Color::Transparent);
 	widgets.push_back(uptr<Container>(regWindow));
 
@@ -109,10 +107,8 @@ void AuthUI::registration() {
 void AuthUI::Initialize() { }
 
 void AuthUI::Resize(int width, int height) {
-    logWindow->SetPosition(sf::Vector2f((width - logWindow->GetPosition().x) / 10,
-                                        (height - logWindow->GetPosition().y) / 3));
-    regWindow->SetPosition(sf::Vector2f((width - regWindow->GetPosition().x) * 2 / 10,
-                                        (height - regWindow->GetPosition().y) * 2 / 3));
+	logWindow->SetPosition(uf::vec2i(width / 10, height / 4));
+	regWindow->SetPosition(uf::vec2i(width / 8, height / 2));
 }
 
 void AuthUI::Draw(sf::RenderWindow *renderWindow) { 

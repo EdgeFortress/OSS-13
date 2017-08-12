@@ -13,7 +13,7 @@ using std::string;
 class Sprite;
 
 namespace sf {
-    class RenderWindow;
+    class RenderTarget;
     class Texture;
     class Sprite;
 }
@@ -68,7 +68,7 @@ public:
     Sprite();
     Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIndex, int frames, bool directed);
 
-    void Draw(sf::RenderWindow * const window, const int x, const int y, const uf::Direction direction) const;
+    void Draw(sf::RenderTarget *, const int x, const int y, const uf::Direction direction) const;
 
     void Resize(int size);
 

@@ -8,6 +8,7 @@
 #include "UIModule.hpp"
 
 class UI;
+class TileGrid;
 
 class InfoLabel {
 private:
@@ -22,10 +23,10 @@ public:
 
 class GameProcessUI : public UIModule {
     InfoLabel infoLabel;
-    Chat chat;
 
     Container *functionWindow;
-    std::list<uptr<Widget>> widgets;
+	TileGrid *tileGrid;
+	Chat *chat;
 
     void generateFunctionWindow();
 
@@ -44,4 +45,5 @@ public:
 
 	InfoLabel *GetInfoLabel();
 	Chat *GetChat();
+	TileGrid *GetTileGrid();
 };

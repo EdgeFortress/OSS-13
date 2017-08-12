@@ -7,6 +7,9 @@ template<typename T>
 vec2<T>::vec2(T x, T y) : x(x), y(y) { }
 
 template<typename T>
+vec2<T>::vec2(T xy) : x(xy), y(xy) { }
+
+template<typename T>
 template<typename U>
 vec2<T>::vec2(const vec2<U> &vect) : x(T(vect.x)), y(T(vect.y)) { }
 

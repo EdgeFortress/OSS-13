@@ -16,7 +16,6 @@ namespace sf {
 
 class Window {
 private:
-    uptr<TileGrid> tileGrid;
     uptr<UI> ui;
 
     std::list<uptr<Texture>> textures;
@@ -47,6 +46,8 @@ public:
     void Initialize();
     void Update();
 
+	void SetSpriteSize(uint size);
+
 	// TODO: Remove this
 	std::list<uptr<Sprite>> &GetSprites();
 
@@ -55,5 +56,4 @@ public:
 	int GetHeight() const;
 	sf::Vector2i GetPosition() const;
 	UI *GetUI() const;
-	TileGrid *GetTileGrid() const;
 };

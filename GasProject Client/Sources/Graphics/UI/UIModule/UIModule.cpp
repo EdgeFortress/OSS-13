@@ -21,7 +21,11 @@ void UIModule::HandleEvent(sf::Event event) {
 	case sf::Event::MouseButtonPressed: {
 		for (auto &widget : widgets)
 			if (widget->HandleEvent(event)) {
-				curInputWidget = widget.get();
+				if (widget->SetActive(true))
+					if (widget.get() != curInputWidget) {
+						curInputWidget->SetActive(false);
+						curInputWidget = widget.get();
+					}
 				return;
 			}
 		break;

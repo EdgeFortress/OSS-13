@@ -69,7 +69,7 @@ Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIn
 
 }
 
-void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const uf::Direction direction) const {
+void Sprite::Draw(sf::RenderTarget *target, const int x, const int y, const uf::Direction direction) const {
     sf::Rect<int> rect;
 
     int realState = firstFrameIndex;
@@ -83,7 +83,7 @@ void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, con
     sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
     sprite->setTextureRect(rect);
     sprite->setScale(scale, scale);
-    window->draw(*sprite);
+    target->draw(*sprite);
 }
 
 void Sprite::Resize(int size) {

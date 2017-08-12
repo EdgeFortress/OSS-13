@@ -26,7 +26,6 @@ private:
 
     std::wstring entryString;
 
-    bool active;
     bool hidingSymbols;
     
     wchar_t hidingSymbol;
@@ -54,8 +53,6 @@ public:
 	void HideSymbols(wchar_t hider);
 	void ShowSymbols();
     void SetOnEnterFunc(std::function<void()>);
-	void SetActive(bool active);
 
-	bool IsActive();
 	std::string GetText();
 };
