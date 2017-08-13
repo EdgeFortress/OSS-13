@@ -97,7 +97,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 					player->SetConnection(connection);
 					connection->player = sptr<Player>(player);
 					connection->commandsToClient.Push(new AuthSuccessServerCommand());
-					connection->commandsToClient.Push(new GameListServerCommand());
+					//connection->commandsToClient.Push(new GameListServerCommand());
 					break;
 				}
 			}

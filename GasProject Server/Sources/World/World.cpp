@@ -255,13 +255,13 @@ void Map::Update() {
 }
 
 Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
+    if (x >= 0 && x < int(sizeX) && y >= 0 && y < int(sizeY))
         return tiles[y][x].get();
     return nullptr;
 }
 
 Block *Map::GetBlock(int x, int y) const {
-    if (x >= 0 && x < numOfBlocksX && y >= 0 && y < numOfBlocksY)
+    if (x >= 0 && x < int(numOfBlocksX) && y >= 0 && y < int(numOfBlocksY))
         return blocks[y][x].get();
     return nullptr;
 }

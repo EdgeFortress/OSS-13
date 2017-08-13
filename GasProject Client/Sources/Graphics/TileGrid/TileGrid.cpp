@@ -1,138 +1,17 @@
-#include <vector>
-
-#include <SFML/Window/Event.hpp>
-
 #include "TileGrid.hpp"
+
+#include <map>
+#include <SFML/Graphics.hpp>
+
+#include "Shared/Global.hpp"
+#include "Shared/Geometry/Vec2.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Network.hpp"
-
-#include "Shared/Math.hpp"
-
-Object::Object(const Global::Sprite key, const string name, const bool directed) {
-    this->tile = nullptr;
-    SetSprite(key);
-    this->name = name;
-	direction = uf::Direction::NONE;
-	dense = false;
-}
-
-void Object::SetSprite(const Global::Sprite key) {
-    sprite = nullptr;
-    if (int(key))
-        for (auto &sprite : CC::Get()->GetWindow()->GetSprites())
-            if (sprite->GetKey() == key) {
-                this->sprite = sprite.get();
-                return;
-            }
-}
-
-void Object::SetDirection(const uf::Direction direction) {
-	this->direction = direction;
-}
-
-void Object::SetSpeed(float speed) {
-	shiftingSpeed = speed;
-}
-
-bool Object::checkObj(int x, int y) {
-    return !(sprite->PixelTransparent(x, y));
-}
-
-void Object::Draw(sf::RenderWindow * const window, const int x, const int y) {
-	int tileSize = CC::Get()->GetWindow()->GetTileGrid()->GetTileSize();
-    if (sprite) sprite->Draw(window, x + int(shift.x * tileSize), y + int(shift.y * tileSize), direction);
-}
-
-void Object::Update(sf::Time timeElapsed) {
-    //int tileSize = CC::Get()->GetWindow()->GetTileGrid()->GetTileSize();
-    if (shiftingDirection.x) {
-        shift.x += shiftingDirection.x * timeElapsed.asSeconds() * shiftingSpeed;
-    } else {
-        if (shift.x * uf::sgn(shift.x) > timeElapsed.asSeconds() * shiftingSpeed)
-            shift.x -= uf::sgn(shift.x) * timeElapsed.asSeconds() * shiftingSpeed;
-        else shift.x = 0;
-    }
-    if (shiftingDirection.y) {
-        shift.y += shiftingDirection.y * timeElapsed.asSeconds() * shiftingSpeed;
-    } else {
-        if (shift.y * uf::sgn(shift.y) > timeElapsed.asSeconds() * shiftingSpeed)
-            shift.y -= uf::sgn(shift.y) * timeElapsed.asSeconds() * shiftingSpeed;
-        else shift.y = 0;
-    }
-
-    //if (shift.x * sgn(shift.x) >= 0.5) {
-    //    CC::Get()->GetWindow()->GetTileGrid()->GetTileRel(tile->GetRelX(), tile->GetRelY());
-    //}
-
-    //sf::Vector2f lastShift = shift;
-    //shift += timeElapsed.asSeconds() * shiftingSpeed * sf::Vector2f(shiftingDirection);
-
-	//if (shift.x || shift.y)
-		//CC::log << "Shift:" << std::to_string(shift.x) << std::to_string(shift.y) << endl;
-
-    //if (sgn(shift.y) * sgn(lastShift.y) < 0)
-        //ResetShifting();
-}
-
-void Object::ReverseShifting(uf::Direction direction) {
-	sf::Vector2i directionVect = uf::DirectionToVect(direction);
-	if (directionVect.x) shiftingDirection.x = 0;
-	if (directionVect.y) shiftingDirection.y = 0;
-    shift -= sf::Vector2f(directionVect);
-}
-
-Tile::Tile(Block *block, const int x, const int y) : 
-    block(block), x(x), y(y),
-    sprite(nullptr) { };
-
-Tile::~Tile() {
-	for (auto &object : content) {
-		object->tile = nullptr;
-		// TODO: too much cycles. Need to be removed
-		CC::Get()->GetWindow()->GetTileGrid()->RemoveObject(object->GetID());
-	}
-}
-
-void Tile::Draw(sf::RenderWindow * const window, const int x, const int y) const {
-    if (sprite) sprite->Draw(window, x, y, uf::Direction::NONE);
-
-    //for (auto &obj : content)
-    //    obj->Draw(window, x, y);
-}
-
-int Tile::GetRelX() const { return block->GetRelX() * block->GetTileGrid()->GetBlockSize() + x; }
-int Tile::GetRelY() const { return block->GetRelY() * block->GetTileGrid()->GetBlockSize() + y; }
-
-Object *Tile::GetObjectByCoord(const unsigned x, const unsigned y) const {
-    for (auto obj = content.rbegin(); obj != content.rend(); obj++) {
-        if ((*obj)->checkObj(x, y))
-            return *obj;
-    }
-    return nullptr;
-}
-
-Block::Block(TileGrid *tileGrid) : 
-    tileGrid(tileGrid), relX(relX), relY(relY),
-    tiles(tileGrid->GetBlockSize())
-{
-    int y = 0;
-    for (auto &vect : tiles) {
-        vect.resize(tileGrid->GetBlockSize());
-        int x = 0;
-        for (auto &tile : vect) {
-            tile.reset(new Tile(this, x, y));
-            x++;
-        }
-        y++;
-    }
-}
-
-Tile* Block::GetTile(int x, int y) const {
-    if (x >= 0 && x < tileGrid->GetBlockSize() && y >= 0 && y < tileGrid->GetBlockSize())
-        return tiles[y][x].get();
-    return nullptr;
-}
+#include "Graphics/UI/UI.hpp"
+#include "Object.hpp"
+#include "Tile.hpp"
+#include "Block.hpp"
 
 TileGrid::TileGrid() : 
     blockSize(Global::BLOCK_SIZE),
@@ -151,71 +30,80 @@ TileGrid::TileGrid() :
 
     for (auto &vect : blocks) {
         vect.resize(numOfVisibleBlocks);
-        //for (auto &block : vect)
-        //    block.reset(new Block(this));
     }
+
+	canBeActive = true;
 }
 
-void TileGrid::Draw(sf::RenderWindow * const window) {
+void TileGrid::draw() const {
     mutex.lock();
+	buffer.clear();
     std::multimap<int, Object *> objects;
 	int border = Global::FOV / 2 + Global::MIN_PADDING;
     for (int y = -border; y <= border; y++)
         for (int x = -border; x <= border; x++) {
             Tile *tile = GetTileRel(xRelPos + x, yRelPos + y);
             if (tile) {
-                tile->Draw(window, int(xPadding + (x + Global::FOV / 2 - shift.x) * tileSize),
+                tile->Draw(&buffer, int(xPadding + (x + Global::FOV / 2 - shift.x) * tileSize),
                                    int(yPadding + (y + Global::FOV / 2 - shift.y) * tileSize));
                 for (auto &obj : tile->GetContent())
                     objects.insert(std::pair<int, Object *>(obj->GetLayer(), obj));
             }
         }
 	for (auto &pair : objects) {
-		pair.second->Draw(window, int(xPadding + (pair.second->GetTile()->GetRelX() - xRelPos + Global::FOV / 2 - shift.x) * tileSize),
+		pair.second->Draw(&buffer, int(xPadding + (pair.second->GetTile()->GetRelX() - xRelPos + Global::FOV / 2 - shift.x) * tileSize),
 								  int(yPadding + (pair.second->GetTile()->GetRelY() - yRelPos + Global::FOV / 2 - shift.y) * tileSize));
 	}
+	buffer.display();
     mutex.unlock();
 }
 
-void TileGrid::Resize(const int windowWidth, const int windowHeight) {
-    tileSize = min(windowWidth, windowHeight) / Global::FOV;
+void TileGrid::SetSize(const sf::Vector2f &size) {
+    tileSize = int(std::min(size.x, size.y)) / Global::FOV;
     xNumOfTiles = 15;
     yNumOfTiles = 15;
     xPadding = 0;
-    yPadding = (windowHeight - tileSize * yNumOfTiles) / 2;
+    yPadding = (int(size.y) - tileSize * yNumOfTiles) / 2;
+	CC::Get()->GetWindow()->SetSpriteSize(tileSize);
+	Widget::SetSize(uf::vec2i(tileSize) * 15);
+	Widget::SetPosition(uf::vec2f(0, (size.y - GetSize().y) / 2));
 }
 
-void TileGrid::HandleEvent(sf::Event event) {
-    if (event.type == sf::Event::KeyPressed) {
+bool TileGrid::HandleEvent(sf::Event event) {
+	switch (event.type) {
+	case sf::Event::MouseButtonPressed: {
+		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
+			return true;
+		break;
+	}
+	case sf::Event::KeyPressed: {
         switch (event.key.code) {
             case sf::Keyboard::Up:
             case sf::Keyboard::W:
                 moveCommand.y = -1;
-                //CC::log << moveCommand.y << endl;
-                break;
+			return true;
             case sf::Keyboard::Down:
             case sf::Keyboard::S:
                 moveCommand.y = 1;
-                //CC::log << moveCommand.y << endl;
-                break;
+			return true;
             case sf::Keyboard::Right:
             case sf::Keyboard::D:
                 moveCommand.x = 1;
-                //CC::log << moveCommand.x << endl;
-                break;
+			return true;
             case sf::Keyboard::Left:
             case sf::Keyboard::A:
                 moveCommand.x = -1;
-                //CC::log << moveCommand.x << endl;
-                break;
+			return true;
 			case sf::Keyboard::G:
 				ghostButtonPressed = true;
-				break;
+			return true;
             default:
                 break;
         }
-		
+	}
     }
+	return false;
 }
 
 void TileGrid::Update(sf::Time timeElapsed) {
@@ -232,7 +120,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();
 				if (!lastTile) {
-					CC::log << "Controllable isn't placed" << endl;
+					CC::log << "Controllable isn't placed" << std::endl;
 					return;
 				}
 
@@ -249,7 +137,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				controllable->SetShifting(uf::VectToDirection(moveCommand), controllableSpeed);
 			}
 			else
-				CC::log << "Controllable not determine" << endl;
+				CC::log << "Controllable not determine" << std::endl;
 
 			moveSendPause = MOVE_TIMEOUT;
 			moveCommand = sf::Vector2i();
@@ -294,24 +182,24 @@ void TileGrid::RemoveObject(uint id) {
 				objects.erase(iter);
 				return;
 			}
-		CC::log << "Error: object with id" << id << "is not exist" << endl;
+		CC::log << "Error: object with id" << id << "is not exist" << std::endl;
 	}
 }
 
 void TileGrid::RelocateObject(uint id, int toX, int toY, int toObjectNum) {
     Tile *tile = GetTileAbs(toX, toY);
     if (!tile) {
-        CC::log << "Wrong tile absolute coords (" << toX << toY << ")" << endl;
+        CC::log << "Wrong tile absolute coords (" << toX << toY << ")" << std::endl;
         return;
     }
-    //CC::log << "ID" << id << endl;
+
     for (auto &obj : objects)
         if (obj->GetID() == id) {
             tile->AddObject(obj.get(), toObjectNum);
             obj->ResetShifting();
             return;
         }
-    CC::log << "Wrong object ID:" << id << endl;
+    CC::log << "Wrong object ID:" << id << std::endl;
 }
 
 void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
@@ -320,12 +208,12 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
             sf::Vector2i dir = uf::DirectionToVect(direction);
             Tile *lastTile = obj->GetTile();
             if (!lastTile) {
-                CC::log << "Move of unplaced object" << endl;
+                CC::log << "Move of unplaced object" << std::endl;
                 return;
             }
             Tile *tile = GetTileRel(lastTile->GetRelX() + dir.x, lastTile->GetRelY() + dir.y);
             if (!tile) {
-                CC::log << "Move to unknown tile" << endl;
+                CC::log << "Move to unknown tile" << std::endl;
                 return;
             }
 
@@ -338,7 +226,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
 
             return;
         }
-	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << endl;
+	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << std::endl;
 }
 
 void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
@@ -353,7 +241,7 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
     int dx = newFirstX - firstBlockX;
     int dy = newFirstY - firstBlockY;
     
-    vector< vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
+    std::vector< std::vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
     for (auto &vect : newBlocks)
         vect.resize(numOfVisibleBlocks);
 
@@ -390,7 +278,6 @@ void TileGrid::SetBlock(int x, int y, Block *block) {
     blocks[y - firstBlockY][x - firstBlockX].reset(block);
     block->relX = x - firstBlockX;
     block->relY = y - firstBlockY;
-    //if (!neededBlocks) UnlockDrawing();
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
@@ -401,7 +288,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 			return;
 		}
 	}
-	CC::log << "Error! New controllable wasn't founded" << endl;
+	CC::log << "Error! New controllable wasn't founded" << std::endl;
 }
 
 wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
@@ -417,13 +304,12 @@ wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
 
 Tile *TileGrid::GetTileRel(int x, int y) const {
     if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize) {
-		//CC::log << "GetTileRel" << x << y << endl;
 		auto &a = blocks[y / blockSize];
 		if (!a.size())
-			CC::log << "ALERT" << endl;
+			CC::log << "ALERT" << std::endl;
 		auto &b = a[x / blockSize];
 		auto block = b.get();
-        //Block *block = blocks[y / blockSize][x / blockSize].get();
+
         if (block)
             return block->GetTile(x % blockSize, y % blockSize);
         else
@@ -450,3 +336,10 @@ Object *TileGrid::GetObjectByPixel(int x, int y) const {
 
     return locObj;
 }
+
+const int TileGrid::GetBlockSize() const { return blockSize; }
+const int TileGrid::GetTileSize() const { return tileSize; }
+const int TileGrid::GetWidth() const { return tileSize * xNumOfTiles; }
+const int TileGrid::GetHeigth() const { return tileSize * yNumOfTiles; }
+const int TileGrid::GetPaddingX() const { return xPadding; }
+const int TileGrid::GetPaddingY() const { return yPadding; }

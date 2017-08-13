@@ -1,7 +1,12 @@
 #include "Graphics/Chat.hpp"
-#include "Graphics/Window.hpp"
 
+#include "Client.hpp"
 #include "Network.hpp"
+#include "Graphics/Window.hpp"
+#include "Graphics/UI/UI.hpp"
+#include "Graphics/UI/UIModule/GameProcessUI.hpp"
+#include "Graphics/TileGrid/TileGrid.hpp"
+#include "Shared/Global.hpp"
 
 Chat::Chat(const sf::Font &font) : font(font) {
     characterSize = 18;
@@ -26,10 +31,95 @@ Chat::Chat(const sf::Font &font) : font(font) {
     resized = false;
     scrolled = 0;
 
-    active = false;
     cursorTime = sf::Time::Zero;
     cursor.setFillColor(textColor);
     cursor.setSize(sf::Vector2f(characterSize / 6.0f, float(characterSize)));
+
+	canBeActive = true;
+}
+
+void Chat::draw() const { 
+	buffer.clear();
+	buffer.draw(entry);
+	buffer.draw(box);
+
+	buffer.draw(entryText);
+
+	if (IsActive() && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
+		buffer.draw(cursor);
+	if (cursorTime > sf::seconds(0.8f))
+		cursorTime = sf::Time::Zero;
+
+	int cur_scroll = scrolled;
+
+	float size = 0;
+	mtx.lock();
+	for (int i = int(boxText.size() - 1); i >= 0; i--) {
+		for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
+			if (!cur_scroll) {
+				size += boxText[i].text[j][0].getGlobalBounds().height + characterSize - 5;
+				if (size > box.getSize().y)
+					break;
+				float boxTextXShift = box.getSize().x * 0.01f;
+				for (size_t k = 0; k < boxText[i].text[j].size(); k++) {
+					boxText[i].text[j][k].setPosition(boxTextXShift, box.getSize().y - size);
+					buffer.draw(boxText[i].text[j][k]);
+					boxTextXShift += boxText[i].text[j][k].getGlobalBounds().width;
+				}
+			}
+			else
+				cur_scroll--;
+		}
+		if (size > box.getSize().y)
+			break;
+	}
+
+	mtx.unlock();
+	buffer.display();
+}
+
+bool Chat::HandleEvent(sf::Event event) {
+	switch (event.type) {
+	case sf::Event::MouseButtonPressed: {
+		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
+			return true;
+		break;
+	}
+	case sf::Event::KeyPressed: {
+		switch (event.key.code) {
+		case sf::Keyboard::Return:
+			Send();
+			return true;
+		case sf::Keyboard::BackSpace:
+			DeleteSymbol();
+			return true;
+		case sf::Keyboard::Left:
+			MoveLeft();
+			return true;
+		case sf::Keyboard::Right:
+			MoveRight();
+			return true;
+		case sf::Keyboard::Up:
+			ScrollUp();
+			return true;
+		case sf::Keyboard::Down:
+			ScrollDown();
+			return true;
+		default:
+			return false;
+		}
+	}
+	case sf::Event::TextEntered: {
+		wchar_t c = wchar_t(event.text.unicode);
+		if (c != '\r' && c != '\t' && c != '\b')
+			SetSymbol(c);
+		return true;
+	}
+	default:
+		return false;
+	}
+	return false;
 }
 
 void Chat::SizeFiller(const sf::Font &font, sf::Uint32 c) {
@@ -37,44 +127,6 @@ void Chat::SizeFiller(const sf::Font &font, sf::Uint32 c) {
     sizes[c].push_back(font.getGlyph(c, characterSize, true).bounds.width);
     sizes[c].push_back(font.getGlyph(c, characterSize, false).advance);
     sizes[c].push_back(font.getGlyph(c, characterSize, true).advance);
-}
-
-void Chat::Draw(sf::RenderWindow *renderWindow, sf::Time timeElapsed) {
-    renderWindow->draw(entry);
-    renderWindow->draw(box);
-
-    renderWindow->draw(entryText);
-
-    cursorTime += timeElapsed;
-    if (active && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
-        renderWindow->draw(cursor);
-    if (cursorTime > sf::seconds(0.8f))
-        cursorTime = sf::Time::Zero;
-
-    int cur_scroll = scrolled;
-
-    float size = 0;
-    mtx.lock();
-    for (int i = int(boxText.size() - 1); i >= 0; i--) {
-        for (int j = int(boxText[i].text.size() - 1); j >= 0; j--) {
-            if (!cur_scroll) {
-                size += boxText[i].text[j][0].getGlobalBounds().height + characterSize - 5;
-                if (size > box.getSize().y)
-                    break;
-                float boxTextXShift = box.getSize().x * 0.01f;
-                for (size_t k = 0; k < boxText[i].text[j].size(); k++) {
-                    boxText[i].text[j][k].setPosition(chatXPos + boxTextXShift, chatYPos + box.getSize().y - size);
-                    renderWindow->draw(boxText[i].text[j][k]);
-                    boxTextXShift += boxText[i].text[j][k].getGlobalBounds().width;
-                }
-            } else
-                cur_scroll--;
-        }
-        if (size > box.getSize().y)
-            break;
-    }
-
-    mtx.unlock();
 }
 
 void Chat::ScrollUp() {
@@ -227,7 +279,7 @@ void Chat::Send() {
     showPos = 0;
     cursorPos = -1;
 
-    cursor.setPosition(chatXPos + entryTextXShift, cursor.getPosition().y);
+    cursor.setPosition(entryTextXShift, cursor.getPosition().y);
 }
 
 void Chat::AddIncomingMessage(const std::string &message) {
@@ -241,6 +293,8 @@ void Chat::AddIncomingMessage(const std::string &message) {
 }
 
 void Chat::Update(sf::Time timeElapsed) {
+	cursorTime += timeElapsed;
+
     sf::Text tempText;
     tempText.setFont(*entryText.getFont());
     tempText.setCharacterSize(entryText.getCharacterSize());
@@ -282,30 +336,35 @@ void Chat::Update(sf::Time timeElapsed) {
     }
 }
 
-void Chat::Resize(int width, int height) {
-    TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
+void Chat::SetSize(sf::Vector2f size) {
+    TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();
 
-    chatXPos = tileGrid->GetTileSize() * float(Global::FOV);
+    float chatXPos = tileGrid->GetTileSize() * float(Global::FOV);
 
-    float chatWidth = width - chatXPos;
-    float entryHeight = height * 0.05f;
+    float chatWidth = size.x - chatXPos;
+    float entryHeight = size.y * 0.05f;
     float chatShift = entryHeight * 0.1f;
 
     if (chatWidth != entry.getSize().x)
         resized = true;
 
     entry.setSize(sf::Vector2f(chatWidth, entryHeight));
-    box.setSize(sf::Vector2f(chatWidth, height * 0.5f - entryHeight));
+    box.setSize(sf::Vector2f(chatWidth, size.y * 0.5f - entryHeight));
     textXShift = box.getSize().x * 0.01f;
 
-    chatYPos = height - entry.getSize().y - box.getSize().y - chatShift;
-    entry.setPosition(chatXPos, chatYPos + box.getSize().y);
-    box.setPosition(chatXPos, chatYPos);
+    float chatYPos = size.y - entry.getSize().y - box.getSize().y - chatShift;
+    //entry.setPosition(chatXPos, chatYPos + box.getSize().y);
+	entry.setPosition(0, box.getSize().y);
+    //box.setPosition(chatXPos, chatYPos);
 
     entryTextXShift = entry.getSize().x * 0.01f, entryTextYShift = entry.getSize().y * 0.1f;
-    entryText.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift);
+    //entryText.setPosition(chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift);
+	entryText.setPosition(entryTextXShift, box.getSize().y + entryTextYShift);
 
-    cursor.setPosition(entryText.getGlobalBounds().width + chatXPos + entryTextXShift, chatYPos + box.getSize().y + entryTextYShift);
+    cursor.setPosition(entryText.getGlobalBounds().width + entryTextXShift, box.getSize().y + entryTextYShift);
+
+	SetPosition(chatXPos, chatYPos);
+	Widget::SetSize(uf::vec2f(size) - uf::vec2f(chatXPos, chatYPos));
 }
 
 void Chat::Parse(Message &message, sf::Text &tempText) {

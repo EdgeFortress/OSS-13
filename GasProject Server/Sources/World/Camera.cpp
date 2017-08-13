@@ -48,8 +48,8 @@ void Camera::UpdateView() {
 
     unsuspensed = cameraMoved = false;
 
-    for (int x = 0; x < visibleBlocksNum; x++)
-        for (int y = 0; y < visibleBlocksNum; y++) {
+    for (uint x = 0; x < visibleBlocksNum; x++)
+        for (uint y = 0; y < visibleBlocksNum; y++) {
             Block *block = visibleBlocks[y][x];
             if (block) {
                 if (blocksSync[y][x]) {
@@ -62,8 +62,8 @@ void Camera::UpdateView() {
                             ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
                             Block *lastBlock = replaceDiff->lastBlock;
                             if (!lastBlock ||
-                                lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + visibleBlocksNum ||
-                                lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + visibleBlocksNum) 
+                                lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleBlocksNum) ||
+                                lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleBlocksNum)) 
                             {
                                 command->diffs.push_back(sptr<Diff>(new AddDiff(*replaceDiff)));
                             }
@@ -185,8 +185,8 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
 
         std::vector<std::vector<bool>> saved(visibleBlocksNum, std::vector<bool>(visibleBlocksNum, false));
 
-        for (int y = 0; y < visibleBlocksNum; y++)
-            for (int x = 0; x < visibleBlocksNum; x++) {
+        for (uint y = 0; y < visibleBlocksNum; y++)
+            for (uint x = 0; x < visibleBlocksNum; x++) {
                 if (x - block_dx >= 0 && x - block_dx < visibleBlocksNum &&
                     y - block_dy >= 0 && y - block_dy < visibleBlocksNum &&
                     blocksSync[y][x])

@@ -2,42 +2,51 @@
 
 #include <SFML/Graphics.hpp>
 
+class Container;
+
 class Widget : private sf::Transformable, public sf::Drawable {
 private:
 	sf::Vector2f size;
-    sf::Sprite bufferSprite;
+    mutable sf::Sprite bufferSprite;
 
     Widget *parent;
+	// Only container needs this function
+	void setParent(Widget *widget);
 
     bool hiding;
+	bool active;
 
 protected:
-	sf::RenderTexture buffer;
+	bool canBeActive;
+
+	mutable sf::RenderTexture buffer;
 	// method for drawing to buffer
 	virtual void draw() const = 0;
 
 public:
-	explicit Widget(const sf::Vector2f &size = sf::Vector2f());
+	explicit Widget(sf::Vector2f size = sf::Vector2f());
+	virtual ~Widget() = default;
 
-    virtual void Hide();
-    virtual void Show();
     // draw method for Drawable inheritance
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const final;
-
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	// public method for Draw widget buffer to target
 	void Draw(sf::RenderTarget &target) const;
 	virtual void Update(sf::Time timeElapsed) = 0;
-    virtual void HandleEvent(sf::Event event) {}
+	virtual bool HandleEvent(sf::Event event) = 0;
 
-	virtual void SetPosition(const sf::Vector2f);
-	virtual void SetPosition(const float x, const float y);
-	virtual const sf::Vector2f GetPosition() const;
-    virtual const sf::Vector2f GetAbsPosition() const;
+	void Hide();
+	void Show();
+	bool IsVisible() const;
 
+	void SetPosition(const sf::Vector2f);
+	void SetPosition(const float x, const float y);
 	virtual void SetSize(const sf::Vector2f &);
-	const virtual sf::Vector2f GetSize() const;
+	virtual bool SetActive(bool);
 
-    virtual void SetParent(Widget *widget) { parent = widget; }
+	sf::Vector2f GetPosition() const;
+	sf::Vector2f GetAbsPosition() const;
+	sf::Vector2f GetSize() const;
+	bool IsActive() const;
 
-    virtual void SetFont(const sf::Font &font) {}
+	friend Container;
 };

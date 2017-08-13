@@ -1,46 +1,38 @@
 #include "Client.hpp"
+
 #include "Graphics/Window.hpp"
-#include "State.hpp"
 #include "Network.hpp"
+#include "Shared/Global.hpp"
 
 #include <iostream>
 
-using std::endl;
-
 ClientController::ClientController() : 
     player(new Player),
-    window(new Window()),
-    state(nullptr),
-    newState(nullptr) 
+    window(new Window())
 {
     instance = this;
 }
 
 void ClientController::Run() {
     if (!Connection::Start("localhost", Global::PORT)) {
-        CC::log << "Connection error!" << endl;
+        CC::log << "Connection error!" << std::endl;
     } else {
-        CC::log << "Connected" << endl;
+        CC::log << "Connected" << std::endl;
     };
-    sf::Clock clock;
-    //time_t startTime = time(nullptr);
-
-    SetState(new MenuLoginState);  
 
     window->Initialize();
 
     while (window->isOpen()) {
-        sf::Time timeElapsed = clock.restart();
-        window->Update(timeElapsed);
-        if (newState) {
-            if (state) state->Ending();
-            state.reset(newState);
-            state->Initialize();
-            newState = nullptr;
-        }
+        window->Update();
     }
     Connection::Stop();
 }
+
+Player *ClientController::GetClient() { return player.get(); }
+Window *ClientController::GetWindow() { return window.get(); }
+UI *ClientController::GetUI() { return window->GetUI(); }
+
+ClientController * const ClientController::Get() { return instance; }
 
 
 int main() {

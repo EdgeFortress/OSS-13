@@ -43,7 +43,7 @@ Sprite *Texture::SetInfo(Global::Sprite key, int num, int firstFrame, bool direc
     int firstFrameIndex = 0;
     for (int i = 0; i < num; i++) {
         if (spritesInfo[i].firstFrame == -1) {
-            CC::log << "Wrong order of sprites info setting" << endl;
+            CC::log << "Wrong order of sprites info setting" << std::endl;
             break;
         }
         firstFrameIndex += spritesInfo[i].frames * (static_cast<int>(spritesInfo[i].directed) * 3 + 1);
@@ -69,7 +69,7 @@ Sprite::Sprite(Texture *t, Global::Sprite key, int spriteIndex, int firstFrameIn
 
 }
 
-void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, const uf::Direction direction) const {
+void Sprite::Draw(sf::RenderTarget *target, const int x, const int y, const uf::Direction direction) const {
     sf::Rect<int> rect;
 
     int realState = firstFrameIndex;
@@ -83,7 +83,7 @@ void Sprite::Draw(sf::RenderWindow * const window, const int x, const int y, con
     sprite->setPosition(static_cast<float>(x), static_cast<float>(y));
     sprite->setTextureRect(rect);
     sprite->setScale(scale, scale);
-    window->draw(*sprite);
+    target->draw(*sprite);
 }
 
 void Sprite::Resize(int size) {

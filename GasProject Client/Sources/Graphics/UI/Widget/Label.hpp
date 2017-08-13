@@ -5,21 +5,25 @@
 class Label : public Widget {
 private:
 	sf::Text text;
-    sf::Font font;
 
-    sf::String name;
+	sf::String string;
+	sf::Color color;
+	const sf::Font *font;
+	unsigned size;
+	bool needToUpdateText;
 
 protected:
 	virtual void draw() const override;
 
 public:
-	Label(const sf::String &, const sf::Font &, const unsigned &size, const sf::Color & = sf::Color::White);
-    Label(const sf::String &, const unsigned &size, const sf::Color & = sf::Color::White);
+	Label();
+	Label(const sf::String &, const sf::Font &, const unsigned fontSize, const sf::Color & = sf::Color::White);
 	
 	virtual void Update(sf::Time timeElapsed) override;
+	virtual bool HandleEvent(sf::Event event) override;
 
-	virtual void SetPosition(const sf::Vector2f) override;
-	virtual void SetPosition(const float x, const float y) override;
-
-    virtual void SetFont(const sf::Font &font);
+	void SetString(const sf::String &string);
+    void SetFont(const sf::Font &font);
+	void SetColor(const sf::Color &color);
+	void SetFontSize(unsigned size);
 };

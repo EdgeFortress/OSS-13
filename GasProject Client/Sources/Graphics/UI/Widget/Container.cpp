@@ -1,65 +1,109 @@
 #include "Container.hpp"
+
+#include <typeinfo>
+#include <algorithm>
+
+#include "Shared/Geometry/Vec2.hpp"
 #include "Client.hpp"
+#include "Entry.hpp"
 
-Container::Container(const sf::Vector2f &size) : Widget(size), backgroundColor(sf::Color::Transparent) { }
+Container::Container(sf::Vector2f size) :
+	Widget(size), backgroundColor(sf::Color::Transparent), curInputWidgetIterator(items.end())
+{ }
 
-void Container::Hide() { for (auto &item : items) item.second->Hide(); }
+void Container::Update(sf::Time timeElapsed) {
+	for (auto &item : items)
+		item->Update(timeElapsed);
+}
 
-void Container::Show() { for (auto &item : items) item.second->Show(); }
+bool Container::HandleEvent(sf::Event event) {
+	if (!IsVisible()) return false;
+	switch (event.type) {
+	case sf::Event::MouseButtonPressed: {
+		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
+			return false;
 
-void Container::Update(sf::Time timeElapsed) { for (auto &item : items) item.second->Update(timeElapsed); }
+		for (auto iter = items.begin(); iter != items.end(); iter++) {
+			Widget *widget = iter->get();
+			if (widget->HandleEvent(event)) {
+				if (widget->SetActive(active)) {
+					if (curInputWidgetIterator->get() == widget) return true;
+					curInputWidgetIterator->get()->SetActive(false);
+					curInputWidgetIterator = iter;
+					return true;
+				}
+			}
+		}
+		return true;
+	}
+	case sf::Event::MouseMoved: {
+		uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
+		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
+			return false;
+		for (auto &widget : items)
+			if (widget->HandleEvent(event)) return true;
+		return true;
+	}
+	case sf::Event::KeyPressed: {
+		if (event.key.code == sf::Keyboard::Tab) {
+			if (curInputWidgetIterator == items.end()) return true;
+			curInputWidgetIterator->get()->SetActive(false);
 
-void Container::HandleEvent(sf::Event event) {
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        int buttonX = event.mouseButton.x,
-            buttonY = event.mouseButton.y;
-        if (buttonX >= GetAbsPosition().x && buttonX <= GetAbsPosition().x + GetSize().x &&
-            buttonY >= GetAbsPosition().y && buttonY <= GetAbsPosition().y + GetSize().y)
-            for (auto &item : items)
-                item.second->HandleEvent(event);
-    } else if (event.type == sf::Event::MouseMoved) {
-        int mouseX = event.mouseMove.x,
-            mouseY = event.mouseMove.y;
-        if (mouseX >= GetAbsPosition().x && mouseX <= GetAbsPosition().x + GetSize().x &&
-            mouseY >= GetAbsPosition().y && mouseY <= GetAbsPosition().y + GetSize().y)
-            for (auto &item : items)
-                item.second->HandleEvent(event);
-    } else
-        for (auto &item : items)
-            item.second->HandleEvent(event);
+			// find next entry
+			auto iter = curInputWidgetIterator;
+			iter++;
+			while (!iter->get()->SetActive(true) && iter != curInputWidgetIterator) {
+				iter++;
+				if (iter == items.end())
+					iter = items.begin();
+			}
+			curInputWidgetIterator = iter;
+
+			return true;
+		}
+		if (curInputWidgetIterator != items.end())
+			curInputWidgetIterator->get()->HandleEvent(event);
+		return true;
+	}
+	default:
+		if (curInputWidgetIterator != items.end())
+			curInputWidgetIterator->get()->HandleEvent(event);
+	}
+	return true;
 }
 
 void Container::draw() const {
-	sf::RenderTexture &buffer = const_cast<sf::RenderTexture &>(this->buffer);
 	buffer.clear(backgroundColor);
-    //std::cout << GetPosition().x << ' ' << GetPosition().y << std::endl;
-    for (auto &item : items) //item.second->Draw(buffer);
-        buffer.draw(*(item.second.get()));
+    for (auto &item : items)
+        buffer.draw(*(item.get()));
 	buffer.display();
 }
 
 void Container::AddItem(Widget *widget, sf::Vector2f position) {
-	items.push_back(std::pair<sf::Vector2f, uptr<Widget>>(position, uptr<Widget>(widget)));
-	widget->SetPosition(position/* + GetPosition()*/);
-    widget->SetParent(this);
+	items.push_back(uptr<Widget>(widget));
+    if (curInputWidgetIterator == items.end())
+		if (widget->SetActive(false)) { // Check if widget can be active
+			canBeActive = true;
+			curInputWidgetIterator = items.end();
+			curInputWidgetIterator--;
+		}
+	widget->SetPosition(position);
+    widget->setParent(this);
 }
 
 void Container::Clear() {
     items.erase(items.begin(), items.end());
-}
-
-void Container::SetPosition(const sf::Vector2f pos) {
-	Widget::SetPosition(pos);
-}
-void Container::SetPosition(const float x, const float y) {
-	Widget::SetPosition(x, y);
+	canBeActive = false;
+	curInputWidgetIterator = items.end();
 }
 
 void Container::SetBackground(sf::Color color) {
     backgroundColor = color;
 }
 
-void Container::SetFont(const sf::Font &font) {
-    for (auto &item : items)
-        item.second->SetFont(font);
+bool Container::SetActive(bool active) {
+	if (curInputWidgetIterator != items.end())
+		curInputWidgetIterator->get()->SetActive(active);
+	return Widget::SetActive(active);
 }

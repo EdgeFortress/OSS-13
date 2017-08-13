@@ -4,14 +4,14 @@
 #include <SFML/Network.hpp>
 
 #include "Graphics/UI/UI.hpp"
-#include "Graphics/UI/AuthUI.hpp"
-#include "Graphics/UI/GameListUI.hpp"
-#include "Graphics/UI/GameProcessUI.hpp"
+#include "Graphics/UI/UIModule/AuthUI.hpp"
+#include "Graphics/UI/UIModule/GameListUI.hpp"
+#include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
 #include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
-#include "Graphics/TileGrid/TileGrid.hpp"
+#include "Graphics/TileGrid.hpp"
 
 using namespace std;
 using namespace sf;
@@ -78,45 +78,60 @@ void Connection::parsePacket(Packet &packet) {
     sf::Int32 code;
     packet >> code;
     switch (static_cast<ServerCommand::Code>(code)) {
-        case ServerCommand::Code::AUTH_SUCCESS:
-            CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+	case ServerCommand::Code::AUTH_SUCCESS: {
+		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!authUI) break;
+		authUI->SetServerAnswer(true);
             break;
-        case ServerCommand::Code::REG_SUCCESS:
-            CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(true);
+	}
+	case ServerCommand::Code::REG_SUCCESS: {
+		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!authUI) break;
+		authUI->SetServerAnswer(true);
             break;
-        case ServerCommand::Code::AUTH_ERROR:
-            CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+	}
+	case ServerCommand::Code::AUTH_ERROR: {
+		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!authUI) break;
+		authUI->SetServerAnswer(false);
             break;
-        case ServerCommand::Code::REG_ERROR:
-            CC::Get()->GetWindow()->GetUI()->GetAuthUI()->SetServerAnswer(false);
+	}
+	case ServerCommand::Code::REG_ERROR: {
+		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!authUI) break;
+		authUI->SetServerAnswer(false);
             break;
+	}
         case ServerCommand::Code::GAME_CREATE_SUCCESS:
             break;
         case ServerCommand::Code::GAME_CREATE_ERROR:
             break;
-        case ServerCommand::Code::GAME_LIST: {
-            CC::Get()->GetWindow()->GetUI()->Lock();
-            CC::Get()->GetWindow()->GetUI()->GetGameListUI()->Clear();
-            Int32 size;
-            packet >> size;
-            for (int i = 1; i <= size; i++) {
-                Int32 id, num_of_players;
-                String title;
-                packet >> id >> title >> num_of_players;
-                CC::Get()->GetWindow()->GetUI()->GetGameListUI()->AddGame(id, title.toAnsiString(), num_of_players);
-            }
-            CC::Get()->GetWindow()->GetUI()->Unlock();
-            break;
-        }
+		case ServerCommand::Code::GAME_LIST: {
+			GameListUI *gameListUI = dynamic_cast<GameListUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+			if (!gameListUI) break;
+			CC::Get()->GetWindow()->GetUI()->Lock();
+			gameListUI->Clear();
+			Int32 size;
+			packet >> size;
+			for (int i = 1; i <= size; i++) {
+				Int32 id, num_of_players;
+				String title;
+				packet >> id >> title >> num_of_players;
+				gameListUI->AddGame(id, title, num_of_players);
+			}
+			CC::Get()->GetWindow()->GetUI()->Unlock();
+			break;
+		}
         case ServerCommand::Code::GAME_JOIN_SUCCESS:
             CC::log << "You join the game" << endl;
-            CC::Get()->SetState(new GameProcessState());
             break;
         case ServerCommand::Code::GAME_JOIN_ERROR:
             CC::log << "Error join the game" << endl;
             break;
         case ServerCommand::Code::GRAPHICS_UPDATE: {
-            TileGrid *tileGrid = CC::Get()->GetWindow()->GetTileGrid();
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (!gameProcessUI) break;
+		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
             Int32 options;
             packet >> options;
             tileGrid->LockDrawing();
@@ -217,8 +232,8 @@ void Connection::parsePacket(Packet &packet) {
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             std::string message;
             packet >> message;
-            auto chat = CC::Get()->GetWindow()->GetUI()->GetGameProcessUI()->GetChat();
-            chat->AddIncomingMessage(message);
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		if (gameProcessUI) gameProcessUI->GetChat()->AddIncomingMessage(message);
             break;
         }
     };
