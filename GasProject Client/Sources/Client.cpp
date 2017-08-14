@@ -1,6 +1,8 @@
 #include "Client.hpp"
 
 #include "Graphics/Window.hpp"
+#include "Graphics/UI/UI.hpp"
+#include "Graphics/Sprite.hpp"
 #include "Network.hpp"
 #include "Shared/Global.hpp"
 

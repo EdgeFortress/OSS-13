@@ -32,7 +32,7 @@ protected:
 
 public:
 	Button(sf::Vector2f size = sf::Vector2f());
-    Button(const sf::String &, sf::Vector2f &size, const sf::Color &textColor, const sf::Font &, unsigned fontSize, std::function<void()>);
+    Button(const sf::String &, const sf::Vector2f &size, const sf::Color &textColor, const sf::Font &, unsigned fontSize, std::function<void()>);
 
     virtual void Update(sf::Time timeElapsed) final;
     virtual bool HandleEvent(sf::Event event) final;

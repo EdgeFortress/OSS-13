@@ -6,7 +6,7 @@
 
 #include "Client.hpp"
 
-Entry::Entry(sf::Vector2f &size) {
+Entry::Entry(const sf::Vector2f &size) {
     SetSize(size);
 
 	canBeActive = true;
@@ -17,7 +17,7 @@ Entry::Entry(sf::Vector2f &size) {
     cursorTime = sf::Time::Zero;
 }
 
-Entry::Entry(sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
+Entry::Entry(const sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
     : color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
 	SetSize(size);
 

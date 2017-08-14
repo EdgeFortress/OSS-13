@@ -14,6 +14,7 @@ Object::Object(const Global::Sprite key, const std::string name, const bool dire
 	this->name = name;
 	direction = uf::Direction::NONE;
 	dense = false;
+	tile = nullptr;
 }
 
 void Object::SetSprite(const Global::Sprite key) {

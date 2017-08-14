@@ -12,8 +12,8 @@ Button::Button(sf::Vector2f size)
 	backgroundColor = sf::Color::Transparent;
 }
 
-Button::Button(const sf::String &string, 
-				   sf::Vector2f &size, 
+Button::Button(const sf::String &string,
+			   const sf::Vector2f &size,
 	            const sf::Color &textColor, 
 	             const sf::Font &font, 
 	                   unsigned  fontSize, 

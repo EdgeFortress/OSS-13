@@ -117,7 +117,7 @@ void Connection::parsePacket(Packet &packet) {
 				Int32 id, num_of_players;
 				String title;
 				packet >> id >> title >> num_of_players;
-				gameListUI->AddGame(id, title, num_of_players);
+				gameListUI->AddGame(id, title.toAnsiString(), num_of_players);
 			}
 			CC::Get()->GetWindow()->GetUI()->Unlock();
 			break;

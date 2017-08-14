@@ -43,8 +43,8 @@ protected:
     virtual void draw() const final;
 
 public:
-    Entry(sf::Vector2f &size = sf::Vector2f());
-    Entry(sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
+    Entry(const sf::Vector2f &size = sf::Vector2f());
+    Entry(const sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
 
 	virtual void Update(sf::Time timeElapsed) final;
 	virtual bool HandleEvent(sf::Event event) final;

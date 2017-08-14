@@ -8,6 +8,7 @@ Widget::Widget(sf::Vector2f size) : parent(nullptr) {
 	SetSize(size);
 	canBeActive = false;
 	active = false;
+	hiding = false;
 }
 
 void Widget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
