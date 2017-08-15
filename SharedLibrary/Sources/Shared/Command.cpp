@@ -39,6 +39,9 @@ SendChatMessageClientCommand::SendChatMessageClientCommand(std::string &message)
 	ClientCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }
 
+BuildClientCommand::BuildClientCommand() :
+	ClientCommand(Code::BUILD) { }
+
 GhostClientCommand::GhostClientCommand() : 
 	ClientCommand(Code::GHOST) { }
 

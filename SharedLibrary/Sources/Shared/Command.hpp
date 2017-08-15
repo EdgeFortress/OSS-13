@@ -18,6 +18,7 @@ struct ClientCommand {
 
 		MOVE,
 		SEND_CHAT_MESSAGE,
+		BUILD,
 		GHOST
 	};
 
@@ -75,12 +76,13 @@ struct SendChatMessageClientCommand : public ClientCommand {
 	SendChatMessageClientCommand(std::string &message);
 };
 
+struct BuildClientCommand : public ClientCommand {
+	BuildClientCommand();
+};
+
 struct GhostClientCommand : public ClientCommand {
 	GhostClientCommand();
 };
-
-
-
 
 
 struct ServerCommand {

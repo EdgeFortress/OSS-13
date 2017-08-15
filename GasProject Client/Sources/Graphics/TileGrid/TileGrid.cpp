@@ -33,6 +33,8 @@ TileGrid::TileGrid() :
     }
 
 	canBeActive = true;
+	ghostButtonPressed = false;
+	buildButtonPressed = false;
 }
 
 void TileGrid::draw() const {
@@ -95,6 +97,9 @@ bool TileGrid::HandleEvent(sf::Event event) {
             case sf::Keyboard::A:
                 moveCommand.x = -1;
 			return true;
+			case sf::Keyboard::B:
+				buildButtonPressed = true;
+				return true;
 			case sf::Keyboard::G:
 				ghostButtonPressed = true;
 			return true;
@@ -141,6 +146,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
 			moveSendPause = MOVE_TIMEOUT;
 			moveCommand = sf::Vector2i();
+		}
+		if (buildButtonPressed) {
+			Connection::commandQueue.Push(new BuildClientCommand());
+			moveSendPause = MOVE_TIMEOUT;
+			buildButtonPressed = false;
 		}
 		if (ghostButtonPressed) {
 			Connection::commandQueue.Push(new GhostClientCommand());

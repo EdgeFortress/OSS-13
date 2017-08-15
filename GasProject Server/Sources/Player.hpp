@@ -40,6 +40,7 @@ public:
     void ChatMessage(std::string &message);
 
     void Move(uf::Direction);
+	void Build();
 	void Ghost();
     ///
 

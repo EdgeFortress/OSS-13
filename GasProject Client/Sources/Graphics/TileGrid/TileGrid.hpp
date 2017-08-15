@@ -47,6 +47,7 @@ private:
     const sf::Time MOVE_TIMEOUT = sf::milliseconds(100);
     sf::Vector2i moveCommand;
     sf::Time moveSendPause;
+	bool buildButtonPressed;
 	bool ghostButtonPressed;
 
 protected:

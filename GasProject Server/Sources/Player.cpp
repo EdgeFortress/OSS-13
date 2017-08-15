@@ -38,6 +38,10 @@ void Player::Move(uf::Direction direction) {
 	actions.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
+void Player::Build() {
+	actions.Push(new BuildPlayerCommand());
+}
+
 void Player::Ghost() {
 	actions.Push(new GhostPlayerCommand());
 }
@@ -58,7 +62,15 @@ void Player::Update() {
 					}
 					break;
 				}
+				case PlayerCommand::Code::BUILD: {
+					if (!control) break;
+					Tile *tile = control->GetOwner()->GetTile();
+					if (tile)
+						tile->PlaceTo(new Wall());
+					break;
+				}
 				case PlayerCommand::Code::GHOST: {
+					if (!control) break;
 					::Ghost *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
 					if (!ghost) {
 						ghost = new ::Ghost();
