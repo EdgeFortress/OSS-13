@@ -8,21 +8,23 @@
 
 class UI;
 
-struct GameRow {
-    int id;
-    std::string title;
-    int num_of_players;
-
-    bool finishedCreation;
-
-    Container *game;
-
-    GameRow(int id, std::string title, int num_of_players);
-
-    void join();
-};
+struct GameRow;
 
 class GameListUI : public UIModule {
+public:
+    GameListUI(UI *ui);
+    GameListUI(const GameListUI &) = delete;
+    GameListUI &operator=(const GameListUI &) = delete;
+    virtual ~GameListUI() = default;
+
+    virtual void Initialize() final;
+
+    void AddGame(int id, std::string title, int num_of_players);
+    void Clear();
+
+    virtual void Resize(int width, int height) final;
+    virtual void Update(sf::Time timeElapsed) final;
+
 private:
     Container *gameList;
 
@@ -37,18 +39,18 @@ private:
     void generateGamelistWindow();
 
     void update();
+};
 
-public:
-    GameListUI(UI *ui);
-    GameListUI(const GameListUI &) = delete;
-    GameListUI &operator=(const GameListUI &) = delete;
-    virtual ~GameListUI() = default;
+struct GameRow {
+    int id;
+    std::string title;
+    int num_of_players;
 
-	virtual void Initialize() final;
+    bool finishedCreation;
 
-    void AddGame(int id, std::string title, int num_of_players);
-    void Clear();
+    Container *game;
 
-    virtual void Resize(int width, int height) final;
-    virtual void Update(sf::Time timeElapsed) final;
+    GameRow(int id, std::string title, int num_of_players);
+
+    void join();
 };

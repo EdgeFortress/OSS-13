@@ -9,6 +9,20 @@
 class UI;
 
 class AuthUI : public UIModule {
+public:
+    AuthUI(UI *ui);
+    AuthUI(const AuthUI &) = delete;
+    AuthUI &operator=(const AuthUI &) = delete;
+    virtual ~AuthUI() = default;
+
+    virtual void Initialize() final;
+
+    virtual void Resize(int width, int height) final;
+    virtual void Draw(sf::RenderWindow *renderWindow) final;
+    virtual void Update(sf::Time timeElapsed) final;
+
+    void SetServerAnswer(bool result);
+
 private:
 	Container *logWindow, *regWindow;
 	Entry *my_login_entry, *my_passw_entry, *my_new_login_entry, *my_new_passw_entry;
@@ -30,6 +44,8 @@ private:
     ServerAnswer serverAnswer;
     ComState comState;
 
+    ServerAnswer getAnswer();
+
 	// Generate functions
     void generateLoginWindow();
     void generateRegistrationWindow();
@@ -39,19 +55,4 @@ private:
     void closeReg();
     void login();
     void registration();
-
-public:
-    AuthUI(UI *ui);
-    AuthUI(const AuthUI &) = delete;
-    AuthUI &operator=(const AuthUI &) = delete;
-    virtual ~AuthUI() = default;
-
-	virtual void Initialize() final;
-
-    virtual void Resize(int width, int height) final;
-	virtual void Draw(sf::RenderWindow *renderWindow) final;
-	virtual void Update(sf::Time timeElapsed) final;
-
-	void SetServerAnswer(bool result);
-	ServerAnswer GetAnswer();
 };

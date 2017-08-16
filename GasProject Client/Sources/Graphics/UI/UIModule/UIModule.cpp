@@ -19,15 +19,17 @@ void UIModule::Update(sf::Time timeElapsed) {
 void UIModule::HandleEvent(sf::Event event) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed: {
-		for (auto &widget : widgets)
-			if (widget->HandleEvent(event)) {
-				if (widget->SetActive(true))
-					if (widget.get() != curInputWidget) {
-						curInputWidget->SetActive(false);
-						curInputWidget = widget.get();
-					}
-				return;
-			}
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            for (auto &widget : widgets)
+                if (widget->HandleEvent(event)) {
+                    if (widget->SetActive(true))
+                        if (widget.get() != curInputWidget) {
+                            curInputWidget->SetActive(false);
+                            curInputWidget = widget.get();
+                        }
+                    return;
+                }
+        }
 		break;
 	}
 	case sf::Event::MouseMoved: {
@@ -38,7 +40,8 @@ void UIModule::HandleEvent(sf::Event event) {
 		break;
 	}
 	default:
-		if (curInputWidget)
-			curInputWidget->HandleEvent(event);
+        break;
 	}
+    if (curInputWidget)
+        curInputWidget->HandleEvent(event);
 }

@@ -3,7 +3,91 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid.hpp"
+#include "Graphics/UI/Widget/ContextMenu.hpp"
 #include "../UI.hpp"
+
+GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
+    infoLabel(new InfoLabel(ui->GetFont()))
+{ 
+	generateFunctionWindow();
+
+	tileGrid = new TileGrid();
+	widgets.push_back(uptr<TileGrid>(tileGrid));
+
+	chat = new Chat(ui->GetFont());
+	widgets.push_back(uptr<Chat>(chat));
+
+    contextMenu = new ContextMenu();
+    contextMenu->SetFont(&ui->GetFont());
+    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
+    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 2"));
+    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Тест 3"));
+    widgets.push_back(uptr<ContextMenu>(contextMenu));
+
+	curInputWidget = tileGrid;
+}
+
+void GameProcessUI::Initialize() { }
+
+void GameProcessUI::Resize(const int width, const int height) {
+    tileGrid->SetSize(uf::vec2i(width, height));
+    infoLabel->CountPosition(width, height);
+    chat->SetSize(uf::vec2i(width, height));
+    functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
+    functionWindow->SetSize(sf::Vector2f(width - functionWindow->GetAbsPosition().x, chat->GetPosition().y));
+}
+
+void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
+    for (auto &widget : widgets) widget->Draw(*renderWindow);
+    infoLabel->Draw(renderWindow);
+}
+
+void GameProcessUI::Update(sf::Time timeElapsed) {
+    for (auto &widget : widgets)
+        widget->Update(timeElapsed);
+}
+
+void GameProcessUI::HandleEvent(sf::Event event) {
+    contextMenu->HandleEvent(event);
+
+    switch (event.type) {
+    case sf::Event::KeyPressed: {
+        switch (event.key.code) {
+        case sf::Keyboard::Tab: {
+            if (chat->IsActive()) {
+                chat->SetActive(false);
+                tileGrid->SetActive(true);
+                curInputWidget = tileGrid;
+            }
+            else {
+                chat->SetActive(true);
+                tileGrid->SetActive(false);
+                curInputWidget = chat;
+            }
+            return;
+        }
+        }
+    }
+    case sf::Event::MouseMoved: {
+        Object *obj = tileGrid->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
+        if (obj != nullptr) infoLabel->SetText(obj->GetName());
+        else infoLabel->SetText("");
+        break;
+    }
+    }
+
+    UIModule::HandleEvent(event);
+}
+
+InfoLabel *GameProcessUI::GetInfoLabel() { return infoLabel.get(); }
+Chat *GameProcessUI::GetChat() { return chat; }
+TileGrid *GameProcessUI::GetTileGrid() { return tileGrid; }
+
+void GameProcessUI::generateFunctionWindow() {
+	functionWindow = new Container();
+    functionWindow->GetStyle().backgroundColor = sf::Color(69, 69, 69);
+	widgets.push_back(uptr<Container>(functionWindow));
+}
 
 InfoLabel::InfoLabel(const sf::Font &font) {
     rectangle.setSize(sf::Vector2f(100, 15));
@@ -28,76 +112,3 @@ void InfoLabel::CountPosition(int width, int height) {
 void InfoLabel::SetText(const string &s) {
     text.setString(s);
 }
-
-GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
-    infoLabel(ui->GetFont())
-{ 
-	generateFunctionWindow();
-
-	tileGrid = new TileGrid();
-	widgets.push_back(uptr<TileGrid>(tileGrid));
-
-	chat = new Chat(ui->GetFont());
-	widgets.push_back(uptr<Chat>(chat));
-
-	curInputWidget = tileGrid;
-}
-
-void GameProcessUI::generateFunctionWindow() {
-	functionWindow = new Container();
-	functionWindow->SetBackground(sf::Color(69, 69, 69));
-	widgets.push_back(uptr<Container>(functionWindow));
-}
-
-void GameProcessUI::Initialize() { }
-
-void GameProcessUI::Resize(const int width, const int height) { 
-	tileGrid->SetSize(uf::vec2i(width, height));
-    infoLabel.CountPosition(width, height);
-    chat->SetSize(uf::vec2i(width, height));
-    functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
-    functionWindow->SetSize(sf::Vector2f(width - functionWindow->GetAbsPosition().x, chat->GetPosition().y));
-}
-
-void GameProcessUI::Draw(sf::RenderWindow *renderWindow) { 
-	for (auto &widget : widgets) widget->Draw(*renderWindow); 
-	infoLabel.Draw(renderWindow);
-}
-
-void GameProcessUI::Update(sf::Time timeElapsed) {
-    for (auto &widget : widgets) 
-        widget->Update(timeElapsed);
-}
-
-void GameProcessUI::HandleEvent(sf::Event event) { 
-	switch (event.type) {
-	case sf::Event::KeyPressed: {
-		switch (event.key.code) {
-		case sf::Keyboard::Tab: {
-			if (chat->IsActive()) {
-				chat->SetActive(false);
-				tileGrid->SetActive(true);
-				curInputWidget = tileGrid;
-			} else {
-				chat->SetActive(true);
-				tileGrid->SetActive(false);
-				curInputWidget = chat;
-			}
-			return;
-		}
-		}
-	}
-	case sf::Event::MouseMoved: {
-		Object *obj = tileGrid->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
-		if (obj != nullptr) infoLabel.SetText(obj->GetName());
-		else infoLabel.SetText("");
-		break;
-	}
-	}
-
-	UIModule::HandleEvent(event);
-}
-
-InfoLabel *GameProcessUI::GetInfoLabel() { return &infoLabel; }
-Chat *GameProcessUI::GetChat() { return chat; }
-TileGrid *GameProcessUI::GetTileGrid() { return tileGrid; }

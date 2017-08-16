@@ -9,6 +9,39 @@
 
 class UI;
 class TileGrid;
+class ContextMenu;
+
+class InfoLabel;
+
+class GameProcessUI : public UIModule {
+public:
+    GameProcessUI(UI *ui);
+    GameProcessUI(const GameProcessUI &) = delete;
+    GameProcessUI &operator=(const GameProcessUI &) = delete;
+    virtual ~GameProcessUI() = default;
+
+    virtual void Initialize() final;
+
+    virtual void Resize(int width, int height) final;
+    virtual void Draw(sf::RenderWindow* renderWindow);
+    virtual void Update(sf::Time timeElapsed) final;
+    virtual void HandleEvent(sf::Event event);
+
+    InfoLabel *GetInfoLabel();
+    Chat *GetChat();
+    TileGrid *GetTileGrid();
+
+private:
+    uptr<InfoLabel> infoLabel;
+
+    Container *functionWindow;
+	TileGrid *tileGrid;
+	Chat *chat;
+
+    ContextMenu *contextMenu;
+
+    void generateFunctionWindow();
+};
 
 class InfoLabel {
 private:
@@ -19,31 +52,4 @@ public:
     void Draw(sf::RenderWindow *window);
     void CountPosition(int width, int height);
     void SetText(const std::string &s);
-};
-
-class GameProcessUI : public UIModule {
-    InfoLabel infoLabel;
-
-    Container *functionWindow;
-	TileGrid *tileGrid;
-	Chat *chat;
-
-    void generateFunctionWindow();
-
-public:
-    GameProcessUI(UI *ui);
-	GameProcessUI(const GameProcessUI &) = delete;
-	GameProcessUI &operator=(const GameProcessUI &) = delete;
-	virtual ~GameProcessUI() = default;
-
-	virtual void Initialize() final;
-
-    virtual void Resize(int width, int height) final;
-	virtual void Draw(sf::RenderWindow* renderWindow);
-	virtual void Update(sf::Time timeElapsed) final;
-	virtual void HandleEvent(sf::Event event);
-
-	InfoLabel *GetInfoLabel();
-	Chat *GetChat();
-	TileGrid *GetTileGrid();
 };

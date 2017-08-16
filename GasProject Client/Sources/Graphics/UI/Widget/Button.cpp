@@ -7,26 +7,20 @@
 Button::Button(sf::Vector2f size) 
 	: Widget(size)
 {
-	needToUpdateText = false;
 	underCursor = false;
-	backgroundColor = sf::Color::Transparent;
 }
 
 Button::Button(const sf::String &string,
-			   const sf::Vector2f &size,
-	            const sf::Color &textColor, 
-	             const sf::Font &font, 
-	                   unsigned  fontSize, 
-	       std::function<void()> onPressFunc)
-    : Widget(size), string(string), textColor(textColor), font(&font), fontSize(fontSize), onPressFunc(onPressFunc) 
+			   const sf::Vector2f &size, 
+	           std::function<void()> onPressFunc)
+    : Widget(size),onPressFunc(onPressFunc) 
 {
-	needToUpdateText = true;
+    text.setString(string);
 	underCursor = false;
-	backgroundColor = sf::Color::Transparent;
 }
 
 void Button::draw() const {
-    buffer.clear(!underCursor ? backgroundColor : underCursor_backgroundColor);
+    buffer.clear(style.backgroundColor);
     buffer.draw(text);
     buffer.display();
 }
@@ -36,60 +30,56 @@ void Button::Update(sf::Time timeElapsed) {
 		underCursor_time += timeElapsed;
 		if (underCursor_time >= underCursor_newEventWaitingTime) {
 			underCursor = false;
-			needToUpdateText = true;
+            style = std::move(bufferStyle);
+            style.updated = true;
 		}
 	}
 
-	if (needToUpdateText && font) {
-		text = sf::Text(string, *font, fontSize);
-		if (!underCursor) {
-			text.setFillColor(textColor);
-			text.setOutlineColor(textColor);
-		} else {
-			text.setFillColor(underCursor_textColor);
-			text.setOutlineColor(underCursor_textColor);
-            }
-		needToUpdateText = false;
+    if (GetStyle().updated) {
+        text.setFont(*style.font);
+        text.setCharacterSize(style.fontSize);
+        text.setFillColor(GetStyle().textColor);
+        text.setOutlineColor(GetStyle().textColor);
+        GetStyle().updated = false;
     }
 }
 
 bool Button::HandleEvent(sf::Event event) {
-	switch (event.type) {
-	    case sf::Event::MouseButtonPressed: {
-		    uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-            if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-                onPressFunc();
-                return true;
-            }
-		    break;
-}
-	    case sf::Event::MouseMoved: {
-		    uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
-		    if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-			    underCursor = true;
-			    underCursor_time = sf::Time::Zero;
-			    needToUpdateText = true;
-                return true;
+    switch (event.type) {
+    case sf::Event::MouseButtonPressed: {
+        uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+        if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
+            onPressFunc();
+            return true;
+        }
+        break;
     }
-		    break;
-}
-}
+    case sf::Event::MouseMoved: {
+        uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
+        if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
+            underCursor = true;
+            underCursor_time = sf::Time::Zero;
+            bufferStyle = std::move(style);
+            style = underCursor_Style;
+            style.updated = true;
+            return true;
+        }
+        break;
+    }
+    }
     return false;
 }
 
 void Button::SetString(const sf::String &string) {
-	this->string = string;
-	needToUpdateText = true;
+    text.setString(string);
 }
-void Button::SetFont(const sf::Font &font) {
-	this->font = &font;
-	needToUpdateText = true;
+
+void Button::SetUnderCursorStyle(const Style &style) {
+    underCursor_Style = style;
+    underCursor_Style.updated = true;
 }
-void Button::SetTextColor(const sf::Color &color) {
-	this->textColor = color;
-	needToUpdateText = true;
-}
-void Button::SetFontSize(unsigned size) {
-	this->fontSize = size;
-	needToUpdateText = true;
+
+void Button::SetUnderCursorStyle(Style &&style) {
+    underCursor_Style = style;
+    underCursor_Style.updated = true;
 }

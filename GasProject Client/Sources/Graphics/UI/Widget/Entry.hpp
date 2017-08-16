@@ -7,15 +7,26 @@
 #include <vector>
 
 class Entry : public Widget {
-private:
-    sf::Color color;
-    sf::Font font;
-    sf::Text text;
-    //sf::Vector2f size;
+public:
+    Entry(const sf::Vector2f &size = sf::Vector2f());
 
+    virtual void Update(sf::Time timeElapsed) final;
+    virtual bool HandleEvent(sf::Event event) final;
+
+    void Clear();
+    void HideSymbols(wchar_t hider = '*');
+    void ShowSymbols();
+    void SetOnEnterFunc(std::function<void()>);
+
+    std::string GetText();
+
+protected:
+    virtual void draw() const final;
+
+private:
+    sf::Text text;
     sf::RectangleShape cursor;
 
-    int characterSize;
     unsigned showPos;
     int cursorPos;
     sf::Time cursorTime;
@@ -38,21 +49,4 @@ private:
     void moveRight();
 
     std::function<void()> onEnterFunc;
-
-protected:
-    virtual void draw() const final;
-
-public:
-    Entry(const sf::Vector2f &size = sf::Vector2f());
-    Entry(const sf::Vector2f &size, const sf::Color &, const sf::Font &, bool hidingSymbols = false, wchar_t hidingSymbol = '*');
-
-	virtual void Update(sf::Time timeElapsed) final;
-	virtual bool HandleEvent(sf::Event event) final;
-
-    void Clear();
-    void HideSymbols(wchar_t hider);
-	void ShowSymbols();
-    void SetOnEnterFunc(std::function<void()>);
-
-	std::string GetText();
 };

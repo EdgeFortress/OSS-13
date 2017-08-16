@@ -17,73 +17,47 @@ Entry::Entry(const sf::Vector2f &size) {
     cursorTime = sf::Time::Zero;
 }
 
-Entry::Entry(const sf::Vector2f &size, const sf::Color &color, const sf::Font &font, bool hidingSymbols, wchar_t hidingSymbol)
-    : color(color), font(font), text("", font, 16), hidingSymbols(hidingSymbols), hidingSymbol(hidingSymbol) {
-	SetSize(size);
-
-	canBeActive = true;
-
-    showPos = 0;
-    cursorPos = -1;
-
-    characterSize = text.getCharacterSize();
-
-    cursorTime = sf::Time::Zero;
-    cursor.setSize(sf::Vector2f(characterSize / 8.0f, float(characterSize)));
-    cursor.setFillColor(color);
-
-    text.setFillColor(color);
-    text.setOutlineColor(color);
-
-    cursor.setPosition(text.getGlobalBounds().width, 2);
-}
-
 void Entry::SetOnEnterFunc(std::function<void()> func) {
     onEnterFunc = func;
 }
 
 std::vector<float> Entry::getLetterSizes(wchar_t c) {
-    //vector<float> letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
-    //if (letter_sizes.size())
-        //return std::move(letter_sizes);
-    //std::cout << "Loading" << std::endl;
-    //sizeFiller(font, c);
-    //letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
     std::vector<float> letter_sizes;
-    letter_sizes.push_back(font.getGlyph(c, characterSize, false).advance);
-    letter_sizes.push_back(font.getGlyph(c, characterSize, true).advance);
+    letter_sizes.push_back(style.font->getGlyph(c, style.fontSize, false).advance);
+    letter_sizes.push_back(style.font->getGlyph(c, style.fontSize, true).advance);
     return std::move(letter_sizes);
 }
 
 void Entry::moveCursorLeft(wchar_t c) {
-    cursor.setPosition(cursor.getPosition().x - font.getGlyph(c, characterSize, false).advance, cursor.getPosition().y);
+    cursor.setPosition(cursor.getPosition().x - style.font->getGlyph(c, style.fontSize, false).advance, cursor.getPosition().y);
 }
 
 void Entry::moveCursorRight(wchar_t c) {
-    //vector<float> letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
-    //if (letter_sizes.size())
-        //cursor.setPosition(cursor.getPosition().x + letter_sizes[0], cursor.getPosition().y);
-    //else {
-        //std::cout << "Loading" << std::endl;
-        //sizeFiller(font, c);
-        //letter_sizes = std::move(CC::Get()->GetWindow()->GetUI()->LettersSizes[c]);
-    cursor.setPosition(cursor.getPosition().x + font.getGlyph(c, characterSize, false).advance, cursor.getPosition().y);
-    //}
+    cursor.setPosition(cursor.getPosition().x + style.font->getGlyph(c, style.fontSize, false).advance, cursor.getPosition().y);
 }
 
-
-
 void Entry::draw() const {
-    buffer.clear(sf::Color(60, 60, 60));
+    buffer.clear(style.backgroundColor);
     buffer.draw(text);
 
-   if (IsActive() && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f))
+    if (IsActive() && cursorTime >= sf::seconds(0.6f) && cursorTime <= sf::seconds(0.8f)) {
         buffer.draw(cursor);
+    }
 
     buffer.display();
 }
 
 void Entry::Update(sf::Time timeElapsed) {
+    if (style.updated) {
+        //text = sf::Text(entryString, *style.font, style.fontSize);
+        text.setFont(*style.font);
+        text.setCharacterSize(style.fontSize);
+        text.setFillColor(style.textColor);
+        text.setOutlineColor(style.textColor);
+        cursor.setSize(sf::Vector2f(style.fontSize / 8.0f, float(style.fontSize)));
+        cursor.setFillColor(style.textColor);
+        style.updated = false;
+    }
     if (IsActive()) {
         cursorTime += timeElapsed;
 

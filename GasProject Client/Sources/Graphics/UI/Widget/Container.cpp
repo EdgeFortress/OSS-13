@@ -8,7 +8,7 @@
 #include "Entry.hpp"
 
 Container::Container(sf::Vector2f size) :
-	Widget(size), backgroundColor(sf::Color::Transparent), curInputWidgetIterator(items.end())
+	Widget(size), curInputWidgetIterator(items.end())
 { }
 
 void Container::Update(sf::Time timeElapsed) {
@@ -74,7 +74,7 @@ bool Container::HandleEvent(sf::Event event) {
 }
 
 void Container::draw() const {
-	buffer.clear(backgroundColor);
+	buffer.clear(style.backgroundColor);
     for (auto &item : items)
         buffer.draw(*(item.get()));
 	buffer.display();
@@ -96,10 +96,6 @@ void Container::Clear() {
     items.erase(items.begin(), items.end());
 	canBeActive = false;
 	curInputWidgetIterator = items.end();
-}
-
-void Container::SetBackground(sf::Color color) {
-    backgroundColor = color;
 }
 
 bool Container::SetActive(bool active) {

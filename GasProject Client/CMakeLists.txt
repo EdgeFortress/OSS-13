@@ -30,6 +30,8 @@ set(SOURCE_FILES
         Sources/Graphics/UI/Widget/Label.hpp
         Sources/Graphics/UI/Widget/Widget.cpp
         Sources/Graphics/UI/Widget/Widget.hpp
+		Sources/Graphics/UI/Widget/ContextMenu.cpp
+		Sources/Graphics/UI/Widget/ContextMenu.hpp
         Sources/Graphics/UI/UIModule/UIModule.cpp
         Sources/Graphics/UI/UIModule/UIModule.hpp
         Sources/Graphics/UI/UIModule/AuthUI.cpp
@@ -40,6 +42,8 @@ set(SOURCE_FILES
         Sources/Graphics/UI/UIModule/GameProcessUI.hpp
         Sources/Graphics/UI/UI.cpp
         Sources/Graphics/UI/UI.hpp
+		Sources/Graphics/UI/Style.cpp
+		Sources/Graphics/UI/Style.hpp
         Sources/Graphics/UI/UIModules.hpp
         Sources/Graphics/Chat.cpp
         Sources/Graphics/Chat.hpp

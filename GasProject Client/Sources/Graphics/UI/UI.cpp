@@ -16,7 +16,7 @@ UI::UI() {
     background.loadFromFile("Images/MenuBackground.jpg");
     background_sprite.setTexture(background);
 
-	curUIModule.reset(new AuthUI(this));
+    curUIModule = nullptr;
 }
 
 void UI::Resize(int width, int height) {
@@ -24,14 +24,15 @@ void UI::Resize(int width, int height) {
     float scaleY = float(height) / background.getSize().y;
     background_sprite.setScale(scaleX, scaleY);
 
-	curUIModule->Resize(width, height);
+    if (curUIModule) curUIModule->Resize(width, height);
 
 	size = sf::Vector2i(width, height);
 }
 
 void UI::HandleEvent(sf::Event event) { 
-	curUIModule->HandleEvent(event); 
+    if (curUIModule) curUIModule->HandleEvent(event); 
 }
+
 void UI::Update(sf::Time timeElapsed) { 
 	if (newUIModule) {
 		curUIModule.reset(newUIModule);
@@ -39,10 +40,10 @@ void UI::Update(sf::Time timeElapsed) {
 		curUIModule->Resize(size.x, size.y);
 		curUIModule->Initialize();
 	}
-	curUIModule->Update(timeElapsed);
+    if (curUIModule) curUIModule->Update(timeElapsed);
 }
 void UI::Draw(sf::RenderWindow *render_window) { 
-	curUIModule->Draw(render_window); 
+    if (curUIModule) curUIModule->Draw(render_window); 
 }
 
 void UI::DrawMenuBackground(sf::RenderWindow *render_window) {

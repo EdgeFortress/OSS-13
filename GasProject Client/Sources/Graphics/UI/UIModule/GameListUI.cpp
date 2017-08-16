@@ -18,31 +18,8 @@ GameListUI::GameListUI(UI *ui) : UIModule(ui) {
 	waitingNewGames = false;
 }
 
-void GameListUI::generateGamelistWindow() {
-    Container *gameBox = new Container(sf::Vector2f(500, 600));
-	gameBox->SetPosition(500, 150);
-	gameBox->SetBackground(sf::Color(69, 69, 69));
-	widgets.push_back(uptr<Container>(gameBox));
-
-	gameList = new Container();
-	gameList->SetSize(sf::Vector2f(400, 500));
-	gameList->SetBackground(sf::Color::Transparent);
-	gameBox->AddItem(gameList, sf::Vector2f(50, 50));
-
-	Label *titleLabel = new Label(L"Games", ui->GetFont(), 16);
-    gameBox->AddItem(titleLabel, sf::Vector2f(10, 10));
-
-	Button *updateButton = new Button(L"Update", sf::Vector2f(100, 20), sf::Color::White, ui->GetFont(), 16, std::bind(&GameListUI::update, this));
-    gameBox->AddItem(updateButton, sf::Vector2f(390, 570));
-}
-
-void GameListUI::update() {
-	waitingNewGames = true;
-    Connection::commandQueue.Push(new GameListClientRequest());
-}
-
 void GameListUI::Initialize() {
-	update();
+    update();
 }
 
 void GameListUI::AddGame(int id, string title, int num_of_players) {
@@ -53,7 +30,7 @@ void GameListUI::AddGame(int id, string title, int num_of_players) {
 void GameListUI::Clear() {
     games.clear();
     clearList = true;
-	newGames = false;
+    newGames = false;
 }
 
 void GameListUI::Resize(int width, int height) {
@@ -64,37 +41,70 @@ void GameListUI::Resize(int width, int height) {
 }
 
 void GameListUI::Update(sf::Time timeElapsed) {
-	if (waitingNewGames) {
-		ui->Lock();
-		if (clearList) {
-			gameList->Clear();
-			clearList = false;
-		}
-		if (newGames) {
-			for (auto &game : games)
-				if (!game->finishedCreation) {
-					game->game = new Container(sf::Vector2f(400, 30));
-					game->game->SetBackground(sf::Color::Transparent);
+    if (waitingNewGames) {
+        ui->Lock();
+        if (clearList) {
+            gameList->Clear();
+            clearList = false;
+        }
+        if (newGames) {
+            for (auto &game : games)
+                if (!game->finishedCreation) {
+                    game->game = new Container(sf::Vector2f(400, 30));
+                    game->game->GetStyle().backgroundColor = sf::Color::Transparent;
 
-					Label *titleLabel = new Label(game->title, ui->GetFont(), 16);
-					game->game->AddItem(titleLabel, sf::Vector2f(0, 0));
+                    Label *titleLabel = new Label(game->title);
+                    titleLabel->GetStyle().fontSize = 16;
+                    titleLabel->GetStyle().textColor = sf::Color::White;
+                    game->game->AddItem(titleLabel, sf::Vector2f(0, 0));
 
-					Label *numOfPlayersLabel = new Label(std::to_string(game->num_of_players), ui->GetFont(), 16);
-					game->game->AddItem(numOfPlayersLabel, sf::Vector2f(200, 0));
+                    Label *numOfPlayersLabel = new Label(std::to_string(game->num_of_players));
+                    numOfPlayersLabel->GetStyle().fontSize = 16;
+                    numOfPlayersLabel->GetStyle().textColor = sf::Color::White;
+                    game->game->AddItem(numOfPlayersLabel, sf::Vector2f(200, 0));
 
-					Button *joinButton = new Button(L"join", sf::Vector2f(50, 20), sf::Color::White, ui->GetFont(), 16, std::bind(&GameRow::join, game.get()));
-					game->game->AddItem(joinButton, sf::Vector2f(250, 0));
+                    Button *joinButton = new Button(L"join", sf::Vector2f(50, 20), std::bind(&GameRow::join, game.get()));
+                    joinButton->GetStyle().textColor = sf::Color::White;
+                    joinButton->GetStyle().fontSize = 16;
+                    game->game->AddItem(joinButton, sf::Vector2f(250, 0));
 
-					gameList->AddItem(game->game, sf::Vector2f(0, lastGamePos));
-					game->finishedCreation = true;
-				}
-			newGames = false;
-			waitingNewGames = false;
-		}
-		ui->Unlock();
-	}
-    
-	UIModule::Update(timeElapsed);
+                    gameList->AddItem(game->game, sf::Vector2f(0, lastGamePos));
+                    game->finishedCreation = true;
+                }
+            newGames = false;
+            waitingNewGames = false;
+        }
+        ui->Unlock();
+    }
+
+    UIModule::Update(timeElapsed);
+}
+
+void GameListUI::generateGamelistWindow() {
+    Container *gameBox = new Container(sf::Vector2f(500, 600));
+	gameBox->SetPosition(500, 150);
+	gameBox->GetStyle().backgroundColor = sf::Color(69, 69, 69);
+	widgets.push_back(uptr<Container>(gameBox));
+
+	gameList = new Container();
+	gameList->SetSize(sf::Vector2f(400, 500));
+    gameList->GetStyle().backgroundColor = sf::Color::Transparent;
+	gameBox->AddItem(gameList, sf::Vector2f(50, 50));
+
+	Label *titleLabel = new Label(L"Games");
+    titleLabel->GetStyle().fontSize = 16;
+    titleLabel->GetStyle().textColor = sf::Color::White;
+    gameBox->AddItem(titleLabel, sf::Vector2f(10, 10));
+
+	Button *updateButton = new Button(L"Update", sf::Vector2f(100, 20), std::bind(&GameListUI::update, this));
+    updateButton->GetStyle().textColor = sf::Color::White;
+    updateButton->GetStyle().fontSize = 16;
+    gameBox->AddItem(updateButton, sf::Vector2f(390, 570));
+}
+
+void GameListUI::update() {
+	waitingNewGames = true;
+    Connection::commandQueue.Push(new GameListClientRequest());
 }
 
 GameRow::GameRow(int id, string title, int num_of_players) :

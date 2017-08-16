@@ -154,12 +154,14 @@
     <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Style.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\UIModule.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameListUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameProcessUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\ContextMenu.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
@@ -176,6 +178,7 @@
     <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Tile.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Style.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModules.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\UIModule.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp" />
@@ -183,6 +186,7 @@
     <ClInclude Include="Sources\Graphics\UI\UIModule\GameProcessUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\ContextMenu.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
