@@ -6,7 +6,7 @@
 
 Button::Button(sf::Vector2f size) 
 	: Widget(size)
-{
+{ 
 	underCursor = false;
 }
 
@@ -15,33 +15,26 @@ Button::Button(const sf::String &string,
 	           std::function<void()> onPressFunc)
     : Widget(size),onPressFunc(onPressFunc) 
 {
-    text.setString(string);
 	underCursor = false;
+    text.setString(string);
 }
 
 void Button::draw() const {
-    buffer.clear(style.backgroundColor);
+	const Style &tmpstyle = underCursor ? underCursor_style : this->style;
+    buffer.clear(tmpstyle.backgroundColor);
     buffer.draw(text);
     buffer.display();
 }
 
 void Button::Update(sf::Time timeElapsed) {
-	if (underCursor) {
-		underCursor_time += timeElapsed;
-		if (underCursor_time >= underCursor_newEventWaitingTime) {
-			underCursor = false;
-            style = std::move(bufferStyle);
-            style.updated = true;
-		}
+	Style &tmpstyle = underCursor ? underCursor_style : this->style;
+	if (tmpstyle.updated) {
+		text.setFont(*tmpstyle.font);
+		text.setCharacterSize(tmpstyle.fontSize);
+		text.setFillColor(tmpstyle.textColor);
+		text.setOutlineColor(tmpstyle.textColor);
+		tmpstyle.updated = false;
 	}
-
-    if (GetStyle().updated) {
-        text.setFont(*style.font);
-        text.setCharacterSize(style.fontSize);
-        text.setFillColor(GetStyle().textColor);
-        text.setOutlineColor(GetStyle().textColor);
-        GetStyle().updated = false;
-    }
 }
 
 bool Button::HandleEvent(sf::Event event) {
@@ -57,15 +50,20 @@ bool Button::HandleEvent(sf::Event event) {
     case sf::Event::MouseMoved: {
         uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
         if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-            underCursor = true;
-            underCursor_time = sf::Time::Zero;
-            bufferStyle = std::move(style);
-            style = underCursor_Style;
-            style.updated = true;
+            if (!underCursor) {
+                underCursor = true;
+                underCursor_style.updated = true;
+            }
             return true;
         }
         break;
     }
+	case sf::Event::MouseLeft: {
+		if (underCursor) {
+			underCursor = false;
+			style.updated = true;
+		}
+	}
     }
     return false;
 }
@@ -75,11 +73,11 @@ void Button::SetString(const sf::String &string) {
 }
 
 void Button::SetUnderCursorStyle(const Style &style) {
-    underCursor_Style = style;
-    underCursor_Style.updated = true;
+    underCursor_style = style;
+    underCursor_style.updated = true;
 }
 
 void Button::SetUnderCursorStyle(Style &&style) {
-    underCursor_Style = style;
-    underCursor_Style.updated = true;
+    underCursor_style = style;
+    underCursor_style.updated = true;
 }

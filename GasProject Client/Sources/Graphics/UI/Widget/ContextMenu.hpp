@@ -18,7 +18,11 @@ public:
     virtual bool HandleEvent(sf::Event event) final;
 
     void AddRow(const ContextMenuRow &);
-    void SetFont(const sf::Font *);
+
+	void SetUnderCursorStyle(const Style &);
+	void SetUnderCursorStyle(Style &&);
+
+	Style &GetUnderCursorStyle();
 
 protected:
     virtual void draw() const final;
@@ -27,12 +31,15 @@ private:
     const uint kWidth = 100;
     const uint kRowHeight = 20;
     const uint kVerticalMargin = 2;
+	const uint kHorizontalMargin = 5;
 
     std::list<ContextMenuRow> content;
+	std::list<sf::Text> texts;
+	std::list<ContextMenuRow>::iterator firstNotProcessedRow;
 
-    const sf::Font *font;
-
-    bool newRows;
+	sf::RectangleShape underCursor_rect;
+	bool underCursor;
+	Style underCursor_style;
 };
 
 class ContextMenuRow {

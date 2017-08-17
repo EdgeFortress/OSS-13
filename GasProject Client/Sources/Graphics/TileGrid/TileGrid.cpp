@@ -316,6 +316,7 @@ Tile *TileGrid::GetTileRel(int x, int y) const {
     if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize) {
 		auto &a = blocks[y / blockSize];
 		if (!a.size())
+			// TODO: here error was occuring. ALERT in window thread.
 			CC::log << "ALERT" << std::endl;
 		auto &b = a[x / blockSize];
 		auto block = b.get();

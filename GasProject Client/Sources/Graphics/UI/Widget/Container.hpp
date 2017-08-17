@@ -25,4 +25,5 @@ private:
 	std::list<uptr<Widget>> items;
 
 	std::list<uptr<Widget>>::iterator curInputWidgetIterator;
+	Widget *underCursorWidget;
 };

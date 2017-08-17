@@ -93,13 +93,20 @@ void AuthUI::generateLoginWindow() {
     my_passw_entry->SetOnEnterFunc(std::bind(&AuthUI::login, this));
 	logWindow->AddItem(my_passw_entry, sf::Vector2f(100, 26));
 
+    Style underCursorButtonStyle;
+    underCursorButtonStyle.textColor = sf::Color::Black;
+    underCursorButtonStyle.backgroundColor = sf::Color::White;
+    underCursorButtonStyle.fontSize = 16;
+
 	Button *enterButton = new Button(L"Enter", sf::Vector2f(100, 51), std::bind(&AuthUI::login, this));
     enterButton->GetStyle().textColor = sf::Color::White;
     enterButton->GetStyle().fontSize = 16;
+    enterButton->SetUnderCursorStyle(underCursorButtonStyle);
     logWindow->AddItem(enterButton, sf::Vector2f(500, 0));
 
 	Button *regButton = new Button(L"Registration", sf::Vector2f(100, 51), std::bind(&AuthUI::openReg, this));
     regButton->SetStyle(enterButton->GetStyle());
+    regButton->SetUnderCursorStyle(underCursorButtonStyle);
     logWindow->AddItem(regButton, sf::Vector2f(500, 52));
 }
 

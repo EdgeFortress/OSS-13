@@ -31,4 +31,5 @@ protected:
 	UI *ui;
 	std::list<uptr<Widget>> widgets;
 	Widget *curInputWidget;
+	Widget *underCursorWidget;
 };

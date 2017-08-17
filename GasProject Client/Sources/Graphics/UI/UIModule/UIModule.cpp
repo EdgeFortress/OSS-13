@@ -4,6 +4,7 @@
 
 UIModule::UIModule(UI *ui) : ui(ui) {
 	curInputWidget = nullptr;
+	underCursorWidget = nullptr;
 }
 
 void UIModule::Draw(sf::RenderWindow *renderWindow) {
@@ -34,10 +35,28 @@ void UIModule::HandleEvent(sf::Event event) {
 	}
 	case sf::Event::MouseMoved: {
 		for (auto &widget : widgets) {
-			if (widget->HandleEvent(event))
+			if (widget->HandleEvent(event)) {
+				if (underCursorWidget && underCursorWidget != widget.get()) { 
+					sf::Event event;
+					event.type = sf::Event::MouseLeft;
+					underCursorWidget->HandleEvent(event); 
+				}
+				underCursorWidget = widget.get();
 				return;
+			}
+		}
+		if (underCursorWidget) {
+			sf::Event event;
+			event.type = sf::Event::MouseLeft;
+			underCursorWidget->HandleEvent(event);
+			underCursorWidget = nullptr;
 		}
 		break;
+	}
+	case sf::Event::MouseLeft: {
+		if (underCursorWidget)
+			underCursorWidget->HandleEvent(event);
+		return;
 	}
 	default:
         break;

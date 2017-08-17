@@ -39,10 +39,30 @@ bool Container::HandleEvent(sf::Event event) {
 	}
 	case sf::Event::MouseMoved: {
 		uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
-		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
+		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
 			return false;
-		for (auto &widget : items)
-			if (widget->HandleEvent(event)) return true;
+		for (auto &widget : items) {
+			if (widget->HandleEvent(event)) {
+				if (underCursorWidget && underCursorWidget != widget.get()) {
+					sf::Event event;
+					event.type = sf::Event::MouseLeft;
+					underCursorWidget->HandleEvent(event);
+				}
+				underCursorWidget = widget.get();
+				return true;
+			}
+		}
+		if (underCursorWidget) {
+			sf::Event event;
+			event.type = sf::Event::MouseLeft;
+			underCursorWidget->HandleEvent(event);
+			underCursorWidget = nullptr;
+		}
+		return true;
+	}
+	case sf::Event::MouseLeft: {
+		if (underCursorWidget)
+			underCursorWidget->HandleEvent(event);
 		return true;
 	}
 	case sf::Event::KeyPressed: {

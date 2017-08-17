@@ -22,13 +22,10 @@ protected:
 private:
     sf::Text text;
 
-    Style bufferStyle;
-
 	// underCursor options
-    Style underCursor_Style;
-    sf::Time underCursor_time;
+    Style underCursor_style;
     bool underCursor;
-	const sf::Time underCursor_newEventWaitingTime = sf::seconds(0.1f);
+    //bool cursorDetected;
 
     std::function<void()> onPressFunc;
 };
