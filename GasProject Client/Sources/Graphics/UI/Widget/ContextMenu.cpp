@@ -20,7 +20,7 @@ void ContextMenu::Update(sf::Time timeElapsed) {
 		if (underCursor_style.updated) {
 			underCursor_rect.setFillColor(underCursor_style.backgroundColor);
 			underCursor_rect.setOutlineColor(underCursor_style.backgroundColor);
-			underCursor_rect.setSize(uf::vec2f(GetSize().x, kRowHeight));
+			underCursor_rect.setSize(uf::vec2f(GetSize().x, float(kRowHeight)));
 			underCursor_style.updated = false;
 		}
 
