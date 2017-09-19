@@ -17,7 +17,7 @@ private:
 public:
 	explicit Control(float speed);
 
-	virtual void Update(sf::Time timeElapsed);
+	void Update(sf::Time timeElapsed) override;
 
 	void MoveCommand(sf::Vector2i order);
 

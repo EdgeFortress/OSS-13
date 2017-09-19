@@ -6,3 +6,4 @@
 #include "Objects/Creature.hpp"
 #include "Objects/Human.hpp"
 #include "Objects/Ghost.hpp"
+#include "Objects/Component.hpp"

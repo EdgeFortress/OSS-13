@@ -28,6 +28,7 @@ public:
 	virtual void SetSize(const sf::Vector2f &);
 	virtual bool SetActive(bool);
 
+    // Get style to change it. Set style.updated to true!
     Style &GetStyle();
 	sf::Vector2f GetPosition() const;
 	sf::Vector2f GetAbsPosition() const;

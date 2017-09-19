@@ -11,7 +11,7 @@ Label::Label(const sf::String &string) {
 }
 
 void Label::Update(sf::Time timeElapsed) {
-	if (GetStyle().updated) {
+	if (style.updated) {
         text.setFont(*style.font);
         text.setCharacterSize(style.fontSize);
 		text.setFillColor(GetStyle().textColor);

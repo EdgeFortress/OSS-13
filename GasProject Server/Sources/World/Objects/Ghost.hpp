@@ -12,5 +12,5 @@ public:
 	Ghost();
 
 	void SetHostControl(Control *control);
-	Control *GetHostControl();
+	Control *GetHostControl() const;
 };

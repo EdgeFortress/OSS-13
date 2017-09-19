@@ -4,15 +4,14 @@
 
 #include "Server.hpp"
 #include "World.hpp"
-#include "World/Objects/Control.hpp"
+#include "Objects/Control.hpp"
 #include "Player.hpp"
-#include "Shared/TileGrid_Info.hpp"
 #include "Network/Differences.hpp"
 
 Camera::Camera(const Tile * const tile) :
-    suspense(true), unsuspensed(false), cameraMoved(false),
+    tile(nullptr), lasttile(nullptr), suspense(true),
     changeFocus(false),
-    tile(nullptr), lasttile(nullptr)
+    unsuspensed(false), cameraMoved(false)
 {
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
@@ -65,7 +64,7 @@ void Camera::UpdateView() {
                                 lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleBlocksNum) ||
                                 lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleBlocksNum)) 
                             {
-                                command->diffs.push_back(sptr<Diff>(new AddDiff(*replaceDiff)));
+                                command->diffs.push_back(std::make_shared<Diff>(*replaceDiff));
                             }
                         }
                         //if (diff->GetType() == Global::DiffType::SHIFT) {
@@ -133,8 +132,8 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     }
 
     // Count coords of first visible tile, and block
-    int firstTileX = tile->X() - Global::FOV / 2 - Global::MIN_PADDING;
-    int firstTileY = tile->Y() - Global::FOV / 2 - Global::MIN_PADDING;
+    const int firstTileX = tile->X() - Global::FOV / 2 - Global::MIN_PADDING;
+    const int firstTileY = tile->Y() - Global::FOV / 2 - Global::MIN_PADDING;
     firstBlockX = firstTileX / Global::BLOCK_SIZE + (firstTileX < 0 ? -1 : 0);
     firstBlockY = firstTileY / Global::BLOCK_SIZE + (firstTileY < 0 ? -1 : 0);
 
@@ -166,8 +165,8 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
         return;
     }
 
-    int firstVisibleTileX = firstBlockX * Global::BLOCK_SIZE;
-    int firstVisibleTileY = firstBlockY * Global::BLOCK_SIZE;
+    const int firstVisibleTileX = firstBlockX * Global::BLOCK_SIZE;
+    const int firstVisibleTileY = firstBlockY * Global::BLOCK_SIZE;
 
     // Check the necessity of blocks shift
     if (tile->X() - firstVisibleTileX < Global::MIN_PADDING + Global::FOV / 2 ||
@@ -175,13 +174,13 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
         firstVisibleTileX + visibleBlocksNum * Global::BLOCK_SIZE - tile->X() < Global::MIN_PADDING + Global::FOV / 2 ||
         firstVisibleTileY + visibleBlocksNum * Global::BLOCK_SIZE - tile->Y() < Global::MIN_PADDING + Global::FOV / 2)
     {
-        int firstNewTileX = tile->X() - Global::FOV / 2 - Global::MIN_PADDING;
-        int firstNewTileY = tile->Y() - Global::FOV / 2 - Global::MIN_PADDING;
-        int firstNewBlockX = firstNewTileX / Global::BLOCK_SIZE + (firstNewTileX < 0 ? -1 : 0);
-        int firstNewBlockY = firstNewTileY / Global::BLOCK_SIZE + (firstNewTileY < 0 ? -1 : 0);
+        const int firstNewTileX = tile->X() - Global::FOV / 2 - Global::MIN_PADDING;
+        const int firstNewTileY = tile->Y() - Global::FOV / 2 - Global::MIN_PADDING;
+        const int firstNewBlockX = firstNewTileX / Global::BLOCK_SIZE + (firstNewTileX < 0 ? -1 : 0);
+        const int firstNewBlockY = firstNewTileY / Global::BLOCK_SIZE + (firstNewTileY < 0 ? -1 : 0);
 
-        int block_dx = firstNewBlockX - firstBlockX;
-        int block_dy = firstNewBlockY - firstBlockY;
+        const int block_dx = firstNewBlockX - firstBlockX;
+        const int block_dy = firstNewBlockY - firstBlockY;
 
         std::vector<std::vector<bool>> saved(visibleBlocksNum, std::vector<bool>(visibleBlocksNum, false));
 

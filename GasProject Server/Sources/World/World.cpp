@@ -1,273 +1,15 @@
-#include <iostream>
-
-#include "Shared/Global.hpp"
-#include "Shared/Geometry.hpp"
 #include "World.hpp"
-#include "World/Objects/Control.hpp"
+
 #include "Server.hpp"
+#include "Map.hpp"
+#include "Tile.hpp"
+#include "Objects.hpp"
+#include "Objects/Control.hpp"
 #include "Player.hpp"
-#include "Network/Differences.hpp"
 
-Tile::Tile(Map *map, int x, int y) :
-    map(map), x(x), y(y), local(nullptr)
-{
-    uint ux = uint(x), uy = uint(y);
-    sprite = Global::Sprite(unsigned(Global::Sprite::Space) + ((ux + uy) ^ ~(ux * uy)) % 25);
+World::World() : map(new Map(100, 100)) {
+    //map->GenerateLocals();
 }
-
-void Tile::addObject(Object *obj) {
-    Tile *lastTile = obj->GetTile();
-    Block *lastBlock = nullptr;
-    if (lastTile) {
-        for (auto iter = lastTile->content.begin(); iter != lastTile->content.end(); iter++)
-            if (*iter == obj) {
-                lastTile->content.erase(iter);
-                break;
-            }
-
-        lastBlock = lastTile->GetBlock();
-    }
-
-    int position = 0;
-    auto iter = content.begin();
-    while (iter != content.end() && (*iter)->layer < obj->layer) 
-        iter++, position++;
-    content.insert(iter, obj);
-
-    obj->tile = this;
-}
-
-bool Tile::RemoveObject(Object *obj) {
-    for (auto &i : content)
-        if (i == obj) {
-            //i.release();
-            i = nullptr;
-            content.remove(i);
-            obj->tile = nullptr;
-            //add local remove
-			GetBlock()->AddDiff(new RemoveDiff(obj));
-            return true;
-        }
-    return false;
-}
-
-void Tile::MoveTo(Object *obj) {
-	if (!obj) return;
-
-    bool available = true;
-	if (obj->GetDensity())
-		for (auto &object : content)
-			if (object)
-				if (object->GetDensity()) {
-					available = false;
-					break;
-				}
-
-    if (available) {
-        Block *lastBlock = obj->GetTile()->GetBlock();
-        int dx = X() - obj->GetTile()->X();
-        int dy = Y() - obj->GetTile()->Y();
-        if (abs(dx) > 1 || abs(dy) > 1)
-            Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
-        uf::Direction direction = uf::VectToDirection(sf::Vector2i(dx, dy));
-        addObject(obj);
-        GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
-		//if (obj->GetComponent<Control>()->GetPlayer())
-		//	Server::log << x << y << std::endl;
-    }
-}
-
-void Tile::PlaceTo(Object *obj) {
-    Tile *lastTile = obj->GetTile();
-    Block *lastBlock = nullptr;
-    if (lastTile) lastBlock = lastTile->GetBlock();
-    addObject(obj);
-    GetBlock()->AddDiff(new ReplaceDiff(obj, X(), Y(), lastBlock));
-}
-
-Block *Tile::GetBlock() const {
-    return map->GetBlock(x / Global::BLOCK_SIZE, y / Global::BLOCK_SIZE);
-}
-
-void Tile::CheckLocal() {
-    if (local) return;
-
-    bool floor = false;
-    for (auto &obj : content) {
-        if (dynamic_cast<Wall *>(obj)) {
-            return;
-        }
-        if (dynamic_cast<Floor *>(obj)) {
-            floor = true;
-        }
-    }
-    if (!floor) return;
-
-    for (int dx = -1; dx <= 1; dx++)
-        for (int dy = -1; dy <= 1; dy++) {
-            if (!map->GetTile(x + dx, y + dy) || 
-                dx == 0 && dy == 0)
-                continue;
-            if (map->GetTile(x + dx, y + dy)->local) {
-                if (local) {
-                    local->Merge(map->GetTile(x + dx, y + dy)->local);
-                } else {
-                    map->GetTile(x + dx, y + dy)->local->AddTile(this);
-                    local = map->GetTile(x + dx, y + dy)->local;
-                }
-            }
-        }
-    if (!local) {
-        map->NewLocal(this);
-    }
-}
-
-void Tile::Update() {
-    /*for (auto iter = content.begin(); iter != content.end();) {
-        auto obj = iter->get();
-        if (obj)
-            obj->Update();
-        if (iter->get() == nullptr)
-            iter = content.erase(iter);
-        else
-            iter++;
-    }*/
-}
-
-const TileInfo Tile::GetTileInfo(uint visibility) const {
-    std::list<ObjectInfo> content;
-    for (auto &obj : this->content) {
-		if (obj->CheckVisibility(visibility))
-			content.push_back(obj->GetObjectInfo());
-    }
-    return std::move(TileInfo(int(sprite), content));
-}
-
-Block::Block(Map *map, int blockX, int blockY) :
-    map(map), id(blockY * map->GetNumOfBlocksX() + blockX),
-    blockX(blockX), blockY(blockY),
-    size(Global::BLOCK_SIZE),
-    tiles(size, vector<Tile *>(size))
-{
-    int y = 0;
-    for (vector<Tile *> &vect : tiles) {
-        int x = 0;
-        for (Tile *&tile : vect) {
-            tile = map->GetTile(x + blockX * size, y + blockY * size);
-            x++;
-        }
-        y++;
-    }
-}
-
-void Block::AddDiff(Diff *diff) {
-    differences.push_back(sptr<Diff>(diff));
-}
-
-void Block::ClearDiffs() {
-    differences.clear();
-}
-
-const BlockInfo Block::GetBlockInfo(uint visibility) {
-    std::list<TileInfo> tilesInfo;
-    for (auto &vect : tiles)
-        for (auto &tile : vect)
-            if (tile) tilesInfo.push_back(tile->GetTileInfo(visibility));
-            else {
-                TileInfo tileInfo;
-                tilesInfo.push_back(tileInfo);
-            }
-            return std::move(BlockInfo(blockX, blockY, tilesInfo));
-}
-
-Map::Map(const uint sizeX, const uint sizeY) :
-    sizeX(sizeX), sizeY(sizeY),
-    numOfBlocksX(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0)),
-    numOfBlocksY(sizeY / Global::BLOCK_SIZE + (sizeY % Global::BLOCK_SIZE ? 1 : 0)),
-    tiles(sizeY),
-    blocks(numOfBlocksY)
-{
-    for (vector<uptr<Tile>> &vect : tiles) {
-        vect = vector<uptr<Tile>>(sizeX);
-    }
-
-    int y = 0;
-    for (vector<uptr<Tile>> &vect : tiles) {
-        int x = 0;
-        for (uptr<Tile> &tile : vect) {
-            tile.reset(new Tile(this, x, y));
-            x++;
-        }
-        y++;
-    }
-
-    for (vector<uptr<Block>> &vect : blocks) {
-        vect = vector<uptr<Block>>(numOfBlocksY);
-    }
-
-    y = 0;
-    for (vector<uptr<Block>> &vect : blocks) {
-        int x = 0;
-        for (uptr<Block> &tile : vect) {
-            tile.reset(new Block(this, x, y));
-            x++;
-        }
-        y++;
-    }
-
-    Server::log << "Map created: " << sizeX << "x" << sizeY << " (" << numOfBlocksX << "x" << numOfBlocksY << " blocks)" << std::endl
-                << "Block size: " << Global::BLOCK_SIZE << std::endl;
-}
-
-void Map::GenerateLocals() {
-    for (auto &vect : tiles)
-        for (auto &tile : vect)
-            tile->CheckLocal();
-
-    Server::log << "Num of locals:" << locals.size() << std::endl;
-}
-
-void Map::NewLocal(Tile *tile) {
-    if (!tile) return;
-    locals.push_back(uptr<Local>(new Local(tile)));
-    tile->SetLocal(locals.back().get());
-}
-
-void Map::RemoveLocal(const Local *local) {
-    for (auto &i : locals) {
-        if (i.get() == local) {
-            locals.remove(i);
-            break;
-        }
-    }
-}
-
-void Map::ClearDiffs() {
-    for (auto &vect : blocks)
-        for (auto &block : vect)
-            block->ClearDiffs();
-}
-
-void Map::Update() {
-    for (auto &vect : tiles)
-        for (auto &tile : vect)
-            tile->Update();
-}
-
-Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < int(sizeX) && y >= 0 && y < int(sizeY))
-        return tiles[y][x].get();
-    return nullptr;
-}
-
-Block *Map::GetBlock(int x, int y) const {
-    if (x >= 0 && x < int(numOfBlocksX) && y >= 0 && y < int(numOfBlocksY))
-        return blocks[y][x].get();
-    return nullptr;
-}
-
-int Map::GetNumOfBlocksX() const { return numOfBlocksX; }
-int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
 
 void World::Update(sf::Time timeElapsed) {
     map->ClearDiffs();
@@ -275,8 +17,8 @@ void World::Update(sf::Time timeElapsed) {
 	// Simple walking mob AI for moving testing
     if (testMob_lastPosition != testMob->GetTile()) {
 		testMob_lastPosition = testMob->GetTile();
-        int x = testMob->GetTile()->X() + test_dx;
-        int y = testMob->GetTile()->Y() + test_dy;
+        const int x = testMob->GetTile()->X() + test_dx;
+        const int y = testMob->GetTile()->Y() + test_dy;
         if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
         if (test_dy == 1 && y == 53) test_dx = -1, test_dy = 0;
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
@@ -289,7 +31,7 @@ void World::Update(sf::Time timeElapsed) {
     map->Update();
 
     for (unsigned i = 0; i < objects.size();) {
-        size_t len = objects.size();
+        const auto len = objects.size();
 		Object *object = (objects.begin() + i)->get();
 		if (object->GetTile())
 			object->Update(timeElapsed);
@@ -335,7 +77,7 @@ void World::AddObject(Object *obj) {
     objects.push_back(uptr<Object>(obj));
 }
 
-Creature *World::CreateNewPlayerCreature() {
+Creature *World::CreateNewPlayerCreature() const {
     Creature *creature = new Human();
     map->GetTile(50, 50)->PlaceTo(creature);
     return creature;

@@ -8,6 +8,6 @@ public:
         layer = 50;
     }
 
-    virtual void Update(sf::Time timeElapsed) { };
-    virtual void Interact(Object *) { };
+    void Update(sf::Time timeElapsed) override { };
+    void Interact(Object *) override { };
 };

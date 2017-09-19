@@ -83,7 +83,7 @@ public:
 
 	Control *GetStartControl(Player *);
 
-    const uptr<World> &GetWorld() { return world; }
+    const uptr<World> &GetWorld() const { return world; }
 
     const int GetID() const;
     Chat *GetChat() { return &chat; }

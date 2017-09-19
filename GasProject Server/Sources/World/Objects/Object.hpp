@@ -46,6 +46,7 @@ protected:
 
 public:
     Object();
+    virtual ~Object() = default;
 
 	virtual void Interact(Object *) = 0;
 
@@ -66,7 +67,7 @@ public:
 	// For control purposes
 	//
 		sf::Vector2f GetShift() const;
-		float GetSpeed() const;
+		//float GetSpeed() const;
 
 		void SetDirection(uf::Direction);
 		void AddShift(sf::Vector2f);

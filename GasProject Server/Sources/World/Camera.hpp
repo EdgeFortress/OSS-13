@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <list>
 
 #include "Shared/Types.hpp"
 
@@ -53,5 +52,5 @@ public:
 
     bool IsSuspense() const { return suspense; }
 	const Tile * const GetPosition() const { return tile; }
-	uint GetInvisibleVisibility() { return seeInvisibleAbility; }
+	uint GetInvisibleVisibility() const { return seeInvisibleAbility; }
 };

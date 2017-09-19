@@ -2,7 +2,8 @@
 
 #include "Control.hpp"
 
-Ghost::Ghost() {
+Ghost::Ghost() : hostControl(nullptr)
+{
 	sprite = Global::Sprite::Ghost;
 	name = "Ghost";
 	density = false;
@@ -14,4 +15,4 @@ void Ghost::SetHostControl(Control *control) {
 	hostControl = control;
 }
 
-Control *Ghost::GetHostControl() { return hostControl; }
+Control *Ghost::GetHostControl() const { return hostControl; }

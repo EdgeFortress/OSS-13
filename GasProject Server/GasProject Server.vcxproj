@@ -157,6 +157,8 @@
   <ItemGroup>
     <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\PlayerCommand.cpp" />
+    <ClCompile Include="Sources\World\Block.cpp" />
+    <ClCompile Include="Sources\World\Map.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
@@ -171,10 +173,13 @@
     <ClCompile Include="Sources\World\Objects\Item.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\Turf.cpp" />
+    <ClCompile Include="Sources\World\Tile.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Network\Connection.hpp" />
+    <ClInclude Include="Sources\World\Block.hpp" />
+    <ClInclude Include="Sources\World\Map.hpp" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\Global.hpp" />
@@ -192,6 +197,7 @@
     <ClInclude Include="Sources\World\Objects\Item.hpp" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />
     <ClInclude Include="Sources\World\Objects\Turf.hpp" />
+    <ClInclude Include="Sources\World\Tile.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>
   <ItemGroup>

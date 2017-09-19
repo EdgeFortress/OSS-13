@@ -3,6 +3,7 @@
 #include "Server.hpp"
 #include "Network/Connection.hpp"
 #include "World/World.hpp"
+#include "World/Tile.hpp"
 #include "World/Objects/Control.hpp"
 #include "Shared/Command.hpp"
 

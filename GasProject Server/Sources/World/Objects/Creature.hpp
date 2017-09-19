@@ -10,7 +10,7 @@ public:
 	Creature();
 
 	//virtual void Update(sf::Time timeElapsed) override = 0;
-	virtual void Interact(Object *) { };
+	void Interact(Object *) override { };
 
-	uint GetInvisibleVisibility();
+	uint GetInvisibleVisibility() const;
 };
