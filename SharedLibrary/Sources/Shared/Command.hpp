@@ -4,7 +4,6 @@
 #include <list>
 
 #include "Types.hpp"
-#include "Geometry.hpp"
 
 struct ClientCommand {
 	enum class Code : char {

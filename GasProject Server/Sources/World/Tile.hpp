@@ -1,15 +1,19 @@
 #pragma once
 
 #include <list>
+#include <vector>
 
 #include "Shared/Global.hpp"
 #include "Shared/Types.hpp"
+#include "Atmos/Gases.hpp"
 
 using std::list;
+using std::vector;
 
 class Object;
 class Block;
 class Map;
+class Locale;
 
 struct TileInfo;
 
@@ -17,8 +21,9 @@ class Tile {
 public:
     explicit Tile(Map *map, int x, int y);
 
-    //void CheckLocal();
     void Update();
+
+    void CheckLocale();
 
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
@@ -30,13 +35,7 @@ public:
     int Y() const { return y; }
     Block *GetBlock() const;
     Map *GetMap() const { return map; }
-
-    bool IsDense();
-
-    //void SetLocal(Local *local) { this->local = local; }
-
-    //Test
-    //const list<Object *> GetContentCopy() const { return content; };
+    bool IsDense() const;
 
     const TileInfo GetTileInfo(uint visibility) const;
 
@@ -44,13 +43,21 @@ private:
     Map *map;
     int x, y;
     Global::Sprite sprite;
-    //Local *local;
 
     list<Object *> content;
-    //list<Gas> listGas;
+    bool hasFloor;
+    // true if has wall
+    bool fullBlocked;
+    // for thin walls
+    vector<bool> directionsBlocked;
+
+
+    Locale *locale;
+    // Partional pressures of gases by index
+    vector<pressure> gases;
+    pressure totalPressure;  
 
     // Add object to the tile, and change object.tile pointer
-    // If object was in content of other tile, generate MoveDiff,
-    // else generate AddDiff
+    // For moving use MoveTo, for placing PlaceTo
     void addObject(Object *obj);
 };

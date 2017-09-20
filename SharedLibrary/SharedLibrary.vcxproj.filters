@@ -32,9 +32,6 @@
     <ClInclude Include="Sources\Shared\Global.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Geometry.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\Math.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>

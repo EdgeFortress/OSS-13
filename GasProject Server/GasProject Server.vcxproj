@@ -157,6 +157,8 @@
   <ItemGroup>
     <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\PlayerCommand.cpp" />
+    <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
+    <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
     <ClCompile Include="Sources\World\Block.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
@@ -178,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Network\Connection.hpp" />
+    <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
+    <ClInclude Include="Sources\World\Atmos\Gases.hpp" />
+    <ClInclude Include="Sources\World\Atmos\Locale.hpp" />
     <ClInclude Include="Sources\World\Block.hpp" />
     <ClInclude Include="Sources\World\Map.hpp" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />

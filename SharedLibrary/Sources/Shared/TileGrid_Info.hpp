@@ -4,7 +4,6 @@
 #include <list>
 
 #include "Shared/Types.hpp"
-#include "Shared/Geometry.hpp"
 
 struct ObjectInfo {
     const uint id;

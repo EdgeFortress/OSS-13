@@ -10,16 +10,6 @@
 using std::vector;
 
 class World {
-public:
-    World();
-
-    void Update(sf::Time timeElapsed);
-
-    void AddObject(Object *);
-
-    void FillingWorld();
-    Creature *CreateNewPlayerCreature() const;
-
 private:
     uptr<Map> map;
 
@@ -30,6 +20,16 @@ private:
     int mobsVelocity;
 
     std::vector<uptr<Object>> objects;
+
+public:
+    World();
+
+    void Update(sf::Time timeElapsed);
+
+    void AddObject(Object *);
+
+    void FillingWorld();
+    Creature *CreateNewPlayerCreature() const;
 };
 
 //class Local {

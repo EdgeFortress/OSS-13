@@ -1,5 +1,3 @@
-#include "Shared/Command.hpp"
-
 #include "Camera.hpp"
 
 #include "Server.hpp"
@@ -7,6 +5,7 @@
 #include "Objects/Control.hpp"
 #include "Player.hpp"
 #include "Network/Differences.hpp"
+#include "Shared/Command.hpp"
 
 Camera::Camera(const Tile * const tile) :
     tile(nullptr), lasttile(nullptr), suspense(true),
@@ -64,7 +63,7 @@ void Camera::UpdateView() {
                                 lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleBlocksNum) ||
                                 lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleBlocksNum)) 
                             {
-                                command->diffs.push_back(std::make_shared<Diff>(*replaceDiff));
+                                command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
                             }
                         }
                         //if (diff->GetType() == Global::DiffType::SHIFT) {

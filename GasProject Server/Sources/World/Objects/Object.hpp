@@ -2,11 +2,8 @@
 
 #include <string>
 #include <list>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/System/Time.hpp>
 
 #include "Shared/Types.hpp"
-#include "Shared/Geometry.hpp"
 #include "Shared/Global.hpp"
 
 #include "Component.hpp"
@@ -14,73 +11,70 @@
 class Tile;
 struct ObjectInfo;
 
-namespace sf {
-    class Packet;
-}
-
 class Object {
-private:
-	uf::Direction direction;
-    void takeID();
-
-	std::list<uptr<Component>> components;
-
-protected:
-    uint id;
-	std::string name;
-
-    Tile *tile;
-	bool density;
-    
-    Global::Sprite sprite;
-    uint layer;
-
-	// Invisibility
-	//// 8 bits for different kinds of invisibility
-	//// Last bit - ghost invisibility
-		uint invisibility;
-	//
-    
-	sf::Vector2f shift;
-	//float speed; // speed (tiles/seconds)
-
 public:
     Object();
     virtual ~Object() = default;
 
-	virtual void Interact(Object *) = 0;
-
     virtual void Update(sf::Time timeElapsed);
 
-	void AddComponent(Component *);
-	template <class T> T *GetComponent();
+    virtual void Interact(Object *) = 0;
 
-	bool GetDensity() const;
+    void AddComponent(Component *);
+    template <class T> T *GetComponent();
+
+    uint ID() const;
+    std::string GetName() const;
+    Tile *GetTile() const;
+
+    bool GetDensity() const;
+    bool IsMovable() const;
+    // True if visibility bits allows to see invisibility bits
+    bool CheckVisibility(uint visibility) const;
+    // Get Invisibility bits
+    uint GetInvisibility() const;
+
 	Global::Sprite GetSprite() const;
-	bool CheckVisibility(uint visibility) const;
-	uint GetInvisibility() const;
-	Tile *GetTile() const;
-	std::string GetName() const;
-	uint ID() const;
+    uint GetLayer() const;
 
 	//
 	// For control purposes
 	//
-		sf::Vector2f GetShift() const;
+		uf::vec2f GetShift() const;
 		//float GetSpeed() const;
 
 		void SetDirection(uf::Direction);
-		void AddShift(sf::Vector2f);
-		void SetShift(sf::Vector2f);
+		void AddShift(uf::vec2f);
+		void SetShift(uf::vec2f);
 	//
-
-    //// Just set tile pointer
-    //void SetTile(Tile *tile) { this->tile = tile; }
 
     const ObjectInfo GetObjectInfo() const;
 
     friend Tile;
-    //friend sf::Packet &operator<<(sf::Packet &, const Object &);
+
+protected:
+    std::string name;
+    bool density;
+    bool movable;
+    Global::Sprite sprite;
+    uint layer;
+    uf::Direction direction;
+
+    // Invisibility
+    //// 8 bits for different kinds of invisibility
+    //// Last bit - ghost invisibility
+    uint invisibility;
+    //
+
+    uf::vec2f shift;
+    //float speed; // speed (tiles/seconds)
+
+private:
+    uint id;
+    Tile *tile;
+    std::list<uptr<Component>> components;
+
+    void takeID();
 };
 
 template <class T> T *Object::GetComponent() {

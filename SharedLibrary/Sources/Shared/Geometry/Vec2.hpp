@@ -3,10 +3,9 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 
-#include "Shared/Types.hpp"
+#include "Types.hpp"
 
 namespace uf {
-
 	template<typename T>
     struct vec2;
 

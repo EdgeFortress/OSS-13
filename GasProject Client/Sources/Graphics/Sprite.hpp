@@ -5,7 +5,6 @@
 
 #include "Shared/Types.hpp"
 #include "Shared/Global.hpp"
-#include "Shared/Geometry.hpp"
 
 using std::vector;
 using std::string;

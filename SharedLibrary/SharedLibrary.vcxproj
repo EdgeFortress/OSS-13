@@ -25,7 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Command.hpp" />
-    <ClInclude Include="Sources\Shared\Geometry.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
@@ -157,6 +156,7 @@
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,6 +179,7 @@
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

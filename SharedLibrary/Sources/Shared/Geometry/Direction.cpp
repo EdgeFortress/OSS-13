@@ -1,7 +1,9 @@
 #include "Direction.hpp"
 
+#include "Shared/Types.hpp"
+
 namespace uf {
-	Direction VectToDirection(vec2f vector) {
+	Direction VectToDirection(vec2i vector) {
 		if (vector.x > 0) {
 			if (vector.y > 0) return Direction::SOUTH_EAST;
 			if (vector.y == 0) return Direction::EAST;
@@ -20,7 +22,7 @@ namespace uf {
 		return Direction::NONE;
 	}
 
-	vec2f DirectionToVect(Direction direction) {
+	vec2i DirectionToVect(Direction direction) {
 		switch (direction) {
 			case Direction::SOUTH:
 				return vec2f(0, 1);

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Shared/Geometry.hpp"
+#include "Shared/Types.hpp"
 #include "Shared/Global.hpp"
 #include "Shared/TileGrid_Info.hpp"
 

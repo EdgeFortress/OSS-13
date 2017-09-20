@@ -6,6 +6,7 @@ class Turf : public Object {
 public:
     Turf() {
         layer = 25;
+        movable = false;
     }
 
     void Update(sf::Time timeElapsed) override { };

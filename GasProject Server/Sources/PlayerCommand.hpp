@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shared/Geometry/Vec2.hpp"
+#include "Shared/Types.hpp"
 
 class Player;
 

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Shared/Geometry.hpp"
+#include "Shared/Types.hpp"
 #include "Shared/ThreadSafeQueue.hpp"
 #include "World/Camera.hpp"
 #include "PlayerCommand.hpp"

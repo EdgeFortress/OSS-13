@@ -12,3 +12,6 @@ using sptr = std::shared_ptr<T>;
 
 template<class T>
 using wptr = std::weak_ptr<T>;
+
+#include "Geometry/Vec2.hpp"
+#include "Geometry/Direction.hpp"

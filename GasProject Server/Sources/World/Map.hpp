@@ -6,6 +6,7 @@
 #include "Block.hpp"
 
 using std::vector;
+using namespace uf;
 
 class Map {
 public:
@@ -19,14 +20,16 @@ public:
     void ClearDiffs();
     void Update();
 
-    Tile *GetTile(int x, int y) const;
-    Block *GetBlock(int x, int y) const;
+    vec2u GetSize() const;
     int GetNumOfBlocksX() const;
     int GetNumOfBlocksY() const;
+    Tile *GetTile(int x, int y) const;
+    Block *GetBlock(int x, int y) const;
+    const vector< vector< uptr<Tile>> > &GetTiles() const;
 
 private:
-    uint sizeX, sizeY;
-    uint numOfBlocksX, numOfBlocksY;
+    vec2u size;
+    vec2u numOfBlocks;
 
     vector< vector<uptr<Tile>> > tiles;
     vector< vector<uptr<Block>> > blocks;

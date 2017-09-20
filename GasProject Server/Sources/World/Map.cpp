@@ -6,11 +6,11 @@
 #include "Shared/Global.hpp"
 
 Map::Map(const uint sizeX, const uint sizeY) :
-    sizeX(sizeX), sizeY(sizeY),
-    numOfBlocksX(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0)),
-    numOfBlocksY(sizeY / Global::BLOCK_SIZE + (sizeY % Global::BLOCK_SIZE ? 1 : 0)),
+    size(sizeX, sizeY),
+    numOfBlocks(sizeX / Global::BLOCK_SIZE + (sizeX % Global::BLOCK_SIZE ? 1 : 0),
+                sizeY / Global::BLOCK_SIZE + (sizeY % Global::BLOCK_SIZE ? 1 : 0)),
     tiles(sizeY),
-    blocks(numOfBlocksY)
+    blocks(numOfBlocks.y)
 {
     for (vector<uptr<Tile>> &vect : tiles) {
         vect = vector<uptr<Tile>>(sizeX);
@@ -27,7 +27,7 @@ Map::Map(const uint sizeX, const uint sizeY) :
     }
 
     for (vector<uptr<Block>> &vect : blocks) {
-        vect = vector<uptr<Block>>(numOfBlocksY);
+        vect = vector<uptr<Block>>(numOfBlocks.y);
     }
 
     y = 0;
@@ -40,7 +40,7 @@ Map::Map(const uint sizeX, const uint sizeY) :
         y++;
     }
 
-    Server::log << "Map created: " << sizeX << "x" << sizeY << " (" << numOfBlocksX << "x" << numOfBlocksY << " blocks)" << std::endl
+    Server::log << "Map created: " << sizeX << "x" << sizeY << " (" << numOfBlocks.x << "x" << numOfBlocks.y << " blocks)" << std::endl
         << "Block size: " << Global::BLOCK_SIZE << std::endl;
 }
 
@@ -79,17 +79,20 @@ void Map::Update() {
             tile->Update();
 }
 
+vec2u Map::GetSize() const { return size; }
+int Map::GetNumOfBlocksX() const { return numOfBlocks.x; }
+int Map::GetNumOfBlocksY() const { return numOfBlocks.y; };
+
 Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < int(sizeX) && y >= 0 && y < int(sizeY))
+    if (x >= 0 && x < int(size.x) && y >= 0 && y < int(size.y))
         return tiles[y][x].get();
     return nullptr;
 }
 
 Block *Map::GetBlock(int x, int y) const {
-    if (x >= 0 && x < int(numOfBlocksX) && y >= 0 && y < int(numOfBlocksY))
+    if (x >= 0 && x < int(numOfBlocks.x) && y >= 0 && y < int(numOfBlocks.y))
         return blocks[y][x].get();
     return nullptr;
 }
 
-int Map::GetNumOfBlocksX() const { return numOfBlocksX; }
-int Map::GetNumOfBlocksY() const { return numOfBlocksY; };
+const vector< vector< uptr<Tile>>>& Map::GetTiles() const { return tiles; }

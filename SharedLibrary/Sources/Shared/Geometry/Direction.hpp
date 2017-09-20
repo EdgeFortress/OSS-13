@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Vec2.hpp"
-
 namespace uf {
+    template<typename T>
+    struct vec2;
+
+    typedef vec2<int> vec2i;
+
 	enum class Direction : char {
 		NONE = -1,
 		SOUTH,
@@ -15,6 +18,6 @@ namespace uf {
 		SOUTH_EAST
 	};
 
-	Direction VectToDirection(vec2f);
-	vec2f DirectionToVect(Direction);
+	Direction VectToDirection(vec2i);
+	vec2i DirectionToVect(Direction);
 }
