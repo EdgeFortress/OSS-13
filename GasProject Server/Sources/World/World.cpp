@@ -8,7 +8,7 @@
 #include "Player.hpp"
 
 World::World() : map(new Map(100, 100)) {
-    //map->GenerateLocals();
+    
 }
 
 void World::Update(sf::Time timeElapsed) {
@@ -28,7 +28,7 @@ void World::Update(sf::Time timeElapsed) {
         //map->GetTile(x, y)->AddObject(testMob);
     }
     
-    map->Update();
+    map->Update(timeElapsed);
 
     for (unsigned i = 0; i < objects.size();) {
         const auto len = objects.size();
@@ -48,7 +48,7 @@ void World::FillingWorld() {
         for (int j = 45; j <= 55; j++) {
             Tile *tile = map->GetTile(i, j);
             tile->PlaceTo(new Floor);
-            if ((i == 45 || i == 55) && (j == 45 || j == 55))
+            if (i == 45 || i == 55 || j == 45 || j == 55)
                 tile->PlaceTo(new Wall);
         }
     }
@@ -65,12 +65,12 @@ void World::FillingWorld() {
     test_dx = 1;
     test_dy = 0;
 
-    /*for (int i = 85; i <= 95; i++) {
+    for (int i = 85; i <= 95; i++) {
         for (int j = 85; j <= 95; j++) {
             Tile *tile = map->GetTile(i, j);
-            new Floor(tile);
+            tile->PlaceTo(new Floor);
         }
-    }*/
+    }
 }
 
 void World::AddObject(Object *obj) {

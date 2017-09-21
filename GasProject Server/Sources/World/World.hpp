@@ -32,33 +32,3 @@ public:
     Creature *CreateNewPlayerCreature() const;
 };
 
-//class Local {
-//    list<Tile *> tiles;
-//    Map *map;
-//
-//public:
-//    Local(Tile *tile) : map(tile->GetMap()) { tiles.push_back(tile); }
-//
-//    void AddTile(Tile *tile) {
-//        tiles.push_back(tile);
-//    }
-//    void Merge(Local *local) {
-//        if (!local) return;
-//        if (this == local) return;
-//        for (auto &tile : local->tiles) {
-//            tiles.push_back(tile);
-//            tile->SetLocal(this);
-//        }
-//        map->RemoveLocal(local);
-//    }
-//    test
-//    const list<Tile *> &GetTiles() { return tiles; }
-//};
-//
-//class Gas {
-//    double pressure;
-//};
-//
-//class Oxygen : public Gas {
-//
-//};

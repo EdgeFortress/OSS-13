@@ -2,6 +2,7 @@
 
 #include <list>
 #include <vector>
+#include <SFML/System.hpp>
 
 #include "Shared/Global.hpp"
 #include "Shared/Types.hpp"
@@ -21,8 +22,9 @@ class Tile {
 public:
     explicit Tile(Map *map, int x, int y);
 
-    void Update();
+    void Update(sf::Time timeElapsed);
 
+    // Call it when atmos initialized or tile atmos properties changed (floor or wall status updated)
     void CheckLocale();
 
     // Removing object from tile content, but not deleting it, and change object.tile pointer
@@ -36,8 +38,11 @@ public:
     Block *GetBlock() const;
     Map *GetMap() const { return map; }
     bool IsDense() const;
+    bool IsSpace() const;
 
     const TileInfo GetTileInfo(uint visibility) const;
+
+    friend Locale;
 
 private:
     Map *map;
@@ -53,9 +58,10 @@ private:
 
 
     Locale *locale;
+    bool needToUpdateLocale;
     // Partional pressures of gases by index
     vector<pressure> gases;
-    pressure totalPressure;  
+    pressure totalPressure;
 
     // Add object to the tile, and change object.tile pointer
     // For moving use MoveTo, for placing PlaceTo

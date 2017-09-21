@@ -1,18 +1,45 @@
 #include "Atmos.hpp"
 
+#include "Server.hpp"
 #include "World/World.hpp"
 
 Atmos::Atmos(Map* map) : map(map) {
-    generateLocales();
+    
 }
 
-void Atmos::generateLocales() {
-    for (auto &vect : map->GetTiles()) {
-        for (auto &tile : vect);
-            //tile->CheckLocale();
+void Atmos::Update(sf::Time timeElapsed) {
+    for (auto iter = locales.begin(); iter != locales.end(); ) {
+        Locale *locale = iter->get();
+        if (locale->IsEmpty()) {
+            iter = locales.erase(iter);
+        } else {
+            locale->Update(timeElapsed);
+            iter++;
+        }
     }
-    //    for (auto &tile : vect)
-    //        tile->checklocal();
-    //    
-    //        Server::log << "num of locals:" << locals.size() << std::endl;
+}
+
+void Atmos::CreateLocale(Tile *tile) {
+    Server::log << "Locale added. Locales count: " << locales.size() + 1 << std::endl;
+    locales.push_back(std::make_unique<Locale>(this, tile));
+}
+
+void Atmos::RemoveLocale(Locale *locale) {
+    Server::log << "Locale removed. Locales count: " << locales.size() - 1 << std::endl;
+
+    if (!locale) {
+        Server::log << "Error: try to remove nullptr locale from Atmos (Atmos::RemoveLocale)" << std::endl;
+        return;
+    }
+    for (auto iter = locales.begin(); iter != locales.end(); iter++) {
+        if (iter->get() == locale) {
+            for (auto tile : locale->tiles) {
+                tile->CheckLocale();
+            }
+            locale->Clear();
+            locales.erase(iter);
+            return;
+        }
+    }
+    Server::log << "Warning: try to remove locale from Atmos which doesn't exist (Atmos::RemoveLocale)" << std::endl;
 }

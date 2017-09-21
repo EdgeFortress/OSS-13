@@ -3,6 +3,7 @@
 #include "Server.hpp"
 #include "Tile.hpp"
 #include "Block.hpp"
+#include "Atmos/Atmos.hpp"
 #include "Shared/Global.hpp"
 
 Map::Map(const uint sizeX, const uint sizeY) :
@@ -42,6 +43,8 @@ Map::Map(const uint sizeX, const uint sizeY) :
 
     Server::log << "Map created: " << sizeX << "x" << sizeY << " (" << numOfBlocks.x << "x" << numOfBlocks.y << " blocks)" << std::endl
         << "Block size: " << Global::BLOCK_SIZE << std::endl;
+
+    atmos = std::make_unique<Atmos>(this);
 }
 
 //void Map::GenerateLocals() {
@@ -73,15 +76,17 @@ void Map::ClearDiffs() {
             block->ClearDiffs();
 }
 
-void Map::Update() {
+void Map::Update(sf::Time timeElapsed) {
     for (auto &vect : tiles)
         for (auto &tile : vect)
-            tile->Update();
+            tile->Update(timeElapsed);
+    atmos->Update(timeElapsed);
 }
 
 vec2u Map::GetSize() const { return size; }
 int Map::GetNumOfBlocksX() const { return numOfBlocks.x; }
-int Map::GetNumOfBlocksY() const { return numOfBlocks.y; };
+int Map::GetNumOfBlocksY() const { return numOfBlocks.y; }
+Atmos* Map::GetAtmos() const { return atmos.get(); };
 
 Tile *Map::GetTile(int x, int y) const {
     if (x >= 0 && x < int(size.x) && y >= 0 && y < int(size.y))
