@@ -47,7 +47,7 @@ public:
 private:
     Map *map;
     int x, y;
-    Global::Sprite sprite;
+    uint sprite;
 
     list<Object *> content;
     bool hasFloor;

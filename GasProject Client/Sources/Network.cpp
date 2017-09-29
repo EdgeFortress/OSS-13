@@ -298,13 +298,9 @@ Packet &operator>>(Packet &packet, Tile &tile) {
     sf::Int32 size, sprite;
     packet >> size >> sprite;
     tile.Clear();
-    for (auto &spr : CC::Get()->GetWindow()->GetSprites())
-        if (spr->GetKey() == Global::Sprite(sprite)) {
-            tile.sprite = spr.get();
-            break;
-        }
+    tile.sprite = CC::Get()->RM.GetSprite(uint(sprite));
     for (int i = 0; i < size; i++) {
-        Object *object = new Object();
+        Object *object = new Object;
         packet >> *object;
         tile.block->GetTileGrid()->objects.push_back(uptr<Object>(object));
         tile.AddObject(object);
@@ -319,7 +315,7 @@ Packet &operator>>(Packet &packet, Object &object) {
 	bool dense;
     packet >> id >> sprite >> name >> layer >> direction >> dense;
     object.id = id;
-    object.SetSprite(Global::Sprite(sprite));
+    object.SetSprite(uint(sprite));
     object.name = name.toAnsiString();
     object.layer = layer;
 	object.direction = uf::Direction(direction);

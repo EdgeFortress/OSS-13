@@ -22,6 +22,7 @@
     <ClCompile Include="Sources\Shared\Command.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\Log.cpp" />
+    <ClCompile Include="Sources\Shared\OS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Command.hpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\Log.hpp" />
     <ClInclude Include="Sources\Shared\Math.hpp" />
+    <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\TileGrid_Info.hpp" />
     <ClInclude Include="Sources\Shared\Types.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />

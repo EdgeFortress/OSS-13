@@ -4,7 +4,7 @@
 
 Ghost::Ghost() : hostControl(nullptr)
 {
-	sprite = Global::Sprite::Ghost;
+	sprite = "ghost";
 	name = "Ghost";
 	density = false;
 	invisibility = 1;

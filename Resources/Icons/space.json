@@ -1,0 +1,32 @@
+{
+    "title": "space",
+    "tileSize": 32,
+    "sprites": [
+        { "frames": 1, "sprite": "space" },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 5 },
+        { "frames": 4 },
+        { "frames": 5 },
+        { "frames": 4 },
+        { "frames": 5 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 5 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 4 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 }
+    ]
+}

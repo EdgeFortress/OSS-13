@@ -1,0 +1,9 @@
+{
+    "title": "ghost",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "ghost"
+        }
+    ]
+}

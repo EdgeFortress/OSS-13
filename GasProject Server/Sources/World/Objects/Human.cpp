@@ -1,7 +1,7 @@
 #include "Human.hpp"
 
 Human::Human() {
-	sprite = Global::Sprite::Mob;
+    sprite = "human";
 	name = "Human";
 	density = true;
 }

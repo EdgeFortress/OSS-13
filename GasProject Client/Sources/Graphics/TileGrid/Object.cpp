@@ -9,22 +9,16 @@
 #include "Graphics/Sprite.hpp"
 #include "Graphics/TileGrid.hpp"
 
-Object::Object(const Global::Sprite key, const std::string name, const bool directed) {
-	SetSprite(key);
+Object::Object(uint spriteID, const std::string &name) {
+	SetSprite(spriteID);
 	this->name = name;
 	direction = uf::Direction::NONE;
 	dense = false;
 	tile = nullptr;
 }
 
-void Object::SetSprite(const Global::Sprite key) {
-	sprite = nullptr;
-	if (int(key))
-		for (auto &sprite : CC::Get()->GetWindow()->GetSprites())
-			if (sprite->GetKey() == key) {
-				this->sprite = sprite.get();
-				return;
-			}
+void Object::SetSprite(uint id) {
+	sprite = CC::Get()->RM.GetSprite(id);
 }
 
 void Object::SetDirection(const uf::Direction direction) {

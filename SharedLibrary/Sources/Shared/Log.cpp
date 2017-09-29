@@ -18,6 +18,13 @@ namespace uf {
 		return *this;
 	}
 
+    Log &Log::operator<<(std::wstring str) {
+        mutex.lock();
+        std::wcout << str << ' ';
+        mutex.unlock();
+        return *this;
+    }
+
 	Log &Log::operator<<(std::ostream& f(std::ostream &os)) {
 		mutex.lock();
 		std::cout << std::endl;

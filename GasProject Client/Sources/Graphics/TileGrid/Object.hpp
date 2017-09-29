@@ -31,12 +31,12 @@ private:
 	Tile *tile;
 
 public:
-	explicit Object(const Global::Sprite key = Global::Sprite::EMPTY, const std::string name = "", const bool directed = false);
+	explicit Object(uint spriteID = 0, const std::string &name = "");
 
 	void Draw(sf::RenderTarget *, const int x, const int y);
 	void Update(sf::Time timeElapsed);
 
-	void SetSprite(const Global::Sprite);
+	void SetSprite(uint spriteID);
 	void SetDirection(const uf::Direction);
 	void SetSpeed(float speed);
 	void SetShifting(uf::Direction direction, float speed);

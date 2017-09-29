@@ -1,0 +1,10 @@
+{
+    "title": "human",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "human",
+            "directed": true
+        }
+    ]
+}

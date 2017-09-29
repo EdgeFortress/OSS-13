@@ -45,7 +45,6 @@ void Game::update(sf::Time timeElapsed) {
 			if (player->IsConnected()) {
 				player->Update();
 				iter++;
-				continue;
 			} else {
 				// If player disconnected, move him into disconnectedPlayers list
 				player->Suspend();
@@ -58,9 +57,7 @@ void Game::update(sf::Time timeElapsed) {
 					disconnectedPlayers.splice(disconnectedPlayers.end(), players, iter);
 					iter = temp++;
 				}
-				continue;
 			}
-            
         }
 
         for (wptr<Player> player : players)
@@ -107,9 +104,11 @@ Game::~Game() {
     thread->join();
 }
 
-Server::Server() : UDB(new UsersDB()),
+Server::Server() : new_game_id(1),
                    networkController(new NetworkController()),
-                   new_game_id(1) {
+                   RM(new ResourceManager()),
+                   UDB(new UsersDB())
+{
     instance = this;
     networkController->Start();
     CreateGame("One Super Test Game");

@@ -16,7 +16,7 @@ public:
 class Wall : public Turf {
 public:
     Wall() {
-        sprite = Global::Sprite::Wall;
+        sprite = "wall";
         name = "Wall";
         density = true;
     }
@@ -29,7 +29,7 @@ class Floor : public Turf {
 public:
     Floor() {
         layer = 15;
-        sprite = Global::Sprite::Floor;
+        sprite = "floor";
         name = "Floor";
         density = false;
     }
@@ -41,7 +41,7 @@ public:
 class Airlock : public Turf {
 public:
     explicit Airlock() {
-        sprite = Global::Sprite::Airlock;
+        sprite = "door";
         density = true;
     }
 

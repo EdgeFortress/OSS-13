@@ -13,7 +13,7 @@ UI::UI() {
     //gameProcessUI = uptr<GameProcessUI>(new GameProcessUI(this));
     //gamelistUI = uptr<GameListUI>(new GameListUI(this));
 
-    background.loadFromFile("Images/MenuBackground.jpg");
+    background.loadFromFile("Resources/Pictures/MenuBackground.jpg");
     background_sprite.setTexture(background);
 
     curUIModule = nullptr;

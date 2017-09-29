@@ -36,7 +36,7 @@ bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
 }
 
-Global::Sprite Object::GetSprite() const { return sprite; }
+//Global::Sprite Object::GetSprite() const { return sprite; }
 uint Object::GetLayer() const { return layer; }
 
 
@@ -59,7 +59,7 @@ void Object::SetShift(uf::vec2f shift) {
 }
 
 const ObjectInfo Object::GetObjectInfo() const {
-    return std::move(ObjectInfo(id, int(sprite), name, layer, direction, density));
+    return std::move(ObjectInfo(id, Server::Get()->RM->GetIconNum(sprite), name, layer, direction, density));
 }
 
 void Object::takeID() {

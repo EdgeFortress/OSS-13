@@ -16,15 +16,4 @@ namespace Global {
 		//SHIFT,
 		CHANGE_DIRECTION
 	};
-
-	enum class Sprite : char {
-		EMPTY = 0,
-		Floor,
-		Wall,
-		Airlock,
-		Mob,
-		Ghost,
-		Space,
-		NextSprite = Space + 26
-	};
 }

@@ -66,7 +66,7 @@ void TileGrid::SetSize(const sf::Vector2f &size) {
     yNumOfTiles = 15;
     xPadding = 0;
     yPadding = (int(size.y) - tileSize * yNumOfTiles) / 2;
-	CC::Get()->GetWindow()->SetSpriteSize(tileSize);
+	CC::Get()->RM.SpritesResize(tileSize);
 	Widget::SetSize(uf::vec2i(tileSize) * 15);
 	Widget::SetPosition(uf::vec2f(0, (size.y - GetSize().y) / 2));
 }
@@ -315,9 +315,9 @@ wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
 Tile *TileGrid::GetTileRel(int x, int y) const {
     if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize) {
 		auto &a = blocks[y / blockSize];
-		if (!a.size())
-			// TODO: here error was occuring. ALERT in window thread.
-			CC::log << "ALERT" << std::endl;
+        if (!a.size())
+            // Blocks not created yet
+            return nullptr;
 		auto &b = a[x / blockSize];
 		auto block = b.get();
 

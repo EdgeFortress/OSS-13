@@ -15,6 +15,7 @@ namespace uf {
 	public:
 		Log& operator<<(long long int a);
 		Log& operator<<(std::string str);
+        Log& operator<<(std::wstring str);
 		Log& operator<<(std::ostream& f(std::ostream &os));
 	};
 

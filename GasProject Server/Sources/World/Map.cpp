@@ -47,29 +47,6 @@ Map::Map(const uint sizeX, const uint sizeY) :
     atmos = std::make_unique<Atmos>(this);
 }
 
-//void Map::GenerateLocals() {
-//    for (auto &vect : tiles)
-//        for (auto &tile : vect)
-//            tile->CheckLocal();
-//
-//    Server::log << "Num of locals:" << locals.size() << std::endl;
-//}
-
-//void Map::NewLocal(Tile *tile) {
-//    if (!tile) return;
-//    locals.push_back(uptr<Local>(new Local(tile)));
-//    tile->SetLocal(locals.back().get());
-//}
-
-//void Map::RemoveLocal(const Local *local) {
-//    for (auto &i : locals) {
-//        if (i.get() == local) {
-//            locals.remove(i);
-//            break;
-//        }
-//    }
-//}
-
 void Map::ClearDiffs() {
     for (auto &vect : blocks)
         for (auto &block : vect)

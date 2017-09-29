@@ -34,7 +34,7 @@ public:
     // Get Invisibility bits
     uint GetInvisibility() const;
 
-	Global::Sprite GetSprite() const;
+	//Global::Sprite GetSprite() const;
     uint GetLayer() const;
 
 	//
@@ -56,7 +56,7 @@ protected:
     std::string name;
     bool density;
     bool movable;
-    Global::Sprite sprite;
+    std::string sprite;
     uint layer;
     uf::Direction direction;
 

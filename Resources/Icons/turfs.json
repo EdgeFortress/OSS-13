@@ -1,0 +1,46 @@
+{
+    "title": "turfs",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "wall",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "floor",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "door",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "door_closed_animation",
+            "frames": 3,
+            "directed": false
+        },
+        {
+            "sprite": "door_bolted",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "door_opening",
+            "frames": 6,
+            "directed": false
+        },
+        {
+            "sprite": "door_closing",
+            "frames": 6,
+            "directed": false
+        },
+        {
+            "sprite": "door_opened",
+            "frames": 1,
+            "directed": false
+        }
+    ]
+}

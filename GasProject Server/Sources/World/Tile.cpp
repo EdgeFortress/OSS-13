@@ -14,7 +14,7 @@ Tile::Tile(Map *map, int x, int y) :
 {
     const uint ux = uint(x);
     const uint uy = uint(y);
-    sprite = Global::Sprite(unsigned(Global::Sprite::Space) + ((ux + uy) ^ ~(ux * uy)) % 25);
+    sprite = Server::Get()->RM->GetIconNum("space") + ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;
 }

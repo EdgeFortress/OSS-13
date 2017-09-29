@@ -20,13 +20,10 @@ void Atmos::Update(sf::Time timeElapsed) {
 }
 
 void Atmos::CreateLocale(Tile *tile) {
-    Server::log << "Locale added. Locales count: " << locales.size() + 1 << std::endl;
     locales.push_back(std::make_unique<Locale>(this, tile));
 }
 
 void Atmos::RemoveLocale(Locale *locale) {
-    Server::log << "Locale removed. Locales count: " << locales.size() - 1 << std::endl;
-
     if (!locale) {
         Server::log << "Error: try to remove nullptr locale from Atmos (Atmos::RemoveLocale)" << std::endl;
         return;

@@ -6,6 +6,7 @@
 
 #include "Shared/Types.hpp"
 #include "Shared/Log.hpp"
+#include "ResourceManager.hpp"
 
 class Player;
 class Server;
@@ -108,6 +109,7 @@ private:
 
 public:
     uptr<UsersDB> UDB;
+    uptr<ResourceManager> RM;
 
     Server();
     Player *Authorization(const std::string &login, const std::string &password);
