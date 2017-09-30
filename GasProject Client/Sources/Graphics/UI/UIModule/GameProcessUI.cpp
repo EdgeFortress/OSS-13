@@ -61,15 +61,18 @@ void GameProcessUI::HandleEvent(sf::Event event) {
                 chat->SetActive(false);
                 tileGrid->SetActive(true);
                 curInputWidget = tileGrid;
-            }
-            else {
+            } else {
                 chat->SetActive(true);
                 tileGrid->SetActive(false);
                 curInputWidget = chat;
             }
             return;
         }
+        default:
+            break;
         }
+    default:
+        break;
     }
     case sf::Event::MouseMoved: {
         Object *obj = tileGrid->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
@@ -82,9 +85,9 @@ void GameProcessUI::HandleEvent(sf::Event event) {
     UIModule::HandleEvent(event);
 }
 
-InfoLabel *GameProcessUI::GetInfoLabel() { return infoLabel.get(); }
-Chat *GameProcessUI::GetChat() { return chat; }
-TileGrid *GameProcessUI::GetTileGrid() { return tileGrid; }
+InfoLabel *GameProcessUI::GetInfoLabel() const { return infoLabel.get(); }
+Chat *GameProcessUI::GetChat() const { return chat; }
+TileGrid *GameProcessUI::GetTileGrid() const { return tileGrid; }
 
 void GameProcessUI::generateFunctionWindow() {
 	functionWindow = new Container();
@@ -102,7 +105,7 @@ InfoLabel::InfoLabel(const sf::Font &font) {
     text.setFillColor(sf::Color(255, 69, 0));
 }
 
-void InfoLabel::Draw(sf::RenderWindow *renderWindow) {
+void InfoLabel::Draw(sf::RenderWindow *renderWindow) const {
     renderWindow->draw(rectangle);
     renderWindow->draw(text);
 }

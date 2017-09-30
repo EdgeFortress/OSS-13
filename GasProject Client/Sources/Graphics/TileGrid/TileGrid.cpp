@@ -33,6 +33,8 @@ TileGrid::TileGrid() :
     }
 
 	canBeActive = true;
+
+    clickedObject = nullptr;
 	ghostButtonPressed = false;
 	buildButtonPressed = false;
 }
@@ -41,7 +43,7 @@ void TileGrid::draw() const {
     mutex.lock();
 	buffer.clear();
     std::multimap<int, Object *> objects;
-	int border = Global::FOV / 2 + Global::MIN_PADDING;
+	const int border = Global::FOV / 2 + Global::MIN_PADDING;
     for (int y = -border; y <= border; y++)
         for (int x = -border; x <= border; x++) {
             Tile *tile = GetTileRel(xRelPos + x, yRelPos + y);
@@ -67,16 +69,20 @@ void TileGrid::SetSize(const sf::Vector2f &size) {
     xPadding = 0;
     yPadding = (int(size.y) - tileSize * yNumOfTiles) / 2;
 	CC::Get()->RM.SpritesResize(tileSize);
-	Widget::SetSize(uf::vec2i(tileSize) * 15);
-	Widget::SetPosition(uf::vec2f(0, (size.y - GetSize().y) / 2));
+    Widget::SetSize(uf::vec2i(tileSize) * 15);
+	Widget::SetPosition(uf::vec2f(xPadding, yPadding));
 }
 
 bool TileGrid::HandleEvent(sf::Event event) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed: {
-		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
+        CC::log << "CHECK" << std::endl;
+		const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
+            clickedObject = GetObjectByPixel(event.mouseButton.x, event.mouseButton.y);
+            if (clickedObject) CC::log << clickedObject->GetName() << std::endl;
 			return true;
+        }
 		break;
 	}
 	case sf::Event::KeyPressed: {
@@ -107,18 +113,20 @@ bool TileGrid::HandleEvent(sf::Event event) {
                 break;
         }
 	}
+    default:
+        break;
     }
 	return false;
 }
 
 void TileGrid::Update(sf::Time timeElapsed) {
 	mutex.lock();
-    if (moveSendPause != sf::Time::Zero) {
-        moveSendPause -= timeElapsed;
-        if (moveSendPause < sf::Time::Zero) moveSendPause = sf::Time::Zero;
+    if (actionSendPause != sf::Time::Zero) {
+        actionSendPause -= timeElapsed;
+        if (actionSendPause < sf::Time::Zero) actionSendPause = sf::Time::Zero;
     }
 
-    if (moveSendPause == sf::Time::Zero) {
+    if (actionSendPause == sf::Time::Zero) {
 		if (moveCommand.x || moveCommand.y) {
 			Connection::commandQueue.Push(new MoveClientCommand(uf::VectToDirection(moveCommand)));
 
@@ -144,23 +152,25 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			else
 				CC::log << "Controllable not determine" << std::endl;
 
-			moveSendPause = MOVE_TIMEOUT;
 			moveCommand = sf::Vector2i();
 		}
+        if (clickedObject) {
+            Connection::commandQueue.Push(new ClickObjectClientCommand(clickedObject->GetID()));
+            clickedObject = nullptr;
+        }
 		if (buildButtonPressed) {
 			Connection::commandQueue.Push(new BuildClientCommand());
-			moveSendPause = MOVE_TIMEOUT;
 			buildButtonPressed = false;
 		}
 		if (ghostButtonPressed) {
 			Connection::commandQueue.Push(new GhostClientCommand());
-			moveSendPause = MOVE_TIMEOUT;
 			ghostButtonPressed = false;
 		}
+        actionSendPause = ACTION_TIMEOUT;
     }
 
     
-    for (auto iter = objects.begin(); iter != objects.end();) { //????
+    for (auto iter = objects.begin(); iter != objects.end();) {
         (*iter)->Update(timeElapsed);
         if (!(*iter)->GetTile()) iter = objects.erase(iter);
         else iter++;
@@ -248,8 +258,8 @@ void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
 }
 
 void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
-    int dx = newFirstX - firstBlockX;
-    int dy = newFirstY - firstBlockY;
+    const int dx = newFirstX - firstBlockX;
+    const int dy = newFirstY - firstBlockY;
     
     std::vector< std::vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
     for (auto &vect : newBlocks)
@@ -301,16 +311,16 @@ void TileGrid::SetControllable(uint id, float speed) {
 	CC::log << "Error! New controllable wasn't founded" << std::endl;
 }
 
-wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
-    int relBlockX = blockX - firstBlockX;
-    int relBlockY = blockY - firstBlockY;
-
-    if (relBlockX < 0 || relBlockX >= numOfVisibleBlocks ||
-        relBlockY < 0 || relBlockY >= numOfVisibleBlocks)
-        return wptr<Block>();
-
-    return wptr<Block>(blocks[relBlockY][relBlockX]);
-}
+//wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
+//    int relBlockX = blockX - firstBlockX;
+//    int relBlockY = blockY - firstBlockY;
+//
+//    if (relBlockX < 0 || relBlockX >= numOfVisibleBlocks ||
+//        relBlockY < 0 || relBlockY >= numOfVisibleBlocks)
+//        return wptr<Block>();
+//
+//    return wptr<Block>(blocks[relBlockY][relBlockX]);
+//}
 
 Tile *TileGrid::GetTileRel(int x, int y) const {
     if (x >= 0 && x < blocks.size() * blockSize && y >= 0 && y < blocks.size() * blockSize) {

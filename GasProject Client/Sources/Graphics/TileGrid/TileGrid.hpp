@@ -44,14 +44,17 @@ private:
     // Controls
     Object *controllable;
     float controllableSpeed;
-    const sf::Time MOVE_TIMEOUT = sf::milliseconds(100);
+    const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
     sf::Vector2i moveCommand;
-    sf::Time moveSendPause;
+    sf::Time actionSendPause;
+
+    Object *clickedObject;
+
 	bool buildButtonPressed;
 	bool ghostButtonPressed;
 
 protected:
-	virtual void draw() const final;
+	void draw() const override final;
 
 public:
     TileGrid();
@@ -60,10 +63,10 @@ public:
     ~TileGrid() = default;
 
     //void Draw(sf::RenderWindow * const);
-	virtual bool HandleEvent(sf::Event event) final;
-	virtual void Update(sf::Time timeElapsed) final;
+	bool HandleEvent(sf::Event event) override final;
+	void Update(sf::Time timeElapsed) override final;
 
-	virtual void SetSize(const sf::Vector2f &) final;
+	void SetSize(const sf::Vector2f &) override final;
 
     //// FOR NETWORK
 
@@ -87,7 +90,7 @@ public:
 
     ////
 
-    wptr<Block> GetBlock(const int blockX, const int blockY) const;
+    //wptr<Block> GetBlock(const int blockX, const int blockY) const;
     Tile *GetTileRel(int x, int y) const;
     Tile *GetTileAbs(int x, int y) const;
     Object *GetObjectByPixel(int x, int y) const;

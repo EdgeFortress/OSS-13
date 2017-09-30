@@ -15,21 +15,21 @@ class InfoLabel;
 
 class GameProcessUI : public UIModule {
 public:
-    GameProcessUI(UI *ui);
+    explicit GameProcessUI(UI *ui);
     GameProcessUI(const GameProcessUI &) = delete;
     GameProcessUI &operator=(const GameProcessUI &) = delete;
     virtual ~GameProcessUI() = default;
 
-    virtual void Initialize() final;
+    void Initialize() override final;
 
-    virtual void Resize(int width, int height) final;
-    virtual void Draw(sf::RenderWindow* renderWindow);
-    virtual void Update(sf::Time timeElapsed) final;
-    virtual void HandleEvent(sf::Event event);
+    void Resize(int width, int height) override final;
+    void Draw(sf::RenderWindow* renderWindow) override;
+    void Update(sf::Time timeElapsed) override final;
+    void HandleEvent(sf::Event event) override;
 
-    InfoLabel *GetInfoLabel();
-    Chat *GetChat();
-    TileGrid *GetTileGrid();
+    InfoLabel *GetInfoLabel() const;
+    Chat *GetChat() const;
+    TileGrid *GetTileGrid() const;
 
 private:
     uptr<InfoLabel> infoLabel;
@@ -48,8 +48,8 @@ private:
     sf::RectangleShape rectangle;
     sf::Text text;
 public:
-    InfoLabel(const sf::Font &font);
-    void Draw(sf::RenderWindow *window);
+    explicit InfoLabel(const sf::Font &font);
+    void Draw(sf::RenderWindow *window) const;
     void CountPosition(int width, int height);
     void SetText(const std::string &s);
 };

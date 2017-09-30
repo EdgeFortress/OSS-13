@@ -16,6 +16,7 @@ struct ClientCommand {
 		DISCONNECT,
 
 		MOVE,
+        CLICK_OBJECT,
 		SEND_CHAT_MESSAGE,
 		BUILD,
 		GHOST
@@ -67,6 +68,12 @@ struct MoveClientCommand : public ClientCommand {
 	uf::Direction direction;
 
 	MoveClientCommand(uf::Direction direction);
+};
+
+struct ClickObjectClientCommand : public ClientCommand {
+    int id;
+
+    ClickObjectClientCommand(int id);
 };
 
 struct SendChatMessageClientCommand : public ClientCommand {

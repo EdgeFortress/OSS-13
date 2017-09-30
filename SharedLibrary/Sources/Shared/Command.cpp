@@ -35,6 +35,10 @@ MoveClientCommand::MoveClientCommand(uf::Direction direction) :
 	ClientCommand(Code::MOVE), 
 	direction(direction) { }
 
+ClickObjectClientCommand::ClickObjectClientCommand(int id) :
+    ClientCommand(Code::CLICK_OBJECT),
+    id(id) { }
+
 SendChatMessageClientCommand::SendChatMessageClientCommand(std::string &message) : 
 	ClientCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }
