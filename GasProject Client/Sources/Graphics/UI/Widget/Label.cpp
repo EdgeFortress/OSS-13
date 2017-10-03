@@ -16,7 +16,7 @@ void Label::Update(sf::Time timeElapsed) {
         text.setCharacterSize(style.fontSize);
 		text.setFillColor(GetStyle().textColor);
 		text.setOutlineColor(GetStyle().textColor);
-		SetSize(sf::Vector2f(text.getGlobalBounds().width + text.getGlobalBounds().left, text.getGlobalBounds().height + text.getGlobalBounds().top));
+        SetSize(uf::vec2i(uf::vec2f(text.getGlobalBounds().width + text.getGlobalBounds().left, text.getGlobalBounds().height + text.getGlobalBounds().top)));
         GetStyle().updated = false;
 		Show();
     }

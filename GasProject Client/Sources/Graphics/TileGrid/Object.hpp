@@ -33,7 +33,7 @@ private:
 public:
 	explicit Object(uint spriteID = 0, const std::string &name = "");
 
-	void Draw(sf::RenderTarget *, const int x, const int y);
+	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
 	void Update(sf::Time timeElapsed);
 
 	void SetSprite(uint spriteID);

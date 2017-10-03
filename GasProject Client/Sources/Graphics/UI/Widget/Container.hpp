@@ -8,18 +8,18 @@
 
 class Container : public Widget {
 public:
-    explicit Container(sf::Vector2f size = sf::Vector2f());
+    explicit Container(const uf::vec2i &size = {});
 
-    virtual void Update(sf::Time timeElapsed) final;
-    virtual bool HandleEvent(sf::Event event) final;
+    void Update(sf::Time timeElapsed) override final;
+    bool HandleEvent(sf::Event event) override final;
 
-    void AddItem(Widget *, sf::Vector2f position);
+    void AddItem(Widget *, const uf::vec2i &position);
     void Clear();
 
-    virtual bool SetActive(bool) final;
+    bool SetActive(bool) override final;
 
 protected:
-    virtual void draw() const override;
+    void draw() const override final;
 
 private:
 	std::list<uptr<Widget>> items;

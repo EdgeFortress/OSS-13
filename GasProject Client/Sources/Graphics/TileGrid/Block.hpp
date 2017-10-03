@@ -1,15 +1,15 @@
 #pragma once
 
 #include <vector>
+#include <SFML/System.hpp>
 
 #include "Shared/Types.hpp"
+#include "Tile.hpp"
 
 class TileGrid;
-class Tile;
 
 namespace sf {
-	class Time;
-	class Packet;
+    class Packet;
 }
 
 class Block {

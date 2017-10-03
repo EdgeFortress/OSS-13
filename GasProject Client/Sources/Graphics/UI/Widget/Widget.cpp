@@ -3,9 +3,9 @@
 #include "Graphics/Window.hpp"
 #include "Client.hpp"
 
-Widget::Widget(sf::Vector2f size) : parent(nullptr) {
+Widget::Widget(uf::vec2i size) : parent(nullptr) {
     bufferSprite.setTexture(buffer.getTexture());
-	SetSize(size);
+	Widget::SetSize(size);
 	canBeActive = false;
 	active = false;
 	hiding = false;
@@ -35,7 +35,7 @@ void Widget::SetStyle(Style &&) {
     this->style.updated = true;
 }
 
-void Widget::SetPosition(const sf::Vector2f pos) {
+void Widget::SetPosition(const uf::vec2i &pos) {
 	setPosition(pos);
     bufferSprite.setPosition(pos);
 }
@@ -44,7 +44,7 @@ void Widget::SetPosition(const float x, const float y) {
     bufferSprite.setPosition(x, y);
 }
 
-void Widget::SetSize(const sf::Vector2f &size) {
+void Widget::SetSize(const uf::vec2i &size) {
 	this->size = size;
 	if (size.x && size.y) {
 		if (!buffer.create(unsigned(size.x), unsigned(size.y)))
@@ -64,14 +64,14 @@ Style &Widget::GetStyle() {
     return style; 
 }
 
-sf::Vector2f Widget::GetPosition() const {
-    return getPosition();
+uf::vec2i Widget::GetPosition() const {
+    return uf::vec2i(getPosition());
 }
-sf::Vector2f Widget::GetAbsPosition() const {
-    return parent ? getPosition() + parent->GetAbsPosition() : getPosition();
+uf::vec2i Widget::GetAbsPosition() const {
+    return parent ? uf::vec2i(getPosition()) + parent->GetAbsPosition() : uf::vec2i(getPosition());
 }
 
-sf::Vector2f Widget::GetSize() const { return size; }
+uf::vec2i Widget::GetSize() const { return size; }
 
 bool Widget::IsActive() const { return active; }
 

@@ -7,8 +7,9 @@
 #include "Client.hpp"
 #include "Entry.hpp"
 
-Container::Container(sf::Vector2f size) :
-	Widget(size), curInputWidgetIterator(items.end())
+Container::Container(const uf::vec2i &size) :
+	Widget(size), 
+    curInputWidgetIterator(items.end()), underCursorWidget(nullptr)
 { }
 
 void Container::Update(sf::Time timeElapsed) {
@@ -20,7 +21,7 @@ bool Container::HandleEvent(sf::Event event) {
 	if (!IsVisible()) return false;
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed: {
-		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
 		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
 			return false;
 
@@ -38,7 +39,7 @@ bool Container::HandleEvent(sf::Event event) {
 		return true;
 	}
 	case sf::Event::MouseMoved: {
-		uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
+		const uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
 		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
 			return false;
 		for (auto &widget : items) {
@@ -100,7 +101,7 @@ void Container::draw() const {
 	buffer.display();
 }
 
-void Container::AddItem(Widget *widget, sf::Vector2f position) {
+void Container::AddItem(Widget *widget, const uf::vec2i &position) {
 	items.push_back(uptr<Widget>(widget));
     if (curInputWidgetIterator == items.end())
 		if (widget->SetActive(false)) { // Check if widget can be active

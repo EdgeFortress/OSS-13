@@ -25,22 +25,22 @@ namespace uf {
 	vec2i DirectionToVect(Direction direction) {
 		switch (direction) {
 			case Direction::SOUTH:
-				return vec2f(0, 1);
+                return {0, 1};
 			case Direction::WEST:
-				return vec2f(-1, 0);
+                return {-1, 0};
 			case Direction::NORTH:
-				return vec2f(0, -1);
+                return {0, -1};
 			case Direction::EAST:
-				return vec2f(1, 0);
+                return {1, 0};
 			case Direction::SOUTH_WEST:
-				return vec2f(-1, 1);
+                return {-1, 1};
 			case Direction::NORTH_WEST:
-				return vec2f(-1, -1);
+                return {-1, -1};
 			case Direction::NORTH_EAST:
-				return vec2f(1, -1);
+                return {1, -1};
 			case Direction::SOUTH_EAST:
-				return vec2f(1, 1);
+                return {1, 1};
 		}
-		return vec2f(0, 0);
+        return {0, 0};
 	}
 }

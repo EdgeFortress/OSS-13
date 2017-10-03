@@ -279,8 +279,8 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
     Int32 xRelPos, yRelPos;
     packet >> xRelPos >> yRelPos;
-    tileGrid.xRelPos = xRelPos;
-    tileGrid.yRelPos = yRelPos;
+    tileGrid.cameraRelPos.x = xRelPos;
+    tileGrid.cameraRelPos.y = yRelPos;
 
     for (auto &vect : tileGrid.blocks)
         for (auto &block : vect) {

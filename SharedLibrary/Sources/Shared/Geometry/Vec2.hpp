@@ -3,15 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 
-#include "Types.hpp"
-
 namespace uf {
-	template<typename T>
-    struct vec2;
-
-    template<typename T>
-    std::ostream& operator<<(std::ostream&, const vec2<T> &);
-
     template<typename T>
 	struct vec2 {
 		T x;
@@ -21,9 +13,9 @@ namespace uf {
 		vec2(T x, T y);
 		explicit vec2(T xy);
 
+        // implicit
 		template<typename U>
 		vec2(const vec2<U> &vect);
-
 		template<typename U>
 		vec2(const sf::Vector2<U> &vect);
 
@@ -34,44 +26,43 @@ namespace uf {
 		// Angle in radians counter-clockwise ((1, 0) - 0 angle)
 		double GetAngle() const;
 
-		vec2<T> operator+(const vec2<T> &other);
-
-		vec2<T> operator-(const vec2<T> &other);
-
 		vec2<T> operator+=(const vec2<T> &other);
-
 		vec2<T> operator-=(const vec2<T> &other);
-
-		vec2<T> operator*(T a) const;
-
 		vec2<T> operator*=(T a);
+        vec2<T> operator/=(T a);
+        vec2<T> operator%=(T a);
 
-		vec2<T> operator/(double a) const;
-
-		vec2<T> operator/=(double a);
 		bool operator<=(const vec2<T> &other) const;
 		bool operator<(const vec2<T> &other) const;
 		bool operator>=(const vec2<T> &other) const;
 		bool operator>(const vec2<T> &other) const;
 
-		operator sf::Vector2<float>() const;
+        template<typename U>
+		operator sf::Vector2<U>() const;
 
-		operator sf::Vector2<uint>() const;
-
-		operator sf::Vector2<int>() const;
-
-        friend std::ostream &operator<< <T>(std::ostream &, const vec2<T> &);
+        //friend std::ostream &operator<< <T>(std::ostream &, const vec2<T> &);
 	};
 
 	template<typename T>
 	double length(const vec2<T> &vec);
-
 	template<typename T>
 	vec2<double> normalize(const vec2<T> &vec);
 
+    template <typename LeftT, typename RightT>
+    auto operator+(const vec2<LeftT>& left, const vec2<RightT>& right);
+    template <typename LeftT, typename RightT>
+    auto operator-(const vec2<LeftT>& left, const vec2<RightT>& right);
+    template <typename VectorT, typename ScalarT>
+    auto operator*(const vec2<VectorT> &, const ScalarT &);
+    template <typename VectorT, typename ScalarT>
+    auto operator/(const vec2<VectorT> &, const ScalarT &);
+    template <typename VectorT, typename ScalarT>
+    auto operator%(const vec2<VectorT> &, const ScalarT &);
+    //template<typename T>
+    //std::ostream& operator<<(std::ostream&, const vec2<T> &);
 }
 
-	#include "Vec2.inl"
+#include "Vec2.inl"
 
 namespace uf {
 	typedef vec2<double> vec2d;

@@ -19,8 +19,8 @@ Tile::~Tile() {
 	}
 }
 
-void Tile::Draw(sf::RenderTarget *target, const int x, const int y) const {
-	if (sprite) sprite->Draw(target, x, y, uf::Direction::NONE);
+void Tile::Draw(sf::RenderTarget *target, uf::vec2i pos) const {
+	if (sprite) sprite->Draw(target, pos.x, pos.y, uf::Direction::NONE);
 }
 
 void Tile::Update(sf::Time timeElapsed) { }

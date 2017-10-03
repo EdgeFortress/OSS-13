@@ -364,7 +364,7 @@ void Chat::SetSize(sf::Vector2f size) {
     cursor.setPosition(entryText.getGlobalBounds().width + entryTextXShift, box.getSize().y + entryTextYShift);
 
 	SetPosition(chatXPos, chatYPos);
-	Widget::SetSize(uf::vec2f(size) - uf::vec2f(chatXPos, chatYPos));
+	Widget::SetSize(uf::vec2i(size) - uf::vec2i(int(chatXPos), int(chatYPos)));
 }
 
 void Chat::Parse(Message &message, sf::Text &tempText) {

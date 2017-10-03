@@ -4,14 +4,14 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 
-Button::Button(sf::Vector2f size) 
+Button::Button(const uf::vec2i &size) 
 	: Widget(size)
 { 
 	underCursor = false;
 }
 
 Button::Button(const sf::String &string,
-			   const sf::Vector2f &size, 
+               const uf::vec2i &size,
 	           std::function<void()> onPressFunc)
     : Widget(size),onPressFunc(onPressFunc) 
 {
@@ -40,7 +40,7 @@ void Button::Update(sf::Time timeElapsed) {
 bool Button::HandleEvent(sf::Event event) {
     switch (event.type) {
     case sf::Event::MouseButtonPressed: {
-        uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+        const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
         if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
             onPressFunc();
             return true;
@@ -48,7 +48,7 @@ bool Button::HandleEvent(sf::Event event) {
         break;
     }
     case sf::Event::MouseMoved: {
-        uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
+        const uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
         if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
             if (!underCursor) {
                 underCursor = true;
@@ -64,6 +64,8 @@ bool Button::HandleEvent(sf::Event event) {
 			style.updated = true;
 		}
 	}
+    default:
+        break;
     }
     return false;
 }

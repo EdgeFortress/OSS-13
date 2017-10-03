@@ -6,8 +6,8 @@
 
 #include "Client.hpp"
 
-Entry::Entry(const sf::Vector2f &size) {
-    SetSize(size);
+Entry::Entry(const uf::vec2i &size) {
+    Widget::SetSize(size);
 
 	canBeActive = true;
 

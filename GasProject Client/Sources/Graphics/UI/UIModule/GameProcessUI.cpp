@@ -37,7 +37,7 @@ void GameProcessUI::Resize(const int width, const int height) {
     infoLabel->CountPosition(width, height);
     chat->SetSize(uf::vec2i(width, height));
     functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
-    functionWindow->SetSize(sf::Vector2f(width - functionWindow->GetAbsPosition().x, chat->GetPosition().y));
+    functionWindow->SetSize({width - functionWindow->GetAbsPosition().x, chat->GetPosition().y});
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
@@ -75,7 +75,7 @@ void GameProcessUI::HandleEvent(sf::Event event) {
         break;
     }
     case sf::Event::MouseMoved: {
-        Object *obj = tileGrid->GetObjectByPixel(event.mouseMove.x, event.mouseMove.y);
+        Object *obj = tileGrid->GetObjectByPixel({event.mouseMove.x, event.mouseMove.y});
         if (obj != nullptr) infoLabel->SetText(obj->GetName());
         else infoLabel->SetText("");
         break;

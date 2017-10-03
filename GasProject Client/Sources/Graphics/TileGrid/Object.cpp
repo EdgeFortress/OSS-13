@@ -45,10 +45,10 @@ bool Object::checkObj(int x, int y) {
 	return !(sprite->PixelTransparent(x, y));
 }
 
-void Object::Draw(sf::RenderTarget *target, const int x, const int y) {
+void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 	// TODO: simplify
 	int tileSize = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid()->GetTileSize();
-	if (sprite) sprite->Draw(target, x + int(shift.x * tileSize), y + int(shift.y * tileSize), direction);
+	if (sprite) sprite->Draw(target, pos.x + int(shift.x * tileSize), pos.y + int(shift.y * tileSize), direction);
 }
 
 void Object::Update(sf::Time timeElapsed) {

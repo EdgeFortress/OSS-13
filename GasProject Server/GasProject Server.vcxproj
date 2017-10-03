@@ -127,6 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include;../SharedLibrary/Sources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -145,6 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include;../SharedLibrary/Sources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

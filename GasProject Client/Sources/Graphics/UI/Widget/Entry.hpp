@@ -8,10 +8,10 @@
 
 class Entry : public Widget {
 public:
-    Entry(const sf::Vector2f &size = sf::Vector2f());
+    explicit Entry(const uf::vec2i &size = {});
 
-    virtual void Update(sf::Time timeElapsed) final;
-    virtual bool HandleEvent(sf::Event event) final;
+    void Update(sf::Time timeElapsed) override final;
+    bool HandleEvent(sf::Event event) override final;
 
     void Clear();
     void HideSymbols(wchar_t hider = '*');
@@ -21,7 +21,7 @@ public:
     std::string GetText();
 
 protected:
-    virtual void draw() const final;
+    void draw() const override final;
 
 private:
     sf::Text text;

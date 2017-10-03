@@ -52,5 +52,5 @@ struct GameRow {
 
     GameRow(int id, std::string title, int num_of_players);
 
-    void join();
+    void join() const;
 };

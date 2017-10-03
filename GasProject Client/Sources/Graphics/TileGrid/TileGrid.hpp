@@ -3,37 +3,33 @@
 #include <list>
 #include <vector>
 #include <mutex>
-#include <SFML/System.hpp>
+#include "SFML/System/Time.hpp" 
 
-#include "Shared/Geometry/Direction.hpp"
+#include "Shared/Types.hpp"
 #include "Graphics/UI/Widget/Widget.hpp"
+#include "Block.hpp"
 
-class Object;
-class Tile;
-class Block;
-
-namespace sf {
-	class Event;
-	class RenderWindow;
-	class Packet;
+namespace sf { 
+    class Event;
+    class Packet;
 }
 
 class TileGrid : public Widget {
 private:
-    int xNumOfTiles, yNumOfTiles;
+    uf::vec2i numOfTiles;
     int tileSize;
 
     // Camera position
-    int xPos, yPos;
-    int xRelPos, yRelPos;
-    sf::Vector2f shift;
+    uf::vec2i cameraPos;
+    uf::vec2i cameraRelPos;
+    uf::vec2f shift;
     
     // TileGrid padding
-    int xPadding, yPadding;
+    uf::vec2i padding;
 
     int blockSize;
-    int firstBlockX, firstBlockY;
-    int firstTileX, firstTileY;
+    uf::vec2i firstBlock;
+    uf::vec2i firstTile;
     int numOfVisibleBlocks;
 
     mutable std::mutex mutex;
@@ -45,7 +41,7 @@ private:
     Object *controllable;
     float controllableSpeed;
     const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
-    sf::Vector2i moveCommand;
+    uf::vec2i moveCommand;
     sf::Time actionSendPause;
 
     Object *clickedObject;
@@ -66,7 +62,7 @@ public:
 	bool HandleEvent(sf::Event event) override final;
 	void Update(sf::Time timeElapsed) override final;
 
-	void SetSize(const sf::Vector2f &) override final;
+	void SetSize(const uf::vec2i &) override final;
 
     //// FOR NETWORK
 
@@ -91,16 +87,12 @@ public:
     ////
 
     //wptr<Block> GetBlock(const int blockX, const int blockY) const;
-    Tile *GetTileRel(int x, int y) const;
-    Tile *GetTileAbs(int x, int y) const;
-    Object *GetObjectByPixel(int x, int y) const;
+    Tile *GetTileRel(uf::vec2i) const;
+    Tile *GetTileAbs(uf::vec2i) const;
+    Object *GetObjectByPixel(uf::vec2i) const;
 
 	const int GetBlockSize() const;
 	const int GetTileSize() const;
-	const int GetWidth() const;
-	const int GetHeigth() const;
-	const int GetPaddingX() const;
-	const int GetPaddingY() const;
 
     friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);

@@ -67,82 +67,82 @@ void AuthUI::SetServerAnswer(bool result) {
 
 void AuthUI::generateLoginWindow() {
     logWindow = new Container();
-	logWindow->SetSize(sf::Vector2f(600, 103));
+    logWindow->SetSize({600, 103});
     logWindow->GetStyle().backgroundColor = sf::Color::Transparent;
 	widgets.push_back(uptr<Container>(logWindow));
 
 	Label *loginLabel = new Label(L"Login");
     loginLabel->GetStyle().textColor = sf::Color::White;
     loginLabel->GetStyle().fontSize = 16;
-	logWindow->AddItem(loginLabel, sf::Vector2f(0, 0));
+    logWindow->AddItem(loginLabel, {0, 0});
 
-	my_login_entry = new Entry(sf::Vector2f(400, 25));
+    my_login_entry = new Entry({400, 25});
     my_login_entry->SetOnEnterFunc(std::bind(&AuthUI::login, this));
     my_login_entry->GetStyle().backgroundColor = sf::Color(60, 60, 60);
     my_login_entry->GetStyle().textColor = sf::Color(193, 205, 205);
     my_login_entry->GetStyle().fontSize = 16;
-	logWindow->AddItem(my_login_entry, sf::Vector2f(100, 0));
+    logWindow->AddItem(my_login_entry, {100, 0});
 
 	Label *passwordLabel = new Label(L"Password");
     passwordLabel->SetStyle(loginLabel->GetStyle());
-	logWindow->AddItem(passwordLabel, sf::Vector2f(0, 26));
+    logWindow->AddItem(passwordLabel, {0, 26});
 
-	my_passw_entry = new Entry(sf::Vector2f(400, 25));
+    my_passw_entry = new Entry({400, 25});
     my_passw_entry->SetStyle(my_login_entry->GetStyle());
     my_passw_entry->HideSymbols();
     my_passw_entry->SetOnEnterFunc(std::bind(&AuthUI::login, this));
-	logWindow->AddItem(my_passw_entry, sf::Vector2f(100, 26));
+    logWindow->AddItem(my_passw_entry, {100, 26});
 
     Style underCursorButtonStyle;
     underCursorButtonStyle.textColor = sf::Color::Black;
     underCursorButtonStyle.backgroundColor = sf::Color::White;
     underCursorButtonStyle.fontSize = 16;
 
-	Button *enterButton = new Button(L"Enter", sf::Vector2f(100, 51), std::bind(&AuthUI::login, this));
+    Button *enterButton = new Button(L"Enter", {100, 51}, std::bind(&AuthUI::login, this));
     enterButton->GetStyle().textColor = sf::Color::White;
     enterButton->GetStyle().fontSize = 16;
     enterButton->SetUnderCursorStyle(underCursorButtonStyle);
-    logWindow->AddItem(enterButton, sf::Vector2f(500, 0));
+    logWindow->AddItem(enterButton, {500, 0});
 
-	Button *regButton = new Button(L"Registration", sf::Vector2f(100, 51), std::bind(&AuthUI::openReg, this));
+    Button *regButton = new Button(L"Registration", {100, 51}, std::bind(&AuthUI::openReg, this));
     regButton->SetStyle(enterButton->GetStyle());
     regButton->SetUnderCursorStyle(underCursorButtonStyle);
-    logWindow->AddItem(regButton, sf::Vector2f(500, 52));
+    logWindow->AddItem(regButton, {500, 52});
 }
 
 void AuthUI::generateRegistrationWindow() {
     regWindow = new Container();
-	regWindow->SetSize(sf::Vector2f(650, 72));
+    regWindow->SetSize({650, 72});
 	regWindow->GetStyle().backgroundColor = sf::Color::Transparent;
 	widgets.push_back(uptr<Container>(regWindow));
 
 	Label *loginLabel = new Label(L"Login");
     loginLabel->GetStyle().fontSize = 16;
-    regWindow->AddItem(loginLabel, sf::Vector2f(0, 21));
+    regWindow->AddItem(loginLabel, {0, 21});
 
-	my_new_login_entry = new Entry(sf::Vector2f(400, 25));
+    my_new_login_entry = new Entry({400, 25});
     my_new_login_entry->GetStyle().backgroundColor = sf::Color(193, 205, 205);
     my_new_login_entry->SetOnEnterFunc(std::bind(&AuthUI::registration, this));
-	regWindow->AddItem(my_new_login_entry, sf::Vector2f(100, 21));
+    regWindow->AddItem(my_new_login_entry, {100, 21});
 
 	Label *passwordLabel = new Label(L"Password");
     passwordLabel->SetStyle(loginLabel->GetStyle());
-    regWindow->AddItem(passwordLabel, sf::Vector2f(0, 47));
+    regWindow->AddItem(passwordLabel, {0, 47});
     
-	my_new_passw_entry = new Entry(sf::Vector2f(400, 25));
+    my_new_passw_entry = new Entry({400, 25});
     my_new_passw_entry->SetStyle(my_new_login_entry->GetStyle());
     my_new_passw_entry->HideSymbols();
     my_new_passw_entry->SetOnEnterFunc(std::bind(&AuthUI::registration, this));
-    regWindow->AddItem(my_new_passw_entry, sf::Vector2f(100, 47));
+    regWindow->AddItem(my_new_passw_entry, {100, 47});
 
-	Button *createAccountButton = new Button(L"Create account", sf::Vector2f(150, 51), std::bind(&AuthUI::registration, this));
+    Button *createAccountButton = new Button(L"Create account", {150, 51}, std::bind(&AuthUI::registration, this));
     createAccountButton->GetStyle().textColor = sf::Color::White;
     createAccountButton->GetStyle().fontSize = 16;
-    regWindow->AddItem(createAccountButton, sf::Vector2f(500, 21));
+    regWindow->AddItem(createAccountButton, {500, 21});
 
-	Button *closeButton = new Button(L"Close", sf::Vector2f(100, 20), std::bind(&AuthUI::closeReg, this));
+    Button *closeButton = new Button(L"Close", {100, 20}, std::bind(&AuthUI::closeReg, this));
     closeButton->SetStyle(createAccountButton->GetStyle());
-    regWindow->AddItem(closeButton, sf::Vector2f(500, 0));
+    regWindow->AddItem(closeButton, {500, 0});
 }
 
 void AuthUI::openReg() {

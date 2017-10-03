@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <SFML/Graphics.hpp>
 
 #include "Shared/Types.hpp"
 
@@ -10,9 +11,7 @@ class TileGrid;
 class Sprite;
 
 namespace sf {
-	class RenderTarget;
-	class Time;
-	class Packet;
+    class Packet;
 }
 
 class Tile {
@@ -28,7 +27,7 @@ public:
 	Tile &operator=(const Tile &) = delete;
 	~Tile();
 
-	void Draw(sf::RenderTarget *, const int x, const int y) const;
+	void Draw(sf::RenderTarget *, uf::vec2i windowPos) const;
 	void Update(sf::Time timeElapsed);
 
 	void AddObject(Object *obj, int num = -1);

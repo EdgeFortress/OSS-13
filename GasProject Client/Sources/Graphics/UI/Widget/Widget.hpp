@@ -8,11 +8,11 @@ class Container;
 
 class Widget : private sf::Transformable, public sf::Drawable {
 public:
-	explicit Widget(sf::Vector2f size = sf::Vector2f());
+    explicit Widget(uf::vec2i size = {});
 	virtual ~Widget() = default;
 
     // draw method for Drawable inheritance
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	// public method for Draw widget buffer to target
 	void Draw(sf::RenderTarget &target) const;
 	virtual void Update(sf::Time timeElapsed) = 0;
@@ -23,16 +23,16 @@ public:
 
     void SetStyle(const Style &);
     void SetStyle(Style &&);
-	void SetPosition(const sf::Vector2f);
+	void SetPosition(const uf::vec2i &);
 	void SetPosition(const float x, const float y);
-	virtual void SetSize(const sf::Vector2f &);
+	virtual void SetSize(const uf::vec2i &);
 	virtual bool SetActive(bool);
 
     // Get style to change it. Set style.updated to true!
     Style &GetStyle();
-	sf::Vector2f GetPosition() const;
-	sf::Vector2f GetAbsPosition() const;
-	sf::Vector2f GetSize() const;
+	uf::vec2i GetPosition() const;
+	uf::vec2i GetAbsPosition() const;
+	uf::vec2i GetSize() const;
 	bool IsActive() const;
     bool IsVisible() const;
 
@@ -47,7 +47,7 @@ protected:
     virtual void draw() const = 0;
 
 private:
-    sf::Vector2f size;
+    uf::vec2i size;
     mutable sf::Sprite bufferSprite;
 
     Widget *parent;

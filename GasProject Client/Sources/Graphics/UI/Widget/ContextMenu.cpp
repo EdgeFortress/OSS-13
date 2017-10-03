@@ -12,7 +12,7 @@ void ContextMenu::Update(sf::Time timeElapsed) {
 	// If new rows
     if (firstNotProcessedRow != content.end()) {
 		// Set new size
-        uf::vec2u size;
+        uf::vec2i size;
         size.x = kWidth + 2 * kHorizontalMargin;
         size.y = uint(content.size()) * kRowHeight + kVerticalMargin;
         SetSize(size);
@@ -20,7 +20,7 @@ void ContextMenu::Update(sf::Time timeElapsed) {
 		if (underCursor_style.updated) {
 			underCursor_rect.setFillColor(underCursor_style.backgroundColor);
 			underCursor_rect.setOutlineColor(underCursor_style.backgroundColor);
-			underCursor_rect.setSize(uf::vec2f(GetSize().x, float(kRowHeight)));
+			underCursor_rect.setSize(uf::vec2i(GetSize().x, kRowHeight));
 			underCursor_style.updated = false;
 		}
 

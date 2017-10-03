@@ -159,6 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -182,6 +183,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>E:/lib/SFML/include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
