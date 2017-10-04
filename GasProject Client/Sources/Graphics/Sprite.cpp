@@ -17,18 +17,18 @@ Sprite::Sprite(Texture *t, const std::string &key, uint firstFrame, uint frames,
 
 }
 
-void Sprite::Draw(sf::RenderTarget *target, int x, int y, const uf::Direction direction) const {
+void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos, const uf::Direction direction) const {
     sf::Rect<int> rect;
 
     int realState = firstFrame;
     if (directed && direction != uf::Direction::NONE) realState += int(direction) * frames;
     if (frames > 1) realState += curFrame;
 
-    rect.left = realState % texture->GetXNumOfTiles() * texture->GetSizeOfTile();
-    rect.top = realState / texture->GetXNumOfTiles() * texture->GetSizeOfTile();
+    rect.left = realState % texture->GetNumOfTiles().x * texture->GetSizeOfTile();
+    rect.top = realState / texture->GetNumOfTiles().x * texture->GetSizeOfTile();
     rect.width = rect.height = texture->GetSizeOfTile();
 
-    sprite->setPosition(float(x), float(y));
+    sprite->setPosition(pos);
     sprite->setTextureRect(rect);
     sprite->setScale(scale, scale);
     target->draw(*sprite);
@@ -48,7 +48,7 @@ void Sprite::UpdateFrame() {
 
 const std::string &Sprite::GetKey() const { return key; }
 bool Sprite::IsAnimated() const { return frames > 1; }
-bool Sprite::PixelTransparent(const int x, const int y) const {
-    if (texture->IsFramePixelTransparent(uint(x / scale), uint(y / scale), curFrame)) return true;
+bool Sprite::PixelTransparent(uf::vec2u pixel) const {
+    if (texture->IsFramePixelTransparent(pixel / scale, curFrame)) return true;
     return false;
 }

@@ -6,7 +6,7 @@
 #include "Tile.hpp"
 
 Block::Block(TileGrid *tileGrid) :
-	tileGrid(tileGrid), relX(relX), relY(relY),
+	tileGrid(tileGrid), relPos(),
 	tiles(tileGrid->GetBlockSize())
 {
 	int y = 0;
@@ -21,8 +21,7 @@ Block::Block(TileGrid *tileGrid) :
 	}
 }
 
-int Block::GetRelX() const { return relX; }
-int Block::GetRelY() const { return relY; }
+uf::vec2i Block::GetRelPos() const { return relPos; }
 
 Tile* Block::GetTile(int x, int y) const {
 	if (x >= 0 && x < tileGrid->GetBlockSize() && y >= 0 && y < tileGrid->GetBlockSize())

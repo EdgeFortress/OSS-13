@@ -56,7 +56,7 @@ void TileGrid::draw() const {
         }
 	for (auto &pair : objects) {
         Tile *tile = pair.second->GetTile();
-        pair.second->Draw(&buffer, padding + (uf::vec2i(tile->GetRelX(), tile->GetRelY()) - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+        pair.second->Draw(&buffer, padding + (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
 	}
 	buffer.display();
     mutex.unlock();
@@ -137,9 +137,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
 					return;
 				}
 
-                Tile *newTileX = GetTileRel({lastTile->GetRelX() + moveCommand.x, lastTile->GetRelY() + controllable->GetShiftingDirection().y});
-                Tile *newTileY = GetTileRel({lastTile->GetRelX() + controllable->GetShiftingDirection().x, lastTile->GetRelY() + moveCommand.y});
-                Tile *newTileDiag = GetTileRel({lastTile->GetRelX() + moveCommand.x, lastTile->GetRelY() + moveCommand.y});
+                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveCommand.x, lastTile->GetRelPos().y + controllable->GetShiftingDirection().y});
+                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x + controllable->GetShiftingDirection().x, lastTile->GetRelPos().y + moveCommand.y});
+                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveCommand);
 
 				if (controllable->IsDense()) {
 					if (!newTileX || newTileX->IsBlocked()) moveCommand.x = 0;
@@ -206,10 +206,10 @@ void TileGrid::RemoveObject(uint id) {
 	}
 }
 
-void TileGrid::RelocateObject(uint id, int toX, int toY, int toObjectNum) {
-    Tile *tile = GetTileAbs({toX, toY});
+void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
+    Tile *tile = GetTileAbs(toVec);
     if (!tile) {
-        CC::log << "Wrong tile absolute coords (" << toX << toY << ")" << std::endl;
+        CC::log << "Wrong tile absolute coords (" << toVec.x << toVec.y << ")" << std::endl;
         return;
     }
 
@@ -231,7 +231,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
                 CC::log << "Move of unplaced object" << std::endl;
                 return;
             }
-            Tile *tile = GetTileRel({lastTile->GetRelX() + dir.x, lastTile->GetRelY() + dir.y});
+            Tile *tile = GetTileRel(lastTile->GetRelPos() + dir);
             if (!tile) {
                 CC::log << "Move to unknown tile" << std::endl;
                 return;
@@ -257,8 +257,8 @@ void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
 		}
 }
 
-void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
-    const uf::vec2i delta = uf::vec2i(newFirstX, newFirstY) - firstBlock;
+void TileGrid::ShiftBlocks(uf::vec2i newFirst) {
+    const uf::vec2i delta = newFirst - firstBlock;
     
     std::vector< std::vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
     for (auto &vect : newBlocks)
@@ -270,8 +270,7 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
                 y - delta.y >= 0 && y - delta.y < numOfVisibleBlocks) {
                 newBlocks[y - delta.y][x - delta.x] = blocks[y][x];
 				if (newBlocks[y - delta.y][x - delta.x]) {
-					newBlocks[y - delta.y][x - delta.x]->relX = x - delta.x;
-					newBlocks[y - delta.y][x - delta.x]->relY = y - delta.y;
+                    newBlocks[y - delta.y][x - delta.x]->relPos = { x - delta.x, y - delta.y };
 				}
             }
         }
@@ -279,23 +278,18 @@ void TileGrid::ShiftBlocks(const int newFirstX, const int newFirstY) {
 
     blocks = std::move(newBlocks);
 
-    firstBlock.x = newFirstX;
-    firstBlock.y = newFirstY;
-
+    firstBlock = newFirst;
     firstTile = firstBlock * blockSize;
 }
 
-void TileGrid::SetCameraPosition(const int x, const int y) {
-    cameraPos.x = x;
-    cameraPos.y = y;
-    cameraRelPos.x = x - firstTile.x;
-    cameraRelPos.y = y - firstTile.y;
+void TileGrid::SetCameraPosition(uf::vec2i pos) {
+    cameraPos = pos;
+    cameraRelPos = pos - firstTile;
 }
 
-void TileGrid::SetBlock(int x, int y, Block *block) {
-    blocks[y - firstBlock.y][x - firstBlock.x].reset(block);
-    block->relX = x - firstBlock.x;
-    block->relY = y - firstBlock.y;
+void TileGrid::SetBlock(uf::vec2i pos, Block *block) {
+    blocks[pos.y - firstBlock.y][pos.x - firstBlock.x].reset(block);
+    block->relPos = pos - firstBlock;
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
@@ -345,7 +339,7 @@ Object *TileGrid::GetObjectByPixel(uf::vec2i pixel) const {
     if (!locTile) return nullptr;
 
     const uf::vec2i tilePixel = pixel % tileSize;
-    Object *object = locTile->GetObjectByCoord(tilePixel.x, tilePixel.y);
+    Object *object = locTile->GetObjectByPixel(tilePixel);
 
     return object;
 }

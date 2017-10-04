@@ -16,22 +16,11 @@ namespace sf {
 }
 
 class Object {
-private:
-	uint id;
-	std::string name;
-	Sprite *sprite;
-	uf::Direction direction;
-	int layer;
-	bool dense;
-
-	sf::Vector2f shift;
-	sf::Vector2i shiftingDirection;
-	float shiftingSpeed;
-
-	Tile *tile;
-
 public:
-	explicit Object(uint spriteID = 0, const std::string &name = "");
+	Object();
+    Object(const Object &) = delete;
+    Object &operator=(const Object &) = delete;
+    ~Object() = default;
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
 	void Update(sf::Time timeElapsed);
@@ -43,6 +32,7 @@ public:
 	void ResetShifting();
 	void ReverseShifting(uf::Direction direction);
 
+    // TODO: Rename
 	bool checkObj(int x, int y);
 
 	uint GetID() const;
@@ -57,4 +47,18 @@ public:
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
 	friend Tile;
+
+private:
+    uint id;
+    std::string name;
+    Sprite *sprite;
+    uf::Direction direction;
+    int layer;
+    bool dense;
+
+    uf::vec2f shift;
+    uf::vec2i shiftingDirection;
+    float shiftingSpeed;
+
+    Tile *tile;
 };

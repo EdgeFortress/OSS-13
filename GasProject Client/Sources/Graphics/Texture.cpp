@@ -9,9 +9,7 @@ Texture::Texture(std::string path, nlohmann::json &config) :
     texture->loadFromFile(path);
 
     sizeOfTile = config["tileSize"];
-
-    xNumOfTiles = texture->getSize().x / sizeOfTile;
-    yNumOfTiles = texture->getSize().y / sizeOfTile;
+    numOfTiles = texture->getSize() / sizeOfTile;
 
     std::string title; // Can be same for few sequential sprites
     uint firstFrame = 0;
@@ -45,12 +43,15 @@ Texture::Texture(std::string path, nlohmann::json &config) :
     }
 }
 
-bool Texture::IsFramePixelTransparent(int x, int y, uint frame) const {
-    const uint textureX = x + frame % xNumOfTiles * sizeOfTile;
-    const uint textureY = y + frame / xNumOfTiles * sizeOfTile;
+bool Texture::IsFramePixelTransparent(uf::vec2u pixel, uint frame) const {
+    uf::vec2u texturePixel = pixel;
 
-    if (textureX < 0 || textureX >= texture->getSize().x || textureY < 0 || textureY >= texture->getSize().y) return true;
-    if (texture->copyToImage().getPixel(x, y).a == 0) return true;
+    texturePixel.x += frame % numOfTiles.x * sizeOfTile;
+    texturePixel.y += frame / numOfTiles.y * sizeOfTile;
+
+    if (texturePixel >= uf::vec2i(0, 0) && texturePixel < texture->getSize()) {
+        if (texture->copyToImage().getPixel(texturePixel.x, texturePixel.y).a == 0) return true;
+    }
 
     return false;
 }
@@ -58,7 +59,6 @@ bool Texture::IsFramePixelTransparent(int x, int y, uint frame) const {
 const std::vector<Sprite *> &Texture::GetSprites() const { return sprites; }
 sf::Texture *Texture::GetSFMLTexture() const { return texture.get(); }
 
-int Texture::GetXNumOfTiles() const { return xNumOfTiles; }
-int Texture::GetYNumOfTiles() const { return yNumOfTiles; }
+uf::vec2i Texture::GetNumOfTiles() const { return numOfTiles; }
 int Texture::GetSizeOfTile() const { return sizeOfTile; }
 

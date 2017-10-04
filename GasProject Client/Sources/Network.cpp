@@ -139,14 +139,14 @@ void Connection::parsePacket(Packet &packet) {
                 Int32 x, y, numOfBlocks;
                 packet >> x >> y >> numOfBlocks;
 
-                tileGrid->ShiftBlocks(x, y);
+                tileGrid->ShiftBlocks({x, y});
 
                 while (numOfBlocks) {
                     packet >> x >> y;
                     Block *block = new Block(tileGrid);
                     packet >> *(block);
 
-                    tileGrid->SetBlock(x, y, block);
+                    tileGrid->SetBlock({x, y}, block);
 
                     numOfBlocks--;
                 }
@@ -155,7 +155,7 @@ void Connection::parsePacket(Packet &packet) {
                 Int32 x, y;
                 packet >> x >> y;
 
-                tileGrid->SetCameraPosition(x, y);
+                tileGrid->SetCameraPosition({x, y});
 
             }
             if (options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
@@ -186,7 +186,7 @@ void Connection::parsePacket(Packet &packet) {
                             Int32 toX, toY, toObjectNum;
                             packet >> toX >> toY >> toObjectNum;
 
-                            tileGrid->RelocateObject(id, toX, toY, toObjectNum);
+                            tileGrid->RelocateObject(id, {toX, toY}, toObjectNum);
 
                             break;
                         }

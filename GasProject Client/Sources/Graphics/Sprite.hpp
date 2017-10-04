@@ -7,13 +7,13 @@ class Sprite {
 public:
     Sprite(Texture *t, const std::string &key, uint firstFrameIndex, uint frames, bool directed);
 
-    void Draw(sf::RenderTarget *, int x, int y, uf::Direction direction) const;
+    void Draw(sf::RenderTarget *, uf::vec2i pos, uf::Direction direction) const;
     void Resize(int size);
     void UpdateFrame();
 
     const std::string &GetKey() const;
     bool IsAnimated() const;
-    bool PixelTransparent(const int x, const int y) const;
+    bool PixelTransparent(uf::vec2u pixel) const;
 
 private:
     Texture *texture;

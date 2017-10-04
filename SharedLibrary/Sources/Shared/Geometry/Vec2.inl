@@ -105,6 +105,11 @@ namespace uf {
         return sf::Vector2<U>(U(x), U(y));
     }
 
+    template <typename T>
+    vec2<T>::operator bool() const {
+        return x != 0 || y != 0;
+    }
+
     //template <typename T>
     //std::ostream& operator<<(std::ostream& os, const uf::vec2<T>& vec) {
     //    os << "(" << vec.x << ", " << vec.y << ')';

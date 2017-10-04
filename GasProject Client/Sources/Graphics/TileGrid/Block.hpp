@@ -13,13 +13,6 @@ namespace sf {
 }
 
 class Block {
-private:
-	TileGrid *tileGrid;
-	int relX, relY;
-	//int id;
-
-	std::vector< std::vector< uptr<Tile> > > tiles;
-
 public:
 	explicit Block(TileGrid *tileGrid);
 	Block(const Block &) = delete;
@@ -28,11 +21,17 @@ public:
 
 	void Update(sf::Time);
 
-	int GetRelX() const;
-	int GetRelY() const;
+	uf::vec2i GetRelPos() const;
 	Tile *GetTile(int x, int y) const;
 	TileGrid *GetTileGrid() const;
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Block &block);
 	friend TileGrid;
+
+private:
+    TileGrid *tileGrid;
+    uf::vec2i relPos;
+    //int id;
+
+    std::vector< std::vector< uptr<Tile> > > tiles;
 };

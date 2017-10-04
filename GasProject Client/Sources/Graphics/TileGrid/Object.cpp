@@ -9,13 +9,12 @@
 #include "Graphics/Sprite.hpp"
 #include "Graphics/TileGrid.hpp"
 
-Object::Object(uint spriteID, const std::string &name) {
-	SetSprite(spriteID);
-	this->name = name;
-	direction = uf::Direction::NONE;
-	dense = false;
-	tile = nullptr;
-}
+Object::Object() :
+    id(0), sprite(nullptr),
+    direction(uf::Direction::NONE), dense(false),
+    layer(0), shiftingSpeed(0),
+    tile(nullptr)
+{ }
 
 void Object::SetSprite(uint id) {
 	sprite = CC::Get()->RM.GetSprite(id);
@@ -30,44 +29,48 @@ void Object::SetSpeed(float speed) {
 }
 
 void Object::SetShifting(uf::Direction direction, float speed) {
-	auto directionVect = sf::Vector2i(uf::DirectionToVect(direction));
+	uf::vec2i directionVect = uf::DirectionToVect(direction);
 	if (shiftingDirection != directionVect) shiftingDirection += directionVect;
 	shiftingSpeed = speed;
 }
 
 void Object::ResetShifting() {
-	shiftingDirection = sf::Vector2i(0, 0);
-	shift = sf::Vector2f(0, 0);
+    shiftingDirection = {};
+    shift = {};
 	shiftingSpeed = 0;
 }
 
 bool Object::checkObj(int x, int y) {
-	return !(sprite->PixelTransparent(x, y));
+    return !(sprite->PixelTransparent(uf::vec2u(x, y)));
 }
 
 void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
-	// TODO: simplify
-	int tileSize = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid()->GetTileSize();
-	if (sprite) sprite->Draw(target, pos.x + int(shift.x * tileSize), pos.y + int(shift.y * tileSize), direction);
+    TileGrid *tileGrid = tile->GetTileGrid();
+    if (!tileGrid) {
+        CC::log << "Error: try to draw object from unplaced tiled!" << std::endl;
+    }
+    int tileSize = tileGrid->GetTileSize();
+    if (sprite) sprite->Draw(target, pos + shift * tileSize, direction);
 }
 
 void Object::Update(sf::Time timeElapsed) {
-	if (shiftingDirection.x) {
-		shift.x += shiftingDirection.x * timeElapsed.asSeconds() * shiftingSpeed;
-	}
-	else {
-		if (shift.x * uf::sgn(shift.x) > timeElapsed.asSeconds() * shiftingSpeed)
-			shift.x -= uf::sgn(shift.x) * timeElapsed.asSeconds() * shiftingSpeed;
-		else shift.x = 0;
-	}
-	if (shiftingDirection.y) {
-		shift.y += shiftingDirection.y * timeElapsed.asSeconds() * shiftingSpeed;
-	}
-	else {
-		if (shift.y * uf::sgn(shift.y) > timeElapsed.asSeconds() * shiftingSpeed)
-			shift.y -= uf::sgn(shift.y) * timeElapsed.asSeconds() * shiftingSpeed;
-		else shift.y = 0;
-	}
+    if (shiftingDirection) {
+        shift += shiftingDirection * timeElapsed.asSeconds() * shiftingSpeed;
+    }
+
+    if (shift) {
+        float delta = timeElapsed.asSeconds() * shiftingSpeed;
+        if (!shiftingDirection.x) {
+            if (shift.x * uf::sgn(shift.x) > delta)
+                shift.x -= uf::sgn(shift.x) * delta;
+            else shift.x = 0;
+        }
+        if (!shiftingDirection.y) {
+            if (shift.y * uf::sgn(shift.y) > delta)
+                shift.y -= uf::sgn(shift.y) * delta;
+            else shift.y = 0;
+        }
+    }
 }
 
 void Object::ReverseShifting(uf::Direction direction) {

@@ -8,8 +8,9 @@
 #include "Object.hpp"
 
 Tile::Tile(Block *block, const int x, const int y) :
-	block(block), x(x), y(y),
-	sprite(nullptr) { };
+	block(block), pos(x, y),
+	sprite(nullptr) 
+{ };
 
 Tile::~Tile() {
 	for (auto &object : content) {
@@ -19,8 +20,8 @@ Tile::~Tile() {
 	}
 }
 
-void Tile::Draw(sf::RenderTarget *target, uf::vec2i pos) const {
-	if (sprite) sprite->Draw(target, pos.x, pos.y, uf::Direction::NONE);
+void Tile::Draw(sf::RenderTarget *target, uf::vec2i screenPos) const {
+	if (sprite) sprite->Draw(target, screenPos, uf::Direction::NONE);
 }
 
 void Tile::Update(sf::Time timeElapsed) { }
@@ -68,12 +69,11 @@ void Tile::Clear() {
 	sprite = nullptr;
 }
 
-int Tile::GetRelX() const { return block->GetRelX() * block->GetTileGrid()->GetBlockSize() + x; }
-int Tile::GetRelY() const { return block->GetRelY() * block->GetTileGrid()->GetBlockSize() + y; }
+uf::vec2i Tile::GetRelPos() const { return block->GetRelPos() * block->GetTileGrid()->GetBlockSize() + pos; }
 
-Object *Tile::GetObjectByCoord(const unsigned x, const unsigned y) const {
+Object *Tile::GetObjectByPixel(uf::vec2i pixel) const {
 	for (auto obj = content.rbegin(); obj != content.rend(); obj++) {
-		if ((*obj)->checkObj(x, y))
+		if ((*obj)->checkObj(pixel.x, pixel.y))
 			return *obj;
 	}
 	return nullptr;
@@ -84,6 +84,10 @@ Object *Tile::GetObject(uint id) {
 		if ((*iter)->id == id)
 			return *iter;
 	return nullptr;
+}
+
+TileGrid *Tile::GetTileGrid() {
+    return block->GetTileGrid();
 }
 
 bool Tile::IsBlocked() {

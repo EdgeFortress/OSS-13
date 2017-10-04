@@ -15,12 +15,6 @@ namespace sf {
 }
 
 class Tile {
-private:
-	Block *block;
-	const int x, y;
-	Sprite *sprite;
-	std::list<Object *> content;
-
 public:
 	Tile(Block *block, const int x, const int y);
 	Tile(const Tile &) = delete;
@@ -35,10 +29,10 @@ public:
 	Object *RemoveObject(Object *obj);
 	void Clear();
 
-	int GetRelX() const;
-	int GetRelY() const;
-	Object *GetObjectByCoord(const unsigned x, const unsigned y) const;
+	uf::vec2i GetRelPos() const;
+	Object *GetObjectByPixel(uf::vec2i pixel) const;
 	Object *GetObject(uint id);
+    TileGrid *GetTileGrid();
 	bool IsBlocked();
 	
 	// TODO: remove this
@@ -46,4 +40,10 @@ public:
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 	friend TileGrid;
+
+private:
+    Block *block;
+    const uf::vec2i pos;
+    Sprite *sprite;
+    std::list<Object *> content;
 };

@@ -32,13 +32,19 @@ namespace uf {
         vec2<T> operator/=(T a);
         vec2<T> operator%=(T a);
 
+        // True if true for both coordinates
 		bool operator<=(const vec2<T> &other) const;
+        // True if true for both coordinates
 		bool operator<(const vec2<T> &other) const;
+        // True if true for both coordinates
 		bool operator>=(const vec2<T> &other) const;
+        // True if true for both coordinates
 		bool operator>(const vec2<T> &other) const;
 
         template<typename U>
 		operator sf::Vector2<U>() const;
+        // True if one of the coordinates is different from zero
+        operator bool() const;
 
         //friend std::ostream &operator<< <T>(std::ostream &, const vec2<T> &);
 	};

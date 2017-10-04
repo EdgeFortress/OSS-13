@@ -15,43 +15,6 @@ namespace sf {
 }
 
 class TileGrid : public Widget {
-private:
-    uf::vec2i numOfTiles;
-    int tileSize;
-
-    // Camera position
-    uf::vec2i cameraPos;
-    uf::vec2i cameraRelPos;
-    uf::vec2f shift;
-    
-    // TileGrid padding
-    uf::vec2i padding;
-
-    int blockSize;
-    uf::vec2i firstBlock;
-    uf::vec2i firstTile;
-    int numOfVisibleBlocks;
-
-    mutable std::mutex mutex;
-
-    std::vector< std::vector< sptr<Block> > > blocks;
-    std::list< uptr<Object> > objects;
-
-    // Controls
-    Object *controllable;
-    float controllableSpeed;
-    const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
-    uf::vec2i moveCommand;
-    sf::Time actionSendPause;
-
-    Object *clickedObject;
-
-	bool buildButtonPressed;
-	bool ghostButtonPressed;
-
-protected:
-	void draw() const override final;
-
 public:
     TileGrid();
     TileGrid(const TileGrid &) = delete;
@@ -74,14 +37,14 @@ public:
         // Differences commiting
         void AddObject(Object *object);
         void RemoveObject(uint id);
-        void RelocateObject(uint id, int toX, int toY, int toObjectNum);
+        void RelocateObject(uint id, uf::vec2i toVec, int toObjectNum);
         void MoveObject(uint id, uf::Direction direction, float speed);
 		void ChangeObjectDirection(uint id, uf::Direction direction);
 
-        void ShiftBlocks(const int newFirstX, const int newFirstY);
+        void ShiftBlocks(uf::vec2i newFirst);
 
-        void SetCameraPosition(const int x, const int y);
-        void SetBlock(int x, int y, Block *);
+        void SetCameraPosition(uf::vec2i newPos);
+        void SetBlock(uf::vec2i pos, Block *);
         void SetControllable(uint id, float speed);
 
     ////
@@ -96,4 +59,41 @@ public:
 
     friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
+
+protected:
+    void draw() const override final;
+
+private:
+    uf::vec2i numOfTiles;
+    int tileSize;
+
+    // Camera position
+    uf::vec2i cameraPos;
+    uf::vec2i cameraRelPos;
+    uf::vec2f shift;
+
+    // TileGrid padding
+    uf::vec2i padding;
+
+    int blockSize;
+    uf::vec2i firstBlock;
+    uf::vec2i firstTile;
+    int numOfVisibleBlocks;
+
+    mutable std::mutex mutex;
+
+    std::vector< std::vector< sptr<Block> > > blocks;
+    std::list< uptr<Object> > objects;
+
+    // Controls
+    Object *controllable;
+    float controllableSpeed;
+    const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
+    uf::vec2i moveCommand;
+    sf::Time actionSendPause;
+
+    Object *clickedObject;
+
+    bool buildButtonPressed;
+    bool ghostButtonPressed;
 };
