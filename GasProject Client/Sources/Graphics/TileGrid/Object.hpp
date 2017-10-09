@@ -15,16 +15,19 @@ namespace sf {
 	class Packet;
 }
 
+#include "iostream"
+
 class Object {
 public:
 	Object();
-    Object(const Object &) = delete;
-    Object &operator=(const Object &) = delete;
-    ~Object() = default;
+    Object(const Object &) = default;
+    Object &operator=(Object &) = default;
+    ~Object() {  }
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
 	void Update(sf::Time timeElapsed);
 
+    void SetID(uint id) { this->id = id; }
 	void SetSprite(uint spriteID);
 	void SetDirection(const uf::Direction);
 	void SetSpeed(float speed);
@@ -32,13 +35,11 @@ public:
 	void ResetShifting();
 	void ReverseShifting(uf::Direction direction);
 
-    // TODO: Rename
-	bool checkObj(int x, int y);
-
 	uint GetID() const;
 	std::string GetName() const;
 	Sprite *GetSprite() const;
-	int GetLayer() const;
+	uint GetLayer() const;
+    bool PixelTransparent(uf::vec2i pixel);
 
 	Tile *GetTile();
 	sf::Vector2f GetShift() const;
@@ -53,7 +54,7 @@ private:
     std::string name;
     Sprite *sprite;
     uf::Direction direction;
-    int layer;
+    uint layer;
     bool dense;
 
     uf::vec2f shift;

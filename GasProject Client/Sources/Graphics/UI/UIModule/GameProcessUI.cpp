@@ -48,6 +48,10 @@ void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
 void GameProcessUI::Update(sf::Time timeElapsed) {
     for (auto &widget : widgets)
         widget->Update(timeElapsed);
+
+    Object *objectUnderCursor = tileGrid->GetObjectUnderCursor();
+    if (!objectUnderCursor) infoLabel->SetText("");
+    else infoLabel->SetText(objectUnderCursor->GetName());
 }
 
 void GameProcessUI::HandleEvent(sf::Event event) {
@@ -72,12 +76,6 @@ void GameProcessUI::HandleEvent(sf::Event event) {
             break;
         }
     default:
-        break;
-    }
-    case sf::Event::MouseMoved: {
-        Object *obj = tileGrid->GetObjectByPixel({event.mouseMove.x, event.mouseMove.y});
-        if (obj != nullptr) infoLabel->SetText(obj->GetName());
-        else infoLabel->SetText("");
         break;
     }
     }

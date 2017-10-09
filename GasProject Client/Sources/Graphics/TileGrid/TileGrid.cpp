@@ -15,8 +15,8 @@
 
 TileGrid::TileGrid() :
     tileSize(0), blockSize(Global::BLOCK_SIZE), 
-    controllable(nullptr), controllableSpeed(0),
-    clickedObject(nullptr), buildButtonPressed(false), ghostButtonPressed(false)
+    controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
+    underCursorObject(nullptr), buildButtonPressed(false), ghostButtonPressed(false)
 {
     //
     // Count num of visible blocks by tile padding and FOV
@@ -33,33 +33,45 @@ TileGrid::TileGrid() :
 
 	canBeActive = true;
 
-    clickedObject = nullptr;
-	ghostButtonPressed = false;
-	buildButtonPressed = false;
+    layersBuffer.resize(100);
 }
 
 void TileGrid::draw() const {
-    mutex.lock();
+    std::unique_lock<std::mutex> lock(mutex);
+
+    underCursorObject = nullptr;
 	buffer.clear();
-    std::multimap<int, Object *> objects;
 	const int border = Global::FOV / 2 + Global::MIN_PADDING;
-    // tiles positions relative to camera
-    uf::vec2i tilePos;
+
+    // Firstly, fill layers buffer by objects
+    uf::vec2i tilePos; // tiles positions relative to camera
     for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
         for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
             Tile *tile = GetTileAbs(cameraPos + tilePos);
             if (tile) {
                 tile->Draw(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
-                for (auto &obj : tile->GetContent())
-                    objects.insert(std::pair<int, Object *>(obj->GetLayer(), obj));
+                for (auto &obj : tile->content) {
+                    uint layer = obj->GetLayer();
+                    if (layer) layersBuffer[obj->GetLayer()].push_back(obj); // if layer is 0, then object will not be drawn
+                }
             }
         }
-	for (auto &pair : objects) {
-        Tile *tile = pair.second->GetTile();
-        pair.second->Draw(&buffer, padding + (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
-	}
+
+    // Secondly, draw layers
+	for (auto &layerObjects : layersBuffer) {
+        for (auto &object: layerObjects) {
+            Tile *tile = object->GetTile();
+            uf::vec2i pixel = padding + (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
+            object->Draw(&buffer, pixel);
+            if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
+                if (!object->PixelTransparent(cursorPosition - pixel))
+                    underCursorObject = object;
+            }
+	    }
+        layerObjects.clear(); // clear buffer
+    }
+
 	buffer.display();
-    mutex.unlock();
 }
 
 void TileGrid::SetSize(const uf::vec2i &size) {
@@ -76,15 +88,25 @@ void TileGrid::SetSize(const uf::vec2i &size) {
 bool TileGrid::HandleEvent(sf::Event event) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed: {
-        CC::log << "CHECK" << std::endl;
-		const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-            clickedObject = GetObjectByPixel({event.mouseButton.x, event.mouseButton.y});
-            if (clickedObject) CC::log << clickedObject->GetName() << std::endl;
-			return true;
+        if (underCursorObject) {
+            objectClicked = true;
+            return true;
         }
-		break;
+        return false;
 	}
+    case sf::Event::MouseMoved: {
+        cursorPosition = { event.mouseMove.x, event.mouseMove.y };
+        cursorPosition -= GetAbsPosition() + padding;
+        if (cursorPosition <= GetSize()) return true;
+        else {
+            cursorPosition = { -1, -1 };
+            return false;
+        }
+    }
+    case sf::Event::MouseLeft: {
+        cursorPosition = { -1, -1 };
+        return true;
+    }
 	case sf::Event::KeyPressed: {
         switch (event.key.code) {
             case sf::Keyboard::Up:
@@ -120,7 +142,8 @@ bool TileGrid::HandleEvent(sf::Event event) {
 }
 
 void TileGrid::Update(sf::Time timeElapsed) {
-	mutex.lock();
+    std::unique_lock<std::mutex> lock(mutex);
+
     if (actionSendPause != sf::Time::Zero) {
         actionSendPause -= timeElapsed;
         if (actionSendPause < sf::Time::Zero) actionSendPause = sf::Time::Zero;
@@ -137,26 +160,31 @@ void TileGrid::Update(sf::Time timeElapsed) {
 					return;
 				}
 
-                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveCommand.x, lastTile->GetRelPos().y + controllable->GetShiftingDirection().y});
-                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x + controllable->GetShiftingDirection().x, lastTile->GetRelPos().y + moveCommand.y});
-                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveCommand);
+                uf::vec2i newShiftingDirection = controllable->GetShiftingDirection();
+                if (moveCommand.x) newShiftingDirection.x = moveCommand.x;
+                if (moveCommand.y) newShiftingDirection.y = moveCommand.y;
+
+                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + newShiftingDirection.x, lastTile->GetRelPos().y});
+                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + newShiftingDirection.y});
+                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + newShiftingDirection);
 
 				if (controllable->IsDense()) {
-					if (!newTileX || newTileX->IsBlocked()) moveCommand.x = 0;
-					if (!newTileY || newTileY->IsBlocked()) moveCommand.y = 0;
-					if (!newTileDiag || newTileDiag->IsBlocked()) moveCommand = sf::Vector2i();
+                    if (!newTileDiag || newTileDiag->IsBlocked()) newShiftingDirection = controllable->GetShiftingDirection();
+					if (!newTileX || newTileX->IsBlocked()) newShiftingDirection.x = 0;
+					if (!newTileY || newTileY->IsBlocked()) newShiftingDirection.y = 0;
 				}
 
-				controllable->SetShifting(uf::VectToDirection(moveCommand), controllableSpeed);
+				controllable->SetShifting(uf::VectToDirection(newShiftingDirection), controllableSpeed);
 			}
 			else
 				CC::log << "Controllable not determine" << std::endl;
 
 			moveCommand = sf::Vector2i();
 		}
-        if (clickedObject) {
-            Connection::commandQueue.Push(new ClickObjectClientCommand(clickedObject->GetID()));
-            clickedObject = nullptr;
+        if (objectClicked) {
+            CC::log << underCursorObject->GetName() << "clicked" << std::endl;
+            Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
+            objectClicked = false;
         }
 		if (buildButtonPressed) {
 			Connection::commandQueue.Push(new BuildClientCommand());
@@ -169,15 +197,20 @@ void TileGrid::Update(sf::Time timeElapsed) {
         actionSendPause = ACTION_TIMEOUT;
     }
 
-    
     for (auto iter = objects.begin(); iter != objects.end();) {
-        (*iter)->Update(timeElapsed);
-        if (!(*iter)->GetTile()) iter = objects.erase(iter);
-        else iter++;
+        Object *obj = iter->second.get();
+        
+        if (!obj->GetTile()) {
+            if (underCursorObject == obj) underCursorObject = nullptr;
+            iter = objects.erase(iter);
+        }
+        else {
+            obj->Update(timeElapsed);
+            iter++;
+        }
     }
     
 	if (controllable) shift = controllable->GetShift();
-	mutex.unlock();
 }
 
 void TileGrid::LockDrawing() {
@@ -189,21 +222,17 @@ void TileGrid::UnlockDrawing() {
 }
 
 void TileGrid::AddObject(Object *object) {
-    objects.push_back(uptr<Object>(object));
+    objects[object->GetID()] = uptr<Object>(object);
 }
 
 void TileGrid::RemoveObject(uint id) {
-	// TODO: Crutch to be removed
-	if (!objects.empty()) {
-		for (auto iter = objects.begin(); iter != objects.end(); iter++)
-			if ((*iter)->GetID() == id) {
-				Object *obj = iter->get();
-				if (obj->GetTile()) obj->GetTile()->RemoveObject(obj);
-				objects.erase(iter);
-				return;
-			}
-		CC::log << "Error: object with id" << id << "is not exist" << std::endl;
-	}
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        Object *obj = iter->second.get();
+        if (obj->GetTile()) obj->GetTile()->RemoveObject(obj);
+    }
+
+    CC::log << "Error: object with id" << id << "is not exist (TileGrid::RemoveObject)" << std::endl;
 }
 
 void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
@@ -213,48 +242,52 @@ void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
         return;
     }
 
-    for (auto &obj : objects)
-        if (obj->GetID() == id) {
-            tile->AddObject(obj.get(), toObjectNum);
-            obj->ResetShifting();
-            return;
-        }
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        Object *obj = iter->second.get();
+        tile->AddObject(obj, toObjectNum);
+        obj->ResetShifting();
+        return;
+    }
+
     CC::log << "Wrong object ID:" << id << std::endl;
 }
 
 void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
-    for (auto &obj : objects)
-        if (obj->GetID() == id) {
-            uf::vec2i dir = uf::DirectionToVect(direction);
-            Tile *lastTile = obj->GetTile();
-            if (!lastTile) {
-                CC::log << "Move of unplaced object" << std::endl;
-                return;
-            }
-            Tile *tile = GetTileRel(lastTile->GetRelPos() + dir);
-            if (!tile) {
-                CC::log << "Move to unknown tile" << std::endl;
-                return;
-            }
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        Object *obj = iter->second.get();
+        uf::vec2i dir = uf::DirectionToVect(direction);
 
-			obj->SetSpeed(speed);
-
-            //obj->SetShifting(direction, speed);
-            tile->AddObject(obj.get(), 0);
-			obj->ReverseShifting(direction);
-			if (obj.get() == controllable) shift = controllable->GetShift();
-
+        Tile *lastTile = obj->GetTile();
+        if (!lastTile) {
+            CC::log << "Move of unplaced object" << std::endl;
             return;
         }
+        Tile *tile = GetTileRel(lastTile->GetRelPos() + dir);
+        if (!tile) {
+            CC::log << "Move to unknown tile" << std::endl;
+            return;
+        }
+
+        obj->SetSpeed(speed);
+
+        //obj->SetShifting(direction, speed);
+        tile->AddObject(obj, 0);
+        obj->ReverseShifting(direction);
+        if (obj == controllable) shift = controllable->GetShift();
+        
+        return;
+    }
 	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << std::endl;
 }
 
 void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
-	for (auto &obj : objects)
-		if (obj->GetID() == id) {
-			obj->SetDirection(direction);
-			return;
-		}
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        Object *obj = iter->second.get();
+        obj->SetDirection(direction);
+    }
 }
 
 void TileGrid::ShiftBlocks(uf::vec2i newFirst) {
@@ -293,26 +326,14 @@ void TileGrid::SetBlock(uf::vec2i pos, Block *block) {
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
-	for (auto &obj : objects) {
-		if (obj->GetID() == id) {
-			controllable = obj.get();
-			controllableSpeed = speed;
-			return;
-		}
-	}
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        controllable = iter->second.get();
+        controllableSpeed = speed;
+        return;
+    }
 	CC::log << "Error! New controllable wasn't founded" << std::endl;
 }
-
-//wptr<Block> TileGrid::GetBlock(const int blockX, const int blockY) const {
-//    int relBlockX = blockX - firstBlockX;
-//    int relBlockY = blockY - firstBlockY;
-//
-//    if (relBlockX < 0 || relBlockX >= numOfVisibleBlocks ||
-//        relBlockY < 0 || relBlockY >= numOfVisibleBlocks)
-//        return wptr<Block>();
-//
-//    return wptr<Block>(blocks[relBlockY][relBlockX]);
-//}
 
 Tile *TileGrid::GetTileRel(uf::vec2i rpos) const {
     if (rpos >= uf::vec2i(0) && rpos < uf::vec2i(int(blocks.size() * blockSize))) {
@@ -332,19 +353,8 @@ Tile *TileGrid::GetTileAbs(uf::vec2i apos) const {
     return GetTileRel(apos);
 }
 
-Object *TileGrid::GetObjectByPixel(uf::vec2i pixel) const {
-    pixel -= padding;
-    const uf::vec2i tile = pixel / tileSize + cameraRelPos - numOfTiles / 2;
-    Tile *locTile = GetTileRel(tile);
-    if (!locTile) return nullptr;
-
-    const uf::vec2i tilePixel = pixel % tileSize;
-    Object *object = locTile->GetObjectByPixel(tilePixel);
-
-    return object;
-}
-
-const int TileGrid::GetBlockSize() const { return blockSize; }
-const int TileGrid::GetTileSize() const { return tileSize; }
+int TileGrid::GetBlockSize() const { return blockSize; }
+int TileGrid::GetTileSize() const { return tileSize; }
+Object *TileGrid::GetObjectUnderCursor() const { return underCursorObject; }
 //const int TileGrid::GetPaddingX() const { return padding.x; }
 //const int TileGrid::GetPaddingY() const { return padding.y; }

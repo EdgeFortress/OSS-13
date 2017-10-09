@@ -30,13 +30,9 @@ public:
 	void Clear();
 
 	uf::vec2i GetRelPos() const;
-	Object *GetObjectByPixel(uf::vec2i pixel) const;
 	Object *GetObject(uint id);
     TileGrid *GetTileGrid();
 	bool IsBlocked();
-	
-	// TODO: remove this
-	const std::list<Object *> &GetContent() const { return content; }
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 	friend TileGrid;

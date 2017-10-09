@@ -1,7 +1,7 @@
 #pragma once
 
-#include <list>
 #include <vector>
+#include <unordered_map>
 #include <mutex>
 #include "SFML/System/Time.hpp" 
 
@@ -49,13 +49,11 @@ public:
 
     ////
 
-    //wptr<Block> GetBlock(const int blockX, const int blockY) const;
     Tile *GetTileRel(uf::vec2i) const;
     Tile *GetTileAbs(uf::vec2i) const;
-    Object *GetObjectByPixel(uf::vec2i) const;
-
-	const int GetBlockSize() const;
-	const int GetTileSize() const;
+	int GetBlockSize() const;
+	int GetTileSize() const;
+    Object *GetObjectUnderCursor() const;
 
     friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
@@ -80,10 +78,11 @@ private:
     uf::vec2i firstTile;
     int numOfVisibleBlocks;
 
-    mutable std::mutex mutex;
-
     std::vector< std::vector< sptr<Block> > > blocks;
-    std::list< uptr<Object> > objects;
+    std::unordered_map< uint, uptr<Object> > objects;
+
+    mutable std::mutex mutex;
+    mutable std::vector< std::vector<Object *> > layersBuffer;
 
     // Controls
     Object *controllable;
@@ -92,8 +91,10 @@ private:
     uf::vec2i moveCommand;
     sf::Time actionSendPause;
 
-    Object *clickedObject;
+    uf::vec2i cursorPosition;
+    mutable Object *underCursorObject;
 
     bool buildButtonPressed;
     bool ghostButtonPressed;
+    bool objectClicked;
 };

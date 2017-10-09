@@ -21,7 +21,8 @@ void Object::SetSprite(uint id) {
 }
 
 void Object::SetDirection(const uf::Direction direction) {
-	this->direction = direction;
+    // cut the diagonal directions
+	this->direction = uf::Direction(char(direction) % 4);
 }
 
 void Object::SetSpeed(float speed) {
@@ -30,7 +31,7 @@ void Object::SetSpeed(float speed) {
 
 void Object::SetShifting(uf::Direction direction, float speed) {
 	uf::vec2i directionVect = uf::DirectionToVect(direction);
-	if (shiftingDirection != directionVect) shiftingDirection += directionVect;
+	shiftingDirection = directionVect;
 	shiftingSpeed = speed;
 }
 
@@ -38,10 +39,6 @@ void Object::ResetShifting() {
     shiftingDirection = {};
     shift = {};
 	shiftingSpeed = 0;
-}
-
-bool Object::checkObj(int x, int y) {
-    return !(sprite->PixelTransparent(uf::vec2u(x, y)));
 }
 
 void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
@@ -74,16 +71,19 @@ void Object::Update(sf::Time timeElapsed) {
 }
 
 void Object::ReverseShifting(uf::Direction direction) {
-	sf::Vector2i directionVect = uf::DirectionToVect(direction);
+	uf::vec2i directionVect = uf::DirectionToVect(direction);
 	if (directionVect.x) shiftingDirection.x = 0;
 	if (directionVect.y) shiftingDirection.y = 0;
-	shift -= sf::Vector2f(directionVect);
+	shift -= directionVect;
 }
 
 uint Object::GetID() const { return id; }
 std::string Object::GetName() const { return name; }
 Sprite *Object::GetSprite() const { return sprite; }
-int Object::GetLayer() const { return layer; }
+uint Object::GetLayer() const { return layer; }
+bool Object::PixelTransparent(uf::vec2i pixel) {
+    return sprite->PixelTransparent(pixel);
+}
 
 Tile *Object::GetTile() { return tile; }
 sf::Vector2f Object::GetShift() const { return shift; }

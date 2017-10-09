@@ -25,7 +25,6 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
 		testMob->GetComponent<Control>()->MoveCommand(sf::Vector2i(test_dx, test_dy));
-        //map->GetTile(x, y)->AddObject(testMob);
     }
     
     map->Update(timeElapsed);

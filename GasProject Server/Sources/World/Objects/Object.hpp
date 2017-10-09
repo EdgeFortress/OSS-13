@@ -57,6 +57,7 @@ protected:
     bool density;
     bool movable;
     std::string sprite;
+    // Object layer 1-100. The smaller layer is lower.
     uint layer;
     uf::Direction direction;
 
