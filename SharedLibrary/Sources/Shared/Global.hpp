@@ -13,7 +13,7 @@ namespace Global {
 		REMOVE,
 		RELOCATE,
 		MOVE,
-		//SHIFT,
+		CHANGE_SPRITE,
 		CHANGE_DIRECTION
 	};
 }

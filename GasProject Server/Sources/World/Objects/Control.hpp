@@ -11,7 +11,10 @@ class Control : public Component {
 private:
 	float speed;
 	uf::vec2i moveIntent;
-	uf::vec2i moveOrder; // receive from player
+
+    // receive from player
+	uf::vec2i moveOrder; 
+    uint clickedObjectID;
 
 	Player *player;
 
@@ -21,6 +24,7 @@ public:
 	void Update(sf::Time timeElapsed) override;
 
 	void MoveCommand(uf::vec2i order);
+    void ClickObjectCommand(uint id);
 
 	float GetSpeed() const;
 	Player *GetPlayer() const;

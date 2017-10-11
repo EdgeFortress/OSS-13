@@ -6,12 +6,11 @@
 #include "Network/Differences.hpp"
 
 Object::Object() {
-    takeID();
     tile = nullptr;
     name = "";
 	direction = uf::Direction::NONE;
-    movable = true;
-    CurThreadGame->GetWorld()->AddObject(this);
+    movable = true;;
+    id = CurThreadGame->GetWorld()->addObject(this);
 }
 
 void Object::Update(sf::Time timeElapsed) {
@@ -25,12 +24,17 @@ void Object::AddComponent(Component *new_component) {
     components.push_back(uptr<Component>(new_component));
 }
 
+void Object::Delete() {
+    if (tile) tile->RemoveObject(this);
+    id = 0;
+}
+
 uint Object::ID() const { return id; }
 std::string Object::GetName() const { return name; }
 Tile *Object::GetTile() const { return tile; }
-
-bool Object::GetDensity() const { return density; }
-bool Object::IsMovable() const { return movable; }
+;
+bool Object::GetDensity() const { return density; };
+bool Object::IsMovable() const { return movable; };
 uint Object::GetInvisibility() const { return invisibility; }
 bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
@@ -60,11 +64,4 @@ void Object::SetShift(uf::vec2f shift) {
 
 const ObjectInfo Object::GetObjectInfo() const {
     return std::move(ObjectInfo(id, Server::Get()->RM->GetIconNum(sprite), name, layer, direction, density));
-}
-
-void Object::takeID() {
-    static uint lastID = 0;
-    lastID++;
-    if (!lastID) Server::log << "Error: object ID overflow" << std::endl;
-    id = lastID;
 }

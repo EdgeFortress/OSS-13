@@ -8,12 +8,15 @@
 #include "Server.hpp"
 
 Control::Control(float speed) : 
-	speed(speed), player(nullptr)
+	speed(speed), player(nullptr), clickedObjectID(0)
 {
 
 }
 
 void Control::Update(sf::Time timeElapsed) {
+    ////
+    //// Movement
+    ////
 	const uf::vec2i order = moveOrder;
     moveOrder = {};
 
@@ -88,10 +91,23 @@ void Control::Update(sf::Time timeElapsed) {
             }
         }
     }
+
+    ////
+    //// Click
+    ////
+    if (clickedObjectID) {
+        Object *clickedObject = CurThreadGame->GetWorld()->GetObject(clickedObjectID);
+        clickedObject->Interact(nullptr);
+        clickedObjectID = 0;
+    }
 }
 
 void Control::MoveCommand(uf::vec2i order) {
 	moveOrder = order;
+}
+
+void Control::ClickObjectCommand(uint id) {
+    clickedObjectID = id;
 }
 
 float Control::GetSpeed() const { return speed; }

@@ -29,16 +29,15 @@ void World::Update(sf::Time timeElapsed) {
     
     map->Update(timeElapsed);
 
-    for (unsigned i = 0; i < objects.size();) {
-        const auto len = objects.size();
-		Object *object = (objects.begin() + i)->get();
-		if (object->GetTile())
-			object->Update(timeElapsed);
-		else
-			objects.erase(objects.begin() + i);
-		int delta = int(objects.size() - len + 1);
-		if (delta < 0) delta = 0;
-		i += delta;
+    // update objects
+    for (uint i = 0; i < objects.size(); i++) {
+        if (!objects[i].get()) continue; // already deleted
+        if (!objects[i]->ID()) {         // waiting for delete
+            objects[i].release();
+            free_ids.push_back(i + 1);
+            continue;
+        }
+        objects[i]->Update(timeElapsed);
     }
 }
 
@@ -72,12 +71,30 @@ void World::FillingWorld() {
     }
 }
 
-void World::AddObject(Object *obj) {
-    objects.push_back(uptr<Object>(obj));
-}
-
 Creature *World::CreateNewPlayerCreature() const {
     Creature *creature = new Human();
     map->GetTile(50, 50)->PlaceTo(creature);
     return creature;
+}
+
+Object *World::GetObject(uint id) {
+    if (id <= objects.size()) {
+        Object *object = objects[id - 1].get();
+        if (!object || !object->ID())
+            return nullptr; // object deleted
+        return object;
+    }
+    return nullptr;
+}
+
+uint World::addObject(Object *obj) {
+    if (free_ids.empty()) {
+        objects.push_back(uptr<Object>(obj));
+        return uint(objects.size());
+    } else {
+        uint id = free_ids.back();
+        free_ids.pop_back();
+        objects[id - 1] = uptr<Object>(obj);
+        return id;
+    }
 }

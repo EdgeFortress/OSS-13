@@ -39,6 +39,10 @@ void Player::Move(uf::Direction direction) {
 	actions.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
+void Player::ClickObject(uint id) {
+    actions.Push(new ClickObjectPlayerCommand(id));
+}
+
 void Player::Build() {
 	actions.Push(new BuildPlayerCommand());
 }
@@ -63,6 +67,13 @@ void Player::Update() {
 					}
 					break;
 				}
+                case PlayerCommand::Code::CLICK_OBJECT: {
+                    if (control) {
+                        auto clickObjectPlayerCommand = dynamic_cast<ClickObjectPlayerCommand *>(temp);
+                        control->ClickObjectCommand(clickObjectPlayerCommand->id);
+                    }
+                    break;
+                }
 				case PlayerCommand::Code::BUILD: {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();
@@ -80,7 +91,7 @@ void Player::Update() {
 						SetControl(ghost->GetComponent<Control>());
 					} else {
 						SetControl(ghost->GetHostControl());
-						ghost->GetTile()->RemoveObject(ghost);
+                        ghost->Delete();
 					}
 					break;
 				}

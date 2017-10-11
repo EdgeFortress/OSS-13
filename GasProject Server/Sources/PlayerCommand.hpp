@@ -9,6 +9,7 @@ struct PlayerCommand {
         NONE = 0,
         JOIN,
 		MOVE,
+        CLICK_OBJECT,
 		BUILD,
 		GHOST
     };
@@ -28,6 +29,11 @@ struct JoinPlayerCommand : public PlayerCommand {
 struct MovePlayerCommand : public PlayerCommand {
 	uf::vec2i order;
 	MovePlayerCommand(uf::vec2i order);
+};
+
+struct ClickObjectPlayerCommand : public PlayerCommand {
+    uint id;
+    ClickObjectPlayerCommand(uint id);
 };
 
 struct BuildPlayerCommand : public PlayerCommand {

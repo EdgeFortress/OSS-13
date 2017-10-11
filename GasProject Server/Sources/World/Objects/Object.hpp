@@ -19,13 +19,13 @@ public:
     virtual void Update(sf::Time timeElapsed);
 
     virtual void Interact(Object *) = 0;
-
     void AddComponent(Component *);
-    template <class T> T *GetComponent();
+    void Delete();
 
     uint ID() const;
     std::string GetName() const;
     Tile *GetTile() const;
+    template<class T> T *GetComponent();
 
     bool GetDensity() const;
     bool IsMovable() const;
@@ -74,8 +74,6 @@ private:
     uint id;
     Tile *tile;
     std::list<uptr<Component>> components;
-
-    void takeID();
 };
 
 template <class T> T *Object::GetComponent() {

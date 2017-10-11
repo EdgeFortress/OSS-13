@@ -13,32 +13,32 @@
             "directed": false
         },
         {
-            "sprite": "door",
+            "sprite": "airlock",
             "frames": 1,
             "directed": false
         },
         {
-            "sprite": "door_closed_animation",
+            "sprite": "airlock_closed_animation",
             "frames": 3,
             "directed": false
         },
         {
-            "sprite": "door_bolted",
+            "sprite": "airlock_bolted",
             "frames": 1,
             "directed": false
         },
         {
-            "sprite": "door_opening",
+            "sprite": "airlock_opening",
             "frames": 6,
             "directed": false
         },
         {
-            "sprite": "door_closing",
+            "sprite": "airlock_closing",
             "frames": 6,
             "directed": false
         },
         {
-            "sprite": "door_opened",
+            "sprite": "airlock_opened",
             "frames": 1,
             "directed": false
         }

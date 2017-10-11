@@ -10,6 +10,18 @@
 using std::vector;
 
 class World {
+public:
+    friend Object;
+
+    World();
+
+    void Update(sf::Time timeElapsed);
+
+    void FillingWorld();
+    Creature *CreateNewPlayerCreature() const;
+
+    Object *GetObject(uint id);
+
 private:
     uptr<Map> map;
 
@@ -20,15 +32,9 @@ private:
     int mobsVelocity;
 
     std::vector<uptr<Object>> objects;
+    std::vector<uint> free_ids;
 
-public:
-    World();
-
-    void Update(sf::Time timeElapsed);
-
-    void AddObject(Object *);
-
-    void FillingWorld();
-    Creature *CreateNewPlayerCreature() const;
+    // Available only for Object()
+    uint addObject(Object *);
 };
 

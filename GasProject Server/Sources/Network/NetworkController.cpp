@@ -97,7 +97,6 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 					player->SetConnection(connection);
 					connection->player = sptr<Player>(player);
 					connection->commandsToClient.Push(new AuthSuccessServerCommand());
-					//connection->commandsToClient.Push(new GameListServerCommand());
 					break;
 				}
 			}
@@ -141,6 +140,13 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
             packet >> direction;
 			if (connection->player)
 				connection->player->Move(uf::Direction(direction));
+            break;
+        }
+        case ClientCommand::Code::CLICK_OBJECT: {
+            sf::Int32 id;
+            packet >> id;
+            if (connection->player)
+                connection->player->ClickObject(id);
             break;
         }
 		case ClientCommand::Code::SEND_CHAT_MESSAGE: {

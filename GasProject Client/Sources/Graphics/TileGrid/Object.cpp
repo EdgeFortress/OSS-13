@@ -53,6 +53,8 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 void Object::Update(sf::Time timeElapsed) {
     if (shiftingDirection) {
         shift += shiftingDirection * timeElapsed.asSeconds() * shiftingSpeed;
+        if (abs(shift.x) >= 1) shiftingDirection.x = 0;
+        if (abs(shift.y) >= 1) shiftingDirection.y = 0;
     }
 
     if (shift) {
