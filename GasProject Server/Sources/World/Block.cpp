@@ -14,7 +14,7 @@ Block::Block(Map *map, int blockX, int blockY) :
     for (vector<Tile *> &vect : tiles) {
         int x = 0;
         for (Tile *&tile : vect) {
-            tile = map->GetTile(x + blockX * size, y + blockY * size);
+            tile = map->GetTile(uf::vec2i( x + blockX * size, y + blockY * size));
             x++;
         }
         y++;

@@ -7,13 +7,13 @@
 #include "Atmos/Atmos.hpp"
 #include "Network/Differences.hpp"
 
-Tile::Tile(Map *map, int x, int y) :
-    map(map), x(x), y(y),
+Tile::Tile(Map *map, uf::vec2i pos) :
+    map(map), pos(pos),
     hasFloor(false), fullBlocked(false), directionsBlocked(4, false),
     locale(nullptr), needToUpdateLocale(false), gases(int(Gas::Count), 0)
 {
-    const uint ux = uint(x);
-    const uint uy = uint(y);
+    uint ux = uint(pos.x);
+    uint uy = uint(pos.y);
     sprite = Server::Get()->RM->GetIconNum("space") + ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;
@@ -26,33 +26,34 @@ void Tile::Update(sf::Time timeElapsed) {
         if (hasFloor && !fullBlocked) {
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++) {
-                    if (!map->GetTile(x + dx, y + dy) ||
+                    Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                    if (!neighbour ||
                         dx == 0 && dy == 0 ||
                         dx * dy != 0) // diag tiles
                         continue;
-                    if (map->GetTile(x + dx, y + dy)->locale) {
+                    if (neighbour->locale) {
                         if (locale) {
-                            locale->Merge(map->GetTile(x + dx, y + dy)->locale);
+                            locale->Merge(neighbour->locale);
                         } else {
-                            map->GetTile(x + dx, y + dy)->locale->AddTile(this);
-                            locale = map->GetTile(x + dx, y + dy)->locale;
+                            neighbour->locale->AddTile(this);
+                            locale = neighbour->locale;
                         }
                     }
                 }
             if (!locale) {
-                Server::log << "Check " << x << y << std::endl;
                 map->GetAtmos()->CreateLocale(this);
             }
         } else { // Space
             if (!hasFloor && !fullBlocked) {
                 for (int dx = -1; dx <= 1; dx++)
                     for (int dy = -1; dy <= 1; dy++) {
-                        if (!map->GetTile(x + dx, y + dy) ||
+                        Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                        if (!neighbour ||
                             dx == 0 && dy == 0 ||
                             dx * dy != 0) // diag tiles
                             continue;
-                        if (map->GetTile(x + dx, y + dy)->locale) {
-                            map->GetTile(x + dx, y + dy)->locale->Open();
+                        if (neighbour->locale) {
+                            neighbour->locale->Open();
                         }
                     }
                 if (locale) locale->RemoveTile(this);
@@ -65,12 +66,13 @@ void Tile::Update(sf::Time timeElapsed) {
                 // so we delete them, after that Atmos::Update recreate them
                 for (int dx = -1; dx <= 1; dx++)
                     for (int dy = -1; dy <= 1; dy++) {
-                        if (!map->GetTile(x + dx, y + dy) ||
+                        Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                        if (!neighbour ||
                             dx == 0 && dy == 0 ||
                             dx * dy != 0) // diag tiles
                             continue;
-                        if (map->GetTile(x + dx, y + dy)->locale) {
-                            map->GetTile(x + dx, y + dy)->locale->CheckCloseness();
+                        if (neighbour->locale) {
+                            neighbour->locale->CheckCloseness();
                         }
                     }
             }
@@ -84,21 +86,9 @@ void Tile::CheckLocale() {
 }
 
 bool Tile::RemoveObject(Object *obj) {
-    for (auto iter = content.begin(); iter != content.end(); iter++) {
-        if (*iter == obj) {
-            if (dynamic_cast<Floor *>(obj)) {
-                hasFloor = false;
-                CheckLocale();
-            }
-            else if (dynamic_cast<Wall *>(obj)) {
-                fullBlocked = false;
-                CheckLocale();
-            }
-            obj->tile = nullptr;
-            content.erase(iter);
-            GetBlock()->AddDiff(new RemoveDiff(obj));
-            return true;
-        }
+    if (removeObject(obj)) {
+        GetBlock()->AddDiff(new RemoveDiff(obj));
+        return true;
     }
     return false;
 }
@@ -122,15 +112,12 @@ void Tile::MoveTo(Object *obj) {
 
     if (available) {
         Block *lastBlock = obj->GetTile()->GetBlock();
-        const int dx = X() - obj->GetTile()->X();
-        const int dy = Y() - obj->GetTile()->Y();
-        if (abs(dx) > 1 || abs(dy) > 1)
+        uf::vec2i delta = GetPos() - obj->GetTile()->GetPos();
+        if (abs(delta.x) > 1 || abs(delta.y) > 1)
             Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
-        const uf::Direction direction = uf::VectToDirection(sf::Vector2i(dx, dy));
+        const uf::Direction direction = uf::VectToDirection(delta);
         addObject(obj);
         GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
-        //if (obj->GetComponent<Control>()->GetPlayer())
-        //	Server::log << x << y << std::endl;
     }
 }
 
@@ -170,12 +157,18 @@ void Tile::PlaceTo(Object *obj) {
     }
 
     addObject(obj);
-    GetBlock()->AddDiff(new ReplaceDiff(obj, X(), Y(), lastBlock));
+    GetBlock()->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, lastBlock));
+}
+
+uf::vec2i Tile::GetPos() const {
+    return pos;
 }
 
 Block *Tile::GetBlock() const {
-    return map->GetBlock(x / Global::BLOCK_SIZE, y / Global::BLOCK_SIZE);
+    return map->GetBlock(pos / Global::BLOCK_SIZE);
 }
+
+Map *Tile::GetMap() const { return map; }
 
 bool Tile::IsDense() const {
     for (auto &obj : content)
@@ -198,14 +191,7 @@ const TileInfo Tile::GetTileInfo(uint visibility) const {
 
 void Tile::addObject(Object *obj) {
     Tile *lastTile = obj->GetTile();
-
-    if (lastTile) {
-        for (auto iter = lastTile->content.begin(); iter != lastTile->content.end(); iter++)
-            if (*iter == obj) {
-                lastTile->content.erase(iter);
-                break;
-            }
-    }
+    if (lastTile) lastTile->removeObject(obj);
 
     // Count position in tile content by layer
     auto iter = content.begin();
@@ -214,4 +200,22 @@ void Tile::addObject(Object *obj) {
     content.insert(iter, obj);
 
     obj->tile = this;
+}
+
+bool Tile::removeObject(Object *obj) {
+    for (auto iter = content.begin(); iter != content.end(); iter++) {
+        if (*iter == obj) {
+            if (dynamic_cast<Floor *>(obj)) {
+                hasFloor = false;
+                CheckLocale();
+            } else if (dynamic_cast<Wall *>(obj)) {
+                fullBlocked = false;
+                CheckLocale();
+            }
+            obj->tile = nullptr;
+            content.erase(iter);
+            return true;
+        }
+    }
+    return false;
 }

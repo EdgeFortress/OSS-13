@@ -15,14 +15,13 @@ Locale::Locale(Atmos *atmos, Tile *tile) :
 void Locale::Update(sf::Time timeElapsed) {
     if (needToCheckCloseness) {
         for (auto tile : tiles) {
-            const uint x = tile->X();
-            const uint y = tile->Y();
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++) {
-                    if (!tile->GetMap()->GetTile(x + dx, y + dy) ||
+                    Tile *neighbour = tile->GetMap()->GetTile({ tile->GetPos().x + dx, tile->GetPos().y + dy });
+                    if (!neighbour ||
                         dx == 0 && dy == 0)
                         continue;
-                    if (tile->GetMap()->GetTile(x + dx, y + dy)->IsSpace()) {
+                    if (neighbour->IsSpace()) {
                         closed = false;
                         return;
                     }

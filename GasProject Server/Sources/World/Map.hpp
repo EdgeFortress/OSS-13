@@ -20,8 +20,8 @@ public:
     int GetNumOfBlocksX() const;
     int GetNumOfBlocksY() const;
     Atmos *GetAtmos() const;
-    Tile *GetTile(int x, int y) const;
-    Block *GetBlock(int x, int y) const;
+    Tile *GetTile(uf::vec2i pos) const;
+    Block *GetBlock(uf::vec2i pos) const;
     const vector< vector< uptr<Tile>> > &GetTiles() const;
 
 private:

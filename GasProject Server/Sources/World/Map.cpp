@@ -21,7 +21,7 @@ Map::Map(const uint sizeX, const uint sizeY) :
     for (vector<uptr<Tile>> &vect : tiles) {
         int x = 0;
         for (uptr<Tile> &tile : vect) {
-            tile.reset(new Tile(this, x, y));
+            tile.reset(new Tile(this, {x, y}));
             x++;
         }
         y++;
@@ -65,15 +65,15 @@ int Map::GetNumOfBlocksX() const { return numOfBlocks.x; }
 int Map::GetNumOfBlocksY() const { return numOfBlocks.y; }
 Atmos* Map::GetAtmos() const { return atmos.get(); };
 
-Tile *Map::GetTile(int x, int y) const {
-    if (x >= 0 && x < int(size.x) && y >= 0 && y < int(size.y))
-        return tiles[y][x].get();
+Tile *Map::GetTile(uf::vec2i pos) const {
+    if (pos >= uf::vec2i() && pos < size)
+        return tiles[pos.y][pos.x].get();
     return nullptr;
 }
 
-Block *Map::GetBlock(int x, int y) const {
-    if (x >= 0 && x < int(numOfBlocks.x) && y >= 0 && y < int(numOfBlocks.y))
-        return blocks[y][x].get();
+Block *Map::GetBlock(uf::vec2i pos) const {
+    if (pos >= uf::vec2i() && pos < numOfBlocks)
+        return blocks[pos.y][pos.x].get();
     return nullptr;
 }
 

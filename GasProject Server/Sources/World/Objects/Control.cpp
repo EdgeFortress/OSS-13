@@ -30,9 +30,9 @@ void Control::Update(sf::Time timeElapsed) {
         if (order.x) moveIntent.x = order.x;
         if (order.y) moveIntent.y = order.y;
 
-		Tile *newTileDiag = tile->GetMap()->GetTile(tile->X() + moveIntent.x, tile->Y() + moveIntent.y);
-		Tile *newTileX = tile->GetMap()->GetTile(tile->X() + moveIntent.x, tile->Y());
-		Tile *newTileY = tile->GetMap()->GetTile(tile->X(), tile->Y() + moveIntent.y);
+		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + moveIntent);
+        Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y });
+        Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y });
 
 		if (owner->GetDensity()) {
             if (!newTileDiag || newTileDiag->IsDense()) moveIntent = lastMoveIntent;
@@ -81,7 +81,7 @@ void Control::Update(sf::Time timeElapsed) {
 
             if (dx || dy) {
                 Tile *tile = owner->GetTile();
-                Tile *dest_tile = tile->GetMap()->GetTile(tile->X() + dx, tile->Y() + dy);
+                Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + uf::vec2i(dx, dy));
                 if (dest_tile) {
                     dest_tile->MoveTo(owner);
                 }

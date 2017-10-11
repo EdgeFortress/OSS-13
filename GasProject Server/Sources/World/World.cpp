@@ -17,8 +17,8 @@ void World::Update(sf::Time timeElapsed) {
 	// Simple walking mob AI for moving testing
     if (testMob_lastPosition != testMob->GetTile()) {
 		testMob_lastPosition = testMob->GetTile();
-        const int x = testMob->GetTile()->X() + test_dx;
-        const int y = testMob->GetTile()->Y() + test_dy;
+        const int x = testMob->GetTile()->GetPos().x + test_dx;
+        const int y = testMob->GetTile()->GetPos().y + test_dy;
         if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
         if (test_dy == 1 && y == 53) test_dx = -1, test_dy = 0;
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
@@ -44,7 +44,7 @@ void World::Update(sf::Time timeElapsed) {
 void World::FillingWorld() {
     for (int i = 45; i <= 55; i++) {
         for (int j = 45; j <= 55; j++) {
-            Tile *tile = map->GetTile(i, j);
+            Tile *tile = map->GetTile({ i, j });
             tile->PlaceTo(new Floor);
             if (i == 45 || i == 55 || j == 45 || j == 55)
                 tile->PlaceTo(new Wall);
@@ -53,19 +53,19 @@ void World::FillingWorld() {
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
-            map->GetTile(i, j)->PlaceTo(new Floor);
+            map->GetTile({ i, j })->PlaceTo(new Floor);
         }
     }
 
     testMob = new Ghost;
 	testMob_lastPosition = nullptr;
-    map->GetTile(49, 49)->PlaceTo(testMob);
+    map->GetTile({ 49, 49 })->PlaceTo(testMob);
     test_dx = 1;
     test_dy = 0;
 
     for (int i = 85; i <= 95; i++) {
         for (int j = 85; j <= 95; j++) {
-            Tile *tile = map->GetTile(i, j);
+            Tile *tile = map->GetTile({ i, j });
             tile->PlaceTo(new Floor);
         }
     }
@@ -73,7 +73,7 @@ void World::FillingWorld() {
 
 Creature *World::CreateNewPlayerCreature() const {
     Creature *creature = new Human();
-    map->GetTile(50, 50)->PlaceTo(creature);
+    map->GetTile({ 50, 50 })->PlaceTo(creature);
     return creature;
 }
 

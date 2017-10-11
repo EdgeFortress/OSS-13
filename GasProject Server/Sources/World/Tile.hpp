@@ -20,7 +20,7 @@ struct TileInfo;
 
 class Tile {
 public:
-    explicit Tile(Map *map, int x, int y);
+    explicit Tile(Map *map, uf::vec2i pos);
 
     void Update(sf::Time timeElapsed);
 
@@ -33,10 +33,9 @@ public:
     void MoveTo(Object *);
     void PlaceTo(Object *);
 
-    int X() const { return x; }
-    int Y() const { return y; }
+    uf::vec2i GetPos() const;
     Block *GetBlock() const;
-    Map *GetMap() const { return map; }
+    Map *GetMap() const;
     bool IsDense() const;
     bool IsSpace() const;
 
@@ -46,7 +45,7 @@ public:
 
 private:
     Map *map;
-    int x, y;
+    uf::vec2i pos;
     uint sprite;
 
     list<Object *> content;
@@ -66,4 +65,6 @@ private:
     // Add object to the tile, and change object.tile pointer
     // For moving use MoveTo, for placing PlaceTo
     void addObject(Object *obj);
+    // Not generate Diff
+    bool removeObject(Object *obj);
 };
