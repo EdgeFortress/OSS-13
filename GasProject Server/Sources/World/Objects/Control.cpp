@@ -97,7 +97,12 @@ void Control::Update(sf::Time timeElapsed) {
     ////
     if (clickedObjectID) {
         Object *clickedObject = CurThreadGame->GetWorld()->GetObject(clickedObjectID);
-        clickedObject->Interact(nullptr);
+        // check distance
+        auto pos = owner->GetTile()->GetPos(); 
+        auto clickedObjPos = clickedObject->GetTile()->GetPos();
+        if (uf::length(pos - clickedObjPos) < 2)
+            clickedObject->Interact(nullptr);
+
         clickedObjectID = 0;
     }
 }

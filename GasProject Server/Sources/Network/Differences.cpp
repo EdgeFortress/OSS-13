@@ -43,6 +43,16 @@ RemoveDiff::RemoveDiff(const Object *object) :
 	Diff(object, Global::DiffType::REMOVE)
 { }
 
+ChangeSpriteDiff::ChangeSpriteDiff(const Object *object, uint sprite_id) :
+    Diff(object, Global::DiffType::CHANGE_SPRITE),
+    sprite_id(sprite_id)
+{ }
+
+PlayAnimationDiff::PlayAnimationDiff(const Object *object, uint animation_id) :
+    Diff(object, Global::DiffType::PLAY_ANIMATION),
+    animation_id(animation_id)
+{ }
+
 ChangeDirectionDiff::ChangeDirectionDiff(const Object *object, uf::Direction direction) :
 	Diff(object, Global::DiffType::CHANGE_DIRECTION), 
 	direction(direction)

@@ -3,6 +3,7 @@
 #include <list>
 #include <SFML/Graphics.hpp>
 
+#include "Graphics/Sprite.hpp"
 #include "Shared/Types.hpp"
 
 class Object;
@@ -23,6 +24,7 @@ public:
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos) const;
 	void Update(sf::Time timeElapsed);
+    void Resize(uint tileSize);
 
 	void AddObject(Object *obj, int num = -1);
 	Object *RemoveObject(uint id);
@@ -40,6 +42,6 @@ public:
 private:
     Block *block;
     const uf::vec2i pos;
-    Sprite *sprite;
+    Sprite sprite;
     std::list<Object *> content;
 };

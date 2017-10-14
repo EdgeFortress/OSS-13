@@ -9,9 +9,7 @@
 #include "Shared/JSON.hpp"
 #include "Shared/OS.hpp"
 
-Window::Window() :
-	animationTime(sf::Time::Zero)
-{
+Window::Window() {
 	ui.reset(new UI);
 }
 
@@ -47,12 +45,6 @@ void Window::Update() {
 			window->close();
 	}
 
-	animationTime += lastFrameTime;
-	if (animationTime >= sf::seconds(1)) {
-		animationTime = sf::Time::Zero;
-        CC::Get()->RM.SpritesNextFrame();
-	}
-
 	window->clear(sf::Color::Black);
 	ui->Update(lastFrameTime);
 	ui->Draw(window.get());
@@ -81,8 +73,4 @@ void Window::resize(const int newWidth, const int newHeight) {
     const sf::FloatRect visibleArea(0, 0, float(width), float(height));
     window->setView(sf::View(visibleArea));
     ui->Resize(width, height);
-}
-
-void Window::setSpriteSize(uint size) const {
-    CC::Get()->RM.SpritesResize(size);
 }

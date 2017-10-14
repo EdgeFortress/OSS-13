@@ -8,9 +8,9 @@ class ResourceManager {
 public:
     ResourceManager();
 
-    uint GetIconNum(const std::string &);
+    uint GetSpriteNum(const std::string &);
 
 private:
-    std::unordered_map<std::string, uint> icons;
+    std::unordered_map<std::string, uint> sprites;
     std::unordered_map<std::string, uint> sounds;
 };

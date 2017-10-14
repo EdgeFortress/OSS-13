@@ -8,8 +8,7 @@
 #include "Object.hpp"
 
 Tile::Tile(Block *block, const int x, const int y) :
-	block(block), pos(x, y),
-	sprite(nullptr) 
+	block(block), pos(x, y)
 { };
 
 Tile::~Tile() {
@@ -19,10 +18,20 @@ Tile::~Tile() {
 }
 
 void Tile::Draw(sf::RenderTarget *target, uf::vec2i screenPos) const {
-	if (sprite) sprite->Draw(target, screenPos, uf::Direction::NONE);
+	if (sprite.IsValid()) sprite.Draw(target, screenPos);
 }
 
-void Tile::Update(sf::Time timeElapsed) { }
+void Tile::Update(sf::Time timeElapsed) { 
+    if (sprite.IsValid())
+        sprite.Update(timeElapsed);
+}
+
+void Tile::Resize(uint tileSize) {
+    if (sprite.IsValid())
+        sprite.Resize(tileSize);
+    for (auto &object : content)
+        object->Resize(tileSize);
+}
 
 void Tile::AddObject(Object *obj, int num) {
     if (obj->tile) {
@@ -60,7 +69,6 @@ void Tile::Clear() {
 	for (auto &obj : content)
 		obj->tile = nullptr;
 	content.clear();
-	sprite = nullptr;
 }
 
 uf::vec2i Tile::GetRelPos() const { return block->GetRelPos() * block->GetTileGrid()->GetBlockSize() + pos; }
@@ -79,6 +87,6 @@ TileGrid *Tile::GetTileGrid() {
 bool Tile::IsBlocked() {
 	for (auto &obj : content)
 		if (obj->IsDense()) return true;
-	if (!sprite) return true;
+	if (!sprite.IsValid()) return true;
 	return false;
 }

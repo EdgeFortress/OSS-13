@@ -30,11 +30,13 @@
         {
             "sprite": "airlock_opening",
             "frames": 6,
+			"loop_time": 1,
             "directed": false
         },
         {
             "sprite": "airlock_closing",
             "frames": 6,
+			"loop_time": 1,
             "directed": false
         },
         {

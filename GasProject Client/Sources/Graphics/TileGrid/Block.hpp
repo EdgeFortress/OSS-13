@@ -20,6 +20,7 @@ public:
 	~Block() = default;
 
 	void Update(sf::Time);
+    void Resize(uint tileSize);
 
 	uf::vec2i GetRelPos() const;
 	Tile *GetTile(int x, int y) const;

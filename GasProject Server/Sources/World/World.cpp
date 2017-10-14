@@ -46,8 +46,15 @@ void World::FillingWorld() {
         for (int j = 45; j <= 55; j++) {
             Tile *tile = map->GetTile({ i, j });
             tile->PlaceTo(new Floor);
-            if (i == 45 || i == 55 || j == 45 || j == 55)
-                tile->PlaceTo(new Wall);
+            if (i == 45 || i == 55 || j == 45 || j == 55) {
+                if (i == 50 || j == 50) {
+                    Airlock *airlock = new Airlock;
+                    tile->PlaceTo(airlock);
+                    if (i == 55 && j == 50 || i == 50 && j == 55)
+                        airlock->Lock();
+                }
+                else tile->PlaceTo(new Wall);
+            }
         }
     }
 

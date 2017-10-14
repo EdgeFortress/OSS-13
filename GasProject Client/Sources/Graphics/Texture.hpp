@@ -11,26 +11,30 @@ class Sprite;
 
 class Texture {
 public:
-    Texture(std::string path, nlohmann::json &config);
+    Texture(std::string path, nlohmann::json &config, uint firstSpriteID);
 
     bool IsFramePixelTransparent(uf::vec2u pixel, uint frame) const;
 
-    const std::vector<Sprite *> &GetSprites() const;
-    sf::Texture *GetSFMLTexture() const;
+    //const std::vector<Sprite *> &GetSprites() const;
+    const sf::Texture *GetSFMLTexture() const;
 
+    Sprite GetSprite(uint id) const;
     uf::vec2i GetNumOfTiles() const;
-    int GetSizeOfTile() const;
+    uint GetNumOfSprites() const;
+    uint GetSizeOfTile() const;
 
 private:
     struct SpriteInfo {
+        std::string title;
         uint firstFrame;
         uint frames;
+        sf::Time frameTime;
         bool directed;
     };
 
-    uptr<sf::Texture> texture;
+    sf::Texture texture;
     uint sizeOfTile;
     uf::vec2u numOfTiles;
+    uint firstSpriteID;
     std::vector<SpriteInfo> spritesInfo;
-    std::vector<Sprite *> sprites;
 };

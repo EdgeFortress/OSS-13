@@ -61,8 +61,8 @@ void TileGrid::draw() const {
 	for (auto &layerObjects : layersBuffer) {
         for (auto &object: layerObjects) {
             Tile *tile = object->GetTile();
-            uf::vec2i pixel = padding + (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
-            object->Draw(&buffer, pixel);
+            uf::vec2i pixel = (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
+            object->Draw(&buffer, pixel + padding);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
                 if (!object->PixelTransparent(cursorPosition - pixel))
                     underCursorObject = object;
@@ -80,7 +80,13 @@ void TileGrid::SetSize(const uf::vec2i &size) {
     CC::log << numOfTiles.x << numOfTiles.y << std::endl;
     padding.x = 0;
     padding.y = (int(size.y) - tileSize * numOfTiles.y) / 2;
-	CC::Get()->RM.SpritesResize(tileSize);
+
+    for (auto &object : objects) object.second->Resize(tileSize);
+    for (auto &vect : blocks)
+        for (auto &block : vect) {
+            if (block) block->Resize(tileSize);
+        }
+
     Widget::SetSize(uf::vec2i(tileSize) * 15);
 	Widget::SetPosition(padding);
 }
@@ -182,7 +188,6 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			moveCommand = sf::Vector2i();
 		}
         if (objectClicked) {
-            CC::log << underCursorObject->GetName() << "clicked" << std::endl;
             Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
             objectClicked = false;
         }
@@ -209,6 +214,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
             iter++;
         }
     }
+
+    for (auto &vect : blocks)
+        for (auto &block : vect) {
+            if (block) block->Update(timeElapsed);
+        }
     
 	if (controllable) shift = controllable->GetShift();
 }
@@ -223,6 +233,7 @@ void TileGrid::UnlockDrawing() {
 
 void TileGrid::AddObject(Object *object) {
     objects[object->GetID()] = uptr<Object>(object);
+    object->Resize(tileSize);
 }
 
 void TileGrid::RemoveObject(uint id) {
@@ -282,9 +293,27 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
 	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << std::endl;
 }
 
+void TileGrid::ChangeObjectSprite(uint id, uint sprite_id) {
+    auto iter = objects.find(id);
+    if (iter != objects.end()) {
+        Object *obj = iter->second.get();
+        obj->SetSprite(sprite_id);
+        obj->Resize(tileSize);
+    }
+}
+
+void TileGrid::PlayAnimation(uint id, uint animation_id) {
+    auto iter = objects.find(id);
+    if (iter != objects.end()) {
+        Object *obj = iter->second.get();
+        obj->PlayAnimation(animation_id);
+        obj->Resize(tileSize);
+    }
+}
+
 void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
     auto iter = objects.find(id);
-    if (objects.find(id) != objects.end()) {
+    if (iter != objects.end()) {
         Object *obj = iter->second.get();
         obj->SetDirection(direction);
     }

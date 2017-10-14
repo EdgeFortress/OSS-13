@@ -21,6 +21,18 @@ Block::Block(TileGrid *tileGrid) :
 	}
 }
 
+void Block::Update(sf::Time timeElapsed) {
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            tile->Update(timeElapsed);
+}
+
+void Block::Resize(uint tileSize) {
+    for (auto &vect : tiles)
+        for (auto &tile : vect)
+            tile->Resize(tileSize);
+}
+
 uf::vec2i Block::GetRelPos() const { return relPos; }
 
 Tile* Block::GetTile(int x, int y) const {
@@ -30,9 +42,3 @@ Tile* Block::GetTile(int x, int y) const {
 }
 
 TileGrid *Block::GetTileGrid() const { return tileGrid; }
-
-void Block::Update(sf::Time timeElapsed) {
-	for (auto &vect : tiles)
-		for (auto &tile : vect)
-			tile->Update(timeElapsed);
-}

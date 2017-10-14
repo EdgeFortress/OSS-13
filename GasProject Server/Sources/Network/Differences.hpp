@@ -48,6 +48,18 @@ struct MoveDiff : public Diff {
 	MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock);
 };
 
+struct ChangeSpriteDiff : public Diff {
+    uint sprite_id;
+
+    ChangeSpriteDiff(const Object *object, uint sprite_id);
+};
+
+struct PlayAnimationDiff : public Diff {
+    uint animation_id;
+
+    PlayAnimationDiff(const Object *object, uint animation_id);
+};
+
 struct ChangeDirectionDiff : public Diff {
 	uf::Direction direction;
 

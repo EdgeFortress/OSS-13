@@ -14,7 +14,7 @@ Tile::Tile(Map *map, uf::vec2i pos) :
 {
     uint ux = uint(pos.x);
     uint uy = uint(pos.y);
-    sprite = Server::Get()->RM->GetIconNum("space") + ((ux + uy) ^ ~(ux * uy)) % 25;
+    sprite = Server::Get()->RM->GetSpriteNum("space") + ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;
 }
@@ -158,6 +158,10 @@ void Tile::PlaceTo(Object *obj) {
 
     addObject(obj);
     GetBlock()->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, lastBlock));
+}
+
+const list<Object *> &Tile::Content() const {
+    return content;
 }
 
 uf::vec2i Tile::GetPos() const {

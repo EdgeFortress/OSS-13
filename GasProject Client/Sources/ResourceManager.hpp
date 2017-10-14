@@ -8,13 +8,12 @@ class ResourceManager {
 public:
     ResourceManager();
 
-    void SpritesNextFrame();
-    void SpritesResize(uint size);
-
-    Sprite *GetSprite(uint id);
+    Sprite GetSprite(uint id);
 
 private:
     std::vector<uptr<Texture>> textures;
-    std::vector<uptr<Sprite>> sprites;
+    std::vector<Texture *> spritesMap;
     //std::vector<uptr<Sounds>> sounds;
+
+    uint nextSpriteNum;
 };

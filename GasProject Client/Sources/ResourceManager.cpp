@@ -10,7 +10,7 @@
 ResourceManager::ResourceManager() {
     using json = nlohmann::json;
 
-    uint lastIconNum = 0;
+    nextSpriteNum = 1;
 
     // Load icons list
     auto config_files = FindFilesRecursive(L"Resources/Icons", L"*.json");
@@ -21,27 +21,19 @@ ResourceManager::ResourceManager() {
 
         const FileInfo configPathParseResult = ParseFilePath(config_file_path);
         const std::string texturePath = sf::String(configPathParseResult.path + L"/" + configPathParseResult.name + L".png");
-        Texture *texture = new Texture(texturePath, config);
+        Texture *texture = new Texture(texturePath, config, nextSpriteNum);
         textures.push_back(uptr<Texture>(texture));
 
-        auto &texture_sprites = texture->GetSprites();
-        for (auto &sprite: texture_sprites) {
-            sprites.push_back(uptr<Sprite>(sprite));
+        uint numOfNewSprites = texture->GetNumOfSprites();
+        for (uint i = 0; i < numOfNewSprites; i++) {
+            spritesMap.push_back(texture);
         }
+
+        nextSpriteNum += numOfNewSprites;
     }
 }
 
-void ResourceManager::SpritesNextFrame() {
-    for (auto &sprite : sprites)
-        sprite->UpdateFrame();
-}
-
-void ResourceManager::SpritesResize(uint size) {
-    for (auto &sprite : sprites)
-        sprite->Resize(size);
-}
-
-Sprite *ResourceManager::GetSprite(uint id) {
-    if (id == 0) return nullptr;
-    return sprites[id - 1].get();
+Sprite ResourceManager::GetSprite(uint id) {
+    if (!id || id >= nextSpriteNum) return std::move(Sprite());
+    return std::move(spritesMap[id - 1]->GetSprite(id));
 }

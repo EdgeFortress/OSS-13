@@ -14,6 +14,7 @@ namespace Global {
 		RELOCATE,
 		MOVE,
 		CHANGE_SPRITE,
+        PLAY_ANIMATION,
 		CHANGE_DIRECTION
 	};
 }

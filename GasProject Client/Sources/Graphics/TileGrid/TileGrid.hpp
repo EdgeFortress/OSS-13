@@ -39,6 +39,8 @@ public:
         void RemoveObject(uint id);
         void RelocateObject(uint id, uf::vec2i toVec, int toObjectNum);
         void MoveObject(uint id, uf::Direction direction, float speed);
+        void ChangeObjectSprite(uint id, uint sprite_id);
+        void PlayAnimation(uint id, uint animation_id);
 		void ChangeObjectDirection(uint id, uf::Direction direction);
 
         void ShiftBlocks(uf::vec2i newFirst);

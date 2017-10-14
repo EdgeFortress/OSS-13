@@ -4,11 +4,18 @@
 
 class Airlock : public Turf {
 public:
-    explicit Airlock() {
-        sprite = "airlock";
-        density = true;
-    }
+    Airlock();
 
     Airlock(const Airlock &object) = default;
     ~Airlock() = default;
+
+    void Interact(Object *) override;
+
+    void Activate();
+    void Lock();
+    void Unlock();
+
+private:
+    bool opened;
+    bool locked;
 };

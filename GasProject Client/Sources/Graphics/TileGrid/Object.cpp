@@ -10,44 +10,23 @@
 #include "Graphics/TileGrid.hpp"
 
 Object::Object() :
-    id(0), sprite(nullptr),
+    id(0), animationProcess(false),
     direction(uf::Direction::NONE), dense(false),
     layer(0), shiftingSpeed(0),
     tile(nullptr)
 { }
-
-void Object::SetSprite(uint id) {
-	sprite = CC::Get()->RM.GetSprite(id);
-}
-
-void Object::SetDirection(const uf::Direction direction) {
-    // cut the diagonal directions
-	this->direction = uf::Direction(char(direction) % 4);
-}
-
-void Object::SetSpeed(float speed) {
-	shiftingSpeed = speed;
-}
-
-void Object::SetShifting(uf::Direction direction, float speed) {
-	uf::vec2i directionVect = uf::DirectionToVect(direction);
-	shiftingDirection = directionVect;
-	shiftingSpeed = speed;
-}
-
-void Object::ResetShifting() {
-    shiftingDirection = {};
-    shift = {};
-	shiftingSpeed = 0;
-}
 
 void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
     TileGrid *tileGrid = tile->GetTileGrid();
     if (!tileGrid) {
         CC::log << "Error: try to draw object from unplaced tiled!" << std::endl;
     }
-    int tileSize = tileGrid->GetTileSize();
-    if (sprite) sprite->Draw(target, pos + shift * tileSize, direction);
+    uint tileSize = tileGrid->GetTileSize();
+    if (animationProcess) {
+        animation.Draw(target, pos + shift * tileSize);
+    } else {
+        if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize);
+    }
 }
 
 void Object::Update(sf::Time timeElapsed) {
@@ -70,6 +49,58 @@ void Object::Update(sf::Time timeElapsed) {
             else shift.y = 0;
         }
     }
+
+    // Animation and animated icon handling
+
+    if (animationProcess) {
+        if (animation.Update(timeElapsed)) {
+            animationProcess = false;
+        }
+    } else {
+        if (sprite.IsValid())
+            sprite.Update(timeElapsed);
+    }
+}
+
+void Object::Resize(uint tileSize) {
+    if (animationProcess) animation.Resize(tileSize);
+    if (sprite.IsValid()) sprite.Resize(tileSize);
+}
+
+void Object::SetSprite(uint id) {
+	sprite = CC::Get()->RM.GetSprite(id);
+    if (sprite.IsValid()) sprite.SetDirection(direction);
+}
+
+void Object::PlayAnimation(uint id) {
+    animation = CC::Get()->RM.GetSprite(id);
+    if (animation.IsValid()) {
+        animationProcess = true;
+        animation.SetDirection(direction);
+    }
+}
+
+void Object::SetDirection(const uf::Direction direction) {
+    // cut the diagonal directions
+	this->direction = uf::Direction(char(direction) % 4);
+    if (sprite.IsValid()) sprite.SetDirection(direction);
+    if (animation.IsValid()) animation.SetDirection(direction);
+}
+
+void Object::SetSpeed(float speed) {
+	shiftingSpeed = speed;
+}
+
+void Object::SetShifting(uf::Direction direction, float speed) {
+	uf::vec2i directionVect = uf::DirectionToVect(direction);
+	shiftingDirection = directionVect;
+	shiftingSpeed = speed;
+}
+
+void Object::ResetShifting() {
+    shiftingDirection = {};
+    shift = {};
+	shiftingSpeed = 0;
 }
 
 void Object::ReverseShifting(uf::Direction direction) {
@@ -81,10 +112,10 @@ void Object::ReverseShifting(uf::Direction direction) {
 
 uint Object::GetID() const { return id; }
 std::string Object::GetName() const { return name; }
-Sprite *Object::GetSprite() const { return sprite; }
+//Sprite &Object::GetSprite() const { return sprite; }
 uint Object::GetLayer() const { return layer; }
-bool Object::PixelTransparent(uf::vec2i pixel) {
-    return sprite->PixelTransparent(pixel);
+bool Object::PixelTransparent(uf::vec2i pixel) const {
+    return sprite.PixelTransparent(pixel);
 }
 
 Tile *Object::GetTile() { return tile; }

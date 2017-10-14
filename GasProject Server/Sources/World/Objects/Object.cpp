@@ -24,6 +24,15 @@ void Object::AddComponent(Component *new_component) {
     components.push_back(uptr<Component>(new_component));
 }
 
+void Object::SetSprite(const std::string &sprite) {
+    this->sprite = sprite;
+    GetTile()->GetBlock()->AddDiff(new ChangeSpriteDiff(this, Server::Get()->RM->GetSpriteNum(sprite)));
+}
+
+void Object::PlayAnimation(const std::string &animation) {
+    GetTile()->GetBlock()->AddDiff(new PlayAnimationDiff(this, Server::Get()->RM->GetSpriteNum(animation)));
+}
+
 void Object::Delete() {
     if (tile) tile->RemoveObject(this);
     id = 0;
@@ -48,10 +57,11 @@ uf::vec2f Object::GetShift() const { return shift; }
 //float Object::GetSpeed() const { return speed; }
 
 void Object::SetDirection(uf::Direction direction) {
-	this->direction = direction;
-	if (tile) {
+    if (direction > uf::Direction::EAST)
+        direction = uf::Direction(char(direction) % 4);
+    this->direction = direction;
+	if (tile)
 		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(this, direction));
-	}
 }
 
 void Object::AddShift(uf::vec2f shift) {
@@ -63,5 +73,5 @@ void Object::SetShift(uf::vec2f shift) {
 }
 
 const ObjectInfo Object::GetObjectInfo() const {
-    return std::move(ObjectInfo(id, Server::Get()->RM->GetIconNum(sprite), name, layer, direction, density));
+    return std::move(ObjectInfo(id, Server::Get()->RM->GetSpriteNum(sprite), name, layer, direction, density));
 }

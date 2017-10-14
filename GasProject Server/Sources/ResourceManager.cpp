@@ -9,7 +9,7 @@
 
 ResourceManager::ResourceManager() {
     using json = nlohmann::json;
-    uint lastIconNum = 0;
+    uint lastSpriteNum = 0;
 
     // Load icons list
     auto config_files = FindFilesRecursive(L"Resources/Icons", L"*.json");
@@ -18,20 +18,20 @@ ResourceManager::ResourceManager() {
         json config;
         config_istr >> config;
         for (auto sprite_config : config["sprites"]) {
-            lastIconNum++;
-            const auto title = sprite_config.find("sprite");
+            lastSpriteNum++;
+            auto title = sprite_config.find("sprite");
             if (title != sprite_config.end()) {
-                icons[title->get<std::string>()] = lastIconNum;
+                sprites[title->get<std::string>()] = lastSpriteNum;
             }
         }
     }
 }
 
-uint ResourceManager::GetIconNum(const std::string &icon) {
-    const auto iter = icons.find(icon);
-    if (iter != icons.end()) {
+uint ResourceManager::GetSpriteNum(const std::string &sprite) {
+    const auto iter = sprites.find(sprite);
+    if (iter != sprites.end()) {
         return iter->second;
     }
-    // Icon not founded
+    // Sprite not founded
     return 0;
 }

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Graphics/Sprite.hpp"
+
 #include "Shared/Types.hpp"
 #include "Shared/Geometry/Direction.hpp"
 #include "Shared/Global.hpp"
@@ -22,13 +24,15 @@ public:
 	Object();
     Object(const Object &) = default;
     Object &operator=(Object &) = default;
-    ~Object() {  }
+    ~Object() { }
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
 	void Update(sf::Time timeElapsed);
+    void Resize(uint tileSize);
 
     void SetID(uint id) { this->id = id; }
 	void SetSprite(uint spriteID);
+    void PlayAnimation(uint spriteID);
 	void SetDirection(const uf::Direction);
 	void SetSpeed(float speed);
 	void SetShifting(uf::Direction direction, float speed);
@@ -37,9 +41,9 @@ public:
 
 	uint GetID() const;
 	std::string GetName() const;
-	Sprite *GetSprite() const;
+	//Sprite *GetSprite() const;
 	uint GetLayer() const;
-    bool PixelTransparent(uf::vec2i pixel);
+    bool PixelTransparent(uf::vec2i pixel) const;
 
 	Tile *GetTile();
 	sf::Vector2f GetShift() const;
@@ -52,7 +56,9 @@ public:
 private:
     uint id;
     std::string name;
-    Sprite *sprite;
+    Sprite sprite;
+    Sprite animation;
+    bool animationProcess;
     uf::Direction direction;
     uint layer;
     bool dense;

@@ -20,7 +20,8 @@ struct TileInfo;
 
 class Tile {
 public:
-    explicit Tile(Map *map, uf::vec2i pos);
+    friend Locale;
+    Tile(Map *map, uf::vec2i pos);
 
     void Update(sf::Time timeElapsed);
 
@@ -33,6 +34,8 @@ public:
     void MoveTo(Object *);
     void PlaceTo(Object *);
 
+    const list<Object *> &Content() const;
+
     uf::vec2i GetPos() const;
     Block *GetBlock() const;
     Map *GetMap() const;
@@ -40,8 +43,6 @@ public:
     bool IsSpace() const;
 
     const TileInfo GetTileInfo(uint visibility) const;
-
-    friend Locale;
 
 private:
     Map *map;

@@ -20,6 +20,8 @@ public:
 
     virtual void Interact(Object *) = 0;
     void AddComponent(Component *);
+    void SetSprite(const std::string &sprite);
+    void PlayAnimation(const std::string &sprite);
     void Delete();
 
     uint ID() const;

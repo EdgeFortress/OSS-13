@@ -83,6 +83,19 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 			packet << moveDiff.speed;
             break;
         }
+        case Global::DiffType::CHANGE_SPRITE: {
+            packet << Int32(diff.id);
+            const ChangeSpriteDiff &changeSpriteDiff = dynamic_cast<const ChangeSpriteDiff &>(diff);
+            packet << Int32(changeSpriteDiff.sprite_id);
+            break;
+        }
+        case Global::DiffType::PLAY_ANIMATION:
+        {
+            packet << Int32(diff.id);
+            const PlayAnimationDiff &changeSpriteDiff = dynamic_cast<const PlayAnimationDiff &>(diff);
+            packet << Int32(changeSpriteDiff.animation_id);
+            break;
+        }
 		case Global::DiffType::CHANGE_DIRECTION: {
 			packet << Int32(diff.id);
 			const ChangeDirectionDiff &changeDirectionDiff = dynamic_cast<const ChangeDirectionDiff &>(diff);

@@ -33,8 +33,6 @@ private:
     uptr<sf::RenderWindow> window;
     int width, height;
 
-    sf::Time animationTime;
-
     const int req_FPS = 60;
     sf::Clock frame_clock;
 	sf::Time lastFrameTime;
@@ -43,5 +41,4 @@ private:
 	void fps_sleep();
 
     void resize(const int newWidth, const int newHeight);
-    void setSpriteSize(uint size) const;
 };

@@ -212,6 +212,20 @@ void Connection::parsePacket(Packet &packet) {
 
                             break;
                         }
+                        case Global::DiffType::CHANGE_SPRITE:
+                        {
+                            Int32 id, sprite;
+                            packet >> id >> sprite;
+                            tileGrid->ChangeObjectSprite(id, sprite);
+                            break;
+                        }
+                        case Global::DiffType::PLAY_ANIMATION:
+                        {
+                            Int32 id, sprite;
+                            packet >> id >> sprite;
+                            tileGrid->PlayAnimation(id, sprite);
+                            break;
+                        }
                         case Global::DiffType::CHANGE_DIRECTION:
                         {
                             Int32 id;
@@ -328,6 +342,7 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 
         tile.AddObject(objects[id].get());
     }
+    tile.Resize(tile.GetTileGrid()->GetTileSize());
     return packet;
 }
 
