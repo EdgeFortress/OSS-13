@@ -6,9 +6,9 @@ In the future this project will be used as a basis for [Space Station 13](https:
 
 ## Compile
 
-The easiest way to compile project now is a Visual Studio 2017 solution. Also CMake is provided.
+The easiest way to compile project now is a Visual Studio 2017 solution. All you need is to take project files from "Project Example", move them into the main folder and adjust paths to SFML libraries for each project file.
 
-For successful compilation, you must install SFML and correctly specify the paths (see project files).
+Also CMake is provided.
 
 ## How to Play
 
@@ -22,5 +22,6 @@ When logged in select the available game on the newly launched server to start p
 
 * Move with WASD or arrows
 * Press G to become a 'G'host/return to the body
+* Press B to 'B'uild a Wall under your character
 
 Also you can choose a chat window with Left Mouse Button or by pressing Tab and send some messages to other players.
