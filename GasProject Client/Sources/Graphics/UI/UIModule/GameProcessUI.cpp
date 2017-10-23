@@ -5,6 +5,7 @@
 #include "Graphics/TileGrid.hpp"
 #include "Graphics/UI/Widget/ContextMenu.hpp"
 #include "../UI.hpp"
+#include "Network.hpp"
 
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     infoLabel(new InfoLabel(ui->GetFont()))
@@ -14,8 +15,23 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 	tileGrid = new TileGrid();
 	widgets.push_back(uptr<TileGrid>(tileGrid));
 
-	chat = new Chat(ui->GetFont());
-	widgets.push_back(uptr<Chat>(chat));
+    container = new Container();
+    container->GetStyle().backgroundColor = sf::Color::Transparent;
+    container->SetPosition(0, 0);
+    widgets.push_back(uptr<Container>(container));
+
+    entry = new Entry(sf::Vector2f(0, 0));
+    entry->SetOnEnterFunc(std::bind(&GameProcessUI::send, this));
+    entry->GetStyle().backgroundColor = sf::Color(31, 31, 31);
+    entry->GetStyle().textColor = sf::Color(193, 205, 205);
+    entry->GetStyle().fontSize = 18;
+    container->AddItem(entry, sf::Vector2f(0, 0));
+
+    formattedTextField = new FormattedTextField(sf::Vector2f(0, 0));
+    formattedTextField->GetStyle().backgroundColor = sf::Color(60, 60, 60);
+    formattedTextField->GetStyle().textColor = sf::Color(193, 205, 205);
+    formattedTextField->GetStyle().fontSize = 18;
+    container->AddItem(formattedTextField, sf::Vector2f(0, 0));
 
     contextMenu = new ContextMenu();
     contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
@@ -32,12 +48,31 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 
 void GameProcessUI::Initialize() { }
 
+void GameProcessUI::send() {
+    if (!entry->Empty())
+        Connection::commandQueue.Push(new SendChatMessageClientCommand(entry->GetText()));
+}
+
+void GameProcessUI::Receive(const std::string &message) {
+    formattedTextField->AddInscription(message);
+}
+
+
 void GameProcessUI::Resize(const int width, const int height) {
     tileGrid->SetSize(uf::vec2i(width, height));
     infoLabel->CountPosition(width, height);
-    chat->SetSize(uf::vec2i(width, height));
+
+    TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();
+
+    container->SetSize(sf::Vector2f(width - tileGrid->GetTileSize() * float(Global::FOV), height * 0.5f));
+    entry->SetSize(sf::Vector2f(container->GetSize().x, container->GetSize().y * 0.1f));
+    formattedTextField->SetSize(sf::Vector2f(container->GetSize().x, container->GetSize().y - entry->GetSize().y));
+
+    entry->SetPosition(0, formattedTextField->GetSize().y);
+    container->SetPosition(width - container->GetSize().x, height - entry->GetSize().y - formattedTextField->GetSize().y);
+
     functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
-    functionWindow->SetSize({width - functionWindow->GetAbsPosition().x, chat->GetPosition().y});
+    functionWindow->SetSize({width - functionWindow->GetAbsPosition().x, container->GetPosition().y});
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
@@ -61,14 +96,14 @@ void GameProcessUI::HandleEvent(sf::Event event) {
     case sf::Event::KeyPressed: {
         switch (event.key.code) {
         case sf::Keyboard::Tab: {
-            if (chat->IsActive()) {
-                chat->SetActive(false);
+            if (container->IsActive()) {
+                container->SetActive(false);
                 tileGrid->SetActive(true);
                 curInputWidget = tileGrid;
             } else {
-                chat->SetActive(true);
+                container->SetActive(true);
                 tileGrid->SetActive(false);
-                curInputWidget = chat;
+                curInputWidget = container;
             }
             return;
         }
@@ -84,7 +119,6 @@ void GameProcessUI::HandleEvent(sf::Event event) {
 }
 
 InfoLabel *GameProcessUI::GetInfoLabel() const { return infoLabel.get(); }
-Chat *GameProcessUI::GetChat() const { return chat; }
 TileGrid *GameProcessUI::GetTileGrid() const { return tileGrid; }
 
 void GameProcessUI::generateFunctionWindow() {

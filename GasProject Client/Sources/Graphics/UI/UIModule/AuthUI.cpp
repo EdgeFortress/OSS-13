@@ -107,7 +107,8 @@ void AuthUI::generateLoginWindow() {
     Button *regButton = new Button(L"Registration", {100, 51}, std::bind(&AuthUI::openReg, this));
     regButton->SetStyle(enterButton->GetStyle());
     regButton->SetUnderCursorStyle(underCursorButtonStyle);
-    logWindow->AddItem(regButton, {500, 52});
+    logWindow->AddItem(regButton, { 500, 52 });
+    logWindow->SetActive(true);
 }
 
 void AuthUI::generateRegistrationWindow() {
@@ -121,7 +122,9 @@ void AuthUI::generateRegistrationWindow() {
     regWindow->AddItem(loginLabel, {0, 21});
 
     my_new_login_entry = new Entry({400, 25});
-    my_new_login_entry->GetStyle().backgroundColor = sf::Color(193, 205, 205);
+    my_new_login_entry->GetStyle().backgroundColor = sf::Color(60, 60, 60);
+    my_new_login_entry->GetStyle().textColor = sf::Color(193, 205, 205);
+    my_new_login_entry->GetStyle().fontSize = 16;
     my_new_login_entry->SetOnEnterFunc(std::bind(&AuthUI::registration, this));
     regWindow->AddItem(my_new_login_entry, {100, 21});
 
@@ -146,7 +149,8 @@ void AuthUI::generateRegistrationWindow() {
 }
 
 void AuthUI::openReg() {
-    curInputWidget = regWindow;
+    //curInputWidget = regWindow;
+    SetCurActiveWidget(regWindow);
     regWindow->Show();
 }
 
@@ -154,7 +158,8 @@ void AuthUI::closeReg() {
     regWindow->Hide();
 	my_login_entry->Clear();
 	my_passw_entry->Clear();
-    curInputWidget = logWindow;
+    //curInputWidget = logWindow;
+    SetCurActiveWidget(logWindow);
 }
 
 void AuthUI::login() {

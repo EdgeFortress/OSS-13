@@ -64,3 +64,12 @@ void UIModule::HandleEvent(sf::Event event) {
     if (curInputWidget)
         curInputWidget->HandleEvent(event);
 }
+
+bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {
+    if (newInputWidget->SetActive(true)) {
+        curInputWidget->SetActive(false);
+        curInputWidget = newInputWidget;
+        return true;
+    }
+    return false;
+}

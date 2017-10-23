@@ -256,7 +256,7 @@ void Connection::parsePacket(Packet &packet) {
             std::string message;
             packet >> message;
 		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		if (gameProcessUI) gameProcessUI->GetChat()->AddIncomingMessage(message);
+		if (gameProcessUI) gameProcessUI->Receive(message);
             break;
         }
     };

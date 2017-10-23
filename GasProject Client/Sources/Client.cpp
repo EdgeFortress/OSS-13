@@ -17,6 +17,7 @@ ClientController::ClientController() :
 
 void ClientController::Run() {
     if (!Connection::Start("localhost", Global::PORT)) {
+    //if (!Connection::Start("79.165.121.230", Global::PORT)) {
         CC::log << "Connection error!" << std::endl;
     } else {
         CC::log << "Connected" << std::endl;

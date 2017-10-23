@@ -3,8 +3,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-#include "Graphics/Chat.hpp"
-#include "../Widget/Container.hpp"
+#include "Graphics/UI/Widget/Container.hpp"
+#include "Graphics/UI/Widget/FormattedTextField.hpp"
 #include "UIModule.hpp"
 
 class UI;
@@ -20,7 +20,8 @@ public:
     GameProcessUI &operator=(const GameProcessUI &) = delete;
     virtual ~GameProcessUI() = default;
 
-    void Initialize() override final;
+    virtual void Initialize() final;
+    void Receive(const std::string &message);
 
     void Resize(int width, int height) override final;
     void Draw(sf::RenderWindow* renderWindow) override;
@@ -28,7 +29,6 @@ public:
     void HandleEvent(sf::Event event) override;
 
     InfoLabel *GetInfoLabel() const;
-    Chat *GetChat() const;
     TileGrid *GetTileGrid() const;
 
 private:
@@ -36,11 +36,16 @@ private:
 
     Container *functionWindow;
 	TileGrid *tileGrid;
-	Chat *chat;
+    Container *container;
+    Entry *entry;
+    FormattedTextField *formattedTextField;
 
     ContextMenu *contextMenu;
 
     void generateFunctionWindow();
+
+    // Event Handlers
+    void send();
 };
 
 class InfoLabel {

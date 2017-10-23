@@ -152,6 +152,10 @@ void Entry::Clear() {
     cursor.setPosition(text.getGlobalBounds().width, cursor.getPosition().y);
 }
 
+bool Entry::Empty() const {
+    return entryString.empty();
+}
+
 std::string Entry::GetText() {
     std::string returnedString(entryString.size() * 4, 0);
     std::string::iterator end = sf::Utf<8>::fromWide(entryString.begin(), entryString.end(), returnedString.begin());
@@ -221,8 +225,8 @@ bool Entry::HandleEvent(sf::Event event) {
             if (c != '\r' && c != '\t' && c != '\b')
 				setSymbol(c);
 			return true;
+        }
     }
-}
 }
 
     return false;

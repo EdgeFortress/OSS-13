@@ -32,4 +32,6 @@ protected:
 	std::list<uptr<Widget>> widgets;
 	Widget *curInputWidget;
 	Widget *underCursorWidget;
+
+    virtual bool SetCurActiveWidget(Widget *);
 };

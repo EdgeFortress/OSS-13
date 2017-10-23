@@ -19,6 +19,7 @@ public:
     void SetOnEnterFunc(std::function<void()>);
 
     std::string GetText();
+    bool Empty() const;
 
 protected:
     void draw() const override final;
