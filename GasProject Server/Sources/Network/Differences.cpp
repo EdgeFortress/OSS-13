@@ -24,6 +24,11 @@ ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, Block *lastBloc
 	objectInfo(object->GetObjectInfo())
 { }
 
+MoveIntentDiff::MoveIntentDiff(const Object *object, uf::Direction direction) :
+    Diff(object, Global::DiffType::MOVE_INTENT),
+    direction(direction)
+{ }
+
 MoveDiff::MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock) :
 	Diff(object, Global::DiffType::MOVE), 
 	direction(direction), lastblock(lastblock), speed(speed)

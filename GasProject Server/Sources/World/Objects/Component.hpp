@@ -15,6 +15,6 @@ public:
 	virtual void Update(sf::Time timeElapsed) = 0;
 
 	Object *GetOwner() const;
-	void SetOwner(Object *owner);
+	virtual void SetOwner(Object *owner);
 };
 

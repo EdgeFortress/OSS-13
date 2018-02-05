@@ -1,6 +1,7 @@
 #include "Object.hpp"
 
 #include "Shared/Math.hpp"
+#include "Shared/Physics/MovePhysics.hpp"
 
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
@@ -10,11 +11,20 @@
 #include "Graphics/TileGrid.hpp"
 
 Object::Object() :
-    id(0), animationProcess(false),
-    direction(uf::Direction::NONE), dense(false),
-    layer(0), shiftingSpeed(0),
+    id(0), 
+    animationProcess(false),
+    direction(uf::Direction::NONE), 
+    layer(0), 
+    dense(false),
+    moveSpeed(0),
     tile(nullptr)
 { }
+
+Object::~Object() {
+    if (tile) {
+        tile->RemoveObject(this);
+    }
+}
 
 void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
     TileGrid *tileGrid = tile->GetTileGrid();
@@ -30,28 +40,17 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 }
 
 void Object::Update(sf::Time timeElapsed) {
-    if (shiftingDirection) {
-        shift += shiftingDirection * timeElapsed.asSeconds() * shiftingSpeed;
-        if (abs(shift.x) >= 1) shiftingDirection.x = 0;
-        if (abs(shift.y) >= 1) shiftingDirection.y = 0;
-    }
+    // Movement
+    uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
 
-    if (shift) {
-        float delta = timeElapsed.asSeconds() * shiftingSpeed;
-        if (!shiftingDirection.x) {
-            if (shift.x * uf::sgn(shift.x) > delta)
-                shift.x -= uf::sgn(shift.x) * delta;
-            else shift.x = 0;
-        }
-        if (!shiftingDirection.y) {
-            if (shift.y * uf::sgn(shift.y) > delta)
-                shift.y -= uf::sgn(shift.y) * delta;
-            else shift.y = 0;
-        }
+    shift += deltaShift;
+
+    if (moveIntent) {
+        if (abs(shift.x) >= 1) moveIntent.x = 0;
+        if (abs(shift.y) >= 1) moveIntent.y = 0;
     }
 
     // Animation and animated icon handling
-
     if (animationProcess) {
         if (animation.Update(timeElapsed)) {
             animationProcess = false;
@@ -87,26 +86,23 @@ void Object::SetDirection(const uf::Direction direction) {
     if (animation.IsValid()) animation.SetDirection(direction);
 }
 
-void Object::SetSpeed(float speed) {
-	shiftingSpeed = speed;
+void Object::SetMoveSpeed(float moveSpeed) {
+	moveSpeed = moveSpeed;
 }
 
-void Object::SetShifting(uf::Direction direction, float speed) {
-	uf::vec2i directionVect = uf::DirectionToVect(direction);
-	shiftingDirection = directionVect;
-	shiftingSpeed = speed;
+void Object::SetMoveIntent(uf::vec2i moveIntent) {
+	this->moveIntent = moveIntent;
 }
 
-void Object::ResetShifting() {
-    shiftingDirection = {};
+void Object::ResetShiftingState() {
+    moveIntent = {};
     shift = {};
-	shiftingSpeed = 0;
 }
 
 void Object::ReverseShifting(uf::Direction direction) {
 	uf::vec2i directionVect = uf::DirectionToVect(direction);
-	if (directionVect.x) shiftingDirection.x = 0;
-	if (directionVect.y) shiftingDirection.y = 0;
+	if (directionVect.x) moveIntent.x = 0;
+	if (directionVect.y) moveIntent.y = 0;
 	shift -= directionVect;
 }
 
@@ -120,5 +116,5 @@ bool Object::PixelTransparent(uf::vec2i pixel) const {
 
 Tile *Object::GetTile() { return tile; }
 sf::Vector2f Object::GetShift() const { return shift; }
-sf::Vector2i Object::GetShiftingDirection() const { return shiftingDirection; }
+sf::Vector2i Object::GetMoveIntent() const { return moveIntent; }
 bool Object::IsDense() { return dense; }

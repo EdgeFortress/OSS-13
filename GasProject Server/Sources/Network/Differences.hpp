@@ -40,6 +40,12 @@ struct RemoveDiff : public Diff {
 	RemoveDiff(const Object *object);
 };
 
+struct MoveIntentDiff : public Diff {
+    uf::Direction direction;
+
+    MoveIntentDiff(const Object *object, uf::Direction direction);
+};
+
 struct MoveDiff : public Diff {
     uf::Direction direction;
 	float speed;

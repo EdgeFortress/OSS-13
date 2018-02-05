@@ -13,6 +13,9 @@ struct ObjectInfo {
 	const uf::Direction direction;
     const bool dense;
 
+    float moveSpeed;
+    uf::vec2f constSpeed;
+
 	ObjectInfo(uint id, uint sprite, const std::string &name, const uint layer, const uf::Direction direction, const bool dense = false) :
         id(id), sprite(sprite), name(name), layer(layer), direction(direction), dense(dense) { }
 };

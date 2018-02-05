@@ -65,11 +65,11 @@ void GameProcessUI::Resize(const int width, const int height) {
     TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();
 
     container->SetSize(sf::Vector2f(width - tileGrid->GetTileSize() * float(Global::FOV), height * 0.5f));
-    entry->SetSize(sf::Vector2f(container->GetSize().x, container->GetSize().y * 0.1f));
-    formattedTextField->SetSize(sf::Vector2f(container->GetSize().x, container->GetSize().y - entry->GetSize().y));
+    entry->SetSize({ container->GetSize().x, int(container->GetSize().y * 0.1f) });
+    formattedTextField->SetSize(uf::vec2i(container->GetSize().x, container->GetSize().y - entry->GetSize().y));
 
-    entry->SetPosition(0, formattedTextField->GetSize().y);
-    container->SetPosition(width - container->GetSize().x, height - entry->GetSize().y - formattedTextField->GetSize().y);
+    entry->SetPosition(0, float(formattedTextField->GetSize().y));
+    container->SetPosition({ width - container->GetSize().x, height - entry->GetSize().y - formattedTextField->GetSize().y });
 
     functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
     functionWindow->SetSize({width - functionWindow->GetAbsPosition().x, container->GetPosition().y});

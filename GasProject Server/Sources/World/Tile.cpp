@@ -93,32 +93,30 @@ bool Tile::RemoveObject(Object *obj) {
     return false;
 }
 
-void Tile::MoveTo(Object *obj) {
-    if (!obj) return;
+bool Tile::MoveTo(Object *obj) {
+    if (!obj) return false;
 
     if (!obj->IsMovable()) {
         Server::log << "Warning! Try to move immovable object" << std::endl;
-        return;
+        return false;
     }
 
-    bool available = true;
     if (obj->GetDensity())
         for (auto &object : content)
             if (object)
                 if (object->GetDensity()) {
-                    available = false;
-                    break;
+                    return false;
                 }
 
-    if (available) {
-        Block *lastBlock = obj->GetTile()->GetBlock();
-        uf::vec2i delta = GetPos() - obj->GetTile()->GetPos();
-        if (abs(delta.x) > 1 || abs(delta.y) > 1)
-            Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
-        const uf::Direction direction = uf::VectToDirection(delta);
-        addObject(obj);
-        GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetComponent<Control>()->GetSpeed(), lastBlock));
-    }
+    Block *lastBlock = obj->GetTile()->GetBlock();
+    uf::vec2i delta = GetPos() - obj->GetTile()->GetPos();
+    if (abs(delta.x) > 1 || abs(delta.y) > 1)
+        Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
+    const uf::Direction direction = uf::VectToDirection(delta);
+    addObject(obj);
+    GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastBlock));
+
+    return true;
 }
 
 void Tile::PlaceTo(Object *obj) {

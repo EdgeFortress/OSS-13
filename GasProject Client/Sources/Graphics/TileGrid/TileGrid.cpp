@@ -33,7 +33,7 @@ TileGrid::TileGrid() :
 
 	canBeActive = true;
 
-    layersBuffer.resize(100);
+    layersBuffer.resize(101);
 }
 
 void TileGrid::draw() const {
@@ -166,21 +166,21 @@ void TileGrid::Update(sf::Time timeElapsed) {
 					return;
 				}
 
-                uf::vec2i newShiftingDirection = controllable->GetShiftingDirection();
-                if (moveCommand.x) newShiftingDirection.x = moveCommand.x;
-                if (moveCommand.y) newShiftingDirection.y = moveCommand.y;
+                uf::vec2i moveIntent = controllable->GetMoveIntent();
+                if (moveCommand.x) moveIntent.x = moveCommand.x;
+                if (moveCommand.y) moveIntent.y = moveCommand.y;
 
-                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + newShiftingDirection.x, lastTile->GetRelPos().y});
-                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + newShiftingDirection.y});
-                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + newShiftingDirection);
+                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y});
+                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y});
+                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveIntent);
 
 				if (controllable->IsDense()) {
-                    if (!newTileDiag || newTileDiag->IsBlocked()) newShiftingDirection = controllable->GetShiftingDirection();
-					if (!newTileX || newTileX->IsBlocked()) newShiftingDirection.x = 0;
-					if (!newTileY || newTileY->IsBlocked()) newShiftingDirection.y = 0;
+                    if (!newTileDiag || newTileDiag->IsBlocked()) moveIntent = controllable->GetMoveIntent();
+					if (!newTileX || newTileX->IsBlocked()) moveIntent.x = 0;
+					if (!newTileY || newTileY->IsBlocked()) moveIntent.y = 0;
 				}
 
-				controllable->SetShifting(uf::VectToDirection(newShiftingDirection), controllableSpeed);
+				controllable->SetMoveIntent(moveIntent);
 			}
 			else
 				CC::log << "Controllable not determine" << std::endl;
@@ -257,14 +257,25 @@ void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
         tile->AddObject(obj, toObjectNum);
-        obj->ResetShifting();
+        obj->ResetShiftingState();
         return;
     }
 
     CC::log << "Wrong object ID:" << id << std::endl;
 }
 
-void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
+void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
+    auto iter = objects.find(id);
+    if (objects.find(id) != objects.end()) {
+        Object *obj = iter->second.get();
+        uf::vec2i dir = uf::DirectionToVect(direction);
+        obj->SetMoveIntent(dir);
+        return;
+    }
+    CC::log << "Try to set MoveIntent to unknown object (id: " << id << "(TileGrid::SetMoveIntentObject)" << std::endl;
+}
+
+void TileGrid::MoveObject(uint id, uf::Direction direction) {
     auto iter = objects.find(id);
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
@@ -280,8 +291,6 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
             CC::log << "Move to unknown tile" << std::endl;
             return;
         }
-
-        obj->SetSpeed(speed);
 
         //obj->SetShifting(direction, speed);
         tile->AddObject(obj, 0);

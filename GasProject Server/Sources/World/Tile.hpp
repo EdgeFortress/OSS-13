@@ -31,7 +31,7 @@ public:
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
-    void MoveTo(Object *);
+    bool MoveTo(Object *);
     void PlaceTo(Object *);
 
     const list<Object *> &Content() const;

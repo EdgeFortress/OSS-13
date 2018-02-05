@@ -13,6 +13,8 @@ struct ObjectInfo;
 
 class Object {
 public:
+    friend Tile;
+
     Object();
     virtual ~Object() = default;
 
@@ -20,6 +22,7 @@ public:
 
     virtual void Interact(Object *) = 0;
     void AddComponent(Component *);
+    void SetConstSpeed(uf::vec2f speed);
     void SetSprite(const std::string &sprite);
     void PlayAnimation(const std::string &sprite);
     void Delete();
@@ -42,24 +45,27 @@ public:
 	//
 	// For control purposes
 	//
-		uf::vec2f GetShift() const;
-		//float GetSpeed() const;
-
+		//uf::vec2f GetShift() const;
 		void SetDirection(uf::Direction);
-		void AddShift(uf::vec2f);
-		void SetShift(uf::vec2f);
+
+        void SetMoveIntent(uf::vec2i);
+        uf::vec2i GetMoveIntent() const;
+
+        void SetMoveSpeed(float speed);
+        float GetMoveSpeed() const;
+        //void SetSpeed(float speed);
+		//void AddShift(uf::vec2f);
+		//void SetShift(uf::vec2f);
 	//
 
     const ObjectInfo GetObjectInfo() const;
-
-    friend Tile;
 
 protected:
     std::string name;
     bool density;
     bool movable;
     std::string sprite;
-    // Object layer 1-100. The smaller layer is lower.
+    // Object layer 0-100. The smaller layer is lower.
     uint layer;
     uf::Direction direction;
 
@@ -69,13 +75,18 @@ protected:
     uint invisibility;
     //
 
-    uf::vec2f shift;
-    //float speed; // speed (tiles/seconds)
-
 private:
     uint id;
     Tile *tile;
     std::list<uptr<Component>> components;
+
+    // Movement
+    float moveSpeed;
+    uf::vec2i moveIntent;
+    uf::vec2f constSpeed;
+    uf::vec2f physSpeed;
+
+    uf::vec2f shift;
 };
 
 template <class T> T *Object::GetComponent() {

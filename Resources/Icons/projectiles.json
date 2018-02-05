@@ -1,0 +1,11 @@
+{
+    "title": "projectiles",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "stunorb",
+            "frames": 2,
+            "directed": false
+        }
+    ]
+}

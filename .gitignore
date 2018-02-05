@@ -215,6 +215,7 @@ ModelManifest.xml
 /GasProject Server/usersDB
 
 Resources/Icons/Thumbs.db
-SharedLibrary/SharedLibrary.vcxproj
-GasProject Server/GasProject Server.vcxproj
-GasProject Client/GasProject Client.vcxproj
+
+GasProject Client/LibraryPaths.props
+GasProject Server/LibraryPaths.props
+SharedLibrary/LibraryPaths.props

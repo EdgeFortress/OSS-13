@@ -1,0 +1,14 @@
+{
+    "title": "guns",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "taser",
+            "frames": 1
+        },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 },
+        { "frames": 1 }
+    ]
+}

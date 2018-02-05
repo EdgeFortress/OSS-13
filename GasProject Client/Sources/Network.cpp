@@ -197,6 +197,17 @@ void Connection::parsePacket(Packet &packet) {
 
                             break;
                         }
+                        case Global::DiffType::MOVE_INTENT:
+                        {
+                            Int32 id;
+                            packet >> id;
+                            Int8 direction;
+                            packet >> direction;
+
+                            tileGrid->SetMoveIntentObject(id, uf::Direction(direction));
+
+                            break;
+                        }
                         case Global::DiffType::MOVE:
                         {
                             Int32 id;
@@ -206,9 +217,7 @@ void Connection::parsePacket(Packet &packet) {
                             float speed;
                             packet >> speed;
 
-                            tileGrid->MoveObject(id, uf::Direction(direction), speed);
-
-                            //tileGrid->ShiftObject(id, uf::Direction(direction), speed);
+                            tileGrid->MoveObject(id, uf::Direction(direction));
 
                             break;
                         }
@@ -351,12 +360,19 @@ Packet &operator>>(Packet &packet, Object &object) {
 	sf::Int8 direction;
     sf::String name;
 	bool dense;
+    float moveSpeed;
+    uf::vec2f constSpeed;
     packet >> sprite >> name >> layer >> direction >> dense;
+    packet >> moveSpeed >> constSpeed.x >> constSpeed.y;
     object.SetSprite(uint(sprite));
     object.name = name.toAnsiString();
     object.layer = layer;
 	object.direction = uf::Direction(direction);
 	object.dense = dense;
+
+    object.moveSpeed = moveSpeed;
+    object.constSpeed = constSpeed;
+    
     return packet;
 }
 

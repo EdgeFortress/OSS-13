@@ -12,6 +12,7 @@ namespace Global {
 		ADD,
 		REMOVE,
 		RELOCATE,
+        MOVE_INTENT,
 		MOVE,
 		CHANGE_SPRITE,
         PLAY_ANIMATION,

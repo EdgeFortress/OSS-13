@@ -76,6 +76,12 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
             const RemoveDiff &removeDiff = dynamic_cast<const RemoveDiff &>(diff);
             break;
         }
+        case Global::DiffType::MOVE_INTENT: {
+            packet << Int32(diff.id);
+            const MoveIntentDiff &moveIntentDiff = dynamic_cast<const MoveIntentDiff &>(diff);
+            packet << Int8(moveIntentDiff.direction);
+            break;
+        }
         case Global::DiffType::MOVE: {
             packet << Int32(diff.id);
             const MoveDiff &moveDiff = dynamic_cast<const MoveDiff &>(diff);
@@ -125,5 +131,7 @@ Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
     packet << sf::Int32(objInfo.id) << sf::Int32(objInfo.sprite) << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
 	packet << sf::Int8(objInfo.direction);
 	packet << objInfo.dense;
+    packet << objInfo.moveSpeed;
+    packet << objInfo.constSpeed.x << objInfo.constSpeed.y;
     return packet;
 }

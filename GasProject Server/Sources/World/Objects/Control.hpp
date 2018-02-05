@@ -8,26 +8,28 @@
 class Player;
 
 class Control : public Component {
+public:
+    friend Player;
+
+    explicit Control(float speed);
+
+    void Update(sf::Time timeElapsed) override;
+
+    void MoveCommand(uf::vec2i order);
+    void ClickObjectCommand(uint id);
+
+    virtual void SetOwner(Object *owner) override;
+
+    float GetSpeed() const;
+    Player *GetPlayer() const;
+
 private:
 	float speed;
-	uf::vec2i moveIntent;
+	// uf::vec2i moveIntent;
 
     // receive from player
 	uf::vec2i moveOrder; 
     uint clickedObjectID;
 
 	Player *player;
-
-public:
-	explicit Control(float speed);
-
-	void Update(sf::Time timeElapsed) override;
-
-	void MoveCommand(uf::vec2i order);
-    void ClickObjectCommand(uint id);
-
-	float GetSpeed() const;
-	Player *GetPlayer() const;
-
-	friend Player;
 };

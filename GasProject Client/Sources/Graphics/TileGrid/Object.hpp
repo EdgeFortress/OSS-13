@@ -24,7 +24,7 @@ public:
 	Object();
     Object(const Object &) = default;
     Object &operator=(Object &) = default;
-    ~Object() { }
+    ~Object();
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
 	void Update(sf::Time timeElapsed);
@@ -34,9 +34,9 @@ public:
 	void SetSprite(uint spriteID);
     void PlayAnimation(uint spriteID);
 	void SetDirection(const uf::Direction);
-	void SetSpeed(float speed);
-	void SetShifting(uf::Direction direction, float speed);
-	void ResetShifting();
+	void SetMoveSpeed(float speed);
+	void SetMoveIntent(uf::vec2i moveIntent);
+	void ResetShiftingState();
 	void ReverseShifting(uf::Direction direction);
 
 	uint GetID() const;
@@ -47,7 +47,8 @@ public:
 
 	Tile *GetTile();
 	sf::Vector2f GetShift() const;
-	sf::Vector2i GetShiftingDirection() const;
+    sf::Vector2i GetMoveIntent() const;
+	//sf::Vector2i GetShiftingDirection() const;
 	bool IsDense();
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
@@ -64,8 +65,11 @@ private:
     bool dense;
 
     uf::vec2f shift;
-    uf::vec2i shiftingDirection;
-    float shiftingSpeed;
+    
+    float moveSpeed;
+    uf::vec2i moveIntent;
+    uf::vec2f constSpeed;  
+    uf::vec2f physSpeed;
 
     Tile *tile;
 };
