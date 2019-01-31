@@ -79,9 +79,12 @@ void Object::PlayAnimation(uint id) {
     }
 }
 
-void Object::SetDirection(const uf::Direction direction) {
+void Object::SetDirection(const uf::Direction newdirection) {
+	if (newdirection == uf::Direction::NONE)
+		return;
+
     // cut the diagonal directions
-	this->direction = uf::Direction(char(direction) % 4);
+	direction = uf::Direction(char(newdirection) % 4);
     if (sprite.IsValid()) sprite.SetDirection(direction);
     if (animation.IsValid()) animation.SetDirection(direction);
 }

@@ -181,13 +181,14 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				}
 
 				controllable->SetMoveIntent(moveIntent);
+				controllable->SetDirection(uf::VectToDirection(moveIntent));
 			}
 			else
 				CC::log << "Controllable not determine" << std::endl;
 
 			moveCommand = sf::Vector2i();
 		}
-        if (objectClicked) {
+        if (objectClicked && underCursorObject) {
             Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
             objectClicked = false;
         }
@@ -241,6 +242,7 @@ void TileGrid::RemoveObject(uint id) {
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
         if (obj->GetTile()) obj->GetTile()->RemoveObject(obj);
+		return;
     }
 
     CC::log << "Error: object with id" << id << "is not exist (TileGrid::RemoveObject)" << std::endl;
