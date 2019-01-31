@@ -2,6 +2,7 @@
 
 #include "Server.hpp"
 #include "Control.hpp"
+#include "World/Tile.hpp"
 
 Creature::Creature() {
 	layer = 75;
@@ -10,8 +11,14 @@ Creature::Creature() {
 	AddComponent(new Control(speed));
 }
 
-void Creature::Interact(Object *) {
+void Creature::InteractedBy(Object *) {
     Server::log << "Creature clicked" << std::endl;
+}
+
+void Creature::TryInteractWith(Object *obj) { }
+
+void Creature::Stun() {
+    Server::log << "Creature stunned" << std::endl;
 }
 
 uint Creature::GetInvisibleVisibility() const { return seeInvisibleAbility; }

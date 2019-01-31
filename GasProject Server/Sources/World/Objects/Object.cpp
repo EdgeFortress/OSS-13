@@ -15,10 +15,13 @@ Object::Object() :
     direction(uf::Direction::NONE), 
     invisibility(0),
     tile(nullptr),
+	holder(nullptr),
     moveSpeed(0)
 {
     id = CurThreadGame->GetWorld()->addObject(this);
 }
+
+void Object::AfterCreation() { }
 
 void Object::Update(sf::Time timeElapsed) {
     for (auto &component : components) {
@@ -55,7 +58,19 @@ void Object::Update(sf::Time timeElapsed) {
     }
 }
 
+void Object::AddObject(Object *obj) {
+	if (!obj) return;
+
+	if (obj->GetTile())
+		obj->GetTile()->RemoveObject(obj);
+
+	content.push_back(obj);
+	obj->holder = this;
+	obj->setTile(GetTile());
+}
+
 void Object::AddComponent(Component *new_component) {
+	if (!new_component) return;
     new_component->SetOwner(this);
     components.push_back(uptr<Component>(new_component));
 }
@@ -84,6 +99,14 @@ Tile *Object::GetTile() const { return tile; }
 
 bool Object::GetDensity() const { return density; };
 bool Object::IsMovable() const { return movable; };
+bool Object::IsCloseTo(Object *other) const {
+    auto pos = GetTile()->GetPos();
+    auto otherPos = other->GetTile()->GetPos();
+    if (uf::length(pos - otherPos) < 2)
+        return true;
+	return false;
+}
+
 uint Object::GetInvisibility() const { return invisibility; }
 bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
@@ -138,4 +161,10 @@ const ObjectInfo Object::GetObjectInfo() const {
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;
     return objectInfo;
+}
+
+void Object::setTile(Tile *newTile) {
+	tile = newTile;
+	for (auto *obj: content)
+		obj->setTile(newTile);
 }

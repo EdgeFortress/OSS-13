@@ -2,6 +2,6 @@
 
 #include "Server.hpp"
 
-void Turf::Interact(Object *) {
+void Turf::InteractedBy(Object *) {
     
 };

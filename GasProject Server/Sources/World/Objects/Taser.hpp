@@ -6,5 +6,5 @@ class Taser : public Item {
 public:
     Taser();
 
-    void Interact(Object *) override;
+    void InteractWith(Object *) override;
 };

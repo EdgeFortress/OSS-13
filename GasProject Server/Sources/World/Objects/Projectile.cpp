@@ -1,12 +1,39 @@
 #include "Projectile.hpp"
 
-Projectile::Projectile() {
+#include "World/Tile.hpp"
+#include "World/Objects.hpp"
+
+Projectile::Projectile(uf::vec2f direction) :
+	startTile(nullptr)
+{
     name = "Stun Orb";
     sprite = "stunorb";
     density = false;
     layer = 100;
-    SetConstSpeed({ 0, 10 });
+    SetConstSpeed(direction.normalize() * speed);
 }
 
-void Projectile::Interact(Object *) { }
+void Projectile::AfterCreation() {
+	if (!GetTile())
+		throw std::exception("Unexpected: projectile's tile is null after creation!");
+	startTile = GetTile();
+}
 
+void Projectile::Update(sf::Time timeElapsed) {
+    Object::Update(timeElapsed);
+
+	if (!GetTile())
+		throw std::exception("Unexpected: projectile's tile is null!");
+
+    if (startTile != GetTile() && GetTile()->IsDense()) {
+        onHit(GetTile()->GetDenseObject());
+        Delete();
+    }
+}
+
+void Projectile::InteractedBy(Object *) { }
+
+void Projectile::onHit(Object *obj) {
+    if (auto *creature = dynamic_cast<Creature *>(obj))
+        creature->Stun();
+}

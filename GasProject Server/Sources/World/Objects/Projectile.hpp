@@ -4,7 +4,19 @@
 
 class Projectile : public Object {
 public:
-    Projectile();
+    Projectile(uf::vec2f direction);
 
-    void Interact(Object *) final;
+    // Object
+	virtual void AfterCreation() final;
+    virtual void Update(sf::Time timeElapsed) final;
+
+    void InteractedBy(Object *) final;
+
+protected:
+    virtual void onHit(Object *);
+
+private:
+	const float speed = 10;
+
+	Tile *startTile;
 };

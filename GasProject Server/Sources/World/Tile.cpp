@@ -162,6 +162,13 @@ const list<Object *> &Tile::Content() const {
     return content;
 }
 
+Object *Tile::GetDenseObject() const
+{
+    for (auto &obj : content)
+        if (obj->GetDensity()) return obj;
+    return nullptr;
+}
+
 uf::vec2i Tile::GetPos() const {
     return pos;
 }
@@ -201,7 +208,7 @@ void Tile::addObject(Object *obj) {
         iter++;
     content.insert(iter, obj);
 
-    obj->tile = this;
+	obj->setTile(this);
 }
 
 bool Tile::removeObject(Object *obj) {
@@ -214,7 +221,7 @@ bool Tile::removeObject(Object *obj) {
                 fullBlocked = false;
                 CheckLocale();
             }
-            obj->tile = nullptr;
+            obj->setTile(nullptr);
             content.erase(iter);
             return true;
         }

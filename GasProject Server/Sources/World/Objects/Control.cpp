@@ -52,11 +52,9 @@ void Control::Update(sf::Time timeElapsed) {
     ////
     if (clickedObjectID) {
         Object *clickedObject = CurThreadGame->GetWorld()->GetObject(clickedObjectID);
-        // check distance
-        auto pos = owner->GetTile()->GetPos(); 
-        auto clickedObjPos = clickedObject->GetTile()->GetPos();
-        if (uf::length(pos - clickedObjPos) < 2)
-            clickedObject->Interact(nullptr);
+
+        if (auto *creature = dynamic_cast<Creature *>(owner))
+            creature->TryInteractWith(clickedObject);
 
         clickedObjectID = 0;
     }

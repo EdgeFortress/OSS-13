@@ -9,7 +9,7 @@ public:
     Airlock(const Airlock &object) = default;
     ~Airlock() = default;
 
-    void Interact(Object *) override;
+    void InteractedBy(Object *) override;
 
     void Activate();
     void Lock();

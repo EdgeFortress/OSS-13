@@ -12,8 +12,8 @@ Airlock::Airlock() {
     locked = false;
 }
 
-void Airlock::Interact(Object *object) {
-    Turf::Interact(object);
+void Airlock::InteractedBy(Object *object) {
+    Turf::InteractedBy(object);
     Activate();
 }
 

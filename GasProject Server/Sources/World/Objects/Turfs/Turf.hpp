@@ -10,5 +10,5 @@ public:
     }
 
     virtual void Update(sf::Time timeElapsed) override { };
-    virtual void Interact(Object *) override;
+    virtual void InteractedBy(Object *) override;
 };

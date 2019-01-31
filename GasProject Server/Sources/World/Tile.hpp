@@ -31,10 +31,13 @@ public:
     // Removing object from tile content, but not deleting it, and change object.tile pointer
     // Also generate DeleteDiff
     bool RemoveObject(Object *obj);
+	// Smooth moving from one tile to another
     bool MoveTo(Object *);
+	// Teleport or add to tile from nowhere
     void PlaceTo(Object *);
 
     const list<Object *> &Content() const;
+    Object *GetDenseObject() const;
 
     uf::vec2i GetPos() const;
     Block *GetBlock() const;

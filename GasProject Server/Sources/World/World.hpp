@@ -18,6 +18,8 @@ public:
     void Update(sf::Time timeElapsed);
 
     void FillingWorld();
+	template<typename T, typename... TArgs>
+	Object *CreateObject(Tile *, TArgs&&... Args) const;
     Creature *CreateNewPlayerCreature() const;
 
     Object *GetObject(uint id);
@@ -37,4 +39,15 @@ private:
     // Available only for Object()
     uint addObject(Object *);
 };
+
+template<typename T, typename... TArgs>
+Object *World::CreateObject(Tile *tile, TArgs&&... Args) const {
+	auto *obj = new T(std::forward<TArgs>(Args)...);
+
+	if (tile)
+		tile->PlaceTo(obj);
+
+	obj->AfterCreation();
+	return obj;
+}
 

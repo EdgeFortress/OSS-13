@@ -12,15 +12,17 @@ class Tile;
 struct ObjectInfo;
 
 class Object {
-public:
-    friend Tile;
+	friend Tile;
 
+public:
     Object();
     virtual ~Object() = default;
 
+	virtual void AfterCreation();
     virtual void Update(sf::Time timeElapsed);
 
-    virtual void Interact(Object *) = 0;
+    virtual void InteractedBy(Object *) = 0;
+	void AddObject(Object *);
     void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
     void SetSprite(const std::string &sprite);
@@ -34,6 +36,7 @@ public:
 
     bool GetDensity() const;
     bool IsMovable() const;
+    bool IsCloseTo(Object *) const;
     // True if visibility bits allows to see invisibility bits
     bool CheckVisibility(uint visibility) const;
     // Get Invisibility bits
@@ -60,6 +63,10 @@ public:
 
     const ObjectInfo GetObjectInfo() const;
 
+private:
+	// for use from Tile
+	void setTile(Tile *);
+
 protected:
     std::string name;
     bool density;
@@ -78,6 +85,8 @@ protected:
 private:
     uint id;
     Tile *tile;
+	Object *holder;
+	std::list<Object *> content;
     std::list<uptr<Component>> components;
 
     // Movement
