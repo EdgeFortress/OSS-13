@@ -14,32 +14,36 @@ namespace uf {
 		void Push(T t);
 		T Pop();
 		bool Empty();
+		uint GetSize();
 	};
 
 	template<class T>
 	void ThreadSafeQueue<T>::Push(T t) {
-		mutex.lock();
+		std::scoped_lock lock(mutex);
 		queue.push(t);
-		mutex.unlock();
 	}
 
 	template<class T>
 	T ThreadSafeQueue<T>::Pop() {
-		mutex.lock();
+		std::scoped_lock lock(mutex);
 		if (queue.empty())
 			return nullptr;
 		T t = queue.front();
 		queue.pop();
-		mutex.unlock();
 		return t;
 	}
 
 	template<class T>
 	bool ThreadSafeQueue<T>::Empty() {
-		mutex.lock();
+		std::scoped_lock lock(mutex);
 		bool empty = queue.empty();
-		mutex.unlock();
 		return empty;
+	}
+
+	template<class T>
+	uint ThreadSafeQueue<T>::GetSize() {
+		std::scoped_lock lock(mutex);
+		return static_cast<uint>(queue.size());
 	}
 
 }
