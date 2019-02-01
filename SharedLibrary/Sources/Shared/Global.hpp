@@ -18,4 +18,16 @@ namespace Global {
         PLAY_ANIMATION,
 		CHANGE_DIRECTION
 	};
+
+	const uint32_t MAX_SPRITE_ID = 0x0FFFFFFFu; // (= 268 435 455) 4 bites reserved for state
+
+	enum class ItemSpriteState : uint32_t {
+		DEFAULT    = 0,          // on the ground
+		// next states applies to Items only for now
+		MOB        = 0x10000000, // on mob
+		HAND_LEFT  = 0x20000000, // in left hand
+		HAND_RIGHT = 0x30000000, // in right hand
+		// ...
+		LAST_STATE = 0xF0000000
+	};
 }
