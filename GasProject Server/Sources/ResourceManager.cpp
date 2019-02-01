@@ -25,6 +25,8 @@ ResourceManager::ResourceManager() {
             }
         }
     }
+
+	Server::log << "ResourceManager created." << lastSpriteNum << "sprites loaded!" << std::endl;
 }
 
 uint ResourceManager::GetSpriteNum(const std::string &sprite) {
@@ -32,6 +34,6 @@ uint ResourceManager::GetSpriteNum(const std::string &sprite) {
     if (iter != sprites.end()) {
         return iter->second;
     }
-    // Sprite not founded
+    Server::log << "ResourceManager::GetSpriteNum miss. Sprite" << sprite << std::endl;
     return 0;
 }

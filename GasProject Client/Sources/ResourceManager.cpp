@@ -2,10 +2,11 @@
 
 #include <fstream>
 
-#include "Graphics/Sprite.hpp"
+#include <Client.hpp>
+#include <Graphics/Sprite.hpp>
 
-#include "Shared/JSON.hpp"
-#include "Shared/OS.hpp"
+#include <Shared/JSON.hpp>
+#include <Shared/OS.hpp>
 
 ResourceManager::ResourceManager() {
     using json = nlohmann::json;
@@ -34,6 +35,9 @@ ResourceManager::ResourceManager() {
 }
 
 Sprite ResourceManager::GetSprite(uint id) {
-    if (!id || id >= nextSpriteNum) return std::move(Sprite());
+    if (!id || id >= nextSpriteNum) {
+		CC::log << "ResourceManager::GetSprite miss. ID" << id << std::endl;
+		return std::move(Sprite());
+	}
     return std::move(spritesMap[id - 1]->GetSprite(id));
 }
