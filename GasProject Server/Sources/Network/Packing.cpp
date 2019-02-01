@@ -128,7 +128,13 @@ Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
 }
 
 Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
-    packet << sf::Int32(objInfo.id) << sf::Int32(objInfo.sprite) << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
+    packet << sf::Int32(objInfo.id);
+
+	packet << sf::Int32(objInfo.sprites.size());
+	for (auto &sprite: objInfo.sprites)
+		packet << sf::Int32(sprite);
+
+	packet << sf::String(objInfo.name) << sf::Int32(objInfo.layer);
 	packet << sf::Int8(objInfo.direction);
 	packet << objInfo.dense;
     packet << objInfo.moveSpeed;

@@ -35,7 +35,9 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
     if (animationProcess) {
         animation.Draw(target, pos + shift * tileSize);
     } else {
-        if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize);
+		for (auto &sprite : sprites) {
+			if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize);
+		}
     }
 }
 
@@ -56,19 +58,27 @@ void Object::Update(sf::Time timeElapsed) {
             animationProcess = false;
         }
     } else {
-        if (sprite.IsValid())
-            sprite.Update(timeElapsed);
+		for (auto &sprite : sprites) {
+			if (sprite.IsValid()) sprite.Update(timeElapsed);
+		}
     }
 }
 
 void Object::Resize(uint tileSize) {
     if (animationProcess) animation.Resize(tileSize);
-    if (sprite.IsValid()) sprite.Resize(tileSize);
+	for (auto &sprite : sprites) {
+		if (sprite.IsValid()) sprite.Resize(tileSize);
+	}
 }
 
-void Object::SetSprite(uint id) {
-	sprite = CC::Get()->RM.GetSprite(id);
-    if (sprite.IsValid()) sprite.SetDirection(direction);
+void Object::AddSprite(uint id) {
+	sprites.push_back(CC::Get()->RM.GetSprite(id));
+    if (sprites.back().IsValid()) 
+		sprites.back().SetDirection(direction);
+}
+
+void Object::ClearSprites() {
+	sprites.clear();
 }
 
 void Object::PlayAnimation(uint id) {
@@ -85,7 +95,9 @@ void Object::SetDirection(const uf::Direction newdirection) {
 
     // cut the diagonal directions
 	direction = uf::Direction(char(newdirection) % 4);
-    if (sprite.IsValid()) sprite.SetDirection(direction);
+	for (auto &sprite : sprites) {
+		if (sprite.IsValid()) sprite.SetDirection(direction);
+	}
     if (animation.IsValid()) animation.SetDirection(direction);
 }
 
@@ -114,7 +126,11 @@ std::string Object::GetName() const { return name; }
 //Sprite &Object::GetSprite() const { return sprite; }
 uint Object::GetLayer() const { return layer; }
 bool Object::PixelTransparent(uf::vec2i pixel) const {
-    return sprite.PixelTransparent(pixel);
+	for (auto &sprite : sprites) {
+		if (sprite.IsValid() && !sprite.PixelTransparent(pixel)) 
+			return false;
+	}
+	return true;
 }
 
 Tile *Object::GetTile() { return tile; }

@@ -157,7 +157,9 @@ void Object::SetDirection(uf::Direction direction) {
 //}
 
 const ObjectInfo Object::GetObjectInfo() const {
-    ObjectInfo objectInfo(id, Server::Get()->RM->GetSpriteNum(sprite), name, layer, direction, density);
+	std::list<uint> sprites;
+	sprites.push_back(Server::Get()->RM->GetSpriteNum(sprite));
+    ObjectInfo objectInfo(id, sprites, name, layer, direction, density);
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;
     return objectInfo;

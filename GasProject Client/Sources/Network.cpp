@@ -356,15 +356,23 @@ Packet &operator>>(Packet &packet, Tile &tile) {
 }
 
 Packet &operator>>(Packet &packet, Object &object) {
-    sf::Int32 sprite, layer;
+    sf::Int32 spriteNum, layer;
 	sf::Int8 direction;
     sf::String name;
 	bool dense;
     float moveSpeed;
     uf::vec2f constSpeed;
-    packet >> sprite >> name >> layer >> direction >> dense;
+
+    packet >> spriteNum;
+	object.ClearSprites();
+	while (spriteNum--) {
+		sf::Int32 spriteId;
+		packet >> spriteId;
+		object.AddSprite(uint(spriteId));
+	}
+
+	packet >> name >> layer >> direction >> dense;
     packet >> moveSpeed >> constSpeed.x >> constSpeed.y;
-    object.SetSprite(uint(sprite));
     object.name = name.toAnsiString();
     object.layer = layer;
 	object.direction = uf::Direction(direction);

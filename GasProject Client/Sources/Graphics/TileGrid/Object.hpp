@@ -31,7 +31,8 @@ public:
     void Resize(uint tileSize);
 
     void SetID(uint id) { this->id = id; }
-	void SetSprite(uint spriteID);
+	void AddSprite(uint spriteID);
+	void ClearSprites();
     void PlayAnimation(uint spriteID);
 	void SetDirection(const uf::Direction);
 	void SetMoveSpeed(float speed);
@@ -57,8 +58,8 @@ public:
 private:
     uint id;
     std::string name;
-    Sprite sprite;
-    Sprite animation;
+	std::list<::Sprite> sprites;
+    ::Sprite animation;
     bool animationProcess;
     uf::Direction direction;
     uint layer;

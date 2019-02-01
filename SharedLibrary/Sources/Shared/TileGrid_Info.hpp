@@ -8,7 +8,7 @@
 struct ObjectInfo {
     const uint id;
     const std::string name;
-    const uint sprite;
+    const std::list<uint> sprites;
     const uint layer;
 	const uf::Direction direction;
     const bool dense;
@@ -16,8 +16,8 @@ struct ObjectInfo {
     float moveSpeed;
     uf::vec2f constSpeed;
 
-	ObjectInfo(uint id, uint sprite, const std::string &name, const uint layer, const uf::Direction direction, const bool dense = false) :
-        id(id), sprite(sprite), name(name), layer(layer), direction(direction), dense(dense) { }
+	ObjectInfo(uint id, std::list<uint> sprites, const std::string &name, const uint layer, const uf::Direction direction, const bool dense = false) :
+        id(id), sprites(sprites), name(name), layer(layer), direction(direction), dense(dense) { }
 };
 
 struct TileInfo {

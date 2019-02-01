@@ -308,7 +308,8 @@ void TileGrid::ChangeObjectSprite(uint id, uint sprite_id) {
     auto iter = objects.find(id);
     if (iter != objects.end()) {
         Object *obj = iter->second.get();
-        obj->SetSprite(sprite_id);
+		obj->ClearSprites();
+        obj->AddSprite(sprite_id);
         obj->Resize(tileSize);
     }
 }
