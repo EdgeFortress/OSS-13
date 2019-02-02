@@ -26,6 +26,7 @@ public:
     void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
     void SetSprite(const std::string &sprite);
+	void SetSpriteState(Global::ItemSpriteState);
     void PlayAnimation(const std::string &sprite);
     void Delete();
 
@@ -72,6 +73,7 @@ protected:
     bool density;
     bool movable;
     std::string sprite;
+	Global::ItemSpriteState spriteState; // TODO: move it to Item? Also there is need to reimplement packing???
     // Object layer 0-100. The smaller layer is lower.
     uint layer;
     uf::Direction direction;

@@ -58,7 +58,8 @@ void World::FillingWorld() {
         }
     }
 
-    map->GetTile({ 50, 50 })->PlaceTo(new Taser());
+	CreateObject<Taser>(map->GetTile({ 50, 50 }));
+	CreateObject<Uniform>(map->GetTile({ 49, 50 }));
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
@@ -81,9 +82,14 @@ void World::FillingWorld() {
 }
 
 Creature *World::CreateNewPlayerCreature() const {
-    Creature *creature = new Human();
-    map->GetTile({ 50, 50 })->PlaceTo(creature);
-    return creature;
+	auto human = CreateObject<Human>();
+
+	//auto uniform = CreateObject<Uniform>();
+	//human->PutOn(uniform);
+
+    map->GetTile({ 50, 50 })->PlaceTo(human);
+
+    return human;
 }
 
 Object *World::GetObject(uint id) {

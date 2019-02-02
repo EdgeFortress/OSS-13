@@ -2,14 +2,14 @@
 
 #include <fstream>
 
-#include "Shared/OS.hpp"
-#include "Shared/JSON.hpp"
+#include <Server.hpp>
 
-#include "Server.hpp"
+#include <Shared/OS.hpp>
+#include <Shared/JSON.hpp>
 
 ResourceManager::ResourceManager() {
     using json = nlohmann::json;
-    uint lastSpriteNum = 0;
+    uint32_t lastSpriteNum = 0;
 
     // Load icons list
     auto config_files = FindFilesRecursive(L"Resources/Icons", L"*.json");
@@ -29,10 +29,10 @@ ResourceManager::ResourceManager() {
 	Server::log << "ResourceManager created." << lastSpriteNum << "sprites loaded!" << std::endl;
 }
 
-uint ResourceManager::GetSpriteNum(const std::string &sprite) {
+uint32_t ResourceManager::GetSpriteNum(const std::string &sprite, Global::ItemSpriteState state) {
     const auto iter = sprites.find(sprite);
     if (iter != sprites.end()) {
-        return iter->second;
+        return iter->second + uint32_t(state);
     }
     Server::log << "ResourceManager::GetSpriteNum miss. Sprite" << sprite << std::endl;
     return 0;

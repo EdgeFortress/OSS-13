@@ -2,15 +2,15 @@
 
 #include <unordered_map>
 
-#include "Shared/Types.hpp"
+#include <Shared/Global.hpp>
 
 class ResourceManager {
 public:
     ResourceManager();
 
-    uint GetSpriteNum(const std::string &);
+    uint32_t GetSpriteNum(const std::string &spriteName, Global::ItemSpriteState spriteState = Global::ItemSpriteState::DEFAULT);
 
 private:
-    std::unordered_map<std::string, uint> sprites;
-    std::unordered_map<std::string, uint> sounds;
+    std::unordered_map<std::string, uint32_t> sprites;
+    std::unordered_map<std::string, uint32_t> sounds;
 };

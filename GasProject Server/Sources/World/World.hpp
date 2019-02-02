@@ -19,7 +19,7 @@ public:
 
     void FillingWorld();
 	template<typename T, typename... TArgs>
-	Object *CreateObject(Tile *, TArgs&&... Args) const;
+	T *CreateObject(Tile *tile = nullptr, TArgs&&... Args) const;
     Creature *CreateNewPlayerCreature() const;
 
     Object *GetObject(uint id);
@@ -41,13 +41,13 @@ private:
 };
 
 template<typename T, typename... TArgs>
-Object *World::CreateObject(Tile *tile, TArgs&&... Args) const {
-	auto *obj = new T(std::forward<TArgs>(Args)...);
+T *World::CreateObject(Tile *tile, TArgs&&... Args) const {
+	Object *obj = new T(std::forward<TArgs>(Args)...); // Object * is important! It's check for correct type.
 
 	if (tile)
 		tile->PlaceTo(obj);
 
 	obj->AfterCreation();
-	return obj;
+	return static_cast<T *>(obj);
 }
 

@@ -21,4 +21,8 @@ void Creature::Stun() {
     Server::log << "Creature stunned" << std::endl;
 }
 
+bool Creature::PutOn(Item *) {
+	return false;
+}
+
 uint Creature::GetInvisibleVisibility() const { return seeInvisibleAbility; }

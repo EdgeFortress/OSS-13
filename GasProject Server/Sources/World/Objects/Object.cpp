@@ -10,7 +10,8 @@
 
 Object::Object() :
     density(false), 
-    movable(true), 
+    movable(true),
+	spriteState(Global::ItemSpriteState::DEFAULT),
     layer(0), 
     direction(uf::Direction::NONE), 
     invisibility(0),
@@ -82,6 +83,10 @@ void Object::SetConstSpeed(uf::vec2f speed) {
 void Object::SetSprite(const std::string &sprite) {
     this->sprite = sprite;
     GetTile()->GetBlock()->AddDiff(new ChangeSpriteDiff(this, Server::Get()->RM->GetSpriteNum(sprite)));
+}
+
+void Object::SetSpriteState(Global::ItemSpriteState newState) {
+	spriteState = newState;
 }
 
 void Object::PlayAnimation(const std::string &animation) {
@@ -159,6 +164,11 @@ void Object::SetDirection(uf::Direction direction) {
 const ObjectInfo Object::GetObjectInfo() const {
 	std::list<uint> sprites;
 	sprites.push_back(Server::Get()->RM->GetSpriteNum(sprite));
+
+	for (auto *obj : content) {
+		sprites.push_back(Server::Get()->RM->GetSpriteNum(obj->sprite, obj->spriteState));
+	}
+
     ObjectInfo objectInfo(id, sprites, name, layer, direction, density);
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;

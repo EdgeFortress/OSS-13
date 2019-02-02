@@ -2,6 +2,8 @@
 
 #include "Object.hpp"
 
+class Item;
+
 class Creature : public Object {
 protected:
 	uint seeInvisibleAbility;
@@ -13,7 +15,8 @@ public:
     void InteractedBy(Object *) override;
 
     virtual void TryInteractWith(Object *);
-    void Stun();
+    virtual void Stun();
+	virtual bool PutOn(Item *);
 
 	uint GetInvisibleVisibility() const;
 };

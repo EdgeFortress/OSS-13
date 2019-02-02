@@ -168,6 +168,8 @@
     <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
     <ClCompile Include="Sources\World\Block.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
+    <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp" />
+    <ClCompile Include="Sources\World\Objects\Clothing\Uniform\Uniform.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
@@ -198,6 +200,8 @@
     <ClInclude Include="Sources\World\Atmos\Locale.hpp" />
     <ClInclude Include="Sources\World\Block.hpp" />
     <ClInclude Include="Sources\World\Map.hpp" />
+    <ClInclude Include="Sources\World\Objects\Clothing\Clothing.h" />
+    <ClInclude Include="Sources\World\Objects\Clothing\Uniform\Uniform.h" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\Global.hpp" />

@@ -99,6 +99,12 @@
     <ClCompile Include="Sources\World\Objects\Taser.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\World\Objects\Clothing\Uniform\Uniform.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Server.hpp">
@@ -195,6 +201,12 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\Taser.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Objects\Clothing\Clothing.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Objects\Clothing\Uniform\Uniform.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

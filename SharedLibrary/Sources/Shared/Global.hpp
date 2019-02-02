@@ -24,10 +24,10 @@ namespace Global {
 	enum class ItemSpriteState : uint32_t {
 		DEFAULT    = 0,          // on the ground
 		// next states applies to Items only for now
-		MOB        = 0x10000000, // on mob
-		HAND_LEFT  = 0x20000000, // in left hand
-		HAND_RIGHT = 0x30000000, // in right hand
+		ON_MOB        = 0x10000000, // on mob
+		IN_HAND_LEFT  = 0x20000000, // in left hand
+		IN_HAND_RIGHT = 0x30000000, // in right hand
 		// ...
-		LAST_STATE = 0xF0000000
+		__LAST_STATE = 0xF0000000
 	};
 }
