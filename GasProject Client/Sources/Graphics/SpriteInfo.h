@@ -18,4 +18,10 @@ struct SpriteInfo
 
 	const Texture *mobState_texture;
 	uint32_t mobState_firstFrame;
+
+	const Texture *lhandState_texture;
+	uint32_t lhandState_firstFrame;
+
+	const Texture *rhandState_texture;
+	uint32_t rhandState_firstFrame;
 };

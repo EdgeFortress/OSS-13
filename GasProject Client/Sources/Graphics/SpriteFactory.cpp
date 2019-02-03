@@ -31,6 +31,20 @@ Sprite SpriteFactory::CreateSprite(uint32_t id) {
 				sprite.directed = true;
 				break;
 			}
+			case Global::ItemSpriteState::IN_HAND_LEFT:
+			{
+				sprite.texture = recipes[id].lhandState_texture;
+				sprite.firstFrame = recipes[id].lhandState_firstFrame;
+				sprite.directed = true;
+				break;
+			}
+			case Global::ItemSpriteState::IN_HAND_RIGHT:
+			{
+				sprite.texture = recipes[id].rhandState_texture;
+				sprite.firstFrame = recipes[id].rhandState_firstFrame;
+				sprite.directed = true;
+				break;
+			}
 			default:
 				throw std::exception("Sprite state is unknown!");
 		}

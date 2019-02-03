@@ -18,7 +18,12 @@ public:
 
 private:
 	void generateTexturesAndSprites(const std::wstring &configPath);
-	void generateSprites(const Texture *texture, const Texture *mobStateTexture, nlohmann::json &config);
+	void generateSprites(
+		const Texture *texture,
+		const Texture *mobState_texture,
+		const Texture *lhandState_texture,
+		const Texture *rhandState_texture,
+		nlohmann::json &config);
 
 private:
 	const wchar_t *IMAGE_CONFIGS_PATH = L"Resources/Icons";
