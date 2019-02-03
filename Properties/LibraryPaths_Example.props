@@ -5,11 +5,14 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:/lib/SFML/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:/lib/SFML/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>E:/lib/SFML/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:/lib/SFML/lib</AdditionalLibraryDirectories>
     </Lib>
+    <Link>
+      <AdditionalLibraryDirectories>C:/lib/SFML/lib</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
