@@ -89,12 +89,14 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 			packet << moveDiff.speed;
             break;
         }
-        case Global::DiffType::CHANGE_SPRITE: {
-            packet << Int32(diff.id);
-            const ChangeSpriteDiff &changeSpriteDiff = dynamic_cast<const ChangeSpriteDiff &>(diff);
-            packet << Int32(changeSpriteDiff.sprite_id);
-            break;
-        }
+		case Global::DiffType::UPDATE_ICONS: {
+			packet << Int32(diff.id);
+			const UpdateIconsDiff &changeSpriteDiff = dynamic_cast<const UpdateIconsDiff &>(diff);
+			packet << sf::Int32(changeSpriteDiff.icons.size());
+			for (auto &icon : changeSpriteDiff.icons)
+				packet << sf::Int32(icon);
+			break;
+		}
         case Global::DiffType::PLAY_ANIMATION:
         {
             packet << Int32(diff.id);

@@ -1,12 +1,13 @@
 #include "Object.hpp"
 
-#include "Shared/TileGrid_Info.hpp"
-#include "Shared/Math.hpp"
-#include "Shared/Physics/MovePhysics.hpp"
+#include <Server.hpp>
+#include <Network/Differences.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
 
-#include "Server.hpp"
-#include "World/World.hpp"
-#include "Network/Differences.hpp"
+#include <Shared/TileGrid_Info.hpp>
+#include <Shared/Math.hpp>
+#include <Shared/Physics/MovePhysics.hpp>
 
 Object::Object() :
     density(false), 
@@ -18,11 +19,11 @@ Object::Object() :
     tile(nullptr),
 	holder(nullptr),
     moveSpeed(0)
-{
-    id = CurThreadGame->GetWorld()->addObject(this);
-}
+{ }
 
-void Object::AfterCreation() { }
+void Object::AfterCreation() { 
+	askToUpdateIcons();
+}
 
 void Object::Update(sf::Time timeElapsed) {
     for (auto &component : components) {
@@ -57,6 +58,12 @@ void Object::Update(sf::Time timeElapsed) {
             if (dy) moveIntent.y = 0;
         }
     }
+
+	if (iconsOutdated) {
+		updateIcons();
+		GetTile()->GetBlock()->AddDiff(new UpdateIconsDiff(this, icons));
+		iconsOutdated = false;
+	}
 }
 
 void Object::AddObject(Object *obj) {
@@ -68,6 +75,8 @@ void Object::AddObject(Object *obj) {
 	content.push_back(obj);
 	obj->holder = this;
 	obj->setTile(GetTile());
+
+	askToUpdateIcons();
 }
 
 void Object::AddComponent(Component *new_component) {
@@ -82,7 +91,7 @@ void Object::SetConstSpeed(uf::vec2f speed) {
 
 void Object::SetSprite(const std::string &sprite) {
     this->sprite = sprite;
-    GetTile()->GetBlock()->AddDiff(new ChangeSpriteDiff(this, Server::Get()->RM->GetSpriteNum(sprite)));
+	askToUpdateIcons();
 }
 
 void Object::SetSpriteState(Global::ItemSpriteState newState) {
@@ -117,7 +126,7 @@ bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
 }
 
-//Global::Sprite Object::GetSprite() const { return sprite; }
+std::string Object::GetSprite() const { return sprite; }
 uint Object::GetLayer() const { return layer; }
 
 
@@ -162,17 +171,19 @@ void Object::SetDirection(uf::Direction direction) {
 //}
 
 const ObjectInfo Object::GetObjectInfo() const {
-	std::list<uint> sprites;
-	sprites.push_back(Server::Get()->RM->GetSpriteNum(sprite));
-
-	for (auto *obj : content) {
-		sprites.push_back(Server::Get()->RM->GetSpriteNum(obj->sprite, obj->spriteState));
-	}
-
-    ObjectInfo objectInfo(id, sprites, name, layer, direction, density);
+    ObjectInfo objectInfo(id, icons, name, layer, direction, density);
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;
     return objectInfo;
+}
+
+void Object::updateIcons() const {
+	icons.clear();
+	icons.push_back(Server::Get()->RM->GetSpriteNum(sprite));
+}
+
+void Object::askToUpdateIcons() {
+	iconsOutdated = true;
 }
 
 void Object::setTile(Tile *newTile) {

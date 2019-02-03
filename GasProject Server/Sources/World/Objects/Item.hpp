@@ -9,7 +9,6 @@ public:
         density = false;
     }
 
-    void Update(sf::Time timeElapsed) override { };
     void InteractedBy(Object *) override { };
 
 	virtual void InteractWith(Object *) { };

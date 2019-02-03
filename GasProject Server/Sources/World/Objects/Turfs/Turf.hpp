@@ -9,6 +9,5 @@ public:
         movable = false;
     }
 
-    virtual void Update(sf::Time timeElapsed) override { };
     virtual void InteractedBy(Object *) override;
 };

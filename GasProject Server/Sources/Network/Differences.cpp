@@ -48,9 +48,9 @@ RemoveDiff::RemoveDiff(const Object *object) :
 	Diff(object, Global::DiffType::REMOVE)
 { }
 
-ChangeSpriteDiff::ChangeSpriteDiff(const Object *object, uint sprite_id) :
-    Diff(object, Global::DiffType::CHANGE_SPRITE),
-    sprite_id(sprite_id)
+UpdateIconsDiff::UpdateIconsDiff(const Object *object, std::vector<uint32_t> &icons) :
+	Diff(object, Global::DiffType::UPDATE_ICONS),
+	icons(icons)
 { }
 
 PlayAnimationDiff::PlayAnimationDiff(const Object *object, uint animation_id) :

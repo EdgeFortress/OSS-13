@@ -221,13 +221,19 @@ void Connection::parsePacket(Packet &packet) {
 
                             break;
                         }
-                        case Global::DiffType::CHANGE_SPRITE:
-                        {
-                            Int32 id, sprite;
-                            packet >> id >> sprite;
-                            tileGrid->ChangeObjectSprite(id, sprite);
-                            break;
-                        }
+						case Global::DiffType::UPDATE_ICONS:
+						{
+							Int32 id, spriteNum;
+							packet >> id >> spriteNum;
+							std::vector<uint32_t> sprites;
+							while (spriteNum--) {
+								Int32 sprite;
+								packet >> sprite;
+								sprites.push_back(sprite);
+							}
+							tileGrid->UpdateObjectIcons(id, sprites);
+							break;
+						}
                         case Global::DiffType::PLAY_ANIMATION:
                         {
                             Int32 id, sprite;

@@ -304,14 +304,18 @@ void TileGrid::MoveObject(uint id, uf::Direction direction) {
 	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << std::endl;
 }
 
-void TileGrid::ChangeObjectSprite(uint id, uint sprite_id) {
-    auto iter = objects.find(id);
-    if (iter != objects.end()) {
-        Object *obj = iter->second.get();
-		obj->ClearSprites();
-        obj->AddSprite(sprite_id);
-        obj->Resize(tileSize);
-    }
+void TileGrid::UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons) {
+	auto iter = objects.find(id);
+	if (iter == objects.end())
+		return;
+
+	Object *obj = iter->second.get();
+	obj->ClearSprites();
+
+	for (auto &icon : icons)
+		obj->AddSprite(icon);
+
+	obj->Resize(tileSize);
 }
 
 void TileGrid::PlayAnimation(uint id, uint animation_id) {

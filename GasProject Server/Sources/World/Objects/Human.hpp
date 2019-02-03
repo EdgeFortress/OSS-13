@@ -15,9 +15,18 @@ public:
 	//virtual void Update(sf::Time timeElapsed) override;
 
     virtual void TryInteractWith(Object *) override;
+	virtual bool TakeItem(Item *);
 	virtual bool PutOn(Item *) override;
 
+	Item *GetSlotItem(ClothSlot) const;
+
+protected:
+	virtual void updateIcons() const override;
+
 private:
-    Item *hand;
+	void pushToIcons(ClothSlot) const; // TODO: detail
+
+private:
+	std::vector<Item *> hands;
 	ClothSlots clothes;
 };

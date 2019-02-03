@@ -9,4 +9,5 @@
 #include "Objects/Human.hpp"
 #include "Objects/Ghost.hpp"
 #include "Objects/Component.hpp"
+#include "Objects/Control.hpp"
 #include "Objects/Clothing/Uniform/Uniform.h"

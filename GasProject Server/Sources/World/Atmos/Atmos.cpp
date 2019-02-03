@@ -1,7 +1,8 @@
 #include "Atmos.hpp"
 
-#include "Server.hpp"
-#include "World/World.hpp"
+#include <Server.hpp>
+#include <World/World.hpp>
+#include <World/Tile.hpp>
 
 Atmos::Atmos(Map* map) : map(map) {
     

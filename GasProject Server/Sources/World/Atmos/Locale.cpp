@@ -1,7 +1,9 @@
 ﻿#include "Locale.hpp"
 
-#include "Server.hpp"
-#include "World/World.hpp"
+#include <Server.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
+
 #include "Atmos.hpp"
 
 Locale::Locale(Atmos *atmos, Tile *tile) :

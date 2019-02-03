@@ -1,7 +1,9 @@
 #include "Taser.hpp"
 
-#include "World/World.hpp"
-#include "Server.hpp"
+#include <Server.hpp>
+#include <World/World.hpp>
+#include <World/Tile.hpp>
+#include <World/Objects/Projectile.hpp>
 
 Taser::Taser() {
     sprite = "taser";

@@ -1,11 +1,13 @@
 #include "Control.hpp"
 
+#include <Server.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
+#include <World/Objects/Creature.hpp>
+
+#include <Shared/Math.hpp>
+
 #include "Object.hpp"
-#include "World/World.hpp"
-
-#include "Shared/Math.hpp"
-
-#include "Server.hpp"
 
 Control::Control(float speed) : 
 	speed(speed), 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <Graphics/Sprite.hpp>
 
@@ -58,7 +59,7 @@ public:
 private:
     uint id;
     std::string name;
-	std::list<::Sprite> sprites;
+	std::vector<::Sprite> sprites;
     ::Sprite animation;
     bool animationProcess;
     uf::Direction direction;

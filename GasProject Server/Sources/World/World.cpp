@@ -7,9 +7,9 @@
 #include "Objects/Control.hpp"
 #include "Player.hpp"
 
-World::World() : map(new Map(100, 100)) {
-    
-}
+World::World() : 
+	map(new Map(100, 100))
+{ }
 
 void World::Update(sf::Time timeElapsed) {
     map->ClearDiffs();
@@ -44,44 +44,42 @@ void World::Update(sf::Time timeElapsed) {
 void World::FillingWorld() {
     for (int i = 45; i <= 55; i++) {
         for (int j = 45; j <= 55; j++) {
-            Tile *tile = map->GetTile({ i, j });
-            tile->PlaceTo(new Floor);
+			CreateObject<Floor>({ i, j });
             if (i == 45 || i == 55 || j == 45 || j == 55) {
                 if (i == 50 || j == 50) {
-                    Airlock *airlock = new Airlock;
-                    tile->PlaceTo(airlock);
+					auto airlock = CreateObject<Airlock>({ i, j });
                     if (i == 55 && j == 50 || i == 50 && j == 55)
                         airlock->Lock();
                 }
-                else tile->PlaceTo(new Wall);
+                else CreateObject<Wall>({ i, j });
             }
         }
     }
 
-	CreateObject<Taser>(map->GetTile({ 50, 50 }));
-	CreateObject<Uniform>(map->GetTile({ 49, 50 }));
+	CreateObject<Taser>({ 50, 50 });
+	CreateObject<Uniform>({ 49, 50 });
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
-            map->GetTile({ i, j })->PlaceTo(new Floor);
+			CreateObject<Floor>({ i, j });
         }
     }
 
-    testMob = new Ghost;
+	testMob = CreateObject<Ghost>({ 49, 49 });
 	testMob_lastPosition = nullptr;
-    map->GetTile({ 49, 49 })->PlaceTo(testMob);
+
     test_dx = 1;
     test_dy = 0;
 
     for (int i = 85; i <= 95; i++) {
         for (int j = 85; j <= 95; j++) {
-            Tile *tile = map->GetTile({ i, j });
-            tile->PlaceTo(new Floor);
+			CreateObject<Floor>({ i, j });
         }
     }
 }
 
-Creature *World::CreateNewPlayerCreature() const {
+Creature *World::CreateNewPlayerCreature() {
+	new Human();
 	auto human = CreateObject<Human>();
 
 	auto uniform = CreateObject<Uniform>();
@@ -92,7 +90,7 @@ Creature *World::CreateNewPlayerCreature() const {
     return human;
 }
 
-Object *World::GetObject(uint id) {
+Object *World::GetObject(uint id) const {
     if (id <= objects.size()) {
         Object *object = objects[id - 1].get();
         if (!object || !object->ID())
@@ -102,14 +100,6 @@ Object *World::GetObject(uint id) {
     return nullptr;
 }
 
-uint World::addObject(Object *obj) {
-    if (free_ids.empty()) {
-        objects.push_back(uptr<Object>(obj));
-        return uint(objects.size());
-    } else {
-        uint id = free_ids.back();
-        free_ids.pop_back();
-        objects[id - 1] = uptr<Object>(obj);
-        return id;
-    }
+Map *World::GetMap() const {
+	return map.get();
 }

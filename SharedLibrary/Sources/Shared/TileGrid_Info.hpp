@@ -2,21 +2,22 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 #include "Shared/Types.hpp"
 
 struct ObjectInfo {
-    const uint id;
-    const std::string name;
-    const std::list<uint> sprites;
-    const uint layer;
-	const uf::Direction direction;
-    const bool dense;
+    uint32_t id;
+    std::string name;
+    std::vector<uint32_t> sprites;
+    uint layer;
+	uf::Direction direction;
+    bool dense;
 
     float moveSpeed;
     uf::vec2f constSpeed;
 
-	ObjectInfo(uint id, std::list<uint> sprites, const std::string &name, const uint layer, const uf::Direction direction, const bool dense = false) :
+	ObjectInfo(uint32_t id, const std::vector<uint32_t> &sprites, const std::string &name, uint32_t layer, uf::Direction direction, bool dense = false) :
         id(id), sprites(sprites), name(name), layer(layer), direction(direction), dense(dense) { }
 };
 

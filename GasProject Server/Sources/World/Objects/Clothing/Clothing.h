@@ -6,7 +6,9 @@ enum class ClothSlot : char {
 	NONE = 0,
 	HEAD,
 	UNIFORM,
-	SHOES
+	SHOES,
+	LHAND,
+	RHAND
 };
 
 class Clothing : public Item

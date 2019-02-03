@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "Shared/Types.hpp"
-#include "Shared/Global.hpp"
-#include "Shared/TileGrid_Info.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/Global.hpp>
+#include <Shared/TileGrid_Info.hpp>
 
 class Block;
 class Object;
@@ -54,10 +54,10 @@ struct MoveDiff : public Diff {
 	MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock);
 };
 
-struct ChangeSpriteDiff : public Diff {
-    uint sprite_id;
+struct UpdateIconsDiff : public Diff {
+	std::vector<uint32_t> icons;
 
-    ChangeSpriteDiff(const Object *object, uint sprite_id);
+	UpdateIconsDiff(const Object *object, std::vector<uint32_t> &icons);
 };
 
 struct PlayAnimationDiff : public Diff {

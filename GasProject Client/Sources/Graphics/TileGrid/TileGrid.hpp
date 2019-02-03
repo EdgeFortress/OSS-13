@@ -40,7 +40,7 @@ public:
         void RelocateObject(uint id, uf::vec2i toVec, int toObjectNum);
         void SetMoveIntentObject(uint id, uf::Direction direction);
         void MoveObject(uint id, uf::Direction direction);
-        void ChangeObjectSprite(uint id, uint sprite_id);
+		void UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons);
         void PlayAnimation(uint id, uint animation_id);
 		void ChangeObjectDirection(uint id, uf::Direction direction);
 

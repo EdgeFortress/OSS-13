@@ -2,20 +2,23 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 #include "Shared/Types.hpp"
 #include "Shared/Global.hpp"
 
 #include "Component.hpp"
 
+class ObjectHolder;
 class Tile;
 struct ObjectInfo;
 
 class Object {
+	friend ObjectHolder;
 	friend Tile;
 
 public:
-    Object();
+	Object(); // Use ObjectHolder to create objects!
     virtual ~Object() = default;
 
 	virtual void AfterCreation();
@@ -43,7 +46,7 @@ public:
     // Get Invisibility bits
     uint GetInvisibility() const;
 
-	//Global::Sprite GetSprite() const;
+	std::string GetSprite() const;
     uint GetLayer() const;
 
 	//
@@ -63,6 +66,13 @@ public:
 	//
 
     const ObjectInfo GetObjectInfo() const;
+
+protected:
+	// refresh std::vector<uint32_t> icons
+	// last in, last drawn
+	// shouldn't be called as is, use askToUpdateIcons()!
+	virtual void updateIcons() const;
+	void askToUpdateIcons();
 
 private:
 	// for use from Tile
@@ -84,6 +94,8 @@ protected:
     uint invisibility;
     //
 
+	mutable std::vector<uint32_t> icons;
+
 private:
     uint id;
     Tile *tile;
@@ -98,6 +110,8 @@ private:
     uf::vec2f physSpeed;
 
     uf::vec2f shift;
+
+	bool iconsOutdated;
 };
 
 template <class T> T *Object::GetComponent() {

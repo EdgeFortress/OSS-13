@@ -1,17 +1,20 @@
+#include "Server.hpp"
+
 #include <iostream>
 #include <list>
 #include <mutex>
 
-#include "SFML/System.hpp"
+#include <SFML/System.hpp>
 
-#include "Server.hpp"
-#include "Network/NetworkController.hpp"
-#include "Network/Connection.hpp"
-#include "Shared/Command.hpp"
-#include "World/World.hpp"
-#include "World/Objects/Control.hpp"
-#include "Player.hpp"
-#include "Database/UsersDB.hpp"
+#include <Network/NetworkController.hpp>
+#include <Network/Connection.hpp>
+#include <Player.hpp>
+#include <Database/UsersDB.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
+#include <World/Objects.hpp>
+
+#include <Shared/Command.hpp>
 
 using namespace std;
 using namespace sf;

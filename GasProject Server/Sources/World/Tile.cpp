@@ -1,11 +1,11 @@
 #include "Tile.hpp"
 
-#include "Server.hpp"
-#include "World.hpp"
-#include "Objects.hpp"
-#include "Objects/Control.hpp"
-#include "Atmos/Atmos.hpp"
-#include "Network/Differences.hpp"
+#include <Server.hpp>
+#include <Network/Differences.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
+#include <World/Objects.hpp>
+#include <World/Atmos/Atmos.hpp>
 
 Tile::Tile(Map *map, uf::vec2i pos) :
     map(map), pos(pos),

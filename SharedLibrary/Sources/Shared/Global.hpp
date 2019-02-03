@@ -14,7 +14,7 @@ namespace Global {
 		RELOCATE,
         MOVE_INTENT,
 		MOVE,
-		CHANGE_SPRITE,
+		UPDATE_ICONS,
         PLAY_ANIMATION,
 		CHANGE_DIRECTION
 	};

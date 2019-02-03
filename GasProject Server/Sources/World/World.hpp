@@ -1,15 +1,13 @@
 #pragma once
 
-#include <vector>
-
-#include <SFML/System/Time.hpp>
-
-#include "Map.hpp"
-#include "Objects.hpp"
+#include <World/Objects/ObjectHolder.h>
 
 using std::vector;
 
-class World {
+class Map;
+class Creature;
+
+class World : public ObjectHolder {
 public:
     friend Object;
 
@@ -18,11 +16,10 @@ public:
     void Update(sf::Time timeElapsed);
 
     void FillingWorld();
-	template<typename T, typename... TArgs>
-	T *CreateObject(Tile *tile = nullptr, TArgs&&... Args) const;
-    Creature *CreateNewPlayerCreature() const;
+    Creature *CreateNewPlayerCreature();
 
-    Object *GetObject(uint id);
+    Object *GetObject(uint id) const;
+	Map *GetMap() const;
 
 private:
     uptr<Map> map;
@@ -32,22 +29,4 @@ private:
     int test_dx;
     int test_dy;
     int mobsVelocity;
-
-    std::vector<uptr<Object>> objects;
-    std::vector<uint> free_ids;
-
-    // Available only for Object()
-    uint addObject(Object *);
 };
-
-template<typename T, typename... TArgs>
-T *World::CreateObject(Tile *tile, TArgs&&... Args) const {
-	Object *obj = new T(std::forward<TArgs>(Args)...); // Object * is important! It's check for correct type.
-
-	if (tile)
-		tile->PlaceTo(obj);
-
-	obj->AfterCreation();
-	return static_cast<T *>(obj);
-}
-

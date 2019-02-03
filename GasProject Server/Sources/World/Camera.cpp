@@ -1,11 +1,13 @@
 #include "Camera.hpp"
 
-#include "Server.hpp"
-#include "World.hpp"
-#include "Objects/Control.hpp"
-#include "Player.hpp"
-#include "Network/Differences.hpp"
-#include "Shared/Command.hpp"
+#include <Server.hpp>
+#include <Network/Differences.hpp>
+#include <Player.hpp>
+#include <World/World.hpp>
+#include <World/Map.hpp>
+#include <World/Objects/Control.hpp>
+
+#include <Shared/Command.hpp>
 
 Camera::Camera(const Tile * const tile) :
     tile(nullptr), lasttile(nullptr), suspense(true),
