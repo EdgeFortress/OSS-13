@@ -216,6 +216,4 @@ ModelManifest.xml
 
 Resources/Icons/Thumbs.db
 
-GasProject Client/LibraryPaths.props
-GasProject Server/LibraryPaths.props
-SharedLibrary/LibraryPaths.props
+Properties/LibraryPaths.props

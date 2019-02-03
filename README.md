@@ -6,7 +6,7 @@ In the future this project will be used as a basis for [Space Station 13](https:
 
 ## Compile
 
-The easiest way to compile project now is a Visual Studio 2017 solution. All you need is to rename three LibraryPaths_Example.props files to LibraryPaths.props and set correct paths to SFML libraries for each of them.
+The easiest way to compile project now is a Visual Studio 2017 solution. All you need is to rename Properties/LibraryPaths_Example.props file to LibraryPaths.props and edit its paths to SFML libraries.
 
 Also CMake is provided.
 
