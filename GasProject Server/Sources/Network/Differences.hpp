@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <SFML/System/Time.hpp>
+
 #include <Shared/Types.hpp>
 #include <Shared/Global.hpp>
 #include <Shared/TileGrid_Info.hpp>
@@ -70,4 +72,10 @@ struct ChangeDirectionDiff : public Diff {
 	uf::Direction direction;
 
 	ChangeDirectionDiff(const Object *object, uf::Direction direction);
+};
+
+struct StunnedDiff : public Diff {
+	sf::Time duration;
+
+	StunnedDiff(const Object *object, sf::Time duration);
 };

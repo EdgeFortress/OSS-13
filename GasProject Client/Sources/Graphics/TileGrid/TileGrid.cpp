@@ -156,7 +156,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
     }
 
     if (actionSendPause == sf::Time::Zero) {
-		if (moveCommand.x || moveCommand.y) {
+		if (stun == sf::Time::Zero && moveCommand) {
 			Connection::commandQueue.Push(new MoveClientCommand(uf::VectToDirection(moveCommand)));
 
 			if (controllable) {
@@ -166,16 +166,16 @@ void TileGrid::Update(sf::Time timeElapsed) {
 					return;
 				}
 
-                uf::vec2i moveIntent = controllable->GetMoveIntent();
-                if (moveCommand.x) moveIntent.x = moveCommand.x;
-                if (moveCommand.y) moveIntent.y = moveCommand.y;
+				uf::vec2i moveIntent = controllable->GetMoveIntent();
+				if (moveCommand.x) moveIntent.x = moveCommand.x;
+				if (moveCommand.y) moveIntent.y = moveCommand.y;
 
-                Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y});
-                Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y});
-                Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveIntent);
+				Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y});
+				Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y});
+				Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveIntent);
 
 				if (controllable->IsDense()) {
-                    if (!newTileDiag || newTileDiag->IsBlocked()) moveIntent = controllable->GetMoveIntent();
+					if (!newTileDiag || newTileDiag->IsBlocked()) moveIntent = controllable->GetMoveIntent();
 					if (!newTileX || newTileX->IsBlocked()) moveIntent.x = 0;
 					if (!newTileY || newTileY->IsBlocked()) moveIntent.y = 0;
 				}
@@ -185,21 +185,22 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			}
 			else
 				CC::log << "Controllable not determine" << std::endl;
+		}
+		moveCommand = sf::Vector2i();
 
-			moveCommand = sf::Vector2i();
-		}
-        if (objectClicked && underCursorObject) {
-            Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
-            objectClicked = false;
-        }
-		if (buildButtonPressed) {
+        if (stun == sf::Time::Zero && objectClicked && underCursorObject)
+			Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
+		
+		if (stun == sf::Time::Zero && buildButtonPressed)
 			Connection::commandQueue.Push(new BuildClientCommand());
-			buildButtonPressed = false;
-		}
-		if (ghostButtonPressed) {
+
+		if (ghostButtonPressed)
 			Connection::commandQueue.Push(new GhostClientCommand());
-			ghostButtonPressed = false;
-		}
+
+		objectClicked = false;
+		buildButtonPressed = false;
+		ghostButtonPressed = false;
+
         actionSendPause = ACTION_TIMEOUT;
     }
 
@@ -222,6 +223,12 @@ void TileGrid::Update(sf::Time timeElapsed) {
         }
     
 	if (controllable) shift = controllable->GetShift();
+
+
+	if (stun > timeElapsed)
+		stun -= timeElapsed;
+	else
+		stun = sf::Time::Zero;
 }
 
 void TileGrid::LockDrawing() {
@@ -333,6 +340,11 @@ void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
         Object *obj = iter->second.get();
         obj->SetDirection(direction);
     }
+}
+
+void TileGrid::Stunned(uint id, sf::Time duration) {
+	if (id == controllable->GetID())
+		stun = duration;
 }
 
 void TileGrid::ShiftBlocks(uf::vec2i newFirst) {

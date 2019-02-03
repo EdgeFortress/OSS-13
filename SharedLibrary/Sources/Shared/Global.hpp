@@ -16,7 +16,8 @@ namespace Global {
 		MOVE,
 		UPDATE_ICONS,
         PLAY_ANIMATION,
-		CHANGE_DIRECTION
+		CHANGE_DIRECTION,
+		STUNNED
 	};
 
 	const uint32_t MAX_SPRITE_ID = 0x0FFFFFFFu; // (= 268 435 455) 4 bites reserved for state

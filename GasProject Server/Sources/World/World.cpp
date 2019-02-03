@@ -57,6 +57,8 @@ void World::FillingWorld() {
     }
 
 	CreateObject<Taser>({ 50, 50 });
+	CreateObject<Taser>({ 55, 50 });
+	CreateObject<Taser>({ 52, 50 });
 	CreateObject<Uniform>({ 49, 50 });
 
     for (int i = 5; i <= 10; i++) {
@@ -79,7 +81,6 @@ void World::FillingWorld() {
 }
 
 Creature *World::CreateNewPlayerCreature() {
-	new Human();
 	auto human = CreateObject<Human>();
 
 	auto uniform = CreateObject<Uniform>();

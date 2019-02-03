@@ -16,23 +16,26 @@ Human::Human() :
 	density = true;
 }
 
-void Human::TryInteractWith(Object *obj) {
+bool Human::TryInteractWith(Object *obj) {
+	if (!Creature::TryInteractWith(obj))
+		return false;
+
     if (hands[0]) {
         obj->InteractedBy(hands[0]);
 
         if (auto *item = dynamic_cast<Item *>(hands[0]))
             item->InteractWith(obj);
 
-        return;
+        return true;
     }
 
 	if (auto *item = dynamic_cast<Item *>(obj)) {
 		if (TakeItem(item))
-			return;
+			return true;
 	}
 
 	obj->InteractedBy(this);
-    return;
+    return true;
 }
 
 bool Human::TakeItem(Item *item) {

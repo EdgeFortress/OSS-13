@@ -24,30 +24,8 @@ void Control::Update(sf::Time timeElapsed) {
 	uf::vec2i order = moveOrder;
     moveOrder = {};
 
-	// Form the intent based on the order
-    if (order != uf::vec2i()) {
-		owner->SetDirection(uf::VectToDirection(order));
-
-		Tile *tile = owner->GetTile();
-        if (tile) {
-            uf::vec2i moveIntent;
-
-            if (order.x) moveIntent.x = order.x;
-            if (order.y) moveIntent.y = order.y;
-
-            Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + moveIntent);
-            Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y });
-            Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y });
-
-            if (owner->GetDensity()) {
-                if (!newTileDiag || newTileDiag->IsDense()) moveIntent = owner->GetMoveIntent();
-                if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
-                if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
-            }
-
-            owner->SetMoveIntent(moveIntent);
-        }
-	}
+	if (auto *creature = dynamic_cast<Creature *>(owner))
+		creature->Move(order);
 
     ////
     //// Click

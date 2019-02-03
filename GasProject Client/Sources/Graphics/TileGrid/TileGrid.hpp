@@ -43,6 +43,7 @@ public:
 		void UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons);
         void PlayAnimation(uint id, uint animation_id);
 		void ChangeObjectDirection(uint id, uf::Direction direction);
+		void Stunned(uint id, sf::Time duration);
 
         void ShiftBlocks(uf::vec2i newFirst);
 
@@ -93,6 +94,7 @@ private:
     const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
     uf::vec2i moveCommand;
     sf::Time actionSendPause;
+	sf::Time stun;
 
     uf::vec2i cursorPosition;
     mutable Object *underCursorObject;

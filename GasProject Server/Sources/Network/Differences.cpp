@@ -62,3 +62,8 @@ ChangeDirectionDiff::ChangeDirectionDiff(const Object *object, uf::Direction dir
 	Diff(object, Global::DiffType::CHANGE_DIRECTION), 
 	direction(direction)
 { }
+
+StunnedDiff::StunnedDiff(const Object *object, sf::Time duration) :
+	Diff(object, Global::DiffType::STUNNED),
+	duration(duration)
+{ }

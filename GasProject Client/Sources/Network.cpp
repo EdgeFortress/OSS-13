@@ -252,6 +252,13 @@ void Connection::parsePacket(Packet &packet) {
 
                             break;
                         }
+						case Global::DiffType::STUNNED:
+							Int32 id, duration;
+							packet >> id >> duration;
+
+							tileGrid->Stunned(id, sf::milliseconds(duration));
+
+							break;
                         default:
                             CC::log << "Wrong diff type: " << type << endl;
                             break;

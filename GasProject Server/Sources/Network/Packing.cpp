@@ -110,6 +110,13 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 			packet << Int8(changeDirectionDiff.direction);
 			break;
 		}
+		case Global::DiffType::STUNNED:
+		{
+			packet << Int32(diff.id);
+			const StunnedDiff &stunnedDiff = dynamic_cast<const StunnedDiff &>(diff);
+			packet << stunnedDiff.duration.asMilliseconds();
+			break;
+		}
     }
     return packet;
 }
