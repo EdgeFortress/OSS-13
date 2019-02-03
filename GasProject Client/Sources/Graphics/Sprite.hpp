@@ -3,9 +3,11 @@
 #include "Texture.hpp"
 #include "Shared/Types.hpp"
 
+class SpriteFactory;
+
 class Sprite {
 public:
-    friend Texture;
+    friend SpriteFactory;
 
     Sprite();
     Sprite(const Sprite &) = default;

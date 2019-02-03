@@ -16,6 +16,8 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
+	RM.Initialize();
+
     if (!Connection::Start("localhost", Global::PORT)) {
     //if (!Connection::Start("79.165.121.230", Global::PORT)) {
         CC::log << "Connection error!" << std::endl;
@@ -36,7 +38,6 @@ Window *ClientController::GetWindow() { return window.get(); }
 UI *ClientController::GetUI() { return window->GetUI(); }
 
 ClientController * const ClientController::Get() { return instance; }
-
 
 int main() {
     ClientController clientController;

@@ -2,11 +2,11 @@
 
 #include <string>
 
-#include "Graphics/Sprite.hpp"
+#include <Graphics/Sprite.hpp>
 
-#include "Shared/Types.hpp"
-#include "Shared/Geometry/Direction.hpp"
-#include "Shared/Global.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/Geometry/Direction.hpp>
+#include <Shared/Global.hpp>
 
 class Sprite;
 class Tile;

@@ -34,7 +34,7 @@ void Human::TryInteractWith(Object *obj) {
 
 bool Human::PutOn(Item *item) {
 	if (auto *clothing = dynamic_cast<Clothing *>(item)) {
-		if (clothing->GetSlot() != ClothSlot::NONE)
+		if (clothing->GetSlot() == ClothSlot::NONE)
 			return false;
 
 		if (clothes.find(clothing->GetSlot()) != clothes.end())

@@ -28,6 +28,6 @@ namespace Global {
 		IN_HAND_LEFT  = 0x20000000, // in left hand
 		IN_HAND_RIGHT = 0x30000000, // in right hand
 		// ...
-		__LAST_STATE = 0xF0000000
+		MASK = 0xF0000000
 	};
 }

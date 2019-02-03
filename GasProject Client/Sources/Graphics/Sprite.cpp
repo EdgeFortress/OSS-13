@@ -10,7 +10,13 @@
 using std::string;
 
 Sprite::Sprite() :
-    texture(nullptr)
+    texture(nullptr),
+	firstFrame(0),
+	frames(1),
+	directed(false),
+	curFrame(0),
+	direction(uf::Direction::NONE),
+	scale(1)
 { }
 
 void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos) const {

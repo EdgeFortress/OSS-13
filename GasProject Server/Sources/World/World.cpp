@@ -84,8 +84,8 @@ void World::FillingWorld() {
 Creature *World::CreateNewPlayerCreature() const {
 	auto human = CreateObject<Human>();
 
-	//auto uniform = CreateObject<Uniform>();
-	//human->PutOn(uniform);
+	auto uniform = CreateObject<Uniform>();
+	human->PutOn(uniform);
 
     map->GetTile({ 50, 50 })->PlaceTo(human);
 

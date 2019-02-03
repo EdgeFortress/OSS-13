@@ -335,7 +335,7 @@ Packet &operator>>(Packet &packet, Tile &tile) {
     sf::Int32 size, sprite;
     packet >> size >> sprite;
     tile.Clear();
-    tile.sprite = CC::Get()->RM.GetSprite(uint(sprite));
+    tile.sprite = CC::Get()->RM.CreateSprite(uint(sprite));
     for (int i = 0; i < size; i++) {
         sf::Int32 id;
         packet >> id;

@@ -72,7 +72,7 @@ void Object::Resize(uint tileSize) {
 }
 
 void Object::AddSprite(uint id) {
-	sprites.push_back(CC::Get()->RM.GetSprite(id));
+	sprites.push_back(CC::Get()->RM.CreateSprite(id));
     if (sprites.back().IsValid()) 
 		sprites.back().SetDirection(direction);
 }
@@ -82,7 +82,7 @@ void Object::ClearSprites() {
 }
 
 void Object::PlayAnimation(uint id) {
-    animation = CC::Get()->RM.GetSprite(id);
+    animation = CC::Get()->RM.CreateSprite(id);
     if (animation.IsValid()) {
         animationProcess = true;
         animation.SetDirection(direction);

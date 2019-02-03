@@ -165,7 +165,9 @@
   <ItemGroup>
     <ClCompile Include="sources\Client.cpp" />
     <ClCompile Include="Sources\Graphics\Sprite.cpp" />
+    <ClCompile Include="Sources\Graphics\SpriteFactory.cpp" />
     <ClCompile Include="Sources\Graphics\Texture.cpp" />
+    <ClCompile Include="Sources\Graphics\TextureHolder.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
@@ -190,7 +192,9 @@
   <ItemGroup>
     <ClInclude Include="sources\Client.hpp" />
     <ClInclude Include="Sources\Graphics\Sprite.hpp" />
+    <ClInclude Include="Sources\Graphics\SpriteFactory.h" />
     <ClInclude Include="Sources\Graphics\Texture.hpp" />
+    <ClInclude Include="Sources\Graphics\TextureHolder.h" />
     <ClInclude Include="Sources\Graphics\TileGrid.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
@@ -213,6 +217,7 @@
     <ClInclude Include="Sources\Graphics\UI\UI.hpp" />
     <ClInclude Include="Sources\Graphics\Window.hpp" />
     <ClInclude Include="Sources\ResourceManager.hpp" />
+    <ClInclude Include="Sources\Graphics\SpriteInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\Ghost.png" />
