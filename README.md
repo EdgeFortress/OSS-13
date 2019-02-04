@@ -6,9 +6,15 @@ In the future this project will be used as a basis for [Space Station 13](https:
 
 ## Compile
 
-The easiest way to compile project now is a Visual Studio 2017 solution. All you need is to rename Properties/LibraryPaths_Example.props file to LibraryPaths.props and edit its paths to SFML libraries.
+The easiest way to compile GasProject now is a Visual Studio 2017 solution. To compile it, you should install dependencies via [vcpkg](https://github.com/Microsoft/vcpkg). Just follow vcpkg readme 
+and install SFML with next instructions:
 
-Also CMake is provided.
+vcpkg install sfml:x64-windows-static
+vcpkg install sfml:x86-windows-static
+
+After that, VS2017 should compile GasProject.sln without any problems.
+
+Also CMakeLists.txt is provided, but it out of date.
 
 ## How to Play
 
