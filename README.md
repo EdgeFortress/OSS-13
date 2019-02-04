@@ -9,8 +9,10 @@ In the future this project will be used as a basis for [Space Station 13](https:
 The easiest way to compile GasProject now is a Visual Studio 2017 solution. To compile it, you should install dependencies via [vcpkg](https://github.com/Microsoft/vcpkg). Just follow vcpkg readme 
 and install SFML with next instructions:
 
+```
 vcpkg install sfml:x64-windows-static
 vcpkg install sfml:x86-windows-static
+```
 
 After that, VS2017 should compile GasProject.sln without any problems.
 
