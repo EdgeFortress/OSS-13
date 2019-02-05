@@ -14,6 +14,9 @@ Entry::Entry(const uf::vec2i &size) {
     showPos = 0;
     cursorPos = -1;
 
+	hidingSymbols = false;
+	hidingSymbol = '*';
+
     cursorTime = sf::Time::Zero;
 }
 
