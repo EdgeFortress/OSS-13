@@ -93,8 +93,8 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 			packet << Int32(diff.id);
 			const UpdateIconsDiff &changeSpriteDiff = dynamic_cast<const UpdateIconsDiff &>(diff);
 			packet << sf::Int32(changeSpriteDiff.icons.size());
-			for (auto &icon : changeSpriteDiff.icons)
-				packet << sf::Int32(icon);
+			for (auto &iconInfo : changeSpriteDiff.icons)
+				packet << sf::Int32(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
 			break;
 		}
         case Global::DiffType::PLAY_ANIMATION:
@@ -139,8 +139,8 @@ Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
 Packet &operator<<(Packet &packet, const ObjectInfo &objInfo) {
     packet << sf::Int32(objInfo.id);
 
-	packet << sf::Int32(objInfo.sprites.size());
-	for (auto &sprite: objInfo.sprites)
+	packet << sf::Int32(objInfo.spriteIds.size());
+	for (auto &sprite: objInfo.spriteIds)
 		packet << sf::Int32(sprite);
 
 	packet << sf::String(objInfo.name) << sf::Int32(objInfo.layer);

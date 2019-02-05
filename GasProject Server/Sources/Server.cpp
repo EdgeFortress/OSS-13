@@ -113,6 +113,7 @@ Server::Server() : new_game_id(1),
                    UDB(new UsersDB())
 {
     instance = this;
+	RM->AfterCreation();
     networkController->Start();
     CreateGame("One Super Test Game");
     while (true) {

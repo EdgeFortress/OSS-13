@@ -4,10 +4,12 @@
 #include <list>
 #include <vector>
 
-#include "Shared/Types.hpp"
-#include "Shared/Global.hpp"
+#include <World/Objects/Component.hpp>
+#include <Resources/IconInfo.h>
 
-#include "Component.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/Global.hpp>
+#include <Shared/Timer.h>
 
 class ObjectHolder;
 class Tile;
@@ -24,13 +26,15 @@ public:
 	virtual void AfterCreation();
     virtual void Update(sf::Time timeElapsed);
 
-    virtual void InteractedBy(Object *) = 0;
+    virtual bool InteractedBy(Object *);
+
 	void AddObject(Object *);
     void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
     void SetSprite(const std::string &sprite);
 	void SetSpriteState(Global::ItemSpriteState);
-    void PlayAnimation(const std::string &sprite);
+	// False if another animation is playing already. Callback will be called after animation
+	bool PlayAnimation(const std::string &sprite, std::function<void()> &&callback = {});
     void Delete();
 
     uint ID() const;
@@ -65,7 +69,7 @@ public:
 		//void SetShift(uf::vec2f);
 	//
 
-    const ObjectInfo GetObjectInfo() const;
+	ObjectInfo GetObjectInfo() const;
 
 protected:
 	// refresh std::vector<uint32_t> icons
@@ -84,6 +88,7 @@ protected:
     bool movable;
     std::string sprite;
 	Global::ItemSpriteState spriteState; // TODO: move it to Item? Also there is need to reimplement packing???
+	uf::Timer animationTimer;
     // Object layer 0-100. The smaller layer is lower.
     uint layer;
     uf::Direction direction;
@@ -94,7 +99,7 @@ protected:
     uint invisibility;
     //
 
-	mutable std::vector<uint32_t> icons;
+	mutable std::vector<IconInfo> icons;
 
 private:
     uint id;

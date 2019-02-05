@@ -9,7 +9,5 @@ public:
         density = false;
     }
 
-    void InteractedBy(Object *) override { };
-
 	virtual void InteractWith(Object *) { };
 };

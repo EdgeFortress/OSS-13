@@ -21,8 +21,9 @@ void Creature::Update(sf::Time timeElapsed) {
 		stun = sf::Time::Zero;
 }
 
-void Creature::InteractedBy(Object *) {
+bool Creature::InteractedBy(Object *) {
     Server::log << "Creature clicked" << std::endl;
+	return true;
 }
 
 void Creature::Move(uf::vec2i order) {

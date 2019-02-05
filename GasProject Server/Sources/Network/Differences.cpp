@@ -48,7 +48,7 @@ RemoveDiff::RemoveDiff(const Object *object) :
 	Diff(object, Global::DiffType::REMOVE)
 { }
 
-UpdateIconsDiff::UpdateIconsDiff(const Object *object, std::vector<uint32_t> &icons) :
+UpdateIconsDiff::UpdateIconsDiff(const Object *object, std::vector<IconInfo> &icons) :
 	Diff(object, Global::DiffType::UPDATE_ICONS),
 	icons(icons)
 { }

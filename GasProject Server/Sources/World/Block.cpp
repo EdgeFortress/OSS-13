@@ -30,12 +30,18 @@ void Block::ClearDiffs() {
 }
 
 const BlockInfo Block::GetBlockInfo(uint visibility) {
-    std::list<TileInfo> tilesInfo;
-    for (auto &vect : tiles)
-        for (auto &tile : vect)
-            if (tile) tilesInfo.push_back(tile->GetTileInfo(visibility));
-            else {
-                tilesInfo.push_back(TileInfo());
-            }
-            return std::move(BlockInfo(blockX, blockY, tilesInfo));
+	BlockInfo blockInfo;
+	blockInfo.x = blockX;
+	blockInfo.y = blockY;
+
+    for (auto &vect : tiles) {
+        for (auto &tile : vect) {
+            if (tile) 
+				blockInfo.tiles.push_back(tile->GetTileInfo(visibility));
+            else
+                blockInfo.tiles.push_back(TileInfo());
+		}
+	}
+
+	return blockInfo;
 }

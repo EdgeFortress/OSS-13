@@ -33,8 +33,6 @@ void Projectile::Update(sf::Time timeElapsed) {
     }
 }
 
-void Projectile::InteractedBy(Object *) { }
-
 void Projectile::onHit(Object *obj) {
     if (auto *creature = dynamic_cast<Creature *>(obj))
         creature->Stun();

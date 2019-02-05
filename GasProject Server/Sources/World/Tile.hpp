@@ -2,11 +2,14 @@
 
 #include <list>
 #include <vector>
+
 #include <SFML/System.hpp>
 
-#include "Shared/Global.hpp"
-#include "Shared/Types.hpp"
-#include "Atmos/Gases.hpp"
+#include <World/Atmos/Gases.hpp>
+#include <Resources/IconInfo.h>
+
+#include <Shared/Global.hpp>
+#include <Shared/Types.hpp>
 
 using std::list;
 using std::vector;
@@ -50,7 +53,7 @@ public:
 private:
     Map *map;
     uf::vec2i pos;
-    uint sprite;
+    IconInfo icon;
 
     list<Object *> content;
     bool hasFloor;

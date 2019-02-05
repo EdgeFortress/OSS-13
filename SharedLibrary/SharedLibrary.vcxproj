@@ -24,6 +24,7 @@
     <ClCompile Include="Sources\Shared\Log.cpp" />
     <ClCompile Include="Sources\Shared\OS.cpp" />
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp" />
+    <ClCompile Include="Sources\Shared\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Command.hpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />
     <ClInclude Include="Sources\Shared\TileGrid_Info.hpp" />
     <ClInclude Include="Sources\Shared\Types.hpp" />
+    <ClInclude Include="Sources\Shared\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sources\Shared\Geometry\Vec2.inl" />

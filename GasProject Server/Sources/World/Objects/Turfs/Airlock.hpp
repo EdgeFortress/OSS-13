@@ -1,21 +1,29 @@
 #pragma once
 
-#include "Turf.hpp"
+#include <World/Objects/Turfs/Turf.hpp>
+
+#include <Shared/Timer.h>
 
 class Airlock : public Turf {
 public:
     Airlock();
-
-    Airlock(const Airlock &object) = default;
     ~Airlock() = default;
 
-    void InteractedBy(Object *) override;
+	virtual void Update(sf::Time timeElapsed) final;
+    virtual bool InteractedBy(Object *) final;
 
     void Activate();
     void Lock();
     void Unlock();
 
 private:
+	void animationOpeningCallback();
+	void autocloseCallback();
+
+private:
+	const sf::Time AUTOCLOSE_TIME = sf::seconds(5);
+
+	uf::Timer closeTimer;
     bool opened;
     bool locked;
 };

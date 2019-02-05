@@ -21,7 +21,8 @@ bool Human::TryInteractWith(Object *obj) {
 		return false;
 
     if (hands[0]) {
-        obj->InteractedBy(hands[0]);
+        if (obj->InteractedBy(hands[0]))
+			return true;
 
         if (auto *item = dynamic_cast<Item *>(hands[0]))
             item->InteractWith(obj);
@@ -40,6 +41,7 @@ bool Human::TryInteractWith(Object *obj) {
 
 bool Human::TakeItem(Item *item) {
 	if (hands[0]) return false;
+	if (!IsCloseTo(item)) return false;
 
 	AddObject(item);
 	hands[0] = item;
@@ -92,7 +94,7 @@ void Human::pushToIcons(ClothSlot slot) const {
 	}
 
 	if (item)
-		icons.push_back(Server::Get()->RM->GetSpriteNum(item->GetSprite(), state));
+		icons.push_back(Server::Get()->RM->GetIconInfo(item->GetSprite(), state));
 }
 
 void Human::updateIcons() const {

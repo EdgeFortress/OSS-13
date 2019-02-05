@@ -14,7 +14,8 @@ Tile::Tile(Map *map, uf::vec2i pos) :
 {
     uint ux = uint(pos.x);
     uint uy = uint(pos.y);
-    sprite = Server::Get()->RM->GetSpriteNum("space") + ((ux + uy) ^ ~(ux * uy)) % 25;
+	icon = Server::Get()->RM->GetIconInfo("space");
+	icon.id += ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;
 }
@@ -190,12 +191,15 @@ bool Tile::IsSpace() const {
 }
 
 const TileInfo Tile::GetTileInfo(uint visibility) const {
-    std::list<ObjectInfo> content;
-    for (auto &obj : this->content) {
-        if (obj->CheckVisibility(visibility))
-            content.push_back(obj->GetObjectInfo());
-    }
-    return std::move(TileInfo(int(sprite), content));
+	TileInfo tileInfo;
+	tileInfo.sprite = icon.id;
+
+	for (auto &obj : this->content) {
+		if (obj->CheckVisibility(visibility))
+			tileInfo.content.push_back(obj->GetObjectInfo());
+	}
+
+    return tileInfo;
 }
 
 void Tile::addObject(Object *obj) {

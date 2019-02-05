@@ -78,9 +78,6 @@
     <ClCompile Include="Sources\World\Atmos\Locale.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\ResourceManager.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\World\Objects\Turfs\Wall.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Resources\ResourceManager.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,9 +182,6 @@
     <ClInclude Include="Sources\World\Atmos\Gases.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\ResourceManager.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\World\Objects\Turfs\Wall.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -213,6 +210,12 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\ObjectHolder.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Resources\ResourceManager.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Resources\IconInfo.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

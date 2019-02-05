@@ -10,8 +10,6 @@ public:
 	virtual void AfterCreation() final;
     virtual void Update(sf::Time timeElapsed) final;
 
-    void InteractedBy(Object *) final;
-
 protected:
     virtual void onHit(Object *);
 

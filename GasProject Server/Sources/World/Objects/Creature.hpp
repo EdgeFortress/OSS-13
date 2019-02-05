@@ -11,7 +11,7 @@ public:
 	Creature();
 
 	virtual void Update(sf::Time timeElapsed) override;
-    void InteractedBy(Object *) override;
+    bool InteractedBy(Object *) override;
 
 	virtual void Move(uf::vec2i order);
     virtual bool TryInteractWith(Object *);

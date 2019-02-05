@@ -64,6 +64,14 @@ void Object::Update(sf::Time timeElapsed) {
 		GetTile()->GetBlock()->AddDiff(new UpdateIconsDiff(this, icons));
 		iconsOutdated = false;
 	}
+
+	animationTimer.Update(timeElapsed);
+}
+
+bool Object::InteractedBy(Object *obj) {
+	if (IsCloseTo(obj))
+		return true;
+	return false;
 }
 
 void Object::AddObject(Object *obj) {
@@ -98,8 +106,16 @@ void Object::SetSpriteState(Global::ItemSpriteState newState) {
 	spriteState = newState;
 }
 
-void Object::PlayAnimation(const std::string &animation) {
-    GetTile()->GetBlock()->AddDiff(new PlayAnimationDiff(this, Server::Get()->RM->GetSpriteNum(animation)));
+bool Object::PlayAnimation(const std::string &animation, std::function<void()> &&callback) {
+	if (!animationTimer.IsStopped())
+		return false;
+
+	auto iconInfo = Server::Get()->RM->GetIconInfo(animation);
+
+    GetTile()->GetBlock()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
+
+	animationTimer.Start(iconInfo.animation_time, std::forward<std::function<void()>>(callback));
+	return true;
 }
 
 void Object::Delete() {
@@ -170,16 +186,25 @@ void Object::SetDirection(uf::Direction direction) {
 //    delta_shift += shift;
 //}
 
-const ObjectInfo Object::GetObjectInfo() const {
-    ObjectInfo objectInfo(id, icons, name, layer, direction, density);
+ObjectInfo Object::GetObjectInfo() const {
+    ObjectInfo objectInfo;
+	objectInfo.id = id;
+	objectInfo.name = name;
+	objectInfo.layer = layer;
+	objectInfo.direction = direction;
+	objectInfo.dense = density;
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;
+
+	for (auto &iconInfo : icons)
+		objectInfo.spriteIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
+
     return objectInfo;
 }
 
 void Object::updateIcons() const {
 	icons.clear();
-	icons.push_back(Server::Get()->RM->GetSpriteNum(sprite));
+	icons.push_back(Server::Get()->RM->GetIconInfo(sprite));
 }
 
 void Object::askToUpdateIcons() {

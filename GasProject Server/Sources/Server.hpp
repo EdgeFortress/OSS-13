@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "Shared/Types.hpp"
-#include "Shared/Log.hpp"
-#include "ResourceManager.hpp"
+#include <Resources/ResourceManager.hpp>
+
+#include <Shared/Types.hpp>
+#include <Shared/Log.hpp>
 
 class Player;
 class Server;

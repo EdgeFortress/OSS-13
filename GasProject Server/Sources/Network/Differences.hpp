@@ -4,6 +4,8 @@
 
 #include <SFML/System/Time.hpp>
 
+#include <Resources/IconInfo.h>
+
 #include <Shared/Types.hpp>
 #include <Shared/Global.hpp>
 #include <Shared/TileGrid_Info.hpp>
@@ -57,9 +59,9 @@ struct MoveDiff : public Diff {
 };
 
 struct UpdateIconsDiff : public Diff {
-	std::vector<uint32_t> icons;
+	std::vector<IconInfo> icons;
 
-	UpdateIconsDiff(const Object *object, std::vector<uint32_t> &icons);
+	UpdateIconsDiff(const Object *object, std::vector<IconInfo> &icons);
 };
 
 struct PlayAnimationDiff : public Diff {

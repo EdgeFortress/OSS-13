@@ -8,6 +8,4 @@ public:
         layer = 25;
         movable = false;
     }
-
-    virtual void InteractedBy(Object *) override;
 };
