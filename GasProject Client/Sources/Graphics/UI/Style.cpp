@@ -8,5 +8,6 @@ Style::Style() :
     font(&CC::Get()->GetWindow()->GetUI()->GetFont()),
     backgroundColor(sf::Color::Transparent),
     textColor(sf::Color::Black),
+	fontSize(30),
     updated(false) 
 { }
