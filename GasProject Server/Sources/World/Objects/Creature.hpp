@@ -7,9 +7,10 @@
 class Item;
 
 class Creature : public Object {
-public:
+protected:
 	Creature();
 
+public:
 	virtual void Update(sf::Time timeElapsed) override;
     bool InteractedBy(Object *) override;
 

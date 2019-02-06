@@ -19,8 +19,10 @@ class Object {
 	friend ObjectHolder;
 	friend Tile;
 
-public:
+protected:
 	Object(); // Use ObjectHolder to create objects!
+
+public:
     virtual ~Object() = default;
 
 	virtual void AfterCreation();

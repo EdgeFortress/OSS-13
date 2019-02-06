@@ -88,15 +88,14 @@ void Player::Update() {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();
 					if (tile)
-						tile->PlaceTo(new Wall());
+						CurThreadGame->GetWorld()->CreateObject<Wall>(tile);
 					break;
 				}
 				case PlayerCommand::Code::GHOST: {
 					if (!control) break;
-					::Ghost *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
+					auto *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
 					if (!ghost) {
-						ghost = new ::Ghost();
-						control->GetOwner()->GetTile()->PlaceTo(ghost);
+						ghost = CurThreadGame->GetWorld()->CreateObject<::Ghost>(control->GetOwner()->GetTile());
 						ghost->SetHostControl(control);
 						SetControl(ghost->GetComponent<Control>());
 					} else {

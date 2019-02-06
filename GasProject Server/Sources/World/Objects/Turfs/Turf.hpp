@@ -3,9 +3,11 @@
 #include "World/Objects/Object.hpp"
 
 class Turf : public Object {
-public:
+protected:
     Turf() {
         layer = 25;
         movable = false;
     }
+
+public:
 };

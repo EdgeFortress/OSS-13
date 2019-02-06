@@ -5,10 +5,10 @@
 #include <Shared/Timer.h>
 
 class Airlock : public Turf {
-public:
+protected:
     Airlock();
-    ~Airlock() = default;
 
+public:
 	virtual void Update(sf::Time timeElapsed) final;
     virtual bool InteractedBy(Object *) final;
 

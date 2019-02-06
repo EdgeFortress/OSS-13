@@ -3,8 +3,10 @@
 #include "Item.hpp"
 
 class Taser : public Item {
-public:
+protected:
     Taser();
+
+public:
 
 	virtual bool InteractedBy(Object *) final { return false; }
 

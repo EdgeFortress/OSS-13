@@ -10,8 +10,9 @@ enum class ClothSlot : char;
 typedef std::unordered_map<ClothSlot, Item *> ClothSlots;
 
 class Human : public Creature {
-public:
+protected:
 	Human();
+public:
 	//virtual void Update(sf::Time timeElapsed) override;
 
 	virtual bool InteractedBy(Object *) final { return false; }

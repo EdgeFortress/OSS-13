@@ -9,6 +9,8 @@
 
 class ObjectHolder {
 public:
+	virtual ~ObjectHolder() = default;
+
 	template<typename T, typename... TArgs>
 	T *CreateObject(Tile *tile = nullptr, TArgs&&... Args);
 
@@ -23,9 +25,28 @@ protected: // TODO: make it private!
 	std::vector<uint> free_ids;
 };
 
+namespace detail {
+
+template<typename T>
+class Factory : public T {
+friend ObjectHolder;
+
+protected:
+	template<typename... TArgs>
+	Factory(TArgs&&... Args) :
+		T(std::forward<TArgs>(Args)...)
+	{ }
+
+	virtual ~Factory() { }
+	T *GetObject() { return this; }
+};
+
+}
+
 template<typename T, typename... TArgs>
 T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
-	Object *obj = new T(std::forward<TArgs>(Args)...); // Object * is important! It's check for correct type.
+	auto *factory = new detail::Factory<T>(std::forward<TArgs>(Args)...);
+	Object *obj = factory->GetObject(); // Object * is important! It's check for correct type.
 
 	obj->id = addObject(obj);
 

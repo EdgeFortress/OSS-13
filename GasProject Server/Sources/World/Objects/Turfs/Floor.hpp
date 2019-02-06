@@ -3,7 +3,7 @@
 #include "Turf.hpp"
 
 class Floor : public Turf {
-public:
+protected:
     Floor() {
         layer = 15;
         sprite = "floor";
@@ -11,5 +11,6 @@ public:
         density = false;
     }
 
+public:
 	virtual bool InteractedBy(Object *) final { return false; }
 };

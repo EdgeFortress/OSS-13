@@ -3,9 +3,10 @@
 #include "Object.hpp"
 
 class Projectile : public Object {
-public:
+protected:
     Projectile(uf::vec2f direction);
 
+public:
     // Object
 	virtual void AfterCreation() final;
     virtual void Update(sf::Time timeElapsed) final;
