@@ -17,10 +17,12 @@ public:
     virtual bool TryInteractWith(Object *) override;
 	virtual bool TakeItem(Item *);
 	virtual bool PutOn(Item *) override;
+	virtual void Drop() override;
 
 	Item *GetSlotItem(ClothSlot) const;
 
 protected:
+	virtual bool removeObjectFromContent(Object *) override;
 	virtual void updateIcons() const override;
 
 private:

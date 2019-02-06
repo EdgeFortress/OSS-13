@@ -16,7 +16,8 @@
 TileGrid::TileGrid() :
     tileSize(0), blockSize(Global::BLOCK_SIZE), 
     controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
-    underCursorObject(nullptr), buildButtonPressed(false), ghostButtonPressed(false)
+    underCursorObject(nullptr), dropButtonPressed(false),
+	buildButtonPressed(false), ghostButtonPressed(false)
 {
     //
     // Count num of visible blocks by tile padding and FOV
@@ -114,29 +115,36 @@ bool TileGrid::HandleEvent(sf::Event event) {
         return true;
     }
 	case sf::Event::KeyPressed: {
+		if (event.key.control) {
+			switch (event.key.code) {
+				case sf::Keyboard::D:
+					dropButtonPressed = true;
+					return true;
+			}
+		}
         switch (event.key.code) {
             case sf::Keyboard::Up:
             case sf::Keyboard::W:
                 moveCommand.y = -1;
-			return true;
+				return true;
             case sf::Keyboard::Down:
             case sf::Keyboard::S:
                 moveCommand.y = 1;
-			return true;
+				return true;
             case sf::Keyboard::Right:
             case sf::Keyboard::D:
                 moveCommand.x = 1;
-			return true;
+				return true;
             case sf::Keyboard::Left:
             case sf::Keyboard::A:
                 moveCommand.x = -1;
-			return true;
+				return true;
 			case sf::Keyboard::B:
 				buildButtonPressed = true;
 				return true;
 			case sf::Keyboard::G:
 				ghostButtonPressed = true;
-			return true;
+				return true;
             default:
                 break;
         }
@@ -190,6 +198,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
         if (stun == sf::Time::Zero && objectClicked && underCursorObject)
 			Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
+
+		if (stun == sf::Time::Zero && dropButtonPressed)
+			Connection::commandQueue.Push(new DropClientCommand());
 		
 		if (stun == sf::Time::Zero && buildButtonPressed)
 			Connection::commandQueue.Push(new BuildClientCommand());
@@ -198,6 +209,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			Connection::commandQueue.Push(new GhostClientCommand());
 
 		objectClicked = false;
+		dropButtonPressed = false;
 		buildButtonPressed = false;
 		ghostButtonPressed = false;
 
@@ -240,6 +252,10 @@ void TileGrid::UnlockDrawing() {
 }
 
 void TileGrid::AddObject(Object *object) {
+	if (!object) {
+		throw std::exception("Unexpected!");
+		return;
+	}
     objects[object->GetID()] = uptr<Object>(object);
     object->Resize(tileSize);
 }

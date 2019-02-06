@@ -44,6 +44,10 @@ void Player::ClickObject(uint id) {
     actions.Push(new ClickObjectPlayerCommand(id));
 }
 
+void Player::Drop() {
+	actions.Push(new DropPlayerCommand());
+}
+
 void Player::Build() {
 	actions.Push(new BuildPlayerCommand());
 }
@@ -75,6 +79,11 @@ void Player::Update() {
                     }
                     break;
                 }
+				case PlayerCommand::Code::DROP: {
+					if (!control) break;
+					if (auto *creature = dynamic_cast<Creature *>(control->GetOwner()))
+						creature->Drop();
+				}
 				case PlayerCommand::Code::BUILD: {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();

@@ -40,6 +40,7 @@ public:
     uint ID() const;
     std::string GetName() const;
     Tile *GetTile() const;
+	Object *GetHolder() const;
     template<class T> T *GetComponent();
 
     bool GetDensity() const;
@@ -72,6 +73,7 @@ public:
 	ObjectInfo GetObjectInfo() const;
 
 protected:
+	virtual bool removeObjectFromContent(Object *);
 	// refresh std::vector<uint32_t> icons
 	// last in, last drawn
 	// shouldn't be called as is, use askToUpdateIcons()!

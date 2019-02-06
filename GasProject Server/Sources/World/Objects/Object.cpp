@@ -126,6 +126,7 @@ void Object::Delete() {
 uint Object::ID() const { return id; }
 std::string Object::GetName() const { return name; }
 Tile *Object::GetTile() const { return tile; }
+Object *Object::GetHolder() const { return holder; }
 
 bool Object::GetDensity() const { return density; };
 bool Object::IsMovable() const { return movable; };
@@ -200,6 +201,18 @@ ObjectInfo Object::GetObjectInfo() const {
 		objectInfo.spriteIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
 
     return objectInfo;
+}
+
+bool Object::removeObjectFromContent(Object *obj) {
+	for (auto iter = content.begin(); iter != content.end(); iter++) {
+		if (*iter == obj) {
+			obj->setTile(nullptr);
+			obj->holder = nullptr;
+			content.erase(iter);
+			return true;
+		}
+	}
+	return false;
 }
 
 void Object::updateIcons() const {

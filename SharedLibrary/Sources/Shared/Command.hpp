@@ -17,6 +17,7 @@ struct ClientCommand {
 
 		MOVE,
         CLICK_OBJECT,
+		DROP,
 		SEND_CHAT_MESSAGE,
 		BUILD,
 		GHOST
@@ -74,6 +75,10 @@ struct ClickObjectClientCommand : public ClientCommand {
     int id;
 
     ClickObjectClientCommand(int id);
+};
+
+struct DropClientCommand : public ClientCommand {
+	DropClientCommand();
 };
 
 struct SendChatMessageClientCommand : public ClientCommand {

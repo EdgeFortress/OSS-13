@@ -10,6 +10,7 @@ struct PlayerCommand {
         JOIN,
 		MOVE,
         CLICK_OBJECT,
+		DROP,
 		BUILD,
 		GHOST
     };
@@ -34,6 +35,10 @@ struct MovePlayerCommand : public PlayerCommand {
 struct ClickObjectPlayerCommand : public PlayerCommand {
     uint id;
     ClickObjectPlayerCommand(uint id);
+};
+
+struct DropPlayerCommand : public PlayerCommand {
+	DropPlayerCommand();
 };
 
 struct BuildPlayerCommand : public PlayerCommand {

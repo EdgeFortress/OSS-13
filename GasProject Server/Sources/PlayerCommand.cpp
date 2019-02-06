@@ -17,6 +17,10 @@ ClickObjectPlayerCommand::ClickObjectPlayerCommand(uint id) :
     PlayerCommand(Code::CLICK_OBJECT),
     id(id) { }
 
+DropPlayerCommand::DropPlayerCommand() :
+	PlayerCommand(Code::DROP)
+{ }
+
 BuildPlayerCommand::BuildPlayerCommand() :
 	PlayerCommand(Code::BUILD) { }
 

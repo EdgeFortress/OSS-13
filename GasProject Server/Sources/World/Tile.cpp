@@ -121,9 +121,13 @@ bool Tile::MoveTo(Object *obj) {
 }
 
 void Tile::PlaceTo(Object *obj) {
+	if (!obj)
+		return;
+
     Tile *lastTile = obj->GetTile();
     Block *lastBlock = nullptr;
-    if (lastTile) lastBlock = lastTile->GetBlock();
+    if (lastTile && !obj->GetHolder()) 
+		lastBlock = lastTile->GetBlock();
 
     // If obj is wall or floor - remove previous and change status
     if (dynamic_cast<Floor *>(obj)) {
@@ -203,8 +207,20 @@ const TileInfo Tile::GetTileInfo(uint visibility) const {
 }
 
 void Tile::addObject(Object *obj) {
-    Tile *lastTile = obj->GetTile();
-    if (lastTile) lastTile->removeObject(obj);
+	if (!obj)
+		return;
+
+	Object *holder = obj->GetHolder();
+	if (holder) {
+		if (!holder->removeObjectFromContent(obj))
+			throw std::exception("Unexpected!");
+	}
+
+	Tile *lastTile = obj->GetTile();
+	if (lastTile) {
+		if (!lastTile->removeObject(obj))
+			throw std::exception("Unexpected!");
+	}
 
     // Count position in tile content by layer
     auto iter = content.begin();
@@ -213,6 +229,7 @@ void Tile::addObject(Object *obj) {
     content.insert(iter, obj);
 
 	obj->setTile(this);
+	obj->SetSpriteState(Global::ItemSpriteState::DEFAULT);
 }
 
 bool Tile::removeObject(Object *obj) {

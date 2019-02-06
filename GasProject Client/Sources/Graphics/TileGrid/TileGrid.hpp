@@ -99,7 +99,8 @@ private:
     uf::vec2i cursorPosition;
     mutable Object *underCursorObject;
 
+	bool objectClicked;
+	bool dropButtonPressed;
     bool buildButtonPressed;
     bool ghostButtonPressed;
-    bool objectClicked;
 };

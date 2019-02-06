@@ -17,6 +17,7 @@ public:
     virtual bool TryInteractWith(Object *);
     virtual void Stun();
 	virtual bool PutOn(Item *);
+	virtual void Drop() { };
 
 	uint GetInvisibleVisibility() const;
 

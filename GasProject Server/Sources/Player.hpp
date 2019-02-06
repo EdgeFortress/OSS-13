@@ -41,6 +41,7 @@ public:
 
     void Move(uf::Direction);
     void ClickObject(uint id);
+	void Drop();
 	void Build();
 	void Ghost();
     ///

@@ -156,6 +156,12 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 				connection->player->ChatMessage(message);
 			break;
 		}
+		case ClientCommand::Code::DROP:
+		{
+			if (connection->player)
+				connection->player->Drop();
+			break;
+		}
 		case ClientCommand::Code::BUILD: {
 			if (connection->player)
 				connection->player->Build();

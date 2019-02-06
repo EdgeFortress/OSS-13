@@ -65,6 +65,12 @@ bool Human::PutOn(Item *item) {
 	return false;
 }
 
+void Human::Drop() { 
+	if (!hands[0]) return;
+	GetTile()->PlaceTo(hands[0]);
+	askToUpdateIcons();
+}
+
 Item *Human::GetSlotItem(ClothSlot slot) const {
 	switch (slot) {
 		case ClothSlot::LHAND:
@@ -95,6 +101,17 @@ void Human::pushToIcons(ClothSlot slot) const {
 
 	if (item)
 		icons.push_back(Server::Get()->RM->GetIconInfo(item->GetSprite(), state));
+}
+
+bool Human::removeObjectFromContent(Object *objToRemove) {
+	for (auto *&obj : hands) {
+		if (obj == objToRemove) {
+			obj = nullptr;
+			break;
+		}
+	}
+
+	return Object::removeObjectFromContent(objToRemove);
 }
 
 void Human::updateIcons() const {

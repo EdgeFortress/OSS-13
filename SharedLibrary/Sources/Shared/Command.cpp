@@ -39,6 +39,10 @@ ClickObjectClientCommand::ClickObjectClientCommand(int id) :
     ClientCommand(Code::CLICK_OBJECT),
     id(id) { }
 
+DropClientCommand::DropClientCommand() :
+	ClientCommand(Code::DROP)
+{ }
+
 SendChatMessageClientCommand::SendChatMessageClientCommand(std::string &message) : 
 	ClientCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }
