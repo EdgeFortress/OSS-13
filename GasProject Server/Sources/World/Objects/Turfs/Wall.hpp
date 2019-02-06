@@ -10,6 +10,5 @@ public:
         density = true;
     }
 
-    Wall(const Wall &object) = default;
-    ~Wall() = default;
+	virtual bool InteractedBy(Object *) final { return false; }
 };

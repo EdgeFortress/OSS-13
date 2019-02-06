@@ -20,7 +20,7 @@ void Airlock::Update(sf::Time timeElapsed) {
 }
 
 bool Airlock::InteractedBy(Object *object) {
-	if (!Turf::InteractedBy(object))
+	if (!IsCloseTo(object))
 		return false;
     Activate();
 	return true;

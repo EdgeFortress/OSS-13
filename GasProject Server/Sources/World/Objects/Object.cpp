@@ -68,12 +68,6 @@ void Object::Update(sf::Time timeElapsed) {
 	animationTimer.Update(timeElapsed);
 }
 
-bool Object::InteractedBy(Object *obj) {
-	if (IsCloseTo(obj))
-		return true;
-	return false;
-}
-
 void Object::AddObject(Object *obj) {
 	if (!obj) return;
 

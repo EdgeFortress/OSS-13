@@ -14,6 +14,7 @@ public:
 	Human();
 	//virtual void Update(sf::Time timeElapsed) override;
 
+	virtual bool InteractedBy(Object *) final { return false; }
     virtual bool TryInteractWith(Object *) override;
 	virtual bool TakeItem(Item *);
 	virtual bool PutOn(Item *) override;

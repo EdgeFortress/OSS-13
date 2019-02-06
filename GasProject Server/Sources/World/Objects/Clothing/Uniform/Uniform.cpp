@@ -5,3 +5,6 @@ Uniform::Uniform() {
 	sprite = "grey";
 	name = "uniform";
 }
+
+bool Uniform::InteractedBy(Object *) { return false; }
+void Uniform::InteractWith(Object *) { };

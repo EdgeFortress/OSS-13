@@ -9,6 +9,7 @@ public:
     // Object
 	virtual void AfterCreation() final;
     virtual void Update(sf::Time timeElapsed) final;
+	virtual bool InteractedBy(Object *) final { return false; }
 
 protected:
     virtual void onHit(Object *);

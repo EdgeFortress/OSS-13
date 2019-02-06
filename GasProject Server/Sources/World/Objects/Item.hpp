@@ -9,5 +9,5 @@ public:
         density = false;
     }
 
-	virtual void InteractWith(Object *) { };
+	virtual void InteractWith(Object *) = 0;
 };

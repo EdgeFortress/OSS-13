@@ -26,7 +26,7 @@ public:
 	virtual void AfterCreation();
     virtual void Update(sf::Time timeElapsed);
 
-    virtual bool InteractedBy(Object *);
+    virtual bool InteractedBy(Object *) = 0;
 
 	void AddObject(Object *);
     void AddComponent(Component *);

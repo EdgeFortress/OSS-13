@@ -11,6 +11,5 @@ public:
         density = false;
     }
 
-    Floor(const Floor &object) = default;
-    ~Floor() = default;
+	virtual bool InteractedBy(Object *) final { return false; }
 };

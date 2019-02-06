@@ -11,6 +11,8 @@ private:
 public:
 	Ghost();
 
+	virtual bool InteractedBy(Object *) final { return false; }
+
 	void SetHostControl(Control *control);
 	Control *GetHostControl() const;
 };
