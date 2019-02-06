@@ -224,7 +224,7 @@ void Tile::addObject(Object *obj) {
 
     // Count position in tile content by layer
     auto iter = content.begin();
-    while (iter != content.end() && (*iter)->GetLayer() < obj->GetLayer())
+    while (iter != content.end() && (*iter)->GetLayer() <= obj->GetLayer())
         iter++;
     content.insert(iter, obj);
 

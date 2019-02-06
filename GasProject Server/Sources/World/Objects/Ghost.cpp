@@ -4,6 +4,7 @@
 
 Ghost::Ghost() : hostControl(nullptr)
 {
+	layer = 80;
 	sprite = "ghost";
 	name = "Ghost";
 	density = false;

@@ -10,6 +10,7 @@ Creature::Creature() {
 	layer = 75;
 	name = "Creature";
 	const float speed = 4;
+	seeInvisibleAbility = 0;
 	AddComponent(new Control(speed));
 }
 

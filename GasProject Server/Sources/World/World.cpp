@@ -24,7 +24,7 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-		//testMob->GetComponent<Control>()->MoveCommand(sf::Vector2i(test_dx, test_dy));
+		testMob->GetComponent<Control>()->MoveCommand(sf::Vector2i(test_dx, test_dy));
     }
     
     map->Update(timeElapsed);
