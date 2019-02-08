@@ -1,12 +1,9 @@
 #include "OS.hpp"
 
 #include <iostream>
+#include <filesystem>
 
-#ifdef __linux__ 
-
-#elif _WIN32
-#include "Windows.h"
-#endif
+namespace fs = std::filesystem;
 
 bool WildCompare(const std::wstring &string, const std::wstring &wild) {
     auto ch = string.begin();
@@ -74,35 +71,15 @@ FileInfo ParseFilePath(const std::wstring &filePath) {
     return std::move(result);
 }
 
-#ifdef __linux__ 
-
-#elif _WIN32
 std::list<std::wstring> FindFilesRecursive(std::wstring path, const std::wstring name) {
-    if (path[path.length() - 1] != '/') path += '/';
     std::list<std::wstring> result;
-    auto folders_pos = result.end();
 
-    WIN32_FIND_DATA fdFindData;
-    const HANDLE hFind = FindFirstFile((path + L"*").data(), &fdFindData);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        do {
-            if (std::wcscmp(fdFindData.cFileName, L".") == 0 ||
-                std::wcscmp(fdFindData.cFileName, L"..") == 0)
-                continue;
-
-            if (fdFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-                std::list<std::wstring> subdirectory_result = FindFilesRecursive(path + fdFindData.cFileName, name);
-                const auto tmp = result.insert(result.end(), subdirectory_result.begin(), subdirectory_result.end());
-                if (folders_pos == result.end()) folders_pos = tmp;
-            } else {
-                if (WildCompare(fdFindData.cFileName, name)) {
-                    result.insert(folders_pos, path + fdFindData.cFileName);
-                }
+    for (fs::recursive_directory_iterator i("."), end; i != end; i++)
+        if (!is_directory(i->path())) {
+            if (WildCompare(i->path().filename().wstring(), name)) {
+                result.push_back(i->path().wstring());
             }
-        } while (FindNextFile(hFind, &fdFindData));  
-    }
-    FindClose(hFind);
+        }
 
-    return std::move(result);
+    return result;
 }
-#endif
