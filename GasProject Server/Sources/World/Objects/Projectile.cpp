@@ -15,7 +15,7 @@ Projectile::Projectile(uf::vec2f direction) :
 
 void Projectile::AfterCreation() {
 	if (!GetTile())
-		throw std::exception("Unexpected: projectile's tile is null after creation!");
+		throw std::exception(); // "Unexpected: projectile's tile is null after creation!"
 	startTile = GetTile();
 
 	Object::AfterCreation();
@@ -25,7 +25,7 @@ void Projectile::Update(sf::Time timeElapsed) {
     Object::Update(timeElapsed);
 
 	if (!GetTile())
-		throw std::exception("Unexpected: projectile's tile is null!");
+		throw std::exception(); // "Unexpected: projectile's tile is null!"
 
     if (startTile != GetTile() && GetTile()->IsDense()) {
         onHit(GetTile()->GetDenseObject());

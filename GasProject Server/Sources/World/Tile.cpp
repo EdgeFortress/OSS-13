@@ -213,13 +213,13 @@ void Tile::addObject(Object *obj) {
 	Object *holder = obj->GetHolder();
 	if (holder) {
 		if (!holder->removeObjectFromContent(obj))
-			throw std::exception("Unexpected!");
+			throw std::exception(); // "Unexpected!"
 	}
 
 	Tile *lastTile = obj->GetTile();
 	if (lastTile) {
 		if (!lastTile->removeObject(obj))
-			throw std::exception("Unexpected!");
+			throw std::exception(); // "Unexpected!"
 	}
 
     // Count position in tile content by layer

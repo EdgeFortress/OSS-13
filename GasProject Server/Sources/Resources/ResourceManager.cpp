@@ -19,8 +19,8 @@ void ResourceManager::loadIcons() {
 
 	// Load icons list
 	auto config_files = FindFilesRecursive(L"Resources/Icons", L"*.json");
-	for (const auto &config_file_path : config_files) {
-		std::ifstream config_istr(config_file_path);
+	for (auto &config_file_path : config_files) {
+		std::ifstream config_istr(std::string(config_file_path.begin(), config_file_path.end()));
 		json config;
 		config_istr >> config;
 		for (auto icon_config : config["sprites"]) {
@@ -63,5 +63,5 @@ IconInfo ResourceManager::GetIconInfo(const std::string &title, Global::ItemSpri
 		iconInfo.state = state;
 		return iconInfo;
 	}
-	throw std::exception("ResourceManager::GetIconInfo miss.");
+	throw std::exception(); // "ResourceManager::GetIconInfo miss."
 }

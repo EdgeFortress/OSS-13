@@ -24,7 +24,7 @@ void ResourceManager::generateTexturesAndSprites(const std::wstring &configpath)
 	FileInfo configPathParseResult = ParseFilePath(configpath);
 
 	json config;
-	std::ifstream(configpath) >> config;
+	std::ifstream(std::string(configpath.begin(), configpath.end())) >> config;
 
 	uint32_t tileSize = config["tileSize"];
 

@@ -19,6 +19,8 @@ public:
 
 private:
 	uint32_t addObject(Object *);
+	void placeTo(Object *, Tile *);
+	Tile *getTile(uf::vec2i);
 
 protected: // TODO: make it private!
 	std::vector<uptr<Object>> objects;
@@ -49,9 +51,7 @@ T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
 	Object *obj = factory->GetObject(); // Object * is important! It's check for correct type.
 
 	obj->id = addObject(obj);
-
-	if (tile)
-		tile->PlaceTo(obj);
+	placeTo(obj, tile);
 
 	obj->AfterCreation();
 	return static_cast<T *>(obj);
@@ -59,6 +59,5 @@ T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
 
 template<typename T, typename... TArgs>
 T *ObjectHolder::CreateObject(uf::vec2i coords, TArgs&&... Args) {
-	Tile *tile = CurThreadGame->GetWorld()->GetMap()->GetTile(coords);
-	return CreateObject<T>(tile, std::forward<TArgs>(Args)...);
+	return CreateObject<T>(getTile(coords), std::forward<TArgs>(Args)...);
 }

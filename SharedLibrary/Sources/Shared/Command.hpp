@@ -84,7 +84,7 @@ struct DropClientCommand : public ClientCommand {
 struct SendChatMessageClientCommand : public ClientCommand {
 	std::string message;
 
-	SendChatMessageClientCommand(std::string &message);
+	SendChatMessageClientCommand(const std::string &message);
 };
 
 struct BuildClientCommand : public ClientCommand {

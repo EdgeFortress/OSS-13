@@ -1,5 +1,9 @@
 #include "ObjectHolder.h"
 
+#include <World/World.hpp>
+#include <World/Map.hpp>
+#include <World/Tile.hpp>
+
 uint32_t ObjectHolder::addObject(Object *obj) {
 	if (free_ids.empty()) {
 		objects.push_back(uptr<Object>(obj));
@@ -10,4 +14,13 @@ uint32_t ObjectHolder::addObject(Object *obj) {
 		objects[id - 1] = uptr<Object>(obj);
 		return id;
 	}
+}
+
+void ObjectHolder::placeTo(Object *obj, Tile *tile) {
+	if (tile)
+		tile->PlaceTo(obj);
+}
+
+Tile *ObjectHolder::getTile(uf::vec2i coords) {
+	return CurThreadGame->GetWorld()->GetMap()->GetTile(coords);
 }

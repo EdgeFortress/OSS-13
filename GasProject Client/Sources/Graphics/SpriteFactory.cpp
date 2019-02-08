@@ -6,7 +6,7 @@
 
 Sprite SpriteFactory::CreateSprite(uint32_t id) {
 	if (!id--) // should be from 1 to Global::MAX_SPRITE_ID! Decrease it to use as index
-		throw std::exception("ID is null!");
+		throw std::exception(); // "ID is null!"
 
 	auto state = static_cast<Global::ItemSpriteState>(id & uint32_t(Global::ItemSpriteState::MASK));
 	id -= uint32_t(state);
@@ -46,12 +46,12 @@ Sprite SpriteFactory::CreateSprite(uint32_t id) {
 				break;
 			}
 			default:
-				throw std::exception("Sprite state is unknown!");
+				throw std::exception(); // "Sprite state is unknown!"
 		}
 
 		sprite.updateSpriteVariables();
 		return sprite;
 	}
 
-	throw std::exception("ID miss!");
+	throw std::exception(); // "ID miss!"
 }

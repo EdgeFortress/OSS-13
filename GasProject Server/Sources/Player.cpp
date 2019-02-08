@@ -83,6 +83,7 @@ void Player::Update() {
 					if (!control) break;
 					if (auto *creature = dynamic_cast<Creature *>(control->GetOwner()))
 						creature->Drop();
+					break;
 				}
 				case PlayerCommand::Code::BUILD: {
 					if (!control) break;

@@ -36,7 +36,7 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     contextMenu = new ContextMenu();
     contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
     contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 2"));
-    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Òåñò 3"));
+    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Ð¢ÐµÑÑ‚ 3"));
 	contextMenu->GetStyle().backgroundColor = sf::Color(50, 50, 50);
 	contextMenu->GetStyle().textColor = sf::Color(220, 220, 220);
 	contextMenu->GetStyle().fontSize = 11;

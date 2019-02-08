@@ -253,7 +253,7 @@ void TileGrid::UnlockDrawing() {
 
 void TileGrid::AddObject(Object *object) {
 	if (!object) {
-		throw std::exception("Unexpected!");
+		throw std::exception(); // "Unexpected!"
 		return;
 	}
     objects[object->GetID()] = uptr<Object>(object);

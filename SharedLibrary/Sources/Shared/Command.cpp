@@ -43,7 +43,7 @@ DropClientCommand::DropClientCommand() :
 	ClientCommand(Code::DROP)
 { }
 
-SendChatMessageClientCommand::SendChatMessageClientCommand(std::string &message) : 
+SendChatMessageClientCommand::SendChatMessageClientCommand(const std::string &message) :
 	ClientCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }
 
