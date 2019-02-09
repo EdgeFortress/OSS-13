@@ -74,7 +74,7 @@ FileInfo ParseFilePath(const std::wstring &filePath) {
 std::list<std::wstring> FindFilesRecursive(std::wstring path, const std::wstring name) {
     std::list<std::wstring> result;
 
-    for (fs::recursive_directory_iterator i("."), end; i != end; i++)
+    for (fs::recursive_directory_iterator i(path), end; i != end; i++)
         if (!is_directory(i->path())) {
             if (WildCompare(i->path().filename().wstring(), name)) {
                 result.push_back(i->path().wstring());
