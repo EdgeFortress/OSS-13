@@ -48,8 +48,10 @@ void Object::Update(sf::Time timeElapsed) {
     shift += deltaShift;
 
     if (moveIntent) {
-        if (abs(shift.x) >= 1) moveIntent.x = 0;
-        if (abs(shift.y) >= 1) moveIntent.y = 0;
+        if (abs(shift.x) >= 1) 
+            moveIntent.x = moveIntentApproved.x;
+        if (abs(shift.y) >= 1)
+            moveIntent.y = moveIntentApproved.y;
     }
 
     // Animation and animated icon handling
@@ -105,8 +107,15 @@ void Object::SetMoveSpeed(float moveSpeed) {
 	moveSpeed = moveSpeed;
 }
 
-void Object::SetMoveIntent(uf::vec2i moveIntent) {
-	this->moveIntent = moveIntent;
+void Object::SetMoveIntent(uf::vec2i moveIntent, bool approved) {
+    if (approved) {
+        this->moveIntentApproved = moveIntent;
+        if (this->moveIntent.x < moveIntentApproved.x)
+            this->moveIntent.x = moveIntentApproved.x;
+        if (this->moveIntent.y < moveIntentApproved.y)
+            this->moveIntent.y = moveIntentApproved.y;
+    } else
+	    this->moveIntent = moveIntent;
 }
 
 void Object::ResetShiftingState() {

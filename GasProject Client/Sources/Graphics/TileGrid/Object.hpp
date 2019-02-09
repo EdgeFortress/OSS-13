@@ -37,7 +37,8 @@ public:
     void PlayAnimation(uint spriteID);
 	void SetDirection(const uf::Direction);
 	void SetMoveSpeed(float speed);
-	void SetMoveIntent(uf::vec2i moveIntent);
+	// Second arg is true, if intent was approved by server
+	void SetMoveIntent(uf::vec2i moveIntent, bool approved);
 	void ResetShiftingState();
 	void ReverseShifting(uf::Direction direction);
 
@@ -70,6 +71,7 @@ private:
     
     float moveSpeed;
     uf::vec2i moveIntent;
+    uf::vec2i moveIntentApproved;
     uf::vec2f constSpeed;  
     uf::vec2f physSpeed;
 

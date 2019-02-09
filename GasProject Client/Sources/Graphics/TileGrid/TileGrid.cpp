@@ -188,7 +188,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 					if (!newTileY || newTileY->IsBlocked()) moveIntent.y = 0;
 				}
 
-				controllable->SetMoveIntent(moveIntent);
+				controllable->SetMoveIntent(moveIntent, false);
 				controllable->SetDirection(uf::VectToDirection(moveIntent));
 			}
 			else
@@ -294,7 +294,7 @@ void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
         uf::vec2i dir = uf::DirectionToVect(direction);
-        obj->SetMoveIntent(dir);
+        obj->SetMoveIntent(dir, true);
         return;
     }
     CC::log << "Try to set MoveIntent to unknown object (id: " << id << "(TileGrid::SetMoveIntentObject)" << std::endl;
