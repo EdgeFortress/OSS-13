@@ -1,13 +1,14 @@
 #include "Window.hpp"
 
 #include <fstream>
+#include <imgui-SFML.h>
 
-#include "Client.hpp"
+#include <Client.hpp>
+#include <Shared/JSON.hpp>
+#include <Shared/OS.hpp>
+
 #include "TileGrid.hpp"
 #include "UI/UI.hpp"
-
-#include "Shared/JSON.hpp"
-#include "Shared/OS.hpp"
 
 Window::Window() {
 	ui.reset(new UI);
@@ -20,6 +21,7 @@ void Window::Initialize() {
     window.reset(new sf::RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
     ui->ChangeModule<AuthUI>();
     resize(window->getSize().x, window->getSize().y);
+	ImGui::SFML::Init(*window);
 }
 
 void Window::Update() {
@@ -46,8 +48,10 @@ void Window::Update() {
 	}
 
 	window->clear(sf::Color::Black);
+	ImGui::SFML::Update(*window, lastFrameTime);
 	ui->Update(lastFrameTime);
 	ui->Draw(window.get());
+	ImGui::SFML::Render(*window);
 	window->display();
 
 	fps_sleep();

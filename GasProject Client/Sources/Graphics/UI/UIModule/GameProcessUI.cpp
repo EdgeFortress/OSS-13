@@ -81,8 +81,7 @@ void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
 }
 
 void GameProcessUI::Update(sf::Time timeElapsed) {
-    for (auto &widget : widgets)
-        widget->Update(timeElapsed);
+    UIModule::Update(timeElapsed);
 
     Object *objectUnderCursor = tileGrid->GetObjectUnderCursor();
     if (!objectUnderCursor) infoLabel->SetText("");
