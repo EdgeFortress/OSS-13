@@ -9,6 +9,7 @@ add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${EXECUTABLE_NAME} Shared)
 target_link_libraries(${EXECUTABLE_NAME} pthread)
+target_link_libraries(${EXECUTABLE_NAME} GL)
 
 include_directories(Sources)
 include_directories("${CMAKE_SOURCE_DIR}/SharedLibrary/Sources")

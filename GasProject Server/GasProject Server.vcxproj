@@ -109,75 +109,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\Network\Differences.cpp" />
-    <ClCompile Include="Sources\PlayerCommand.cpp" />
-    <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
-    <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
-    <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
-    <ClCompile Include="Sources\World\Block.cpp" />
-    <ClCompile Include="Sources\World\Map.cpp" />
-    <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp" />
-    <ClCompile Include="Sources\World\Objects\Clothing\Uniform\Uniform.cpp" />
-    <ClCompile Include="Sources\World\Objects\Component.cpp" />
-    <ClCompile Include="Sources\Database\UsersDB.cpp" />
-    <ClCompile Include="Sources\Network\NetworkController.cpp" />
-    <ClCompile Include="Sources\Network\Packing.cpp" />
-    <ClCompile Include="Sources\Player.cpp" />
-    <ClCompile Include="Sources\Server.cpp" />
-    <ClCompile Include="Sources\World\Camera.cpp" />
-    <ClCompile Include="Sources\World\Objects\Control.cpp" />
-    <ClCompile Include="Sources\World\Objects\Creature.cpp" />
-    <ClCompile Include="Sources\World\Objects\Ghost.cpp" />
-    <ClCompile Include="Sources\World\Objects\Human.cpp" />
-    <ClCompile Include="Sources\World\Objects\Item.cpp" />
-    <ClCompile Include="Sources\World\Objects\Object.cpp" />
-    <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp" />
-    <ClCompile Include="Sources\World\Objects\Projectile.cpp" />
-    <ClCompile Include="Sources\World\Objects\Taser.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Turf.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Floor.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Airlock.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Wall.cpp" />
-    <ClCompile Include="Sources\World\Tile.cpp" />
-    <ClCompile Include="Sources\World\World.cpp" />
+    <ClCompile Include="Sources\**\*.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sources\Network\Connection.hpp" />
-    <ClInclude Include="Sources\Resources\IconInfo.h" />
-    <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
-    <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
-    <ClInclude Include="Sources\World\Atmos\Gases.hpp" />
-    <ClInclude Include="Sources\World\Atmos\Locale.hpp" />
-    <ClInclude Include="Sources\World\Block.hpp" />
-    <ClInclude Include="Sources\World\Map.hpp" />
-    <ClInclude Include="Sources\World\Objects\Clothing\Clothing.h" />
-    <ClInclude Include="Sources\World\Objects\Clothing\Uniform\Uniform.h" />
-    <ClInclude Include="Sources\World\Objects\Component.hpp" />
-    <ClInclude Include="Sources\Database\UsersDB.hpp" />
-    <ClInclude Include="Sources\Global.hpp" />
-    <ClInclude Include="Sources\Network\Differences.hpp" />
-    <ClInclude Include="Sources\Network\NetworkController.hpp" />
-    <ClInclude Include="Sources\Player.hpp" />
-    <ClInclude Include="Sources\PlayerCommand.hpp" />
-    <ClInclude Include="Sources\Server.hpp" />
-    <ClInclude Include="Sources\World\Camera.hpp" />
-    <ClInclude Include="Sources\World\Objects.hpp" />
-    <ClInclude Include="Sources\World\Objects\Control.hpp" />
-    <ClInclude Include="Sources\World\Objects\Creature.hpp" />
-    <ClInclude Include="Sources\World\Objects\Ghost.hpp" />
-    <ClInclude Include="Sources\World\Objects\Human.hpp" />
-    <ClInclude Include="Sources\World\Objects\Item.hpp" />
-    <ClInclude Include="Sources\World\Objects\Object.hpp" />
-    <ClInclude Include="Sources\World\Objects\ObjectHolder.h" />
-    <ClInclude Include="Sources\World\Objects\Projectile.hpp" />
-    <ClInclude Include="Sources\World\Objects\Taser.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Turf.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Airlock.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Floor.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Wall.hpp" />
-    <ClInclude Include="Sources\World\Tile.hpp" />
-    <ClInclude Include="Sources\World\World.hpp" />
+    <ClInclude Include="Sources\**\*.hpp" />
+    <ClInclude Include="Sources\**\*.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedLibrary\SharedLibrary.vcxproj">

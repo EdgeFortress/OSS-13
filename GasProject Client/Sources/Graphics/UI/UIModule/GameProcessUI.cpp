@@ -33,15 +33,15 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     formattedTextField->GetStyle().fontSize = 18;
     container->AddItem(formattedTextField, sf::Vector2f(0, 0));
 
-    contextMenu = new ContextMenu();
-    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
-    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 2"));
-    contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Тест 3"));
-	contextMenu->GetStyle().backgroundColor = sf::Color(50, 50, 50);
-	contextMenu->GetStyle().textColor = sf::Color(220, 220, 220);
-	contextMenu->GetStyle().fontSize = 11;
-	contextMenu->GetUnderCursorStyle().backgroundColor = sf::Color(100, 100, 100);
-    widgets.push_back(uptr<ContextMenu>(contextMenu));
+	//contextMenu = new ContextMenu();
+	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
+	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 2"));
+	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Тест 3"));
+	//contextMenu->GetStyle().backgroundColor = sf::Color(50, 50, 50);
+	//contextMenu->GetStyle().textColor = sf::Color(220, 220, 220);
+	//contextMenu->GetStyle().fontSize = 11;
+	//contextMenu->GetUnderCursorStyle().backgroundColor = sf::Color(100, 100, 100);
+	//widgets.push_back(uptr<ContextMenu>(contextMenu));
 
 	curInputWidget = tileGrid;
 }
@@ -81,8 +81,7 @@ void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
 }
 
 void GameProcessUI::Update(sf::Time timeElapsed) {
-    for (auto &widget : widgets)
-        widget->Update(timeElapsed);
+    UIModule::Update(timeElapsed);
 
     Object *objectUnderCursor = tileGrid->GetObjectUnderCursor();
     if (!objectUnderCursor) infoLabel->SetText("");
@@ -90,7 +89,7 @@ void GameProcessUI::Update(sf::Time timeElapsed) {
 }
 
 void GameProcessUI::HandleEvent(sf::Event event) {
-    contextMenu->HandleEvent(event);
+    //contextMenu->HandleEvent(event);
 
     switch (event.type) {
     case sf::Event::KeyPressed: {

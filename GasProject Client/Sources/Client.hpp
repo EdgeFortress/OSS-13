@@ -1,10 +1,12 @@
 #pragma once
 
 #include <string>
+#include <plog/Formatters/MessageOnlyFormatter.h>
 
-#include "Shared/Types.hpp"
-#include "Shared/Log.hpp"
-#include "ResourceManager.hpp"
+#include <ResourceManager.hpp>
+#include <Graphics/UI/Widget/LogRecordsHolder.h>
+
+#include <Shared/Types.hpp>
 
 using std::string;
 
@@ -16,7 +18,9 @@ private:
     string pkey;
 };
 
-class ClientController {
+class ClientController :
+	public plog::LogRecordsHolder<plog::MessageOnlyFormatter>
+{
 private:
     uptr<Player> player;
     uptr<Window> window;
@@ -36,8 +40,6 @@ public:
 	Window *GetWindow();
 	UI *GetUI();
 	static ClientController *const Get();
-
-    static uf::Log log;
 };
 
 using CC = ClientController;

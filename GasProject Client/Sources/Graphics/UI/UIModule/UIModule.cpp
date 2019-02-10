@@ -1,6 +1,9 @@
 #include "UIModule.hpp"
 
-#include "Graphics/UI/Widget/Widget.hpp"
+#include <imgui.h>
+#include <imgui-SFML.h>
+
+#include <Graphics/UI/Widget/Widget.hpp>
 
 UIModule::UIModule(UI *ui) : ui(ui) {
 	curInputWidget = nullptr;
@@ -18,6 +21,36 @@ void UIModule::Update(sf::Time timeElapsed) {
 }
 
 void UIModule::HandleEvent(sf::Event event) {
+	ImGuiIO& io = ImGui::GetIO();
+
+	bool imguiCapture = false;
+
+	switch (event.type) {
+		case sf::Event::MouseWheelMoved:
+		case sf::Event::MouseWheelScrolled:
+		case sf::Event::MouseButtonPressed:
+		case sf::Event::MouseButtonReleased:
+		case sf::Event::MouseMoved:
+		case sf::Event::MouseEntered:
+		case sf::Event::MouseLeft:
+			if (io.WantCaptureMouse)
+				imguiCapture = true;
+			break;
+		case sf::Event::TextEntered:
+			if (io.WantTextInput)
+				imguiCapture = true;
+			break;
+		case sf::Event::KeyPressed:
+		case sf::Event::KeyReleased:
+			if (io.WantCaptureKeyboard)
+				imguiCapture = true;
+			break;
+	}
+
+	ImGui::SFML::ProcessEvent(event);
+	if (imguiCapture)
+		return;
+
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed: {
         if (event.mouseButton.button == sf::Mouse::Left) {

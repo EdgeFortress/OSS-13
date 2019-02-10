@@ -202,7 +202,5 @@ void FormattedTextField::Update(sf::Time timeElapsed) {
 void FormattedTextField::SetSize(const sf::Vector2f &size) {
     if (size.x != this->GetSize().x)
         resized = true;
-    else
-        CC::log << "False resize alarm" << endl;
     Widget::SetSize(size);
 }

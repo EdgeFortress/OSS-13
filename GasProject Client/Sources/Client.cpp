@@ -16,13 +16,14 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
+	plog::init(plog::verbose, this);
+
 	RM.Initialize();
 
     if (!Connection::Start("localhost", Global::PORT)) {
-    //if (!Connection::Start("79.165.121.230", Global::PORT)) {
-        CC::log << "Connection error!" << std::endl;
+		LOGE << "No connection established!";
     } else {
-        CC::log << "Connected" << std::endl;
+        LOGI << "Successfully connected to server.";
     };
 
     window->Initialize();
@@ -46,5 +47,4 @@ int main() {
     return 0;
 }
 
-uf::Log CC::log;
 ClientController *ClientController::instance;

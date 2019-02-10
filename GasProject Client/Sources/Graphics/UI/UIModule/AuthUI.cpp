@@ -38,20 +38,20 @@ void AuthUI::Update(sf::Time timeElapsed) {
         if (answer.isAnswer) {
             if (comState == AuthUI::ComState::LOGIN) {
                 if (answer.result) {
-                    CC::log << "You logged in succesfully" << std::endl;
+                    LOGI << "Successfully logged in";
                     ui->ChangeModule<GameListUI>();
                 }
                 else {
-                    CC::log << "You did not log in" << std::endl;
+                    LOGE << "Failed to log in";
                 }
             }
             if (comState == AuthUI::ComState::REGISTRATION) {
                 if (answer.result) {
-                    CC::log << "You are succesfully registered" << std::endl;
+					LOGI << "You are succesfully registered" << std::endl;
                     closeReg();
                 }
                 else
-                    CC::log << "Problems with registration" << std::endl;
+					LOGE << "Failed to registrate" << std::endl;
             }
             comState = AuthUI::ComState::NOTHING;
         }
@@ -168,7 +168,7 @@ void AuthUI::login() {
         comState = ComState::LOGIN;
     }
     else
-        CC::log << "Wait for answer to previous command" << std::endl;
+        LOGW << "Wait for answer to previous command" << std::endl;
 }
 
 void AuthUI::registration() {
@@ -177,7 +177,7 @@ void AuthUI::registration() {
         comState = ComState::REGISTRATION;
     }
     else
-        CC::log << "Wait for answer to previous command" << std::endl;
+        LOGW << "Wait for answer to previous command" << std::endl;
 }
 
 AuthUI::ServerAnswer AuthUI::getAnswer() {
