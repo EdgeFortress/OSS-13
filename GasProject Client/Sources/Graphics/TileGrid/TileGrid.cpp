@@ -78,7 +78,6 @@ void TileGrid::draw() const {
 void TileGrid::SetSize(const uf::vec2i &size) {
     tileSize = int(std::min(size.x, size.y)) / Global::FOV;
     numOfTiles = { 15, 15 };
-    CC::log << numOfTiles.x << numOfTiles.y << std::endl;
     padding.x = 0;
     padding.y = (int(size.y) - tileSize * numOfTiles.y) / 2;
 
@@ -169,10 +168,8 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();
-				if (!lastTile) {
-					CC::log << "Controllable isn't placed" << std::endl;
-					return;
-				}
+				if (!lastTile)
+					std::exception(); // Where is controllable!?
 
 				uf::vec2i moveIntent = controllable->GetMoveIntent();
 				if (moveCommand.x) moveIntent.x = moveCommand.x;
@@ -191,8 +188,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				controllable->SetMoveIntent(moveIntent, false);
 				controllable->SetDirection(uf::VectToDirection(moveIntent));
 			}
-			else
-				CC::log << "Controllable not determine" << std::endl;
+			else {
+				std::exception(); // Controllable is null!?
+			}
 		}
 		moveCommand = sf::Vector2i();
 
@@ -268,13 +266,13 @@ void TileGrid::RemoveObject(uint id) {
 		return;
     }
 
-    CC::log << "Error: object with id" << id << "is not exist (TileGrid::RemoveObject)" << std::endl;
+    LOGE << "Error: object with id " << id << " doesn't exist (TileGrid::RemoveObject)";
 }
 
 void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
     Tile *tile = GetTileAbs(toVec);
     if (!tile) {
-        CC::log << "Wrong tile absolute coords (" << toVec.x << toVec.y << ")" << std::endl;
+        LOGE << "Wrong tile absolute coords (" << toVec << ")";
         return;
     }
 
@@ -286,7 +284,7 @@ void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
         return;
     }
 
-    CC::log << "Wrong object ID:" << id << std::endl;
+    LOGE << "Wrong object ID: " << id;
 }
 
 void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
@@ -297,7 +295,7 @@ void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
         obj->SetMoveIntent(dir, true);
         return;
     }
-    CC::log << "Try to set MoveIntent to unknown object (id: " << id << "(TileGrid::SetMoveIntentObject)" << std::endl;
+    LOGE << "Try to set MoveIntent to unknown object (id: " << id << ")(TileGrid::SetMoveIntentObject)" << std::endl;
 }
 
 void TileGrid::MoveObject(uint id, uf::Direction direction) {
@@ -308,12 +306,12 @@ void TileGrid::MoveObject(uint id, uf::Direction direction) {
 
         Tile *lastTile = obj->GetTile();
         if (!lastTile) {
-            CC::log << "Move of unplaced object" << std::endl;
+            LOGE << "Move of unplaced object" << std::endl;
             return;
         }
         Tile *tile = GetTileRel(lastTile->GetRelPos() + dir);
         if (!tile) {
-            CC::log << "Move to unknown tile" << std::endl;
+            LOGE << "Move to unknown tile" << std::endl;
             return;
         }
 
@@ -324,7 +322,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction) {
         
         return;
     }
-	CC::log << "Move of unknown object (id: " << id << "(TileGrid::MoveObject)" << std::endl;
+	LOGE << "Move of unknown object (id: " << id << ")(TileGrid::MoveObject)" << std::endl;
 }
 
 void TileGrid::UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons) {
@@ -405,7 +403,7 @@ void TileGrid::SetControllable(uint id, float speed) {
         controllableSpeed = speed;
         return;
     }
-	CC::log << "Error! New controllable wasn't founded" << std::endl;
+	LOGE << "New controllable wasn't founded" << std::endl;
 }
 
 Tile *TileGrid::GetTileRel(uf::vec2i rpos) const {

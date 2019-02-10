@@ -48,7 +48,7 @@ void Widget::SetSize(const uf::vec2i &size) {
 	this->size = size;
 	if (size.x && size.y) {
 		if (!buffer.create(unsigned(size.x), unsigned(size.y)))
-			CC::log << "Error: Cannot create Widget buffer" << std::endl;
+			LOGE << "Cannot create Widget buffer" << std::endl;
 		bufferSprite.setTextureRect(sf::IntRect(0, 0, int(size.x), int(size.y)));
 	}
 }

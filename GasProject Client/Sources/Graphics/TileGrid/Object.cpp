@@ -29,7 +29,7 @@ Object::~Object() {
 void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
     TileGrid *tileGrid = tile->GetTileGrid();
     if (!tileGrid) {
-        CC::log << "Error: try to draw object from unplaced tiled!" << std::endl;
+        std::exception(); // Where is this tile!? 
     }
     uint tileSize = tileGrid->GetTileSize();
     if (animationProcess) {

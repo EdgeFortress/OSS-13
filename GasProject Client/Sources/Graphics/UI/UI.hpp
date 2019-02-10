@@ -19,6 +19,8 @@ private:
 
     mutable std::mutex mutex;
 
+	uptr<Widget> console;
+
 public:
     UI();
     UI(const UI &) = delete;

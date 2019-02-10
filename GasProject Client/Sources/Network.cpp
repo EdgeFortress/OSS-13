@@ -123,10 +123,10 @@ void Connection::parsePacket(Packet &packet) {
 			break;
 		}
         case ServerCommand::Code::GAME_JOIN_SUCCESS:
-            CC::log << "You join the game" << endl;
+            LOGI << "You join the game";
             break;
         case ServerCommand::Code::GAME_JOIN_ERROR:
-            CC::log << "Error join the game" << endl;
+            LOGE << "Fail to join the game";
             break;
         case ServerCommand::Code::GRAPHICS_UPDATE:
         {
@@ -260,7 +260,7 @@ void Connection::parsePacket(Packet &packet) {
 
 							break;
                         default:
-                            CC::log << "Wrong diff type: " << type << endl;
+                            LOGE << "Wrong diff type: " << type;
                             break;
                     }
                 }

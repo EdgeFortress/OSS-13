@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 
-#include "Graphics/UI/Widget/Widget.hpp"
+#include <Graphics/UI/Widget/Widget.hpp>
 
 UIModule::UIModule(UI *ui) : ui(ui) {
 	curInputWidget = nullptr;
@@ -16,7 +16,6 @@ void UIModule::Draw(sf::RenderWindow *renderWindow) {
 }
 
 void UIModule::Update(sf::Time timeElapsed) {
-	ImGui::ShowTestWindow();
 	for (auto &widget : widgets)
 		widget->Update(timeElapsed);
 }

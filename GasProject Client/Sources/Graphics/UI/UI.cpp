@@ -2,16 +2,14 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Client.hpp"
+#include <Client.hpp>
+#include <Graphics/UI/Widget/Console.h>
 
 using std::string; 
 
 UI::UI() {
     if (!font.loadFromFile("Arialuni.ttf"))
-        CC::log << "Font load error!" << std::endl;
-    //authUI = uptr<AuthUI>(new AuthUI(this)),
-    //gameProcessUI = uptr<GameProcessUI>(new GameProcessUI(this));
-    //gamelistUI = uptr<GameListUI>(new GameListUI(this));
+        LOGE << "Failed to load font!";
 
     background.loadFromFile("Resources/Pictures/MenuBackground.jpg");
     background_sprite.setTexture(background);
@@ -34,6 +32,10 @@ void UI::HandleEvent(sf::Event event) {
 }
 
 void UI::Update(sf::Time timeElapsed) { 
+	if (!console)
+		console = std::make_unique<Console>(); // TODO: move console from here
+	console->Update(timeElapsed);
+
 	if (newUIModule) {
 		curUIModule.reset(newUIModule);
 		newUIModule = nullptr;
