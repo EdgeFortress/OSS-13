@@ -5,9 +5,10 @@
 #include "Creature.hpp"
 
 class Item;
+class Clothing;
 
 enum class ClothSlot : char;
-typedef std::unordered_map<ClothSlot, Item *> ClothSlots;
+typedef std::unordered_map<ClothSlot, Clothing *> ClothSlots;
 
 class Human : public Creature {
 protected:
@@ -15,16 +16,16 @@ protected:
 public:
 	//virtual void Update(sf::Time timeElapsed) override;
 
-	virtual bool InteractedBy(Object *) final { return false; }
+	virtual bool RemoveObject(Object *) override;
+	virtual bool InteractedBy(Object *) final;
     virtual bool TryInteractWith(Object *) override;
 	virtual bool TakeItem(Item *);
-	virtual bool PutOn(Item *) override;
+	virtual bool PutOn(Clothing *) override;
 	virtual void Drop() override;
 
 	Item *GetSlotItem(ClothSlot) const;
 
 protected:
-	virtual bool removeObjectFromContent(Object *) override;
 	virtual void updateIcons() const override;
 
 private:

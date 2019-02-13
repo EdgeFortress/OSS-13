@@ -62,6 +62,9 @@ bool Sprite::PixelTransparent(uf::vec2u pixel) const {
 }
 
 void Sprite::updateSpriteVariables() {
+    if (!texture)
+        return;
+
     int realState = firstFrame;
     if (directed && direction != uf::Direction::NONE) realState += int(direction) * frames;
     if (frames > 1) realState += curFrame;

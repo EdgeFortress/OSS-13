@@ -31,6 +31,7 @@ public:
     virtual bool InteractedBy(Object *) = 0;
 
 	void AddObject(Object *);
+	virtual bool RemoveObject(Object *);
     void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
     void SetSprite(const std::string &sprite);
@@ -54,6 +55,7 @@ public:
     uint GetInvisibility() const;
 
 	std::string GetSprite() const;
+
     uint GetLayer() const;
 
 	//
@@ -75,7 +77,6 @@ public:
 	ObjectInfo GetObjectInfo() const;
 
 protected:
-	virtual bool removeObjectFromContent(Object *);
 	// refresh std::vector<uint32_t> icons
 	// last in, last drawn
 	// shouldn't be called as is, use askToUpdateIcons()!

@@ -71,7 +71,10 @@ void Object::Update(sf::Time timeElapsed) {
 void Object::AddObject(Object *obj) {
 	if (!obj) return;
 
-	if (obj->GetTile())
+	if (obj->GetHolder()) {
+        if (!obj->GetHolder()->RemoveObject(obj))
+            return;
+    } else if (obj->GetTile())
 		obj->GetTile()->RemoveObject(obj);
 
 	content.push_back(obj);
@@ -79,6 +82,18 @@ void Object::AddObject(Object *obj) {
 	obj->setTile(GetTile());
 
 	askToUpdateIcons();
+}
+
+bool Object::RemoveObject(Object *obj) {
+    for (auto iter = content.begin(); iter != content.end(); iter++) {
+        if (*iter == obj) {
+            obj->setTile(nullptr);
+            obj->holder = nullptr;
+            content.erase(iter);
+            return true;
+        }
+    }
+    return false;
 }
 
 void Object::AddComponent(Component *new_component) {
@@ -195,18 +210,6 @@ ObjectInfo Object::GetObjectInfo() const {
 		objectInfo.spriteIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
 
     return objectInfo;
-}
-
-bool Object::removeObjectFromContent(Object *obj) {
-	for (auto iter = content.begin(); iter != content.end(); iter++) {
-		if (*iter == obj) {
-			obj->setTile(nullptr);
-			obj->holder = nullptr;
-			content.erase(iter);
-			return true;
-		}
-	}
-	return false;
 }
 
 void Object::updateIcons() const {

@@ -4,7 +4,7 @@
 
 #include "Object.hpp"
 
-class Item;
+class Clothing;
 
 class Creature : public Object {
 protected:
@@ -17,7 +17,7 @@ public:
 	virtual void Move(uf::vec2i order);
     virtual bool TryInteractWith(Object *);
     virtual void Stun();
-	virtual bool PutOn(Item *);
+	virtual bool PutOn(Clothing *);
 	virtual void Drop() { };
 
 	uint GetInvisibleVisibility() const;

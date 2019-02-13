@@ -212,7 +212,7 @@ void Tile::addObject(Object *obj) {
 
 	Object *holder = obj->GetHolder();
 	if (holder) {
-		if (!holder->removeObjectFromContent(obj))
+		if (!holder->RemoveObject(obj))
 			throw std::exception(); // "Unexpected!"
 	}
 

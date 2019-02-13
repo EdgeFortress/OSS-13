@@ -67,7 +67,7 @@ void Creature::Stun() {
     Server::log << "Creature stunned" << std::endl;
 }
 
-bool Creature::PutOn(Item *) {
+bool Creature::PutOn(Clothing *) {
 	return false;
 }
 

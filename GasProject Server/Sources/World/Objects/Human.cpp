@@ -16,6 +16,25 @@ Human::Human() :
 	density = true;
 }
 
+bool Human::InteractedBy(Object *obj) {
+	if (auto *human = dynamic_cast<Human *>(obj)) {
+		for (auto &cloth: clothes) {
+			if (human->TakeItem(cloth.second)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if (auto *cloth = dynamic_cast<Clothing *>(obj)) {
+	    if (PutOn(cloth))
+	        return true;
+	    return false;
+	}
+
+	return false;
+}
+
 bool Human::TryInteractWith(Object *obj) {
 	if (!Creature::TryInteractWith(obj))
 		return false;
@@ -50,19 +69,19 @@ bool Human::TakeItem(Item *item) {
 	return true;
 }
 
-bool Human::PutOn(Item *item) {
-	if (auto *clothing = dynamic_cast<Clothing *>(item)) {
-		if (clothing->GetSlot() == ClothSlot::NONE)
-			return false;
+bool Human::PutOn(Clothing *clothing) {
+	if (clothing->GetSlot() == ClothSlot::NONE)
+		return false;
+	
+	auto iter = clothes.find(clothing->GetSlot());
+	if (iter != clothes.end() && iter->second != nullptr)
+		return false;
 
-		if (clothes.find(clothing->GetSlot()) != clothes.end())
-			return false;
+	AddObject(clothing);
+	clothes[clothing->GetSlot()] = clothing;
+	clothing->SetSpriteState(Global::ItemSpriteState::ON_MOB);
 
-		AddObject(clothing);
-		clothes[clothing->GetSlot()] = clothing;
-		clothing->SetSpriteState(Global::ItemSpriteState::ON_MOB);
-	}
-	return false;
+	return true;
 }
 
 void Human::Drop() { 
@@ -103,7 +122,7 @@ void Human::pushToIcons(ClothSlot slot) const {
 		icons.push_back(Server::Get()->RM->GetIconInfo(item->GetSprite(), state));
 }
 
-bool Human::removeObjectFromContent(Object *objToRemove) {
+bool Human::RemoveObject(Object *objToRemove) {
 	for (auto *&obj : hands) {
 		if (obj == objToRemove) {
 			obj = nullptr;
@@ -111,7 +130,13 @@ bool Human::removeObjectFromContent(Object *objToRemove) {
 		}
 	}
 
-	return Object::removeObjectFromContent(objToRemove);
+	if (auto *cloth = dynamic_cast<Clothing *>(objToRemove)) {
+	    Clothing *&onMob = clothes[cloth->GetSlot()];
+	    if (onMob == cloth)
+	        onMob = nullptr;
+	}
+
+	return Object::RemoveObject(objToRemove);
 }
 
 void Human::updateIcons() const {
