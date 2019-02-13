@@ -10,6 +10,7 @@ add_library(${LIBRARY_NAME} ${SOURCE_FILES})
 include_directories(Sources)
 
 target_link_libraries(${LIBRARY_NAME} stdc++fs)
+target_link_libraries(${LIBRARY_NAME} GL)
 
 find_package(SFML REQUIRED system window graphics network) #audio
 
