@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Widget.hpp"
+#include "CustomWidget.h"
 
 #include <functional>
 #include <string>
 #include <vector>
 
-class Entry : public Widget {
+class Entry : public CustomWidget {
 public:
     explicit Entry(const uf::vec2i &size = {});
 

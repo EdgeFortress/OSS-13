@@ -7,7 +7,7 @@
 #include "Client.hpp"
 
 Entry::Entry(const uf::vec2i &size) {
-    Widget::SetSize(size);
+    CustomWidget::SetSize(size);
 
 	canBeActive = true;
 

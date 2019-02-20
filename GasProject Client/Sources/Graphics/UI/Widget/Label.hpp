@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Widget.hpp"
+#include "CustomWidget.h"
 
-class Label : public Widget {
+class Label : public CustomWidget {
 public:
 	Label();
 	Label(const sf::String &);

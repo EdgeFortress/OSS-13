@@ -4,12 +4,12 @@
 #include <string>
 #include <functional>
 
-#include "Widget.hpp"
-#include "Shared/Types.hpp"
+#include "CustomWidget.h"
+#include <Shared/Types.hpp>
 
 class ContextMenuRow;
 
-class ContextMenu : public Widget {
+class ContextMenu : public CustomWidget {
 public:
     explicit ContextMenu();
     virtual ~ContextMenu() = default;

@@ -87,8 +87,8 @@ void TileGrid::SetSize(const uf::vec2i &size) {
             if (block) block->Resize(tileSize);
         }
 
-    Widget::SetSize(uf::vec2i(tileSize) * 15);
-	Widget::SetPosition(padding);
+	CustomWidget::SetSize(uf::vec2i(tileSize) * 15);
+	CustomWidget::SetPosition(padding);
 }
 
 bool TileGrid::HandleEvent(sf::Event event) {

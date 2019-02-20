@@ -5,7 +5,7 @@
 #include "Graphics/Window.hpp"
 
 Button::Button(const uf::vec2i &size) 
-	: Widget(size)
+	: CustomWidget(size)
 { 
 	underCursor = false;
 }
@@ -13,7 +13,7 @@ Button::Button(const uf::vec2i &size)
 Button::Button(const sf::String &string,
                const uf::vec2i &size,
 	           std::function<void()> onPressFunc)
-    : Widget(size),onPressFunc(onPressFunc) 
+    : CustomWidget(size),onPressFunc(onPressFunc)
 {
 	underCursor = false;
     text.setString(string);

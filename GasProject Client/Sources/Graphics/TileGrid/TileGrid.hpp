@@ -3,10 +3,10 @@
 #include <vector>
 #include <unordered_map>
 #include <mutex>
-#include "SFML/System/Time.hpp" 
+#include <SFML/System/Time.hpp>
 
-#include "Shared/Types.hpp"
-#include "Graphics/UI/Widget/Widget.hpp"
+#include <Shared/Types.hpp>
+#include <Graphics/UI/Widget/CustomWidget.h>
 #include "Block.hpp"
 
 namespace sf { 
@@ -14,7 +14,7 @@ namespace sf {
     class Packet;
 }
 
-class TileGrid : public Widget {
+class TileGrid : public CustomWidget {
 public:
     TileGrid();
     TileGrid(const TileGrid &) = delete;

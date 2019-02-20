@@ -8,7 +8,7 @@
 #include "Entry.hpp"
 
 Container::Container(const uf::vec2i &size) :
-	Widget(size), 
+	CustomWidget(size),
     curInputWidgetIterator(items.end()), underCursorWidget(nullptr)
 { }
 
@@ -26,7 +26,7 @@ bool Container::HandleEvent(sf::Event event) {
 			return false;
 
 		for (auto iter = items.begin(); iter != items.end(); iter++) {
-			Widget *widget = iter->get();
+			CustomWidget *widget = iter->get();
 			if (widget->HandleEvent(event)) {
 				if (widget->SetActive(active)) {
 					if (curInputWidgetIterator->get() == widget) return true;
@@ -101,8 +101,8 @@ void Container::draw() const {
 	buffer.display();
 }
 
-void Container::AddItem(Widget *widget, const uf::vec2i &position) {
-	items.push_back(uptr<Widget>(widget));
+void Container::AddItem(CustomWidget *widget, const uf::vec2i &position) {
+	items.push_back(uptr<CustomWidget>(widget));
     if (curInputWidgetIterator == items.end())
 		if (widget->SetActive(false)) { // Check if widget can be active
 			canBeActive = true;
@@ -122,5 +122,5 @@ void Container::Clear() {
 bool Container::SetActive(bool active) {
 	if (curInputWidgetIterator != items.end())
 		curInputWidgetIterator->get()->SetActive(active);
-	return Widget::SetActive(active);
+	return CustomWidget::SetActive(active);
 }

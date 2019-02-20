@@ -4,6 +4,7 @@
 #include <imgui-SFML.h>
 
 #include <Graphics/UI/Widget/Widget.hpp>
+#include <Graphics/UI/Widget/CustomWidget.h>
 
 UIModule::UIModule(UI *ui) : ui(ui) {
 	curInputWidget = nullptr;
@@ -55,26 +56,30 @@ void UIModule::HandleEvent(sf::Event event) {
 	case sf::Event::MouseButtonPressed: {
         if (event.mouseButton.button == sf::Mouse::Left) {
             for (auto &widget : widgets)
-                if (widget->HandleEvent(event)) {
-                    if (widget->SetActive(true))
-                        if (widget.get() != curInputWidget) {
-                            curInputWidget->SetActive(false);
-                            curInputWidget = widget.get();
-                        }
-                    return;
-                }
+				if (auto customWidget = dynamic_cast<CustomWidget *>(widget.get())) {
+					if (customWidget->HandleEvent(event)) {
+						if (customWidget->SetActive(true))
+							if (customWidget != curInputWidget) {
+								curInputWidget->SetActive(false);
+								curInputWidget = customWidget;
+							}
+						return;
+					}
+				}
         }
 		break;
 	}
 	case sf::Event::MouseMoved: {
 		for (auto &widget : widgets) {
 			if (widget->HandleEvent(event)) {
-				if (underCursorWidget && underCursorWidget != widget.get()) { 
-					sf::Event event;
-					event.type = sf::Event::MouseLeft;
-					underCursorWidget->HandleEvent(event); 
+				if (auto customWidget = dynamic_cast<CustomWidget *>(widget.get())) {
+					if (underCursorWidget && underCursorWidget != customWidget) {
+						sf::Event event;
+						event.type = sf::Event::MouseLeft;
+						underCursorWidget->HandleEvent(event); 
+					}
+					underCursorWidget = customWidget;
 				}
-				underCursorWidget = widget.get();
 				return;
 			}
 		}
@@ -99,10 +104,12 @@ void UIModule::HandleEvent(sf::Event event) {
 }
 
 bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {
-    if (newInputWidget->SetActive(true)) {
-        curInputWidget->SetActive(false);
-        curInputWidget = newInputWidget;
-        return true;
-    }
+	if (auto customWidget = dynamic_cast<CustomWidget *>(newInputWidget)) {
+		if (customWidget->SetActive(true)) {
+			curInputWidget->SetActive(false);
+			curInputWidget = customWidget;
+			return true;
+		}
+	}
     return false;
 }

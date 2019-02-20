@@ -121,75 +121,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sources\Client.cpp" />
-    <ClCompile Include="Sources\Graphics\Sprite.cpp" />
-    <ClCompile Include="Sources\Graphics\SpriteFactory.cpp" />
-    <ClCompile Include="Sources\Graphics\Texture.cpp" />
-    <ClCompile Include="Sources\Graphics\TextureHolder.cpp" />
-    <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp" />
-    <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
-    <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Style.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UIModule\UIModule.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UIModule\GameListUI.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UIModule\GameProcessUI.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Console.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\ContextMenu.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\FormattedTextField.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\ImguiWidget.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
-    <ClCompile Include="Sources\Graphics\Window.cpp" />
-    <ClCompile Include="Sources\Network.cpp" />
-    <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UI.cpp" />
-    <ClCompile Include="Sources\ResourceManager.cpp" />
+    <ClCompile Include="Sources\**\*.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sources\Client.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\LogRecordsHolder.h" />
-    <ClInclude Include="Sources\Graphics\Sprite.hpp" />
-    <ClInclude Include="Sources\Graphics\SpriteFactory.h" />
-    <ClInclude Include="Sources\Graphics\Texture.hpp" />
-    <ClInclude Include="Sources\Graphics\TextureHolder.h" />
-    <ClInclude Include="Sources\Graphics\TileGrid.hpp" />
-    <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
-    <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
-    <ClInclude Include="Sources\Graphics\TileGrid\Tile.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Style.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModules.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModule\UIModule.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModule\GameListUI.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModule\GameProcessUI.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\ContextMenu.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\CustomWidget.h" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\FormattedTextField.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\ImGuiWidget.h" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Console.h" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
-    <ClInclude Include="Sources\Network.hpp" />
-    <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UI.hpp" />
-    <ClInclude Include="Sources\Graphics\Window.hpp" />
-    <ClInclude Include="Sources\ResourceManager.hpp" />
-    <ClInclude Include="Sources\Graphics\SpriteInfo.h" />
+    <ClInclude Include="Sources\**\*.hpp" />
+    <ClInclude Include="Sources\**\*.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\Ghost.png" />
-    <Image Include="Images\Human.png" />
-    <Image Include="Images\lobby_background.jpg" />
-    <Image Include="Images\MenuBackground.jpg" />
-    <Image Include="Images\Space.png" />
-    <Image Include="Images\Turfs.png" />
+    <Image Include="Images\**\*.png" />
+    <Image Include="Images\**\*.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedLibrary\SharedLibrary.vcxproj">

@@ -2,9 +2,9 @@
 
 #include <functional>
 
-#include "Widget.hpp"
+#include "CustomWidget.h"
 
-class Button : public Widget {
+class Button : public CustomWidget {
 public:
     explicit Button(const uf::vec2i &size = {});
     Button(const sf::String &, const uf::vec2i &size, std::function<void()>);

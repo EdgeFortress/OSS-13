@@ -6,9 +6,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Graphics/UI/Widget/Widget.hpp"
+#include "CustomWidget.h"
 
-class FormattedTextField : public Widget {
+class FormattedTextField : public CustomWidget {
 public:
     FormattedTextField(const sf::Vector2f &size = sf::Vector2f());
 

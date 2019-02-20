@@ -93,7 +93,10 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Console.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Graphics\UI\Widget\ImguiWidget.cpp">
+    <ClCompile Include="Sources\Graphics\UI\Widget\ImGuiWidget.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Graphics\UI\Widget\CustomWidget.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>

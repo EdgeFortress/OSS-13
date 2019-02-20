@@ -6,6 +6,7 @@
 
 class UI;
 class Widget;
+class CustomWidget;
 
 namespace sf {
 	class RenderWindow;
@@ -30,8 +31,8 @@ public:
 protected:
 	UI *ui;
 	std::list<uptr<Widget>> widgets;
-	Widget *curInputWidget;
-	Widget *underCursorWidget;
+	CustomWidget *curInputWidget;
+	CustomWidget *underCursorWidget;
 
     virtual bool SetCurActiveWidget(Widget *);
 };
