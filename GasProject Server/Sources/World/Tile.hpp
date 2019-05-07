@@ -47,6 +47,7 @@ public:
     Map *GetMap() const;
     bool IsDense() const;
     bool IsSpace() const;
+	Locale *GetLocale() const;
 
     const TileInfo GetTileInfo(uint visibility) const;
 

@@ -15,13 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\Shared\Command.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Shared\Command.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\Log.cpp">
@@ -31,6 +36,33 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\Timer.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Sources\main.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\Sources\MovePhysics_Tests.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui_demo.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui_draw.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui_stdlib.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui_widgets.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui-SFML.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,6 +82,9 @@
     <ClInclude Include="Sources\Shared\Global.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\JSON.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
     <ClInclude Include="Sources\Shared\Log.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -65,16 +100,44 @@
     <ClInclude Include="Sources\Shared\TileGrid_Info.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Types.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\Timer.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Sources\Shared\Geometry\Vec2.inl">
+    <ClInclude Include="Sources\Shared\Types.hpp">
       <Filter>Заголовочные файлы</Filter>
-    </None>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imconfig.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imconfig-SFML.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imgui.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imgui_internal.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imgui_stdlib.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imgui-SFML.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imstb_rectpack.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imstb_textedit.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\sfml-imgui\imstb_truetype.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\IFaces\IHasRepeatableID.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

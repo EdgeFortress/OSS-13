@@ -39,6 +39,14 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
             }
             break;
         }
+		case ServerCommand::Code::OVERLAY_UPDATE:
+		{
+			auto command = dynamic_cast<OverlayUpdateServerCommand *>(serverCommand);
+			for (auto &overlayTileInfo : command->overlayInfo) {
+				packet << sf::String(overlayTileInfo.text);
+			}
+			break;
+		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageServerCommand *>(serverCommand);
             packet << c->message;

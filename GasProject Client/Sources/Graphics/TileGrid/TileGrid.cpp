@@ -72,6 +72,15 @@ void TileGrid::draw() const {
         layerObjects.clear(); // clear buffer
     }
 
+	// Thirdly, draw overlay
+	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
+		for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
+			Tile *tile = GetTileAbs(cameraPos + tilePos);
+			if (tile) {
+				tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+			}
+		}
+
 	buffer.display();
 }
 
@@ -404,6 +413,23 @@ void TileGrid::SetControllable(uint id, float speed) {
         return;
     }
 	LOGE << "New controllable wasn't founded" << std::endl;
+}
+
+void TileGrid::UpdateOverlay(sf::Packet packet) {
+	for (uint x = 0; x < numOfVisibleBlocks; x++) {
+		for (uint y = 0; y < numOfVisibleBlocks; y++) {
+			auto block = blocks[y][x];
+			if (block) {
+				for (uint tileX = 0; tileX < blockSize; tileX++)
+					for (uint tileY = 0; tileY < blockSize; tileY++) {
+						Tile *tile = block->GetTile(tileX, tileY);
+						sf::String buffer;
+						packet >> buffer;
+						tile->SetOverlay(buffer);
+					}
+			}
+		}
+	}
 }
 
 Tile *TileGrid::GetTileRel(uf::vec2i rpos) const {

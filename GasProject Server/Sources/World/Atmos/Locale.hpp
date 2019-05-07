@@ -4,13 +4,15 @@
 #include <list>
 #include <SFML/System.hpp>
 
+#include <Shared/Types.hpp>
+#include <Shared/IFaces/IHasRepeatableID.h>
+
 #include "Gases.hpp"
-#include "Shared/Types.hpp"
 
 class Tile;
 class Atmos;
 
-class Locale {
+class Locale : public IHasRepeatableID {
 public:
     explicit Locale(Atmos *, Tile *);
 

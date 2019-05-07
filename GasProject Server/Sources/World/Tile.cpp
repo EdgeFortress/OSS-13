@@ -194,6 +194,10 @@ bool Tile::IsSpace() const {
     return !hasFloor && !fullBlocked;
 }
 
+Locale *Tile::GetLocale() const {
+	return locale;
+}
+
 const TileInfo Tile::GetTileInfo(uint visibility) const {
 	TileInfo tileInfo;
 	tileInfo.sprite = icon.id;

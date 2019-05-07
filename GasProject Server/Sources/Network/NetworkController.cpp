@@ -93,7 +93,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 			}
 
 			if (!secondConnection) {
-				if (Player *player = Server::Get()->Authorization(string(login.toAnsiString()), string(password.toAnsiString()))) {
+				if (Player *player = Server::Get()->Authorization(std::string(login.toAnsiString()), std::string(password.toAnsiString()))) {
 					player->SetConnection(connection);
 					connection->player = sptr<Player>(player);
 					connection->commandsToClient.Push(new AuthSuccessServerCommand());

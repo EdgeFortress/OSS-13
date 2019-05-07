@@ -115,9 +115,9 @@ void Player::Update() {
     if (control->GetOwner()->GetTile() != camera->GetPosition()) camera->SetPosition(control->GetOwner()->GetTile());
 }
 
-void Player::SendGraphicsUpdates() {
+void Player::SendGraphicsUpdates(sf::Time timeElapsed) {
     if (camera) {
-        camera->UpdateView();
+        camera->UpdateView(timeElapsed);
     }
 }
 

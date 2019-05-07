@@ -50,6 +50,7 @@ public:
         void SetCameraPosition(uf::vec2i newPos);
         void SetBlock(uf::vec2i pos, Block *);
         void SetControllable(uint id, float speed);
+		void UpdateOverlay(sf::Packet packet); // TODO: get rid of Network crutch sf::packet and refactor this, when Blocks will be removed
 
     ////
 

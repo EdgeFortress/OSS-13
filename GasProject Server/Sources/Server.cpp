@@ -65,7 +65,7 @@ void Game::update(sf::Time timeElapsed) {
 
         for (wptr<Player> player : players)
             if (sptr<Player> player_s = player.lock())
-                player_s->SendGraphicsUpdates();
+                player_s->SendGraphicsUpdates(timeElapsed);
     }
     SendChatMessages();
 }

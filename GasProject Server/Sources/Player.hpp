@@ -2,12 +2,11 @@
 
 #include <string>
 
-#include "Shared/Types.hpp"
-#include "Shared/ThreadSafeQueue.hpp"
-#include "World/Camera.hpp"
-#include "PlayerCommand.hpp"
+#include <PlayerCommand.hpp>
+#include <World/Camera/Camera.hpp>
 
-using std::string;
+#include <Shared/Types.hpp>
+#include <Shared/ThreadSafeQueue.hpp>
 
 class Server;
 class Game;
@@ -18,16 +17,8 @@ struct ServerCommand;
 class Control;
 
 class Player {
-private:
-    string ckey;
-    //bool connected;
-    Game *game;
-
-    Control *control;
-    uptr<Camera> camera;
-
-	wptr<Connection> connection;
-    uf::ThreadSafeQueue<PlayerCommand *> actions;
+friend NetworkController;
+friend Server;
 
 public:
 	explicit Player(std::string ckey);
@@ -47,9 +38,9 @@ public:
     ///
 
     void Update();
-    void SendGraphicsUpdates();
+    void SendGraphicsUpdates(sf::Time timeElapsed);
 
-    string GetCKey() { return ckey; }
+    std::string GetCKey() { return ckey; }
 
 	void Suspend();
     void SetControl(Control *control);
@@ -62,6 +53,17 @@ public:
 
     void AddCommandToClient(ServerCommand *);
 
-    friend NetworkController;
-    friend Server;
+private:
+	std::string ckey;
+
+	//bool connected;
+	Game *game;
+
+	Control *control;
+	uptr<Camera> camera;
+
+	wptr<Connection> connection;
+	uf::ThreadSafeQueue<PlayerCommand *> actions;
+
+	bool atmosOverlayToggled;
 };

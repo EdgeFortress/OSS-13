@@ -274,11 +274,20 @@ void Connection::parsePacket(Packet &packet) {
             tileGrid->UnlockDrawing();
             break;
         }
+		case ServerCommand::Code::OVERLAY_UPDATE: {
+			GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+			if (!gameProcessUI) break;
+			TileGrid *tileGrid = gameProcessUI->GetTileGrid();
+			tileGrid->LockDrawing();
+			tileGrid->UpdateOverlay(packet);
+			tileGrid->UnlockDrawing();
+			break;
+		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             std::string message;
             packet >> message;
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		if (gameProcessUI) gameProcessUI->Receive(message);
+			GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+			if (gameProcessUI) gameProcessUI->Receive(message);
             break;
         }
     };

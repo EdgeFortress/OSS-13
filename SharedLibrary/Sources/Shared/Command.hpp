@@ -2,6 +2,9 @@
 
 #include <string>
 #include <list>
+#include <vector>
+
+#include <Shared/Network/Protocol/OverlayInfo.h>
 
 #include "Types.hpp"
 
@@ -110,6 +113,7 @@ struct ServerCommand {
 		GAME_JOIN_ERROR,
 
 		GRAPHICS_UPDATE,
+		OVERLAY_UPDATE,
 
 		SEND_CHAT_MESSAGE,
 
@@ -185,6 +189,12 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 	float controllableSpeed;
 
 	GraphicsUpdateServerCommand();
+};
+
+struct OverlayUpdateServerCommand : public ServerCommand {
+	std::vector<OverlayInfo> overlayInfo;
+
+	OverlayUpdateServerCommand();
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {

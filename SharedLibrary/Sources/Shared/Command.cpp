@@ -99,6 +99,10 @@ GraphicsUpdateServerCommand::GraphicsUpdateServerCommand() :
 	ServerCommand(Code::GRAPHICS_UPDATE) 
 	{ }
 
+OverlayUpdateServerCommand::OverlayUpdateServerCommand() :
+	ServerCommand(Code::OVERLAY_UPDATE) 
+{ }
+
 SendChatMessageServerCommand::SendChatMessageServerCommand(std::string &message) : 
 	ServerCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }

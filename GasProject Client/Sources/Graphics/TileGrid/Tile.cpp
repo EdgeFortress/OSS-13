@@ -7,9 +7,14 @@
 #include "Block.hpp"
 #include "Object.hpp"
 
+#include <Graphics/UI/UI.hpp>
+
 Tile::Tile(Block *block, const int x, const int y) :
 	block(block), pos(x, y)
-{ };
+{ 
+	overlay.setFont(CC::Get()->GetUI()->GetFont());
+	overlay.setCharacterSize(10);
+};
 
 Tile::~Tile() {
 	for (auto &object : content) {
@@ -19,6 +24,11 @@ Tile::~Tile() {
 
 void Tile::Draw(sf::RenderTarget *target, uf::vec2i screenPos) const {
 	if (sprite.IsValid()) sprite.Draw(target, screenPos);
+}
+
+void Tile::DrawOverlay(sf::RenderTarget *target, uf::vec2i screenPos) const {
+	overlay.setPosition(screenPos);
+	target->draw(overlay);
 }
 
 void Tile::Update(sf::Time timeElapsed) { 
@@ -69,6 +79,10 @@ void Tile::Clear() {
 	for (auto &obj : content)
 		obj->tile = nullptr;
 	content.clear();
+}
+
+void Tile::SetOverlay(std::string text) {
+	overlay.setString(text);
 }
 
 uf::vec2i Tile::GetRelPos() const { return block->GetRelPos() * block->GetTileGrid()->GetBlockSize() + pos; }

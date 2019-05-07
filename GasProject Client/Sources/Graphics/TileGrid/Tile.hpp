@@ -23,6 +23,7 @@ public:
 	~Tile();
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos) const;
+	void DrawOverlay(sf::RenderTarget *, uf::vec2i windowPos) const;
 	void Update(sf::Time timeElapsed);
     void Resize(uint tileSize);
 
@@ -30,6 +31,8 @@ public:
 	Object *RemoveObject(uint id);
 	Object *RemoveObject(Object *obj);
 	void Clear();
+
+	void SetOverlay(std::string text);
 
 	uf::vec2i GetRelPos() const;
 	Object *GetObject(uint id);
@@ -42,6 +45,7 @@ public:
 private:
     Block *block;
     const uf::vec2i pos;
-    Sprite sprite;
+    ::Sprite sprite;
     std::list<Object *> content;
+	mutable sf::Text overlay;
 };
