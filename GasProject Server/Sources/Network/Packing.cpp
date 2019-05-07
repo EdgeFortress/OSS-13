@@ -1,6 +1,10 @@
 #include "NetworkController.hpp"
-#include "Server.hpp"
-#include "World/World.hpp"
+
+#include <Server.hpp>
+#include <World/World.hpp>
+
+#include <Shared/Network/Archive.h>
+
 #include "Differences.hpp"
 
 using namespace sf;
@@ -43,7 +47,7 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 		{
 			auto command = dynamic_cast<OverlayUpdateServerCommand *>(serverCommand);
 			for (auto &overlayTileInfo : command->overlayInfo) {
-				packet << sf::String(overlayTileInfo.text);
+				overlayTileInfo.Serialize(uf::InputArchive(packet));
 			}
 			break;
 		}

@@ -3,6 +3,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+#include <Shared/Network/Protocol/OverlayInfo.h>
+
 #include "Shared/Global.hpp"
 #include "Shared/Geometry/Vec2.hpp"
 #include "Client.hpp"
@@ -415,7 +417,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 	LOGE << "New controllable wasn't founded" << std::endl;
 }
 
-void TileGrid::UpdateOverlay(sf::Packet packet) {
+void TileGrid::UpdateOverlay(sf::Packet &packet) {
 	for (uint x = 0; x < numOfVisibleBlocks; x++) {
 		for (uint y = 0; y < numOfVisibleBlocks; y++) {
 			auto block = blocks[y][x];
@@ -423,9 +425,9 @@ void TileGrid::UpdateOverlay(sf::Packet packet) {
 				for (uint tileX = 0; tileX < blockSize; tileX++)
 					for (uint tileY = 0; tileY < blockSize; tileY++) {
 						Tile *tile = block->GetTile(tileX, tileY);
-						sf::String buffer;
-						packet >> buffer;
-						tile->SetOverlay(buffer);
+						OverlayInfo overlayInfo;
+						overlayInfo.Serialize(uf::OutputArchive(packet));
+						tile->SetOverlay(overlayInfo.text);
 					}
 			}
 		}

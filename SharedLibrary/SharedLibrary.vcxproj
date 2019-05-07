@@ -32,6 +32,7 @@
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp" />
     <ClCompile Include="Sources\Shared\Log.cpp" />
+    <ClCompile Include="Sources\Shared\Network\Archive.cpp" />
     <ClCompile Include="Sources\Shared\OS.cpp" />
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp" />
     <ClCompile Include="Sources\Shared\Timer.cpp" />
@@ -56,6 +57,8 @@
     <ClInclude Include="Sources\Shared\JSON.hpp" />
     <ClInclude Include="Sources\Shared\Log.hpp" />
     <ClInclude Include="Sources\Shared\Math.hpp" />
+    <ClInclude Include="Sources\Shared\Network\Archive.h" />
+    <ClInclude Include="Sources\Shared\Network\ISerializable.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp" />
