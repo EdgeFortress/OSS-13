@@ -426,7 +426,8 @@ void TileGrid::UpdateOverlay(sf::Packet &packet) {
 					for (uint tileY = 0; tileY < blockSize; tileY++) {
 						Tile *tile = block->GetTile(tileX, tileY);
 						OverlayInfo overlayInfo;
-						overlayInfo.Serialize(uf::OutputArchive(packet));
+						uf::OutputArchive r = uf::OutputArchive(packet);
+						overlayInfo.Serialize(r);
 						tile->SetOverlay(overlayInfo.text);
 					}
 			}

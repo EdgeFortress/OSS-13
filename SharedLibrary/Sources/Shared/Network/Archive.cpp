@@ -46,7 +46,7 @@ InputArchive::InputArchive(sf::Packet &packet) :
 	Archive(packet)
 { }
 
-Archive &InputArchive::pack(std::any &ser) {
+Archive &InputArchive::pack(std::any ser) {
 	return *this << ser;
 }
 
@@ -56,7 +56,7 @@ OutputArchive::OutputArchive(sf::Packet &packet) :
 	Archive(packet)
 { }
 
-Archive &OutputArchive::pack(std::any &ser) {
+Archive &OutputArchive::pack(std::any ser) {
 	return *this >> ser;
 }
 

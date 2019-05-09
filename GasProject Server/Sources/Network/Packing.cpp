@@ -47,7 +47,8 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 		{
 			auto command = dynamic_cast<OverlayUpdateServerCommand *>(serverCommand);
 			for (auto &overlayTileInfo : command->overlayInfo) {
-				overlayTileInfo.Serialize(uf::InputArchive(packet));
+				uf::InputArchive r(packet);
+				overlayTileInfo.Serialize(r);
 			}
 			break;
 		}

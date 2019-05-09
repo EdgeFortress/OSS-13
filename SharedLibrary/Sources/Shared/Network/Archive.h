@@ -21,7 +21,7 @@ public:
 	}
 
 protected:
-	virtual Archive &pack(std::any &ser) = 0;
+	virtual Archive &pack(std::any ser) = 0;
 
 private:
 	Archive &serialize(std::any &ser, bool isOut);
@@ -35,7 +35,7 @@ public:
 	explicit InputArchive(sf::Packet &packet);
 
 protected:
-	Archive &pack(std::any &ser) override;
+	Archive &pack(std::any ser) override;
 };
 
 class OutputArchive : public Archive {
@@ -43,7 +43,7 @@ public:
 	explicit OutputArchive(sf::Packet &packet);
 
 protected:
-	Archive &pack(std::any &ser) override;
+	Archive &pack(std::any ser) override;
 };
 
 }
