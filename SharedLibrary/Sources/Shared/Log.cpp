@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Log.hpp"
 
 namespace uf {
