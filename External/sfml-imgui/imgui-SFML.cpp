@@ -1,5 +1,4 @@
 #include "imgui-SFML.h"
-#include "imconfig-SFML.h"
 #include <imgui.h>
 
 #include <SFML/Config.hpp>

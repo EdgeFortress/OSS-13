@@ -63,6 +63,7 @@ void Player::Update() {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
                     SetControl(game->GetStartControl(this));
+					OpenWindow("DynamicWindow.json");
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
@@ -119,6 +120,10 @@ void Player::SendGraphicsUpdates(sf::Time timeElapsed) {
     if (camera) {
         camera->UpdateView(timeElapsed);
     }
+}
+
+void Player::OpenWindow(const char *layout) {
+	AddCommandToClient(new OpenWindowServerCommand(layout));
 }
 
 void Player::Suspend() {

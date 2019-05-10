@@ -40,6 +40,8 @@ public:
     void Update();
     void SendGraphicsUpdates(sf::Time timeElapsed);
 
+	void OpenWindow(const char *layout);
+
     std::string GetCKey() { return ckey; }
 
 	void Suspend();

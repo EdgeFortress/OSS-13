@@ -28,6 +28,8 @@ public:
     virtual void Update(sf::Time timeElapsed);
     virtual void HandleEvent(sf::Event event);
 
+	void OpenWindow(const char *layout);
+
 protected:
 	UI *ui;
 	std::list<uptr<Widget>> widgets;

@@ -146,10 +146,13 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\ContextMenu.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\CustomWidget.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\DynamicWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\FormattedTextField.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\ImGuiWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\LayoutRenderer.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Graphics\Window.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
     <ClCompile Include="Sources\ResourceManager.cpp" />
@@ -178,10 +181,12 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\ContextMenu.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\CustomWidget.h" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\DynamicWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\FormattedTextField.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\ImGuiWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\LayoutRenderer.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\LogRecordsHolder.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Graphics\Window.hpp" />

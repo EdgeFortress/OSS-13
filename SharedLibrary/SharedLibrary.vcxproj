@@ -40,7 +40,6 @@
     <ClCompile Include="Tests\Sources\MovePhysics_Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\External\sfml-imgui\imconfig-SFML.h" />
     <ClInclude Include="..\External\sfml-imgui\imconfig.h" />
     <ClInclude Include="..\External\sfml-imgui\imgui-SFML.h" />
     <ClInclude Include="..\External\sfml-imgui\imgui.h" />

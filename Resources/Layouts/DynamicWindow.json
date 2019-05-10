@@ -1,0 +1,11 @@
+{
+  "id": "DynamicWindow",
+  "position": [ 200, 200 ],
+  "size": [ 300, 200 ],
+  "content": [
+    {
+      "type": "TextWrapped",
+      "fmt": "Hello! Welcome to the New World! This is a \"Dynamic\" Window, which is really excited to become truly dynamic."
+    }
+  ]
+}

@@ -112,9 +112,6 @@
     <ClInclude Include="..\External\sfml-imgui\imconfig.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\External\sfml-imgui\imconfig-SFML.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="..\External\sfml-imgui\imgui.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>

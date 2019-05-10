@@ -115,6 +115,8 @@ struct ServerCommand {
 		GRAPHICS_UPDATE,
 		OVERLAY_UPDATE,
 
+		OPEN_WINDOW,
+
 		SEND_CHAT_MESSAGE,
 
 		COMMAND_CODE_ERROR
@@ -195,6 +197,12 @@ struct OverlayUpdateServerCommand : public ServerCommand {
 	std::vector<OverlayInfo> overlayInfo;
 
 	OverlayUpdateServerCommand();
+};
+
+struct OpenWindowServerCommand : public ServerCommand {
+	std::string layout;
+
+	OpenWindowServerCommand(const char *layout);
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {

@@ -103,6 +103,11 @@ OverlayUpdateServerCommand::OverlayUpdateServerCommand() :
 	ServerCommand(Code::OVERLAY_UPDATE) 
 { }
 
+OpenWindowServerCommand::OpenWindowServerCommand(const char *layout) :
+	ServerCommand(Code::OPEN_WINDOW),
+	layout(layout)
+{ }
+
 SendChatMessageServerCommand::SendChatMessageServerCommand(std::string &message) : 
 	ServerCommand(Code::SEND_CHAT_MESSAGE), 
 	message(message) { }

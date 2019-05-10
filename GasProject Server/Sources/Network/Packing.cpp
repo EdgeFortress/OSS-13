@@ -51,6 +51,12 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 			}
 			break;
 		}
+		case ServerCommand::Code::OPEN_WINDOW:
+		{
+			auto c = dynamic_cast<OpenWindowServerCommand *>(serverCommand);
+			packet << c->layout;
+			break;
+		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {
             auto c = dynamic_cast<SendChatMessageServerCommand *>(serverCommand);
             packet << c->message;

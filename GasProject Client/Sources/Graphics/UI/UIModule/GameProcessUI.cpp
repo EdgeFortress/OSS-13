@@ -1,5 +1,7 @@
 #include "GameProcessUI.hpp"
 
+#include <memory>
+
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid.hpp"

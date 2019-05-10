@@ -1,3 +1,5 @@
+#include "Network.hpp"
+
 #include <thread>
 #include <string>
 
@@ -8,7 +10,6 @@
 #include "Graphics/UI/UIModule/GameListUI.hpp"
 #include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
-#include "Network.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid.hpp"
@@ -281,6 +282,13 @@ void Connection::parsePacket(Packet &packet) {
 			tileGrid->LockDrawing();
 			tileGrid->UpdateOverlay(packet);
 			tileGrid->UnlockDrawing();
+			break;
+		}
+		case ServerCommand::Code::OPEN_WINDOW: {
+			std::string layout;
+			packet >> layout;
+			UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
+			uiModule->OpenWindow(layout.c_str());
 			break;
 		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {

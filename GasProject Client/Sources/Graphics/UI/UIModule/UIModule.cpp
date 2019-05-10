@@ -2,9 +2,11 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include <plog/Log.h>
 
 #include <Graphics/UI/Widget/Widget.hpp>
 #include <Graphics/UI/Widget/CustomWidget.h>
+#include <Graphics/UI/Widget/DynamicWidget.h>
 
 UIModule::UIModule(UI *ui) : ui(ui) {
 	curInputWidget = nullptr;
@@ -17,8 +19,15 @@ void UIModule::Draw(sf::RenderWindow *renderWindow) {
 }
 
 void UIModule::Update(sf::Time timeElapsed) {
-	for (auto &widget : widgets)
-		widget->Update(timeElapsed);
+	for (auto it = widgets.begin(); it != widgets.end();) {
+		Widget *widget = it->get();
+		if (widget->IsClosed())
+			it = widgets.erase(it);
+		else {
+			widget->Update(timeElapsed);
+			it++;
+		}
+	}
 }
 
 void UIModule::HandleEvent(sf::Event event) {
@@ -112,4 +121,14 @@ bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {
 		}
 	}
     return false;
+}
+
+void UIModule::OpenWindow(const char *layout) {
+	try {
+		auto dynamicWidget = std::make_unique<DynamicWidget>(layout);
+		widgets.push_back(std::move(dynamicWidget));
+	} catch (std::exception e) {
+		LOGE << "DynamicWindow with layout \"" << layout << "\" cannot be open!\n"
+			 << "\tException: " << e.what();
+	}
 }
