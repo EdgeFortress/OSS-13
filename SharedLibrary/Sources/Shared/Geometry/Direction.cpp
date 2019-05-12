@@ -21,6 +21,9 @@ namespace uf {
 		}
 		return Direction::NONE;
 	}
+	Direction VectToDirection(rpos vector) {
+		return VectToDirection(vector.xy());
+	}
 
 	vec2i DirectionToVect(Direction direction) {
 		switch (direction) {

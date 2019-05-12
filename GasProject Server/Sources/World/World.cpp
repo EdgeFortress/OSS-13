@@ -8,7 +8,7 @@
 #include "Player.hpp"
 
 World::World() : 
-	map(new Map(100, 100))
+	map(new Map(100, 100, 3))
 { }
 
 void World::Update(sf::Time timeElapsed) {
@@ -44,30 +44,30 @@ void World::Update(sf::Time timeElapsed) {
 void World::FillingWorld() {
     for (int i = 45; i <= 55; i++) {
         for (int j = 45; j <= 55; j++) {
-			CreateObject<Floor>({ i, j });
+			CreateObject<Floor>({ i, j, 0 });
             if (i == 45 || i == 55 || j == 45 || j == 55) {
                 if (i == 50 || j == 50) {
-					auto airlock = CreateObject<Airlock>({ i, j });
+					auto airlock = CreateObject<Airlock>({ i, j, 0 });
                     if (i == 55 && j == 50 || i == 50 && j == 55)
                         airlock->Lock();
                 }
-                else CreateObject<Wall>({ i, j });
+                else CreateObject<Wall>({ i, j, 0 });
             }
         }
     }
 
-	CreateObject<Taser>({ 50, 50 });
-	CreateObject<Taser>({ 55, 50 });
-	CreateObject<Taser>({ 52, 50 });
-	CreateObject<Uniform>({ 49, 50 });
+	CreateObject<Taser>({ 50, 50, 0 });
+	CreateObject<Taser>({ 55, 50, 0 });
+	CreateObject<Taser>({ 52, 50, 0 });
+	CreateObject<Uniform>({ 49, 50, 0 });
 
     for (int i = 5; i <= 10; i++) {
         for (int j = 5; j <= 10; j++) {
-			CreateObject<Floor>({ i, j });
+			CreateObject<Floor>({ i, j, 0 });
         }
     }
 
-	testMob = CreateObject<Ghost>({ 49, 49 });
+	testMob = CreateObject<Ghost>({ 49, 49, 0 });
 	testMob_lastPosition = nullptr;
 
     test_dx = 1;
@@ -75,7 +75,7 @@ void World::FillingWorld() {
 
     for (int i = 85; i <= 95; i++) {
         for (int j = 85; j <= 95; j++) {
-			CreateObject<Floor>({ i, j });
+			CreateObject<Floor>({ i, j, 0 });
         }
     }
 }
@@ -86,7 +86,7 @@ Creature *World::CreateNewPlayerCreature() {
 	auto uniform = CreateObject<Uniform>();
 	human->PutOn(uniform);
 
-    map->GetTile({ 50, 50 })->PlaceTo(human);
+    map->GetTile({ 50, 50, 0 })->PlaceTo(human);
 
     return human;
 }

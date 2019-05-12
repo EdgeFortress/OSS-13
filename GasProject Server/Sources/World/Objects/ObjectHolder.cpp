@@ -21,6 +21,6 @@ void ObjectHolder::placeTo(Object *obj, Tile *tile) {
 		tile->PlaceTo(obj);
 }
 
-Tile *ObjectHolder::getTile(uf::vec2i coords) {
+Tile *ObjectHolder::getTile(apos coords) {
 	return CurThreadGame->GetWorld()->GetMap()->GetTile(coords);
 }

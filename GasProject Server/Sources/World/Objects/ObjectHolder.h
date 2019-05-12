@@ -15,12 +15,12 @@ public:
 	T *CreateObject(Tile *tile = nullptr, TArgs&&... Args);
 
 	template<typename T, typename... TArgs>
-	T *CreateObject(uf::vec2i tile, TArgs&&... Args);
+	T *CreateObject(apos tile, TArgs&&... Args);
 
 private:
 	uint32_t addObject(Object *);
 	void placeTo(Object *, Tile *);
-	Tile *getTile(uf::vec2i);
+	Tile *getTile(apos);
 
 protected: // TODO: make it private!
 	std::vector<uptr<Object>> objects;
@@ -58,6 +58,6 @@ T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
 }
 
 template<typename T, typename... TArgs>
-T *ObjectHolder::CreateObject(uf::vec2i coords, TArgs&&... Args) {
+T *ObjectHolder::CreateObject(apos coords, TArgs&&... Args) {
 	return CreateObject<T>(getTile(coords), std::forward<TArgs>(Args)...);
 }

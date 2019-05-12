@@ -94,6 +94,7 @@ private:
     float controllableSpeed;
     const sf::Time ACTION_TIMEOUT = sf::milliseconds(100);
     uf::vec2i moveCommand;
+    int moveZCommand;
     sf::Time actionSendPause;
 	sf::Time stun;
 

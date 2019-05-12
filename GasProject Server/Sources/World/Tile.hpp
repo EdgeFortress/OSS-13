@@ -15,16 +15,17 @@ using std::list;
 using std::vector;
 
 class Object;
-class Block;
 class Map;
 class Locale;
 
+struct Diff;
 struct TileInfo;
+struct BlockInfo;
 
 class Tile {
 public:
     friend Locale;
-    Tile(Map *map, uf::vec2i pos);
+    Tile(Map *map, apos pos);
 
     void Update(sf::Time timeElapsed);
 
@@ -42,8 +43,7 @@ public:
     const list<Object *> &Content() const;
     Object *GetDenseObject() const;
 
-    uf::vec2i GetPos() const;
-    Block *GetBlock() const;
+    apos GetPos() const;
     Map *GetMap() const;
     bool IsDense() const;
     bool IsSpace() const;
@@ -51,9 +51,19 @@ public:
 
     const TileInfo GetTileInfo(uint visibility) const;
 
+    void AddDiff(Diff *diff);
+    const list<sptr<Diff>> GetDifferences() const { return differences; }
+    void ClearDiffs();
+
+    int X() const { return pos.x; }
+    int Y() const { return pos.y; }
+    int Z() const { return pos.z; }
+
+    const BlockInfo GetBlockInfo(uint visibility);
+
 private:
     Map *map;
-    uf::vec2i pos;
+    apos pos;
     IconInfo icon;
 
     list<Object *> content;
@@ -69,6 +79,8 @@ private:
     // Partional pressures of gases by index
     vector<pressure> gases;
     pressure totalPressure;
+
+    list<sptr<Diff>> differences;
 
     // Add object to the tile, and change object.tile pointer
     // For moving use MoveTo, for placing PlaceTo

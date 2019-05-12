@@ -10,7 +10,7 @@
 #include <Shared/Global.hpp>
 #include <Shared/TileGrid_Info.hpp>
 
-class Block;
+class Tile;
 class Object;
 
 struct Diff {
@@ -27,11 +27,11 @@ private:
 };
 
 struct ReplaceDiff : public Diff {
-    Block *lastBlock;
+    Tile *lastBlock;
 	ObjectInfo objectInfo;
     int toX, toY, toObjectNum;
 
-	ReplaceDiff(const Object *object, int toX, int toY, Block *lastBlock);
+	ReplaceDiff(const Object *object, int toX, int toY, Tile* lastBlock);
 };
 
 struct AddDiff : public Diff {
@@ -53,9 +53,9 @@ struct MoveIntentDiff : public Diff {
 struct MoveDiff : public Diff {
     uf::Direction direction;
 	float speed;
-    Block *lastblock;
+    Tile *lastblock;
 
-	MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock);
+	MoveDiff(const Object *object, uf::Direction direction, float speed, Tile* lastblock);
 };
 
 struct UpdateIconsDiff : public Diff {

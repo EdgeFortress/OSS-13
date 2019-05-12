@@ -40,6 +40,10 @@ void Player::Move(uf::Direction direction) {
 	actions.Push(new MovePlayerCommand(uf::DirectionToVect(direction)));
 }
 
+void Player::MoveZ(bool up) {
+	actions.Push(new MoveZPlayerCommand(up));
+}
+
 void Player::ClickObject(uint id) {
     actions.Push(new ClickObjectPlayerCommand(id));
 }
@@ -70,6 +74,13 @@ void Player::Update() {
 					if (control) {
 						MovePlayerCommand *moveCommand = dynamic_cast<MovePlayerCommand *>(temp);
 						control->MoveCommand(moveCommand->order);
+					}
+					break;
+				}
+				case PlayerCommand::Code::MOVEZ: {
+					if (control) {
+						MoveZPlayerCommand *moveZCommand = dynamic_cast<MoveZPlayerCommand *>(temp);
+						control->MoveZCommand(moveZCommand->order);
 					}
 					break;
 				}

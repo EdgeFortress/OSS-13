@@ -17,6 +17,6 @@ void Taser::InteractWith(Object *obj) {
 	if (!obj->GetTile() || !GetTile())
 		return;
 
-	uf::vec2f direction = obj->GetTile()->GetPos() - GetTile()->GetPos();
+	uf::vec2f direction = (obj->GetTile()->GetPos() - GetTile()->GetPos()).xy();
 	CurThreadGame->GetWorld()->CreateObject<Projectile>(GetTile(), direction);
 }

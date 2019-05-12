@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Shared/Types.hpp"
-#include "Block.hpp"
+#include "Tile.hpp"
 #include "Atmos/Atmos.hpp"
 
 using std::vector;
@@ -11,25 +11,21 @@ using namespace uf;
 
 class Map {
 public:
-    explicit Map(const uint sizeX, const uint sizeY);
+    explicit Map(const uint sizeX, const uint sizeY, const uint sizeZ);
 
     void ClearDiffs();
     void Update(sf::Time timeElapsed);
 
-    vec2u GetSize() const;
-    int GetNumOfBlocksX() const;
-    int GetNumOfBlocksY() const;
+    apos GetSize() const;
     Atmos *GetAtmos() const;
-    Tile *GetTile(uf::vec2i pos) const;
-    Block *GetBlock(uf::vec2i pos) const;
-    const vector< vector< uptr<Tile>> > &GetTiles() const;
+    Tile *GetTile(apos pos) const;
+    const vector<uptr<Tile>> &GetTiles() const;
 
 private:
-    vec2u size;
-    vec2u numOfBlocks;
+    apos size;
 
     uptr<Atmos> atmos;
 
-    vector< vector<uptr<Tile>> > tiles;
-    vector< vector<uptr<Block>> > blocks;
+    vector<uptr<Tile>> tiles;
+	uint flat_index(const apos c) const;
 };

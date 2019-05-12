@@ -7,7 +7,7 @@
 #include <World/Objects.hpp>
 #include <World/Atmos/Atmos.hpp>
 
-Tile::Tile(Map *map, uf::vec2i pos) :
+Tile::Tile(Map *map, apos pos) :
     map(map), pos(pos),
     hasFloor(false), fullBlocked(false), directionsBlocked(4, false),
     locale(nullptr), needToUpdateLocale(false), gases(int(Gas::Count), 0)
@@ -27,7 +27,7 @@ void Tile::Update(sf::Time timeElapsed) {
         if (hasFloor && !fullBlocked) {
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++) {
-                    Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                    Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                     if (!neighbour ||
                         dx == 0 && dy == 0 ||
                         dx * dy != 0) // diag tiles
@@ -48,7 +48,7 @@ void Tile::Update(sf::Time timeElapsed) {
             if (!hasFloor && !fullBlocked) {
                 for (int dx = -1; dx <= 1; dx++)
                     for (int dy = -1; dy <= 1; dy++) {
-                        Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                        Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                         if (!neighbour ||
                             dx == 0 && dy == 0 ||
                             dx * dy != 0) // diag tiles
@@ -67,7 +67,7 @@ void Tile::Update(sf::Time timeElapsed) {
                 // so we delete them, after that Atmos::Update recreate them
                 for (int dx = -1; dx <= 1; dx++)
                     for (int dy = -1; dy <= 1; dy++) {
-                        Tile *neighbour = map->GetTile(pos + uf::vec2i(dx, dy));
+                        Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                         if (!neighbour ||
                             dx == 0 && dy == 0 ||
                             dx * dy != 0) // diag tiles
@@ -88,7 +88,7 @@ void Tile::CheckLocale() {
 
 bool Tile::RemoveObject(Object *obj) {
     if (removeObject(obj)) {
-        GetBlock()->AddDiff(new RemoveDiff(obj));
+        AddDiff(new RemoveDiff(obj));
         return true;
     }
     return false;
@@ -109,13 +109,13 @@ bool Tile::MoveTo(Object *obj) {
                     return false;
                 }
 
-    Block *lastBlock = obj->GetTile()->GetBlock();
-    uf::vec2i delta = GetPos() - obj->GetTile()->GetPos();
+    Tile *lastTile = obj->GetTile();
+    rpos delta = GetPos() - lastTile->GetPos();
     if (abs(delta.x) > 1 || abs(delta.y) > 1)
         Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
     const uf::Direction direction = uf::VectToDirection(delta);
     addObject(obj);
-    GetBlock()->AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastBlock));
+    AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastTile));
 
     return true;
 }
@@ -125,9 +125,6 @@ void Tile::PlaceTo(Object *obj) {
 		return;
 
     Tile *lastTile = obj->GetTile();
-    Block *lastBlock = nullptr;
-    if (lastTile && !obj->GetHolder()) 
-		lastBlock = lastTile->GetBlock();
 
     // If obj is wall or floor - remove previous and change status
     if (dynamic_cast<Floor *>(obj)) {
@@ -160,7 +157,7 @@ void Tile::PlaceTo(Object *obj) {
     }
 
     addObject(obj);
-    GetBlock()->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, lastBlock));
+    AddDiff(new ReplaceDiff(obj, pos.x, pos.y, lastTile));
 }
 
 const list<Object *> &Tile::Content() const {
@@ -174,12 +171,8 @@ Object *Tile::GetDenseObject() const
     return nullptr;
 }
 
-uf::vec2i Tile::GetPos() const {
+apos Tile::GetPos() const {
     return pos;
-}
-
-Block *Tile::GetBlock() const {
-    return map->GetBlock(pos / Global::BLOCK_SIZE);
 }
 
 Map *Tile::GetMap() const { return map; }
@@ -252,4 +245,22 @@ bool Tile::removeObject(Object *obj) {
         }
     }
     return false;
+}
+
+void Tile::AddDiff(Diff *diff) {
+    differences.push_back(sptr<Diff>(diff));
+}
+
+void Tile::ClearDiffs() {
+    differences.clear();
+}
+
+const BlockInfo Tile::GetBlockInfo(uint visibility) {
+	BlockInfo blockInfo;
+	blockInfo.x = pos.x;
+	blockInfo.y = pos.y;
+
+    blockInfo.tiles.push_back(GetTileInfo(visibility));
+
+	return blockInfo;
 }

@@ -13,6 +13,10 @@ MovePlayerCommand::MovePlayerCommand(uf::vec2i order) :
 	PlayerCommand(Code::MOVE),
 	order(order) { }
 
+MoveZPlayerCommand::MoveZPlayerCommand(bool order) :
+	PlayerCommand(Code::MOVEZ),
+	order(order) { }
+
 ClickObjectPlayerCommand::ClickObjectPlayerCommand(uint id) :
     PlayerCommand(Code::CLICK_OBJECT),
     id(id) { }

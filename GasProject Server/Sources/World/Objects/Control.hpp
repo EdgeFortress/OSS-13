@@ -16,6 +16,7 @@ public:
     void Update(sf::Time timeElapsed) override;
 
     void MoveCommand(uf::vec2i order);
+    void MoveZCommand(bool order);
     void ClickObjectCommand(uint id);
 
     virtual void SetOwner(Object *owner) override;
@@ -29,6 +30,7 @@ private:
 
     // receive from player
 	uf::vec2i moveOrder; 
+	int moveZOrder;
     uint clickedObjectID;
 
 	Player *player;

@@ -19,7 +19,7 @@ void Locale::Update(sf::Time timeElapsed) {
         for (auto tile : tiles) {
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++) {
-                    Tile *neighbour = tile->GetMap()->GetTile({ tile->GetPos().x + dx, tile->GetPos().y + dy });
+                    Tile *neighbour = tile->GetMap()->GetTile({ tile->GetPos().x + dx, tile->GetPos().y + dy, tile->GetPos().z });
                     if (!neighbour ||
                         dx == 0 && dy == 0)
                         continue;

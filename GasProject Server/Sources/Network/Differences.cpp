@@ -17,7 +17,7 @@ bool Diff::CheckVisibility(uint visibility) const {
 }
 Global::DiffType Diff::GetType() const { return diffType; }
 
-ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, Block *lastBlock) :
+ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, Tile *lastBlock) :
 	Diff(object, Global::DiffType::RELOCATE),
 	lastBlock(lastBlock),
 	toX(toX), toY(toY),
@@ -29,7 +29,7 @@ MoveIntentDiff::MoveIntentDiff(const Object *object, uf::Direction direction) :
     direction(direction)
 { }
 
-MoveDiff::MoveDiff(const Object *object, uf::Direction direction, float speed, Block *lastblock) :
+MoveDiff::MoveDiff(const Object *object, uf::Direction direction, float speed, Tile *lastblock) :
 	Diff(object, Global::DiffType::MOVE), 
 	direction(direction), lastblock(lastblock), speed(speed)
 { }

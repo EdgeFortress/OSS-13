@@ -8,6 +8,8 @@
 #include <Shared/Types.hpp>
 #include <Shared/ThreadSafeQueue.hpp>
 
+#include <SFML/System/Time.hpp>
+
 class Server;
 class Game;
 class NetworkController;
@@ -31,6 +33,7 @@ public:
     void ChatMessage(std::string &message);
 
     void Move(uf::Direction);
+    void MoveZ(bool up);
     void ClickObject(uint id);
 	void Drop();
 	void Build();

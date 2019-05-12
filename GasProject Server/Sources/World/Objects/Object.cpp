@@ -49,7 +49,7 @@ void Object::Update(sf::Time timeElapsed) {
 
         if (dx || dy) {
             Tile *tile = GetTile();
-            Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + uf::vec2i(dx, dy));
+            Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(dx, dy, 0));
             if (dest_tile) {
                 dest_tile->MoveTo(this);
             }
@@ -61,7 +61,7 @@ void Object::Update(sf::Time timeElapsed) {
 
 	if (iconsOutdated) {
 		updateIcons();
-		GetTile()->GetBlock()->AddDiff(new UpdateIconsDiff(this, icons));
+		GetTile()->AddDiff(new UpdateIconsDiff(this, icons));
 		iconsOutdated = false;
 	}
 
@@ -121,7 +121,7 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> &
 
 	auto iconInfo = Server::Get()->RM->GetIconInfo(animation);
 
-    GetTile()->GetBlock()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
+    GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
 
 	animationTimer.Start(iconInfo.animation_time, std::forward<std::function<void()>>(callback));
 	return true;
@@ -158,7 +158,7 @@ uint Object::GetLayer() const { return layer; }
 
 void Object::SetMoveIntent(uf::vec2i moveIntent) {
     if (tile) {
-        tile->GetBlock()->AddDiff(new MoveIntentDiff(this, uf::VectToDirection(moveIntent)));
+        tile->AddDiff(new MoveIntentDiff(this, uf::VectToDirection(moveIntent)));
     }
     if (moveIntent.x) this->moveIntent.x = moveIntent.x;
     if (moveIntent.y) this->moveIntent.y = moveIntent.y;
@@ -189,7 +189,7 @@ void Object::SetDirection(uf::Direction direction) {
         direction = uf::Direction(char(direction) % 4);
     this->direction = direction;
 	if (tile)
-		tile->GetBlock()->AddDiff(new ChangeDirectionDiff(this, direction));
+		tile->AddDiff(new ChangeDirectionDiff(this, direction));
 }
 
 //void Object::AddShift(uf::vec2f shift) {

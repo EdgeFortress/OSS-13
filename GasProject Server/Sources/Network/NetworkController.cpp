@@ -142,6 +142,13 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 				connection->player->Move(uf::Direction(direction));
             break;
         }
+        case ClientCommand::Code::MOVEZ: {
+            bool up;
+            packet >> up;
+			if (connection->player)
+				connection->player->MoveZ(up);
+            break;
+        }
         case ClientCommand::Code::CLICK_OBJECT: {
             sf::Int32 id;
             packet >> id;

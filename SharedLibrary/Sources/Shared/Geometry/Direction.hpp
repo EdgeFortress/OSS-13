@@ -3,8 +3,11 @@
 namespace uf {
     template<typename T>
     struct vec2;
+    template<typename T>
+    struct vec3;
 
     typedef vec2<int> vec2i;
+    typedef vec3<int> rpos;
 
 	enum class Direction : char {
 		NONE = -1,
@@ -19,5 +22,6 @@ namespace uf {
 	};
 
 	Direction VectToDirection(vec2i);
+	Direction VectToDirection(rpos);
 	vec2i DirectionToVect(Direction);
 }

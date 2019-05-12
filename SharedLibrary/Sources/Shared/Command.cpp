@@ -35,6 +35,10 @@ MoveClientCommand::MoveClientCommand(uf::Direction direction) :
 	ClientCommand(Code::MOVE), 
 	direction(direction) { }
 
+MoveZClientCommand::MoveZClientCommand(bool up) :
+	ClientCommand(Code::MOVEZ), 
+	up(up) { }
+
 ClickObjectClientCommand::ClickObjectClientCommand(int id) :
     ClientCommand(Code::CLICK_OBJECT),
     id(id) { }

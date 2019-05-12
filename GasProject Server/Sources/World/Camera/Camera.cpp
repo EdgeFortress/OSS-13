@@ -9,25 +9,19 @@
 #include <World/Atmos/AtmosCameraOverlay.h>
 
 #include <Shared/Command.hpp>
+#include <Shared/Array.hpp>
 
 Camera::Camera(const Tile * const tile) :
     tile(nullptr), lasttile(nullptr), suspense(true),
     changeFocus(false),
     unsuspensed(false), cameraMoved(false)
 {
-    // num * size - (2 * pad + fov) >= size
-    // num >= (size + 2 * pad + fov) / size
-    // We need minimal num, so add 1 if not divided
-    visibleBlocksNum = Global::BLOCK_SIZE + Global::FOV + 2 * Global::MIN_PADDING;
-    visibleBlocksNum = visibleBlocksNum / Global::BLOCK_SIZE + (visibleBlocksNum % Global::BLOCK_SIZE ? 1 : 0);
+    visibleTilesSide = Global::FOV + 2 * Global::MIN_PADDING;
+    visibleTilesHeight = Global::Z_FOV | 1;
 
-    visibleBlocks.resize(visibleBlocksNum);
-    for (auto &vect : visibleBlocks)
-        vect.resize(visibleBlocksNum);
+    visibleBlocks.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
-    blocksSync.resize(visibleBlocksNum);
-    for (auto &vect : blocksSync)
-        vect = std::vector<bool>(visibleBlocksNum, false);
+    blocksSync.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
     SetPosition(tile);
 
@@ -44,17 +38,9 @@ void Camera::updateOverlay(sf::Time timeElapsed) {
 	if (overlay->IsShouldBeUpdated(timeElapsed)) {
 		std::vector<OverlayInfo> overlayTileData;
 
-		for (uint x = 0; x < visibleBlocksNum; x++) {
-			for (uint y = 0; y < visibleBlocksNum; y++) {
-				Block *block = visibleBlocks[y][x];
-				if (block) {
-					for (uint tileX = 0; tileX < Global::BLOCK_SIZE; tileX++)
-						for (uint tileY = 0; tileY < Global::BLOCK_SIZE; tileY++) {
-							Tile *tile = block->GetTile(tileX, tileY);
-							overlayTileData.push_back(overlay->GetOverlayInfo(*tile));
-						}
-				}
-			}
+		overlayTileData.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+		for (uint i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
+			overlayTileData.push_back(overlay->GetOverlayInfo(*visibleBlocks[i]));
 		}
 
 		auto command = std::make_unique<OverlayUpdateServerCommand>();
@@ -76,46 +62,48 @@ void Camera::UpdateView(sf::Time timeElapsed) {
         updateOptions |= GraphicsUpdateServerCommand::Option::CAMERA_MOVE;
         command->cameraX = tile->GetPos().x;
         command->cameraY = tile->GetPos().y;
+        //command->cameraZ = tile->GetPos().z;
     }
 
     unsuspensed = cameraMoved = false;
 
-    for (uint x = 0; x < visibleBlocksNum; x++)
-        for (uint y = 0; y < visibleBlocksNum; y++) {
-            Block *block = visibleBlocks[y][x];
-            if (block) {
-                if (blocksSync[y][x]) {
-                    for (auto &diff : block->GetDifferences()) {
-						// Check diff visibility
-						if (!diff->CheckVisibility(seeInvisibleAbility)) continue;
+    for (uint i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
+		Tile *block = visibleBlocks[i];
+		if (block) {
+			if (blocksSync[i]) {
+				for (auto &diff : block->GetDifferences()) {
+					// Check diff visibility
+					if (!diff->CheckVisibility(seeInvisibleAbility)) continue;
 
-                        // If client doesn't know about moved object, we need to add it
-                        if (diff->GetType() == Global::DiffType::RELOCATE) {
-                            ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
-                            Block *lastBlock = replaceDiff->lastBlock;
-                            if (!lastBlock ||
-                                lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleBlocksNum) ||
-                                lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleBlocksNum)) 
-                            {
-                                command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
-                            }
-                        }
-                        //if (diff->GetType() == Global::DiffType::SHIFT) {
-                        //    continue;
-                        //}
-                        command->diffs.push_back(diff);
-                    }
-                } else {
-                    command->blocksInfo.push_back(block->GetBlockInfo(seeInvisibleAbility));
-                    blocksSync[y][x] = true;
-                }
-            }
-        }
+					// If client doesn't know about moved object, we need to add it
+					if (diff->GetType() == Global::DiffType::RELOCATE) {
+						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
+						Tile *lastBlock = replaceDiff->lastBlock;
+						if (!lastBlock ||
+							lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleTilesSide) ||
+							lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleTilesSide) ||
+							lastBlock->Z() < firstBlockZ || lastBlock->Z() >= firstBlockZ + int(visibleTilesHeight)) 
+						{
+							command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
+						}
+					}
+					//if (diff->GetType() == Global::DiffType::SHIFT) {
+					//    continue;
+					//}
+					command->diffs.push_back(diff);
+				}
+			} else {
+				command->blocksInfo.push_back(block->GetBlockInfo(seeInvisibleAbility));
+				blocksSync[i] = true;
+			}
+		}
+	}
 
     if (blockShifted) {
         updateOptions |= GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT;
         command->firstBlockX = firstBlockX;
         command->firstBlockY = firstBlockY;
+        //command->firstBlockZ = firstBlockZ;
         blockShifted = false;
     }
 
@@ -167,26 +155,22 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     }
 
     // Count coords of first visible tile, and block
-    const int firstTileX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
-    const int firstTileY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
-    firstBlockX = firstTileX / Global::BLOCK_SIZE + (firstTileX < 0 ? -1 : 0);
-    firstBlockY = firstTileY / Global::BLOCK_SIZE + (firstTileY < 0 ? -1 : 0);
+    firstBlockX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
+    firstBlockY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
+    firstBlockZ = tile->GetPos().z - Global::Z_FOV / 2;
 
     // Filling our result vector by block pointers
-    int y = firstBlockY;
-    for (auto &vect : visibleBlocks) {
-        int x = firstBlockX;
-        for (auto *&block : vect) {
-            block = tile->GetMap()->GetBlock({ x, y });
-            x++;
-        }
-        y++;
-    }
+    for (uint z = 0; z < visibleTilesHeight; z++) {
+		for (uint y = 0; y < visibleTilesSide; y++) {
+			for (uint x = 0; x < visibleTilesSide; x++) {
+				visibleBlocks[uf::flat_index({x,y,z},visibleTilesSide,visibleTilesSide)] = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
+			}
+		}
+	}
 
     blockShifted = true;
 
-    for (auto &vect : blocksSync)
-        vect = std::vector<bool>(visibleBlocksNum, false);
+    fill(blocksSync.begin(), blocksSync.end(), false);
 }
 
 // Commit shift to Visible Blocks vector, saving seen blocks with their sync param
@@ -202,30 +186,35 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
 
     const int firstVisibleTileX = firstBlockX * Global::BLOCK_SIZE;
     const int firstVisibleTileY = firstBlockY * Global::BLOCK_SIZE;
+    const int firstVisibleTileZ = firstBlockZ;
 
     // Check the necessity of blocks shift
-    if (tile->GetPos().x - firstVisibleTileX < Global::MIN_PADDING + Global::FOV / 2 ||
-        tile->GetPos().y - firstVisibleTileY < Global::MIN_PADDING + Global::FOV / 2 ||
-        firstVisibleTileX + visibleBlocksNum * Global::BLOCK_SIZE - tile->GetPos().x < Global::MIN_PADDING + Global::FOV / 2 ||
-        firstVisibleTileY + visibleBlocksNum * Global::BLOCK_SIZE - tile->GetPos().y < Global::MIN_PADDING + Global::FOV / 2)
+    if (int(tile->GetPos().x - firstVisibleTileX) < Global::MIN_PADDING + Global::FOV / 2 ||
+        int(tile->GetPos().y - firstVisibleTileY) < Global::MIN_PADDING + Global::FOV / 2 ||
+        int(tile->GetPos().z - firstVisibleTileZ) < Global::Z_FOV / 2 ||
+        firstVisibleTileX + visibleTilesSide * Global::BLOCK_SIZE - tile->GetPos().x <= Global::MIN_PADDING + Global::FOV / 2 ||
+        firstVisibleTileY + visibleTilesSide * Global::BLOCK_SIZE - tile->GetPos().y <= Global::MIN_PADDING + Global::FOV / 2 ||
+        firstVisibleTileZ + visibleTilesHeight - tile->GetPos().z <= Global::Z_FOV / 2)
     {
-        const int firstNewTileX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
-        const int firstNewTileY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
-        const int firstNewBlockX = firstNewTileX / Global::BLOCK_SIZE + (firstNewTileX < 0 ? -1 : 0);
-        const int firstNewBlockY = firstNewTileY / Global::BLOCK_SIZE + (firstNewTileY < 0 ? -1 : 0);
+        const int firstNewBlockX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
+        const int firstNewBlockY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
+        const int firstNewBlockZ = tile->GetPos().z - Global::Z_FOV / 2;
 
         const int block_dx = firstNewBlockX - firstBlockX;
         const int block_dy = firstNewBlockY - firstBlockY;
+        const int block_dz = firstNewBlockZ - firstBlockZ;
 
-        std::vector<std::vector<bool>> saved(visibleBlocksNum, std::vector<bool>(visibleBlocksNum, false));
+        std::vector<bool> saved(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
-        for (uint y = 0; y < visibleBlocksNum; y++)
-            for (uint x = 0; x < visibleBlocksNum; x++) {
-                if (x - block_dx >= 0 && x - block_dx < visibleBlocksNum &&
-                    y - block_dy >= 0 && y - block_dy < visibleBlocksNum &&
-                    blocksSync[y][x])
-                    saved[y - block_dy][x - block_dx] = true;
-            }
+        for (uint y = 0; y < visibleTilesSide; y++)
+            for (uint x = 0; x < visibleTilesSide; x++)
+				for (uint z = 0; z < visibleTilesHeight; z++) {
+                if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
+                    y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
+                    z - block_dz >= 0 && z - block_dz < visibleTilesHeight &&
+                    blocksSync[uf::flat_index({x,y,z},visibleTilesSide,visibleTilesSide)])
+                    saved[uf::flat_index({x-block_dx,y-block_dy,z-block_dz},visibleTilesSide,visibleTilesSide)] = true;
+				}
 
         fullRecountVisibleBlocks(tile);
         blocksSync = saved; 

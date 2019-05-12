@@ -27,8 +27,7 @@ TileGrid::TileGrid() :
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided
-    numOfVisibleBlocks = Global::BLOCK_SIZE + Global::FOV + 2 * Global::MIN_PADDING;
-    numOfVisibleBlocks = numOfVisibleBlocks / Global::BLOCK_SIZE + (numOfVisibleBlocks % Global::BLOCK_SIZE ? 1 : 0);
+    numOfVisibleBlocks = Global::FOV + 2 * Global::MIN_PADDING;
 
     // Allocate memory for blocks
     blocks.resize(numOfVisibleBlocks);
@@ -135,11 +134,19 @@ bool TileGrid::HandleEvent(sf::Event event) {
         switch (event.key.code) {
             case sf::Keyboard::Up:
             case sf::Keyboard::W:
-                moveCommand.y = -1;
+                if (event.key.shift) {
+					moveZCommand = 1;
+				} else {
+					moveCommand.y = -1;
+				}
 				return true;
             case sf::Keyboard::Down:
             case sf::Keyboard::S:
-                moveCommand.y = 1;
+                if (event.key.shift) {
+					moveZCommand = -1;
+				} else {
+					moveCommand.y = 1;
+				}
 				return true;
             case sf::Keyboard::Right:
             case sf::Keyboard::D:
@@ -204,6 +211,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			}
 		}
 		moveCommand = sf::Vector2i();
+
+		if (stun == sf::Time::Zero && moveZCommand) {
+			Connection::commandQueue.Push(new MoveZClientCommand(moveZCommand>0));
+		}
+		moveZCommand = 0;
 
         if (stun == sf::Time::Zero && objectClicked && underCursorObject)
 			Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
@@ -420,7 +432,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 void TileGrid::UpdateOverlay(sf::Packet &packet) {
 	for (uint x = 0; x < numOfVisibleBlocks; x++) {
 		for (uint y = 0; y < numOfVisibleBlocks; y++) {
-			auto block = blocks[y][x];
+			auto block = blocks[x][y];
 			if (block) {
 				for (uint tileX = 0; tileX < blockSize; tileX++)
 					for (uint tileY = 0; tileY < blockSize; tileY++) {

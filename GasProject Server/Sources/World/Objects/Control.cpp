@@ -22,10 +22,14 @@ void Control::Update(sf::Time timeElapsed) {
     //// Movement
     ////
 	uf::vec2i order = moveOrder;
+	int zOrder = moveZOrder;
     moveOrder = {};
+    moveZOrder = 0;
 
-	if (auto *creature = dynamic_cast<Creature *>(owner))
+	if (auto *creature = dynamic_cast<Creature *>(owner)) {
 		creature->Move(order);
+		creature->MoveZ(zOrder);
+	}
 
     ////
     //// Click
@@ -42,6 +46,10 @@ void Control::Update(sf::Time timeElapsed) {
 
 void Control::MoveCommand(uf::vec2i order) {
 	moveOrder = order;
+}
+
+void Control::MoveZCommand(bool order) {
+	moveZOrder = order?1:-1;
 }
 
 void Control::ClickObjectCommand(uint id) {

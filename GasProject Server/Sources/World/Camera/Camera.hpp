@@ -9,7 +9,6 @@
 #include "ICameraOverlay.h"
 
 class Tile;
-class Block;
 class Mob;
 class Player;
 struct Diff;
@@ -44,11 +43,13 @@ private:
 	// View information
 	const Tile *tile;
 	const Tile *lasttile;
-	uint visibleBlocksNum;
+	uint visibleTilesSide;
+	uint visibleTilesHeight;
 	int firstBlockX;
 	int firstBlockY;
-	std::vector<std::vector<Block *>> visibleBlocks;
-	std::vector<std::vector<bool>> blocksSync;
+	int firstBlockZ;
+	std::vector<Tile *> visibleBlocks;
+	std::vector<bool> blocksSync;
 
 	bool suspense;
 	bool changeFocus;

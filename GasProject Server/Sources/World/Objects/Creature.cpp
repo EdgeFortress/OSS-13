@@ -41,9 +41,9 @@ void Creature::Move(uf::vec2i order) {
 		if (order.x) moveIntent.x = order.x;
 		if (order.y) moveIntent.y = order.y;
 
-		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + moveIntent);
-		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y });
-		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y });
+		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent,0));
+		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y, tile->GetPos().z });
+		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
 
 		if (GetDensity()) {
 			if (!newTileDiag || newTileDiag->IsDense()) moveIntent = GetMoveIntent();
@@ -62,7 +62,7 @@ bool Creature::TryInteractWith(Object *obj) {
 }
 
 void Creature::Stun() {
-	GetTile()->GetBlock()->AddDiff(new StunnedDiff(this, sf::seconds(3)));
+	GetTile()->AddDiff(new StunnedDiff(this, sf::seconds(3)));
 	stun = sf::seconds(3);
     Server::log << "Creature stunned" << std::endl;
 }

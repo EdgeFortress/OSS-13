@@ -324,6 +324,11 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
             packet << sf::Int8(c->direction);
             break;
         }
+        case ClientCommand::Code::MOVEZ: {
+            auto c = dynamic_cast<MoveZClientCommand *>(command);
+            packet << c->up;
+            break;
+        }
         case ClientCommand::Code::CLICK_OBJECT: {
             auto c = dynamic_cast<ClickObjectClientCommand *>(command);
             packet << sf::Int32(c->id);
