@@ -3,7 +3,7 @@
 #include "World/Tile.hpp"
 #include "World/Objects.hpp"
 
-Projectile::Projectile(uf::vec2f direction) :
+Projectile::Projectile(uf::vec2i direction) :
 	startTile(nullptr)
 {
     name = "Stun Orb";
