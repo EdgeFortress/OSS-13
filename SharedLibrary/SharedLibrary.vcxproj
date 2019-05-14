@@ -34,6 +34,7 @@
     <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp" />
     <ClCompile Include="Sources\Shared\Log.cpp" />
     <ClCompile Include="Sources\Shared\Network\Archive.cpp" />
+    <ClCompile Include="Sources\Shared\Network\ISerializable.cpp" />
     <ClCompile Include="Sources\Shared\OS.cpp" />
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp" />
     <ClCompile Include="Sources\Shared\Timer.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="..\External\sfml-imgui\imstb_truetype.h" />
     <ClInclude Include="Sources\Shared\Array.hpp" />
     <ClInclude Include="Sources\Shared\Command.hpp" />
+    <ClInclude Include="Sources\Shared\CRC32.h" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
@@ -60,6 +62,7 @@
     <ClInclude Include="Sources\Shared\Math.hpp" />
     <ClInclude Include="Sources\Shared\Network\Archive.h" />
     <ClInclude Include="Sources\Shared\Network\ISerializable.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp" />

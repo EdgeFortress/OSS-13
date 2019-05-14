@@ -96,9 +96,6 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\DynamicWidget.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Graphics\UI\Widget\LayoutRenderer.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -201,9 +198,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Graphics\UI\Widget\DynamicWidget.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Graphics\UI\Widget\LayoutRenderer.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

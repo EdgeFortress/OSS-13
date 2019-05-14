@@ -3,28 +3,53 @@
 #include <any>
 #include <SFML/Network/Packet.hpp>
 
+#include <Shared/Types.hpp>
+#include <Shared/Network/ISerializable.h>
+
 namespace uf {
 
 class Archive  {
 public:
 	Archive(sf::Packet &packet);
+	virtual ~Archive() = default;
 
-	Archive &operator<<(std::any &ser);
-	Archive &operator>>(std::any &ser);
-
-	Archive &operator&(std::any &ser) {
-		return pack(ser);
-	}
 	template<class T>
 	Archive &operator&(T &ser) {
-		return pack(std::any(&ser));
+		if constexpr (std::is_base_of_v<ISerializable, T>) {
+			sf::Int32 id; *this >> id; // we know type, so drop excess id
+			reinterpret_cast<uf::ISerializable&>(ser).Serialize(*this);
+		} else {
+			serialize(ser);
+		}
+
+		return *this;
+	}
+
+	template<class T>
+	Archive &operator>>(T &ser) {
+		if (isOut) *this & ser;
+		return *this;
+	}
+
+	template<class T>
+	Archive &operator<<(const T &ser) {
+		if (!isOut) *this & const_cast<T&>(ser);
+		return *this;
+	}
+
+	uptr<ISerializable> UnpackSerializable();
+
+protected:
+	template<class T>
+	void serialize(T &ser) {
+		if (isOut)
+			packet >> ser;
+		else
+			packet << ser;
 	}
 
 protected:
-	virtual Archive &pack(std::any ser) = 0;
-
-private:
-	Archive &serialize(std::any &ser, bool isOut);
+	bool isOut;
 
 private:
 	sf::Packet &packet;
@@ -33,17 +58,11 @@ private:
 class InputArchive : public Archive {
 public:
 	explicit InputArchive(sf::Packet &packet);
-
-protected:
-	Archive &pack(std::any ser) override;
 };
 
 class OutputArchive : public Archive {
 public:
 	explicit OutputArchive(sf::Packet &packet);
-
-protected:
-	Archive &pack(std::any ser) override;
 };
 
 }

@@ -2,62 +2,47 @@
 
 #include "ISerializable.h"
 
+#include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/Network/Protocol/InputData.h>
+
 namespace uf {
 
 // Archive
-
-template<class T>
-void serialize(sf::Packet &packet, T *value, bool isOut) {
-	if (isOut)
-		packet >> *value;
-	else
-		packet << *value;
-}
-
-Archive &Archive::serialize(std::any &ser, bool isOut) {
-	if (auto *pser = std::any_cast<ISerializable *>(&ser))
-		(*pser)->Serialize(*this);
-	else if (auto *pser = std::any_cast<std::string *>(&ser)) {
-		uf::serialize(packet, *pser, isOut);
-	}
-	else if (auto *pser = std::any_cast<int32_t *>(&ser))
-		uf::serialize(packet, *pser, isOut);
-	else 
-		std::exception(); // TODO: add logging
-
-	return *this;
-}
 
 Archive::Archive(sf::Packet &packet) :
 	packet(packet)
 { }
 
-Archive &Archive::operator<<(std::any &ser) {
-	return serialize(ser, false);
+#define DECLARE_SER(name) \
+	case #name##_crc32: { uptr<ISerializable> p = std::make_unique<##name>(); p->Serialize(*this); return p; }
+
+uptr<ISerializable> Archive::UnpackSerializable() {
+	sf::Int32 id;
+	packet >> id;
+
+	switch (id) {
+		DECLARE_SER(OverlayInfo)
+		DECLARE_SER(RadioButtonUIData)
+		default:
+			throw std::exception(); // unknown id
+	}
 }
 
-Archive &Archive::operator>>(std::any &ser) {
-	return serialize(ser, true);
-}
 
 // InputArchive
 
 InputArchive::InputArchive(sf::Packet &packet) :
 	Archive(packet)
-{ }
-
-Archive &InputArchive::pack(std::any ser) {
-	return *this << ser;
+{ 
+	isOut = false;
 }
 
 // OutputArchive
 
 OutputArchive::OutputArchive(sf::Packet &packet) :
 	Archive(packet)
-{ }
-
-Archive &OutputArchive::pack(std::any ser) {
-	return *this >> ser;
+{ 
+	isOut = true;
 }
 
 } // namespace uf

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/Network/Protocol/InputData.h>
 
 #include "Types.hpp"
 
@@ -24,7 +25,9 @@ struct ClientCommand {
 		DROP,
 		SEND_CHAT_MESSAGE,
 		BUILD,
-		GHOST
+		GHOST,
+
+		UI_INPUT
 	};
 
 	virtual Code GetCode() const final;
@@ -103,6 +106,13 @@ struct BuildClientCommand : public ClientCommand {
 
 struct GhostClientCommand : public ClientCommand {
 	GhostClientCommand();
+};
+
+struct UIInputClientCommand : public ClientCommand {
+	std::string handle;
+	uptr<UIData> data;
+
+	UIInputClientCommand(const std::string &handle, uptr<UIData> &data);
 };
 
 
@@ -211,7 +221,7 @@ struct OverlayUpdateServerCommand : public ServerCommand {
 struct OpenWindowServerCommand : public ServerCommand {
 	std::string layout;
 
-	OpenWindowServerCommand(const char *layout);
+	OpenWindowServerCommand(const std::string &layout);
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {

@@ -58,6 +58,12 @@ GhostClientCommand::GhostClientCommand() :
 	ClientCommand(Code::GHOST) { }
 
 
+UIInputClientCommand::UIInputClientCommand(const std::string &handle, uptr<UIData> &data) :
+	ClientCommand(Code::UI_INPUT),
+	handle(handle),
+	data(std::move(data))
+{ }
+
 
 ServerCommand::ServerCommand(Code code) :
 	code(code) { }
@@ -107,7 +113,7 @@ OverlayUpdateServerCommand::OverlayUpdateServerCommand() :
 	ServerCommand(Code::OVERLAY_UPDATE) 
 { }
 
-OpenWindowServerCommand::OpenWindowServerCommand(const char *layout) :
+OpenWindowServerCommand::OpenWindowServerCommand(const std::string &layout) :
 	ServerCommand(Code::OPEN_WINDOW),
 	layout(layout)
 { }
