@@ -39,8 +39,10 @@ void Camera::updateOverlay(sf::Time timeElapsed) {
 		std::vector<OverlayInfo> overlayTileData;
 
 		overlayTileData.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
-		for (uint i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
-			overlayTileData.push_back(overlay->GetOverlayInfo(*visibleBlocks[i]));
+		for (auto &tile: visibleBlocks) {
+			if (tile) {
+				overlayTileData.push_back(overlay->GetOverlayInfo(*tile));
+			}
 		}
 
 		auto command = std::make_unique<OverlayUpdateServerCommand>();
