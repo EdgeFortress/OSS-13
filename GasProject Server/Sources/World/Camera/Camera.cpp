@@ -163,7 +163,7 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     for (uint z = 0; z < visibleTilesHeight; z++) {
 		for (uint y = 0; y < visibleTilesSide; y++) {
 			for (uint x = 0; x < visibleTilesSide; x++) {
-				visibleBlocks[uf::flat_index({x,y,z},visibleTilesSide,visibleTilesSide)] = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
+				visibleBlocks[flat_index({x,y,z})] = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
 			}
 		}
 	}
@@ -212,11 +212,15 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
                 if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
                     y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
                     z - block_dz >= 0 && z - block_dz < visibleTilesHeight &&
-                    blocksSync[uf::flat_index({x,y,z},visibleTilesSide,visibleTilesSide)])
-                    saved[uf::flat_index({x-block_dx,y-block_dy,z-block_dz},visibleTilesSide,visibleTilesSide)] = true;
+                    blocksSync[flat_index({x,y,z})])
+                    saved[flat_index({x-block_dx,y-block_dy,z-block_dz})] = true;
 				}
 
         fullRecountVisibleBlocks(tile);
         blocksSync = saved; 
     }
+}
+
+uint Camera::flat_index (const apos c) const {
+	return uf::flat_index(c,visibleTilesSide,visibleTilesSide);
 }

@@ -63,4 +63,6 @@ private:
 
 	void fullRecountVisibleBlocks(const Tile * const tile);
 	void refreshVisibleBlocks(const Tile * const tile);
+
+	uint flat_index (const apos c) const;
 };
