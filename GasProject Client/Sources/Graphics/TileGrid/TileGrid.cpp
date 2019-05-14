@@ -187,7 +187,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();
 				if (!lastTile)
-					std::exception(); // Where is controllable!?
+					throw std::exception(); // Where is controllable!?
 
 				uf::vec2i moveIntent = controllable->GetMoveIntent();
 				if (moveCommand.x) moveIntent.x = moveCommand.x;
@@ -207,7 +207,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				controllable->SetDirection(uf::VectToDirection(moveIntent));
 			}
 			else {
-				std::exception(); // Controllable is null!?
+				throw std::exception(); // Controllable is null!?
 			}
 		}
 		moveCommand = sf::Vector2i();
