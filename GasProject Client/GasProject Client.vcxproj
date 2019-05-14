@@ -131,7 +131,6 @@
     <ClCompile Include="Sources\Graphics\SpriteFactory.cpp" />
     <ClCompile Include="Sources\Graphics\Texture.cpp" />
     <ClCompile Include="Sources\Graphics\TextureHolder.cpp" />
-    <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />

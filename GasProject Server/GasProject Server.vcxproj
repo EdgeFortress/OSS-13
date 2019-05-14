@@ -125,7 +125,6 @@
     <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
     <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
-    <ClCompile Include="Sources\World\Block.cpp" />
     <ClCompile Include="Sources\World\Camera\Camera.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
     <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp" />

@@ -401,10 +401,10 @@ void TileGrid::ShiftBlocks(apos newFirst) {
 				if (x - delta.x >= 0 && x - delta.x < visibleTilesSide &&
 					y - delta.y >= 0 && y - delta.y < visibleTilesSide &&
 					z - delta.z >= 0 && z - delta.z < visibleTilesHeight) {
-					const uint i = flat_index({x - delta.x,y - delta.y,z - delta.z});
-					newBlocks[i] = blocks[flat_index({x,y,z})];
+					const uint i = flat_index(apos(x, y, z) - delta);
+					newBlocks[i] = blocks[flat_index(apos(x,y,z))];
 					if (newBlocks[i]) {
-						newBlocks[i]->relPos = { x - delta.x, y - delta.y, z - delta.z };
+						newBlocks[i]->relPos = apos(x, y, z) - delta;
 					}
 				}
             }

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources\Graphics\TileGrid\Block.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>

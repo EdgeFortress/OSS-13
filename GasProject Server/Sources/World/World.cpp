@@ -42,8 +42,8 @@ void World::Update(sf::Time timeElapsed) {
 }
 
 void World::FillingWorld() {
-    for (int i = 45; i <= 55; i++) {
-        for (int j = 45; j <= 55; j++) {
+    for (uint i = 45; i <= 55; i++) {
+        for (uint j = 45; j <= 55; j++) {
 			CreateObject<Floor>({ i, j, 0 });
             if (i == 45 || i == 55 || j == 45 || j == 55) {
                 if (i == 50 || j == 50) {
@@ -61,8 +61,8 @@ void World::FillingWorld() {
 	CreateObject<Taser>({ 52, 50, 0 });
 	CreateObject<Uniform>({ 49, 50, 0 });
 
-    for (int i = 5; i <= 10; i++) {
-        for (int j = 5; j <= 10; j++) {
+    for (uint i = 5; i <= 10; i++) {
+        for (uint j = 5; j <= 10; j++) {
 			CreateObject<Floor>({ i, j, 0 });
         }
     }
@@ -73,8 +73,8 @@ void World::FillingWorld() {
     test_dx = 1;
     test_dy = 0;
 
-    for (int i = 85; i <= 95; i++) {
-        for (int j = 85; j <= 95; j++) {
+    for (uint i = 85; i <= 95; i++) {
+        for (uint j = 85; j <= 95; j++) {
 			CreateObject<Floor>({ i, j, 0 });
         }
     }

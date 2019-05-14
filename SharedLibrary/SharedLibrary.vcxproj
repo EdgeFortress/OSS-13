@@ -28,6 +28,7 @@
     <ClCompile Include="..\External\sfml-imgui\imgui_draw.cpp" />
     <ClCompile Include="..\External\sfml-imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\External\sfml-imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Sources\Shared\Array.cpp" />
     <ClCompile Include="Sources\Shared\Command.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="..\External\sfml-imgui\imstb_rectpack.h" />
     <ClInclude Include="..\External\sfml-imgui\imstb_textedit.h" />
     <ClInclude Include="..\External\sfml-imgui\imstb_truetype.h" />
+    <ClInclude Include="Sources\Shared\Array.hpp" />
     <ClInclude Include="Sources\Shared\Command.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />

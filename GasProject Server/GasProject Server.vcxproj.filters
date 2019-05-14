@@ -84,9 +84,6 @@
     <ClCompile Include="Sources\World\Objects\Taser.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\World\Block.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\World\Map.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
