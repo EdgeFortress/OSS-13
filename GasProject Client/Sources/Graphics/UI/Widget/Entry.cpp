@@ -96,6 +96,8 @@ void Entry::deleteSymbol() {
         return;
     moveCursorLeft(entryString[cursorPos]);
     entryString.erase(entryString.begin() + cursorPos);
+	if (hidingSymbols)
+		hidingString.erase(hidingString.begin() + cursorPos);
     text.setString(std::wstring(entryString.c_str() + showPos));
 
     cursorPos--;
