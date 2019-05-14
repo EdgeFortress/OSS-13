@@ -1,10 +1,13 @@
 #include "Player.hpp"
 
+#include <memory>
+
 #include <Server.hpp>
 #include <Network/Connection.hpp>
 #include <World/World.hpp>
 #include <World/Tile.hpp>
 #include <World/Objects.hpp>
+#include <ClientUI/WelcomeWindowSink.h>
 
 #include <Shared/Command.hpp>
 
@@ -58,6 +61,11 @@ void Player::Build() {
 
 void Player::Ghost() {
 	actions.Push(new GhostPlayerCommand());
+}
+
+void Player::UIInput(const std::string &handle, std::unique_ptr<UIData> &&data) {
+	if (uiSinks.size())
+		uiSinks[0]->OnInput(handle, std::forward<std::unique_ptr<UIData>>(data));
 }
 
 void Player::Update() {
@@ -134,7 +142,7 @@ void Player::SendGraphicsUpdates(sf::Time timeElapsed) {
 }
 
 void Player::OpenWindow(const char *layout) {
-	AddCommandToClient(new OpenWindowServerCommand(layout));
+	uiSinks.push_back(std::make_unique<WelcomeWindowSink>(this, layout));
 }
 
 void Player::Suspend() {

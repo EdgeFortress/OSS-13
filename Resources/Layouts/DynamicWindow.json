@@ -6,6 +6,25 @@
     {
       "type": "TextWrapped",
       "fmt": "Hello! Welcome to the New World! This is a \"Dynamic\" Window, which is really excited to become truly dynamic."
+    },
+    {
+      "type": "RadioButton",
+      "label": "Label 1",
+      "radio_button_type": "int",
+      "handle": "AtmosOverlayMode",
+      "value": 1
+    },
+    {
+      "type": "RadioButton",
+      "label": "Label 2",
+      "radio_button_type": "int",
+      "handle": "AtmosOverlayMode",
+      "value": 2
+    },
+    {
+      "type": "Button",
+      "label": "Super Button",
+      "trigger": "Button"
     }
   ]
 }

@@ -1,10 +1,14 @@
+#include "NetworkController.hpp"
+
 #include <SFML/Network.hpp>
 
-#include "NetworkController.hpp"
-#include "Shared/Global.hpp"
+#include <Shared/Global.hpp>
+#include <Shared/Network/Protocol/InputData.h>
+
+#include <Server.hpp>
+#include <Player.hpp>
+
 #include "Connection.hpp"
-#include "Server.hpp"
-#include "Player.hpp"
 
 void NetworkController::working() {
     sf::TcpListener listener;
@@ -185,6 +189,15 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 			return false;
             break;
         }
+		case ClientCommand::Code::UI_INPUT: {
+			if (connection->player) {
+				uf::OutputArchive ar(packet);
+				auto ser =  ar.UnpackSerializable();
+				auto data = std::unique_ptr<UIData>(dynamic_cast<UIData *>(ser.release()));
+				connection->player->UIInput(data->handle, std::move(data));
+			}
+			break;
+		}
         default:
 			if (connection->player)
 				Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;

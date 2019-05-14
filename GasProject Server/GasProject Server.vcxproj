@@ -114,7 +114,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\ClientUI\WelcomeWindowSink.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
+    <ClCompile Include="Sources\ClientUI\WindowSink.cpp" />
     <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
     <ClCompile Include="Sources\Network\Packing.cpp" />
@@ -147,7 +149,9 @@
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
+    <ClInclude Include="Sources\ClientUI\WindowSink.h" />
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Connection.hpp" />
     <ClInclude Include="Sources\Network\Differences.hpp" />

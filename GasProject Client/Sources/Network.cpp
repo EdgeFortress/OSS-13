@@ -339,6 +339,11 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
             packet << c->message;
             break;
         }
+		case ClientCommand::Code::UI_INPUT: {
+			auto c = dynamic_cast<UIInputClientCommand *>(command);
+			auto ar = uf::InputArchive(packet);
+			ar << *c->data;
+		}
     }
     return packet;
 }

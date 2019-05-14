@@ -3,10 +3,12 @@
 #include <string>
 
 #include <PlayerCommand.hpp>
+#include <ClientUI/WindowSink.h>
 #include <World/Camera/Camera.hpp>
 
 #include <Shared/Types.hpp>
 #include <Shared/ThreadSafeQueue.hpp>
+#include <Shared/Network/Protocol/InputData.h>
 
 #include <SFML/System/Time.hpp>
 
@@ -38,6 +40,8 @@ public:
 	void Drop();
 	void Build();
 	void Ghost();
+
+	void UIInput(const std::string &handle, uptr<UIData> &&data);
     ///
 
     void Update();
@@ -71,4 +75,6 @@ private:
 	uf::ThreadSafeQueue<PlayerCommand *> actions;
 
 	bool atmosOverlayToggled;
+
+	std::vector<uptr<WindowSink>> uiSinks;
 };
