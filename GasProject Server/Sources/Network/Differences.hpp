@@ -29,9 +29,9 @@ private:
 struct ReplaceDiff : public Diff {
     Tile *lastBlock;
 	ObjectInfo objectInfo;
-    int toX, toY, toObjectNum;
+    int toX, toY, toZ, toObjectNum;
 
-	ReplaceDiff(const Object *object, int toX, int toY, Tile* lastBlock);
+	ReplaceDiff(const Object *object, int toX, int toY, int toZ, Tile* lastBlock);
 };
 
 struct AddDiff : public Diff {

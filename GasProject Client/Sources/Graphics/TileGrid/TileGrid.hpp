@@ -7,7 +7,7 @@
 
 #include <Shared/Types.hpp>
 #include <Graphics/UI/Widget/CustomWidget.h>
-#include "Block.hpp"
+#include "Tile.hpp"
 
 namespace sf { 
     class Event;
@@ -37,7 +37,7 @@ public:
         // Differences commiting
         void AddObject(Object *object);
         void RemoveObject(uint id);
-        void RelocateObject(uint id, uf::vec2i toVec, int toObjectNum);
+        void RelocateObject(uint id, apos toVec, int toObjectNum);
         void SetMoveIntentObject(uint id, uf::Direction direction);
         void MoveObject(uint id, uf::Direction direction);
 		void UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons);
@@ -45,18 +45,17 @@ public:
 		void ChangeObjectDirection(uint id, uf::Direction direction);
 		void Stunned(uint id, sf::Time duration);
 
-        void ShiftBlocks(uf::vec2i newFirst);
+        void ShiftBlocks(apos newFirst);
 
-        void SetCameraPosition(uf::vec2i newPos);
-        void SetBlock(uf::vec2i pos, Block *);
+        void SetCameraPosition(apos newPos);
+        void SetBlock(apos pos, Tile *);
         void SetControllable(uint id, float speed);
 		void UpdateOverlay(sf::Packet &packet); // TODO: get rid of Network crutch sf::packet and refactor this, when Blocks will be removed
 
     ////
 
-    Tile *GetTileRel(uf::vec2i) const;
-    Tile *GetTileAbs(uf::vec2i) const;
-	int GetBlockSize() const;
+    Tile *GetTileRel(apos) const;
+    Tile *GetTileAbs(apos) const;
 	int GetTileSize() const;
     Object *GetObjectUnderCursor() const;
 
@@ -71,19 +70,19 @@ private:
     int tileSize;
 
     // Camera position
-    uf::vec2i cameraPos;
-    uf::vec2i cameraRelPos;
+    apos cameraPos;
+    apos cameraRelPos;
     uf::vec2f shift;
+    int cameraZ = 0;
 
     // TileGrid padding
     uf::vec2i padding;
 
-    int blockSize;
-    uf::vec2i firstBlock;
-    uf::vec2i firstTile;
-    int numOfVisibleBlocks;
+    apos firstTile;
+    int visibleTilesSide;
+    int visibleTilesHeight;
 
-    std::vector< std::vector< sptr<Block> > > blocks;
+    std::vector< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
 
     mutable std::mutex mutex;
@@ -105,4 +104,6 @@ private:
 	bool dropButtonPressed;
     bool buildButtonPressed;
     bool ghostButtonPressed;
+
+    uint flat_index(const apos c) const;
 };

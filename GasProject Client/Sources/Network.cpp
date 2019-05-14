@@ -138,26 +138,26 @@ void Connection::parsePacket(Packet &packet) {
             packet >> options;
             tileGrid->LockDrawing();
             if (options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
-                Int32 x, y, numOfBlocks;
-                packet >> x >> y >> numOfBlocks;
+                Int32 x, y, z, numOfBlocks;
+                packet >> x >> y >> z >> numOfBlocks;
 
-                tileGrid->ShiftBlocks({ x, y });
+                tileGrid->ShiftBlocks({ x, y, z });
 
                 while (numOfBlocks) {
-                    packet >> x >> y;
-                    Block *block = new Block(tileGrid);
+                    packet >> x >> y >> z;
+                    Tile *block = new Tile(tileGrid);
                     packet >> *(block);
 
-                    tileGrid->SetBlock({ x, y }, block);
+                    tileGrid->SetBlock({ x, y, z }, block);
 
                     numOfBlocks--;
                 }
             }
             if (options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
-                Int32 x, y;
-                packet >> x >> y;
+                Int32 x, y, z;
+                packet >> x >> y >> z;
 
-                tileGrid->SetCameraPosition({ x, y });
+                tileGrid->SetCameraPosition({ x, y, z });
 
             }
             if (options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
@@ -191,10 +191,10 @@ void Connection::parsePacket(Packet &packet) {
                         {
                             Int32 id;
                             packet >> id;
-                            Int32 toX, toY, toObjectNum;
-                            packet >> toX >> toY >> toObjectNum;
+                            Int32 toX, toY, toZ, toObjectNum;
+                            packet >> toX >> toY >> toZ >> toObjectNum;
 
-                            tileGrid->RelocateObject(id, { toX, toY }, toObjectNum);
+                            tileGrid->RelocateObject(id, { toX, toY, toZ }, toObjectNum);
 
                             break;
                         }
@@ -349,20 +349,12 @@ Packet &operator>>(Packet &packet, TileGrid &tileGrid) {
     tileGrid.cameraRelPos.x = xRelPos;
     tileGrid.cameraRelPos.y = yRelPos;
 
-    for (auto &vect : tileGrid.blocks)
-        for (auto &block : vect) {
-            sf::Int32 id;
-            packet >> id;
-            if (id >= 0)
-                packet >> *block;
-        }
-    return packet;
-}
-
-Packet &operator>>(Packet &packet, Block &block) {
-    for (auto &vect : block.tiles)
-        for (auto &tile : vect)
-            packet >> *tile;
+    for (auto &block : tileGrid.blocks) {
+		sf::Int32 id;
+		packet >> id;
+		if (id >= 0)
+			packet >> *block;
+	}
     return packet;
 }
 
@@ -375,7 +367,7 @@ Packet &operator>>(Packet &packet, Tile &tile) {
         sf::Int32 id;
         packet >> id;
 
-        auto &objects = tile.block->GetTileGrid()->objects;
+        auto &objects = tile.GetTileGrid()->objects;
 
         auto iter = objects.find(id);
         if (iter == objects.end()) {

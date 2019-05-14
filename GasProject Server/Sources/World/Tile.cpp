@@ -157,7 +157,7 @@ void Tile::PlaceTo(Object *obj) {
     }
 
     addObject(obj);
-    AddDiff(new ReplaceDiff(obj, pos.x, pos.y, lastTile));
+    AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z, lastTile));
 }
 
 const list<Object *> &Tile::Content() const {
@@ -193,6 +193,9 @@ Locale *Tile::GetLocale() const {
 
 const TileInfo Tile::GetTileInfo(uint visibility) const {
 	TileInfo tileInfo;
+	tileInfo.x = pos.x;
+	tileInfo.y = pos.y;
+	tileInfo.z = pos.z;
 	tileInfo.sprite = icon.id;
 
 	for (auto &obj : this->content) {
@@ -253,14 +256,4 @@ void Tile::AddDiff(Diff *diff) {
 
 void Tile::ClearDiffs() {
     differences.clear();
-}
-
-const BlockInfo Tile::GetBlockInfo(uint visibility) {
-	BlockInfo blockInfo;
-	blockInfo.x = pos.x;
-	blockInfo.y = pos.y;
-
-    blockInfo.tiles.push_back(GetTileInfo(visibility));
-
-	return blockInfo;
 }

@@ -6,17 +6,17 @@
 #include <Shared/Network/Protocol/OverlayInfo.h>
 
 #include "Shared/Global.hpp"
-#include "Shared/Geometry/Vec2.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Network.hpp"
 #include "Graphics/UI/UI.hpp"
 #include "Object.hpp"
 #include "Tile.hpp"
-#include "Block.hpp"
+
+#include "Shared/Array.hpp"
 
 TileGrid::TileGrid() :
-    tileSize(0), blockSize(Global::BLOCK_SIZE), 
+    tileSize(0),
     controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
     underCursorObject(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
@@ -27,11 +27,11 @@ TileGrid::TileGrid() :
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided
-    numOfVisibleBlocks = Global::FOV + 2 * Global::MIN_PADDING;
+    visibleTilesSide = Global::FOV + 2 * Global::MIN_PADDING;
+    visibleTilesHeight = Global::Z_FOV | 1;
 
     // Allocate memory for blocks
-    blocks.resize(numOfVisibleBlocks);
-    for (auto &vect : blocks) vect.resize(numOfVisibleBlocks);
+    blocks.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
 	canBeActive = true;
 
@@ -49,7 +49,7 @@ void TileGrid::draw() const {
     uf::vec2i tilePos; // tiles positions relative to camera
     for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
         for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
-            Tile *tile = GetTileAbs(cameraPos + tilePos);
+            Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
             if (tile) {
                 tile->Draw(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
                 for (auto &obj : tile->content) {
@@ -63,7 +63,10 @@ void TileGrid::draw() const {
 	for (auto &layerObjects : layersBuffer) {
         for (auto &object: layerObjects) {
             Tile *tile = object->GetTile();
-            uf::vec2i pixel = (tile->GetRelPos() - cameraRelPos + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
+            if ((tile->GetRelPos() - cameraRelPos).z != cameraZ) {
+				continue;
+			}
+            uf::vec2i pixel = ((tile->GetRelPos() - cameraRelPos).xy() + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
             object->Draw(&buffer, pixel + padding);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
                 if (!object->PixelTransparent(cursorPosition - pixel))
@@ -76,7 +79,7 @@ void TileGrid::draw() const {
 	// Thirdly, draw overlay
 	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
 		for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
-			Tile *tile = GetTileAbs(cameraPos + tilePos);
+			Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
 			if (tile) {
 				tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
 			}
@@ -92,10 +95,9 @@ void TileGrid::SetSize(const uf::vec2i &size) {
     padding.y = (int(size.y) - tileSize * numOfTiles.y) / 2;
 
     for (auto &object : objects) object.second->Resize(tileSize);
-    for (auto &vect : blocks)
-        for (auto &block : vect) {
-            if (block) block->Resize(tileSize);
-        }
+	for (auto &block : blocks) {
+		if (block) block->Resize(tileSize);
+	}
 
 	CustomWidget::SetSize(uf::vec2i(tileSize) * 15);
 	CustomWidget::SetPosition(padding);
@@ -166,6 +168,11 @@ bool TileGrid::HandleEvent(sf::Event event) {
                 break;
         }
 	}
+    case sf::Event::MouseWheelScrolled: {
+		cameraZ += int(event.mouseWheelScroll.delta) % 2;
+		cameraZ = std::clamp(cameraZ, -Global::Z_FOV/2, Global::Z_FOV/2);
+		return true;
+	}
     default:
         break;
     }
@@ -193,9 +200,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				if (moveCommand.x) moveIntent.x = moveCommand.x;
 				if (moveCommand.y) moveIntent.y = moveCommand.y;
 
-				Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y});
-				Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y});
-				Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + moveIntent);
+				Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y, lastTile->GetRelPos().z});
+				Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y, lastTile->GetRelPos().z});
+				Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + rpos(moveIntent,0));
 
 				if (controllable->IsDense()) {
 					if (!newTileDiag || newTileDiag->IsBlocked()) moveIntent = controllable->GetMoveIntent();
@@ -250,10 +257,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
         }
     }
 
-    for (auto &vect : blocks)
-        for (auto &block : vect) {
-            if (block) block->Update(timeElapsed);
-        }
+	for (auto &block : blocks) {
+		if (block) block->Update(timeElapsed);
+	}
     
 	if (controllable) shift = controllable->GetShift();
 
@@ -292,7 +298,7 @@ void TileGrid::RemoveObject(uint id) {
     LOGE << "Error: object with id " << id << " doesn't exist (TileGrid::RemoveObject)";
 }
 
-void TileGrid::RelocateObject(uint id, uf::vec2i toVec, int toObjectNum) {
+void TileGrid::RelocateObject(uint id, apos toVec, int toObjectNum) {
     Tile *tile = GetTileAbs(toVec);
     if (!tile) {
         LOGE << "Wrong tile absolute coords (" << toVec << ")";
@@ -332,7 +338,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction) {
             LOGE << "Move of unplaced object" << std::endl;
             return;
         }
-        Tile *tile = GetTileRel(lastTile->GetRelPos() + dir);
+        Tile *tile = GetTileRel(lastTile->GetRelPos() + rpos(dir, 0));
         if (!tile) {
             LOGE << "Move to unknown tile" << std::endl;
             return;
@@ -384,20 +390,22 @@ void TileGrid::Stunned(uint id, sf::Time duration) {
 		stun = duration;
 }
 
-void TileGrid::ShiftBlocks(uf::vec2i newFirst) {
-    const uf::vec2i delta = newFirst - firstBlock;
+void TileGrid::ShiftBlocks(apos newFirst) {
+    const rpos delta = newFirst - firstTile;
     
-    std::vector< std::vector< sptr<Block> > > newBlocks(numOfVisibleBlocks);
-    for (auto &vect : newBlocks)
-        vect.resize(numOfVisibleBlocks);
+    std::vector< sptr<Tile> > newBlocks(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
-    for (int y = 0; y < numOfVisibleBlocks; y++) {
-        for (int x = 0; x < numOfVisibleBlocks; x++) {
-            if (x - delta.x >= 0 && x - delta.x < numOfVisibleBlocks &&
-                y - delta.y >= 0 && y - delta.y < numOfVisibleBlocks) {
-                newBlocks[y - delta.y][x - delta.x] = blocks[y][x];
-				if (newBlocks[y - delta.y][x - delta.x]) {
-                    newBlocks[y - delta.y][x - delta.x]->relPos = { x - delta.x, y - delta.y };
+    for (int x = 0; x < visibleTilesSide; x++) {
+        for (int y = 0; y < visibleTilesSide; y++) {
+			for (int z = 0; z < visibleTilesHeight; z++) {
+				if (x - delta.x >= 0 && x - delta.x < visibleTilesSide &&
+					y - delta.y >= 0 && y - delta.y < visibleTilesSide &&
+					z - delta.z >= 0 && z - delta.z < visibleTilesHeight) {
+					const uint i = flat_index({x - delta.x,y - delta.y,z - delta.z});
+					newBlocks[i] = blocks[flat_index({x,y,z})];
+					if (newBlocks[i]) {
+						newBlocks[i]->relPos = { x - delta.x, y - delta.y, z - delta.z };
+					}
 				}
             }
         }
@@ -405,18 +413,17 @@ void TileGrid::ShiftBlocks(uf::vec2i newFirst) {
 
     blocks = std::move(newBlocks);
 
-    firstBlock = newFirst;
-    firstTile = firstBlock * blockSize;
+    firstTile = newFirst;
 }
 
-void TileGrid::SetCameraPosition(uf::vec2i pos) {
+void TileGrid::SetCameraPosition(apos pos) {
     cameraPos = pos;
     cameraRelPos = pos - firstTile;
 }
 
-void TileGrid::SetBlock(uf::vec2i pos, Block *block) {
-    blocks[pos.y - firstBlock.y][pos.x - firstBlock.x].reset(block);
-    block->relPos = pos - firstBlock;
+void TileGrid::SetBlock(apos pos, Tile *block) {
+    blocks[flat_index(pos - firstTile)].reset(block);
+    block->relPos = pos - firstTile;
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
@@ -430,43 +437,32 @@ void TileGrid::SetControllable(uint id, float speed) {
 }
 
 void TileGrid::UpdateOverlay(sf::Packet &packet) {
-	for (uint x = 0; x < numOfVisibleBlocks; x++) {
-		for (uint y = 0; y < numOfVisibleBlocks; y++) {
-			auto block = blocks[x][y];
-			if (block) {
-				for (uint tileX = 0; tileX < blockSize; tileX++)
-					for (uint tileY = 0; tileY < blockSize; tileY++) {
-						Tile *tile = block->GetTile(tileX, tileY);
-						OverlayInfo overlayInfo;
-						uf::OutputArchive r = uf::OutputArchive(packet);
-						overlayInfo.Serialize(r);
-						tile->SetOverlay(overlayInfo.text);
-					}
-			}
+	for (auto tile: blocks) {
+		if (tile) {
+			OverlayInfo overlayInfo;
+			uf::OutputArchive r = uf::OutputArchive(packet);
+			overlayInfo.Serialize(r);
+			tile->SetOverlay(overlayInfo.text);
 		}
 	}
 }
 
-Tile *TileGrid::GetTileRel(uf::vec2i rpos) const {
-    if (rpos >= uf::vec2i(0) && rpos < uf::vec2i(int(blocks.size() * blockSize))) {
-		auto &a = blocks[rpos.y / blockSize];
-        if (!a.size())
-            // Blocks are creating yet
-            return nullptr;
-		Block *block = a[rpos.x / blockSize].get();
-
-        if (block) return block->GetTile(rpos.x % blockSize, rpos.y % blockSize);
+Tile *TileGrid::GetTileRel(apos pos) const {
+    if (pos < apos(visibleTilesSide,visibleTilesSide,visibleTilesHeight)) {
+		return blocks[flat_index(pos)].get();
     }
     return nullptr;
 }
 
-Tile *TileGrid::GetTileAbs(uf::vec2i apos) const {
-    apos -= firstTile;
-    return GetTileRel(apos);
+Tile *TileGrid::GetTileAbs(apos pos) const {
+    return GetTileRel(pos - firstTile);
 }
 
-int TileGrid::GetBlockSize() const { return blockSize; }
 int TileGrid::GetTileSize() const { return tileSize; }
 Object *TileGrid::GetObjectUnderCursor() const { return underCursorObject; }
 //const int TileGrid::GetPaddingX() const { return padding.x; }
 //const int TileGrid::GetPaddingY() const { return padding.y; }
+
+uint TileGrid::flat_index(const apos c) const {
+	return uf::flat_index(c, visibleTilesSide, visibleTilesSide);
+}

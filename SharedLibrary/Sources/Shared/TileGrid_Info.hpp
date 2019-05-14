@@ -18,11 +18,7 @@ struct ObjectInfo {
 };
 
 struct TileInfo {
+	int x, y, z;
     uint sprite;
     std::vector<ObjectInfo> content;
-};
-
-struct BlockInfo {
-    int x, y;
-    std::vector<TileInfo> tiles;
 };

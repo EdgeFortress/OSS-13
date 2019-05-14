@@ -20,7 +20,6 @@ class Locale;
 
 struct Diff;
 struct TileInfo;
-struct BlockInfo;
 
 class Tile {
 public:
@@ -58,8 +57,6 @@ public:
     int X() const { return pos.x; }
     int Y() const { return pos.y; }
     int Z() const { return pos.z; }
-
-    const BlockInfo GetBlockInfo(uint visibility);
 
 private:
     Map *map;

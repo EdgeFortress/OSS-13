@@ -64,7 +64,7 @@ void Camera::UpdateView(sf::Time timeElapsed) {
         updateOptions |= GraphicsUpdateServerCommand::Option::CAMERA_MOVE;
         command->cameraX = tile->GetPos().x;
         command->cameraY = tile->GetPos().y;
-        //command->cameraZ = tile->GetPos().z;
+        command->cameraZ = tile->GetPos().z;
     }
 
     unsuspensed = cameraMoved = false;
@@ -95,7 +95,7 @@ void Camera::UpdateView(sf::Time timeElapsed) {
 					command->diffs.push_back(diff);
 				}
 			} else {
-				command->blocksInfo.push_back(block->GetBlockInfo(seeInvisibleAbility));
+				command->blocksInfo.push_back(block->GetTileInfo(seeInvisibleAbility));
 				blocksSync[i] = true;
 			}
 		}
@@ -105,7 +105,7 @@ void Camera::UpdateView(sf::Time timeElapsed) {
         updateOptions |= GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT;
         command->firstBlockX = firstBlockX;
         command->firstBlockY = firstBlockY;
-        //command->firstBlockZ = firstBlockZ;
+        command->firstBlockZ = firstBlockZ;
         blockShifted = false;
     }
 
@@ -186,16 +186,16 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
         return;
     }
 
-    const int firstVisibleTileX = firstBlockX * Global::BLOCK_SIZE;
-    const int firstVisibleTileY = firstBlockY * Global::BLOCK_SIZE;
+    const int firstVisibleTileX = firstBlockX;
+    const int firstVisibleTileY = firstBlockY;
     const int firstVisibleTileZ = firstBlockZ;
 
     // Check the necessity of blocks shift
     if (int(tile->GetPos().x - firstVisibleTileX) < Global::MIN_PADDING + Global::FOV / 2 ||
         int(tile->GetPos().y - firstVisibleTileY) < Global::MIN_PADDING + Global::FOV / 2 ||
         int(tile->GetPos().z - firstVisibleTileZ) < Global::Z_FOV / 2 ||
-        firstVisibleTileX + visibleTilesSide * Global::BLOCK_SIZE - tile->GetPos().x <= Global::MIN_PADDING + Global::FOV / 2 ||
-        firstVisibleTileY + visibleTilesSide * Global::BLOCK_SIZE - tile->GetPos().y <= Global::MIN_PADDING + Global::FOV / 2 ||
+        firstVisibleTileX + visibleTilesSide - tile->GetPos().x <= Global::MIN_PADDING + Global::FOV / 2 ||
+        firstVisibleTileY + visibleTilesSide - tile->GetPos().y <= Global::MIN_PADDING + Global::FOV / 2 ||
         firstVisibleTileZ + visibleTilesHeight - tile->GetPos().z <= Global::Z_FOV / 2)
     {
         const int firstNewBlockX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;

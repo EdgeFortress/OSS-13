@@ -17,10 +17,10 @@ bool Diff::CheckVisibility(uint visibility) const {
 }
 Global::DiffType Diff::GetType() const { return diffType; }
 
-ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, Tile *lastBlock) :
+ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, int toZ, Tile *lastBlock) :
 	Diff(object, Global::DiffType::RELOCATE),
 	lastBlock(lastBlock),
-	toX(toX), toY(toY),
+	toX(toX), toY(toY), toZ(toZ),
 	objectInfo(object->GetObjectInfo())
 { }
 

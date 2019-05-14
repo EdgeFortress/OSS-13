@@ -24,13 +24,13 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
             GraphicsUpdateServerCommand *command = dynamic_cast<GraphicsUpdateServerCommand *>(serverCommand);
             packet << sf::Int32(command->options);
             if (command->options & GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT) {
-                packet << sf::Int32(command->firstBlockX) << sf::Int32(command->firstBlockY);
+                packet << sf::Int32(command->firstBlockX) << sf::Int32(command->firstBlockY) << sf::Int32(command->firstBlockZ);
                 packet << sf::Int32(command->blocksInfo.size());
                 for (auto &blockInfo : command->blocksInfo)
                     packet << blockInfo;
             }
             if (command->options & GraphicsUpdateServerCommand::Option::CAMERA_MOVE) {
-                packet << sf::Int32(command->cameraX) << sf::Int32(command->cameraY);
+                packet << sf::Int32(command->cameraX) << sf::Int32(command->cameraY) << sf::Int32(command->cameraZ);
             }
             if (command->options & GraphicsUpdateServerCommand::Option::DIFFERENCES) {
                 packet << sf::Int32(command->diffs.size());
@@ -82,7 +82,7 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
         case Global::DiffType::RELOCATE: {
             packet << Int32(diff.id);
             const ReplaceDiff &moveDiff = dynamic_cast<const ReplaceDiff &>(diff);
-            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toObjectNum);
+            packet << Int32(moveDiff.toX) << Int32(moveDiff.toY) << Int32(moveDiff.toZ) << Int32(moveDiff.toObjectNum);
             break;
         }
         case Global::DiffType::ADD: {
@@ -140,14 +140,8 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
     return packet;
 }
 
-Packet &operator<<(Packet &packet, const BlockInfo &blockInfo) {
-    packet << sf::Int32(blockInfo.x) << sf::Int32(blockInfo.y);
-    for (auto &tileInfo : blockInfo.tiles)
-        packet << tileInfo;
-    return packet;
-}
-
 Packet &operator<<(Packet &packet, const TileInfo &tileInfo) {
+    packet << sf::Int32(tileInfo.x) << sf::Int32(tileInfo.y) << sf::Int32(tileInfo.z);
     packet << sf::Int32(tileInfo.content.size()) << sf::Int32(tileInfo.sprite);
     for (auto &objInfo : tileInfo.content) {
         packet << objInfo;

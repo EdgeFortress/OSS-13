@@ -17,7 +17,7 @@ namespace sf {
 
 class Tile {
 public:
-	Tile(Block *block, const int x, const int y);
+	explicit Tile(TileGrid *tileGrid);
 	Tile(const Tile &) = delete;
 	Tile &operator=(const Tile &) = delete;
 	~Tile();
@@ -34,7 +34,7 @@ public:
 
 	void SetOverlay(std::string text);
 
-	uf::vec2i GetRelPos() const;
+	apos GetRelPos() const;
 	Object *GetObject(uint id);
     TileGrid *GetTileGrid();
 	bool IsBlocked();
@@ -43,8 +43,8 @@ public:
 	friend TileGrid;
 
 private:
-    Block *block;
-    const uf::vec2i pos;
+    TileGrid *tileGrid;
+    apos relPos;
     ::Sprite sprite;
     std::list<Object *> content;
 	mutable sf::Text overlay;

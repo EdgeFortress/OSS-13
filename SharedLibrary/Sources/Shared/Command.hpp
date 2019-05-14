@@ -173,7 +173,7 @@ struct GameListServerCommand : public ServerCommand {
 	GameListServerCommand();
 };
 
-struct BlockInfo;
+struct TileInfo;
 struct Diff;
 
 struct GraphicsUpdateServerCommand : public ServerCommand {
@@ -186,14 +186,16 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 	};
 
 	std::list<sptr<Diff>> diffs;
-	std::list<BlockInfo> blocksInfo;
+	std::list<TileInfo> blocksInfo;
 
 	Option options;
 
 	int cameraX;
 	int cameraY;
+	int cameraZ;
 	int firstBlockX;
 	int firstBlockY;
+	int firstBlockZ;
 	int controllable_id;
 	float controllableSpeed;
 

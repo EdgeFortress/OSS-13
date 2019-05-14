@@ -4,13 +4,12 @@
 #include "Graphics/Window.hpp"
 #include "Graphics/Sprite.hpp"
 #include "TileGrid.hpp"
-#include "Block.hpp"
 #include "Object.hpp"
 
 #include <Graphics/UI/UI.hpp>
 
-Tile::Tile(Block *block, const int x, const int y) :
-	block(block), pos(x, y)
+Tile::Tile(TileGrid *tileGrid) :
+	tileGrid(tileGrid), relPos()
 { 
 	overlay.setFont(CC::Get()->GetUI()->GetFont());
 	overlay.setCharacterSize(10);
@@ -85,7 +84,7 @@ void Tile::SetOverlay(std::string text) {
 	overlay.setString(text);
 }
 
-uf::vec2i Tile::GetRelPos() const { return block->GetRelPos() * block->GetTileGrid()->GetBlockSize() + pos; }
+apos Tile::GetRelPos() const { return relPos; }
 
 Object *Tile::GetObject(uint id) {
 	for (auto iter = content.begin(); iter != content.end(); iter++)
@@ -95,7 +94,7 @@ Object *Tile::GetObject(uint id) {
 }
 
 TileGrid *Tile::GetTileGrid() {
-    return block->GetTileGrid();
+    return tileGrid;
 }
 
 bool Tile::IsBlocked() {

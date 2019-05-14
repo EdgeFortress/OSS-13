@@ -31,6 +31,5 @@ public:
 
 sf::Packet &operator<<(sf::Packet &, ServerCommand *);
 sf::Packet &operator<<(sf::Packet &, const Diff &);
-sf::Packet &operator<<(sf::Packet &, const BlockInfo &);
 sf::Packet &operator<<(sf::Packet &, const TileInfo &);
 sf::Packet &operator<<(sf::Packet &, const ObjectInfo &);
