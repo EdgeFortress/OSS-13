@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <Shared/Physics/MovePhysics.hpp>
 
 #include <gtest/gtest.h>

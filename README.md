@@ -13,11 +13,14 @@ Tip: branch 'windows' has latest version checked for compiling with Visual Studi
 1.  For now, only that you need  to compile solution is SFML and you can install it via [vcpkg](https://github.com/Microsoft/vcpkg).
 
 1.1. Install [vcpkg](https://github.com/Microsoft/vcpkg) according their readme. Don't forget to integrate it!
+
 1.2. Install [SFML](https://www.sfml-dev.org/) with next instructions:
 
 ```
 vcpkg install sfml:x64-windows-static
 vcpkg install sfml:x86-windows-static
+vcpkg install gtest:x64-windows-static
+vcpkg install gtest:x86-windows-static
 ```
 
 2. Open GasProject.sln and Build it, all dependencies will pick up automatically.
