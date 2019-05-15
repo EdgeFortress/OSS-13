@@ -22,7 +22,7 @@ void Ghost::MoveZ(int order) {
 	Tile *tile = GetTile();
 	Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(0,0,order));
 	if (dest_tile) {
-		dest_tile->MoveTo(this);
+		dest_tile->PlaceTo(this);
 	}
 }
 
