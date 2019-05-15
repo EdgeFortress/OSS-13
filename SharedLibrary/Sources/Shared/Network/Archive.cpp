@@ -14,7 +14,7 @@ Archive::Archive(sf::Packet &packet) :
 { }
 
 #define DECLARE_SER(name) \
-	case #name##_crc32: { uptr<ISerializable> p = std::make_unique<##name>(); p->Serialize(*this); return p; }
+	case #name##_crc32: { uptr<ISerializable> p = std::make_unique<name>(); p->Serialize(*this); return p; }
 
 uptr<ISerializable> Archive::UnpackSerializable() {
 	sf::Int32 id;

@@ -80,10 +80,10 @@ void DynamicWidget::render() {
 void DynamicWidget::sendUpdates() {
 	for (auto &pair : handles) {
 		if (pair.second.IsChanged()) {
-			auto &data = pair.second.GetInputData();
+			auto &&data = pair.second.GetInputData();
 			data->window = id;
 			data->handle = pair.first;
-			Connection::commandQueue.Push(new UIInputClientCommand(pair.first, std::move(data)));
+			Connection::commandQueue.Push(new UIInputClientCommand(pair.first, data));
 		}
 	}
 	//Connection::commandQueue.Push();

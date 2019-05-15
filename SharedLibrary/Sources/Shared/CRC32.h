@@ -90,7 +90,7 @@ constexpr unsigned int crc32_rec(unsigned int crc, const char *s) {
 				  ^ (crc >> 8), s + 1);
 }
 
-constexpr unsigned int operator "" _crc32(const char *s, size_t len) {
+constexpr unsigned int operator "" _crc32(const char *s, std::size_t len) {
 	return crc32_rec(0xFFFFFFFF, s);
 }
 
