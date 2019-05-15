@@ -4,7 +4,7 @@
 
 class Projectile : public Object {
 protected:
-    Projectile(uf::vec2i direction);
+    Projectile(rpos direction);
 
 public:
     // Object

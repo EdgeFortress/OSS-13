@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <Resources/ResourceManager.hpp>
+#include <Scripts/LuaManager.h>
 
 #include <Shared/Types.hpp>
 #include <Shared/Log.hpp>
@@ -67,6 +68,8 @@ private:
     uptr<std::thread> thread;
     uptr<World> world;
 
+	uptr<LuaManager> lua;
+
     std::list<sptr<Player>> players;
 	std::list<sptr<Player>> disconnectedPlayers;
     std::mutex playersLock;
@@ -86,6 +89,7 @@ public:
 	Control *GetStartControl(Player *);
 
     const uptr<World> &GetWorld() const { return world; }
+    const uptr<LuaManager> &GetLM() const { return lua; }
 
     const int GetID() const;
     Chat *GetChat() { return &chat; }

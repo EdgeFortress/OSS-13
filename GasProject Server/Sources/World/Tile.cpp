@@ -127,10 +127,10 @@ void Tile::PlaceTo(Object *obj) {
     Tile *lastTile = obj->GetTile();
 
     // If obj is wall or floor - remove previous and change status
-    if (dynamic_cast<Floor *>(obj)) {
+    if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Floor") {
         if (hasFloor) {
             for (auto iter = content.begin(); iter != content.end(); iter++) {
-                if (dynamic_cast<Floor *>(*iter)) {
+                if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Floor") {
                     content.erase(iter);
                     break;
                 }
@@ -138,14 +138,14 @@ void Tile::PlaceTo(Object *obj) {
         }
         hasFloor = true;
         CheckLocale();
-    } else if (dynamic_cast<Wall *>(obj)) {
+    } else if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Wall") {
         if (!hasFloor) {
             Server::log << "Warning! Try to place wall without floor" << std::endl;
             return;
         }
         if (fullBlocked) {
             for (auto iter = content.begin(); iter != content.end(); iter++) {
-                if (dynamic_cast<Wall *>(*iter)) {
+                if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Wall") {
                     content.erase(iter);
                     break;
                 }
@@ -235,10 +235,10 @@ void Tile::addObject(Object *obj) {
 bool Tile::removeObject(Object *obj) {
     for (auto iter = content.begin(); iter != content.end(); iter++) {
         if (*iter == obj) {
-            if (dynamic_cast<Floor *>(obj)) {
+            if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Floor") {
                 hasFloor = false;
                 CheckLocale();
-            } else if (dynamic_cast<Wall *>(obj)) {
+            } else if (dynamic_cast<LuaObject *>(obj) && dynamic_cast<LuaObject *>(obj)->GetType() == "Wall") {
                 fullBlocked = false;
                 CheckLocale();
             }

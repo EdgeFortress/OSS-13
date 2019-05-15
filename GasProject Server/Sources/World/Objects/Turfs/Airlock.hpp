@@ -1,10 +1,10 @@
 #pragma once
 
-#include <World/Objects/Turfs/Turf.hpp>
+#include <World/Objects/Object.hpp>
 
 #include <Shared/Timer.h>
 
-class Airlock : public Turf {
+class Airlock : public Object {
 protected:
     Airlock();
 

@@ -3,14 +3,14 @@
 #include "World/Tile.hpp"
 #include "World/Objects.hpp"
 
-Projectile::Projectile(uf::vec2i direction) :
+Projectile::Projectile(rpos direction) :
 	startTile(nullptr)
 {
     name = "Stun Orb";
     sprite = "stunorb";
     density = false;
     layer = 100;
-    SetConstSpeed(direction.normalize() * speed);
+    SetConstSpeed(uf::vec2f(direction.x, direction.y).normalize() * speed);
 }
 
 void Projectile::AfterCreation() {

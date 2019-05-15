@@ -12,10 +12,12 @@ Airlock::Airlock() {
     density = true;
     opened = false;
     locked = false;
+    layer = 25;
+    movable = false;
 }
 
 void Airlock::Update(sf::Time timeElapsed) {
-	Turf::Update(timeElapsed);
+	Object::Update(timeElapsed);
 	closeTimer.Update(timeElapsed);
 }
 

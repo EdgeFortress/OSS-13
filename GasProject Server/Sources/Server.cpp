@@ -29,6 +29,7 @@ Game::Game(string title, int id) : title(title),
 void Game::gameProcess() {
     CurThreadGame = this;
     world.reset(new World());
+    lua.reset(new LuaManager());
     world->FillingWorld();
     Clock clock;
     while (active) {

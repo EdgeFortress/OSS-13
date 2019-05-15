@@ -1,0 +1,9 @@
+{
+    "title": "lua",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "luna"
+        }
+    ]
+}

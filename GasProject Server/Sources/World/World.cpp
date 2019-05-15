@@ -6,6 +6,7 @@
 #include "Objects.hpp"
 #include "Objects/Control.hpp"
 #include "Player.hpp"
+#include "Scripts/LuaObject.h"
 
 World::World() : 
 	map(new Map(100, 100, 3))
@@ -44,26 +45,26 @@ void World::Update(sf::Time timeElapsed) {
 void World::FillingWorld() {
     for (uint i = 45; i <= 55; i++) {
         for (uint j = 45; j <= 55; j++) {
-			CreateObject<Floor>({ i, j, 0 });
+			CreateObject<LuaObject>({ i, j, 0 }, "Floor");
             if (i == 45 || i == 55 || j == 45 || j == 55) {
                 if (i == 50 || j == 50) {
 					auto airlock = CreateObject<Airlock>({ i, j, 0 });
                     if (i == 55 && j == 50 || i == 50 && j == 55)
                         airlock->Lock();
                 }
-                else CreateObject<Wall>({ i, j, 0 });
+                else CreateObject<LuaObject>({ i, j, 0 }, "Wall");
             }
         }
     }
 
-	CreateObject<Taser>({ 50, 50, 0 });
-	CreateObject<Taser>({ 55, 50, 0 });
-	CreateObject<Taser>({ 52, 50, 0 });
-	CreateObject<Uniform>({ 49, 50, 0 });
+	CreateObject<LuaObject>({ 50, 50, 0 }, "Taser");
+	CreateObject<LuaObject>({ 55, 50, 0 }, "Taser");
+	CreateObject<LuaObject>({ 52, 50, 0 }, "Taser");
+	CreateObject<LuaObject>({ 49, 50, 0 }, "Uniform");
 
     for (uint i = 5; i <= 10; i++) {
         for (uint j = 5; j <= 10; j++) {
-			CreateObject<Floor>({ i, j, 0 });
+			CreateObject<LuaObject>({ i, j, 0 }, "Floor");
         }
     }
 
@@ -75,7 +76,7 @@ void World::FillingWorld() {
 
     for (uint i = 85; i <= 95; i++) {
         for (uint j = 85; j <= 95; j++) {
-			CreateObject<Floor>({ i, j, 0 });
+			CreateObject<LuaObject>({ i, j, 0 }, "Floor");
         }
     }
 }
@@ -83,7 +84,7 @@ void World::FillingWorld() {
 Creature *World::CreateNewPlayerCreature() {
 	auto human = CreateObject<Human>();
 
-	auto uniform = CreateObject<Uniform>();
+	auto uniform = CreateObject<LuaObject>(nullptr, "Uniform");
 	human->PutOn(uniform);
 
     map->GetTile({ 50, 50, 0 })->PlaceTo(human);

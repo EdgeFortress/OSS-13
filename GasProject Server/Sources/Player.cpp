@@ -109,7 +109,7 @@ void Player::Update() {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();
 					if (tile)
-						CurThreadGame->GetWorld()->CreateObject<Wall>(tile);
+						CurThreadGame->GetWorld()->CreateObject<LuaObject>(tile, "Wall");
 					break;
 				}
 				case PlayerCommand::Code::GHOST: {
