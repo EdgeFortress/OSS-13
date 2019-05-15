@@ -169,8 +169,10 @@ bool TileGrid::HandleEvent(sf::Event event) {
         }
 	}
     case sf::Event::MouseWheelScrolled: {
-		cameraZ += int(event.mouseWheelScroll.delta) % 2;
-		cameraZ = std::clamp(cameraZ, -Global::Z_FOV/2, Global::Z_FOV/2);
+		int newCameraZ = cameraZ + int(event.mouseWheelScroll.delta) % 2;
+		if (GetTileRel(cameraRelPos+rpos(0,0,newCameraZ))) {
+			cameraZ = newCameraZ;
+		}
 		return true;
 	}
     default:
@@ -419,6 +421,9 @@ void TileGrid::ShiftBlocks(apos newFirst) {
 void TileGrid::SetCameraPosition(apos pos) {
     cameraPos = pos;
     cameraRelPos = pos - firstTile;
+    while (cameraZ && !GetTileRel(cameraRelPos+rpos(0,0,cameraZ))) {
+		cameraZ -= cameraZ > 0 ? 1 : -1;
+	}
 }
 
 void TileGrid::SetBlock(apos pos, Tile *block) {
