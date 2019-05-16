@@ -69,7 +69,7 @@ void TileGrid::draw() const {
             if ((tile->GetRelPos() - cameraRelPos).z != cameraZ) {
 				continue;
 			}
-            uf::vec2i pixel = ((tile->GetRelPos() - cameraRelPos).xy() + uf::vec2i(Global::FOV / 2) - shift) * tileSize;
+            uf::vec2i pixel = (uf::vec2i(Global::FOV / 2) + (tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
             object->Draw(&buffer, pixel + padding);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
                 if (!object->PixelTransparent(cursorPosition - pixel))
