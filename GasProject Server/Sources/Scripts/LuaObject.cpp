@@ -28,10 +28,17 @@ std::string LuaObject::GetType()
 
 void LuaObject::Register(sol::state &state)
 {
-	state.new_usertype<LuaObject>("_object",sol::call_constructor,sol::factories([](sol::table t)
-	{
-		return CurThreadGame->GetWorld()->CreateObject<LuaObject>(nullptr, t);
-	}),"name",&LuaObject::name,"instance",&LuaObject::instance,"sprite",&LuaObject::sprite,
-	"GetTile",&LuaObject::GetTile,"slot",&LuaObject::slot,"layer",&LuaObject::layer,
-	"movable",&LuaObject::movable,"density",&LuaObject::density);
+	state.new_usertype<LuaObject>(
+		"_object", sol::call_constructor, sol::factories([](sol::table t)
+		{
+			return CurThreadGame->GetWorld()->CreateObject<LuaObject>(nullptr, t);
+		}),
+		"name",     &LuaObject::name,
+		"instance", &LuaObject::instance,
+		"sprite",   &LuaObject::sprite,
+		"GetTile",  &LuaObject::GetTile,
+		"slot",     &LuaObject::slot,
+		"layer",    &LuaObject::layer,
+		"movable",  &LuaObject::movable,
+		"density",  &LuaObject::density);
 }
