@@ -22,7 +22,7 @@ public:
 
 // ICameraOverlay
 	bool IsShouldBeUpdated(sf::Time timeElapsed) const override;
-	OverlayInfo GetOverlayInfo(Tile tile) const override;
+	network::protocol::OverlayInfo GetOverlayInfo(Tile tile) const override;
 
 private:
 	mutable sf::Time timeAfterLastUpdate;

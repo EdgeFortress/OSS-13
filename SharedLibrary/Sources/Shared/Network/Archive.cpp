@@ -2,10 +2,12 @@
 
 #include "ISerializable.h"
 
+#include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/OverlayInfo.h>
 #include <Shared/Network/Protocol/InputData.h>
 
-namespace uf {
+using namespace uf;
+using namespace network::protocol;
 
 // Archive
 
@@ -23,6 +25,24 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 	switch (id) {
 		DECLARE_SER(OverlayInfo)
 		DECLARE_SER(RadioButtonUIData)
+
+		// Client Commands
+		DECLARE_SER(AuthorizationClientCommand)
+		DECLARE_SER(RegistrationClientCommand)
+		DECLARE_SER(GamelistRequestClientCommand)
+		DECLARE_SER(CreateGameClientCommand)
+		DECLARE_SER(JoinGameClientCommand)
+		DECLARE_SER(MoveClientCommand)
+		DECLARE_SER(MoveZClientCommand)
+		DECLARE_SER(ClickObjectClientCommand)
+		DECLARE_SER(DropClientCommand)
+		DECLARE_SER(SendChatMessageClientCommand)
+		DECLARE_SER(BuildClientCommand)
+		DECLARE_SER(GhostClientCommand)
+		DECLARE_SER(UIInputClientCommand)
+		DECLARE_SER(CallVerbClientCommand)
+		DECLARE_SER(DisconnectionClientCommand)
+
 		default:
 			throw std::exception(); // unknown id
 	}
@@ -44,5 +64,3 @@ OutputArchive::OutputArchive(sf::Packet &packet) :
 { 
 	isOut = true;
 }
-
-} // namespace uf

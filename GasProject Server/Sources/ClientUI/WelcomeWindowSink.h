@@ -7,5 +7,5 @@ public:
 	WelcomeWindowSink(Player *player);
 
 	void OnTrigger(const std::string &trigger) override;
-	void OnInput(const std::string &input, uptr<UIData> &&data) override;
+	void OnInput(const std::string &input, uptr<network::protocol::UIData> &&data) override;
 };

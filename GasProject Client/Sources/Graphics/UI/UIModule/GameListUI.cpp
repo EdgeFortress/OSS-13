@@ -1,5 +1,9 @@
 #include "GameListUI.hpp"
 
+#include <SFML/Graphics.hpp>
+
+#include <Shared/Network/Protocol/ClientCommand.h>
+
 #include "../UI.hpp"
 #include "Network.hpp"
 #include "../Widget/Label.hpp"
@@ -7,7 +11,7 @@
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 
-#include <SFML/Graphics.hpp>
+using namespace network::protocol;
 
 GameListUI::GameListUI(UI *ui) : UIModule(ui) {
     lastGamePos = 0;
@@ -104,7 +108,7 @@ void GameListUI::generateGamelistWindow() {
 
 void GameListUI::update() {
 	waitingNewGames = true;
-    Connection::commandQueue.Push(new GameListClientRequest());
+    Connection::commandQueue.Push(new GamelistRequestClientCommand());
 }
 
 GameRow::GameRow(int id, string title, int num_of_players) :
@@ -113,6 +117,8 @@ GameRow::GameRow(int id, string title, int num_of_players) :
 { }
 
 void GameRow::join() const {
-    Connection::commandQueue.Push(new JoinGameClientCommand(id));
+	auto *p = new JoinGameClientCommand();
+	p->id = id;
+    Connection::commandQueue.Push(p);
 	CC::Get()->GetWindow()->GetUI()->ChangeModule<GameProcessUI>();
 }

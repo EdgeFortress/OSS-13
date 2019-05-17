@@ -7,11 +7,12 @@
 
 #include <Shared/JSON.hpp>
 #include <Shared/Geometry/Vec2.hpp>
-#include <Shared/Command.hpp>
+#include <Shared/Network/Protocol/ClientCommand.h>
 
 #include <Network.hpp>
 
 using json = nlohmann::json;
+using namespace network::protocol;
 
 namespace uf
 {
@@ -83,7 +84,10 @@ void DynamicWidget::sendUpdates() {
 			auto &&data = pair.second.GetInputData();
 			data->window = id;
 			data->handle = pair.first;
-			Connection::commandQueue.Push(new UIInputClientCommand(pair.first, data));
+			auto *p = new UIInputClientCommand();
+			p->handle = pair.first;
+			p->data = std::move(data);
+			Connection::commandQueue.Push(p);
 		}
 	}
 	//Connection::commandQueue.Push();

@@ -14,7 +14,7 @@ namespace uf {
 		void Push(T t);
 		T Pop();
 		bool Empty();
-		uint GetSize();
+		uint32_t GetSize();
 	};
 
 	template<class T>
@@ -41,7 +41,7 @@ namespace uf {
 	}
 
 	template<class T>
-	uint ThreadSafeQueue<T>::GetSize() {
+	uint32_t ThreadSafeQueue<T>::GetSize() {
 		std::scoped_lock lock(mutex);
 		return static_cast<uint>(queue.size());
 	}

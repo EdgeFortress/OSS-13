@@ -22,6 +22,8 @@ bool AtmosCameraOverlay::IsShouldBeUpdated(sf::Time timeElapsed) const {
 	return false;
 }
 
+using namespace network::protocol;
+
 OverlayInfo AtmosCameraOverlay::GetOverlayInfo(Tile tile) const {
 	OverlayInfo result;
 

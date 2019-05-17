@@ -5,6 +5,9 @@
 #include <Shared/Network/ISerializable.h>
 #include <Shared/Network/Archive.h>
 
+namespace network {
+namespace protocol {
+
 struct OverlayInfo : public uf::ISerializable {
 	DEFINE_SERID("OverlayInfo"_crc32)
 
@@ -16,4 +19,5 @@ struct OverlayInfo : public uf::ISerializable {
 	}
 };
 
-
+} // namespace protocol
+} // namespace network

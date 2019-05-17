@@ -36,8 +36,8 @@ public:
 		return isChanged;
 	}
 
-	uptr<UIData> GetInputData() {
-		auto res = std::make_unique<RadioButtonUIData>();
+	uptr<network::protocol::UIData> GetInputData() {
+		auto res = std::make_unique<network::protocol::RadioButtonUIData>();
 		res->data = std::any_cast<int>(uiData);
 		isChanged = false;
 		return res;

@@ -2,10 +2,8 @@
 
 #include "Archive.h"
 
-namespace uf {
+using namespace uf;
 
 void ISerializable::Serialize(Archive &archive) {
 	archive << sf::Int32(Id());
 }
-
-} // namespace uf

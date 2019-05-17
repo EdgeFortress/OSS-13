@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <typeinfo>
 
+#include <Shared/Network/Protocol/ClientCommand.h>
+
 #include "Graphics/UI/UI.hpp"
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
@@ -11,6 +13,8 @@
 #include "Graphics/UI/Widget/Label.hpp"
 #include "Graphics/UI/Widget/Button.hpp"
 #include "Graphics/UI/Widget/Entry.hpp"
+
+using namespace network::protocol;
 
 AuthUI::AuthUI(UI *ui) : UIModule(ui) {
     comState = ComState::NOTHING;
@@ -164,7 +168,10 @@ void AuthUI::closeReg() {
 
 void AuthUI::login() {
     if (comState == ComState::NOTHING) {
-        Connection::commandQueue.Push(new AuthorizationClientCommand(my_login_entry->GetText(), my_passw_entry->GetText()));
+		auto *p = new AuthorizationClientCommand();
+		p->login = my_login_entry->GetText();
+		p->password = my_passw_entry->GetText();
+        Connection::commandQueue.Push(p);
         comState = ComState::LOGIN;
     }
     else
@@ -173,7 +180,10 @@ void AuthUI::login() {
 
 void AuthUI::registration() {
     if (comState == ComState::NOTHING) {
-        Connection::commandQueue.Push(new RegistrationClientCommand(my_new_login_entry->GetText(), my_new_passw_entry->GetText()));
+		auto *p = new RegistrationClientCommand();
+		p->login = my_login_entry->GetText();
+		p->password = my_passw_entry->GetText();
+        Connection::commandQueue.Push(p);
         comState = ComState::REGISTRATION;
     }
     else

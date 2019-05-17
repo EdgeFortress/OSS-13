@@ -2,6 +2,7 @@
 
 #include <thread>
 #include <string>
+#include <memory>
 
 #include <SFML/Network.hpp>
 
@@ -14,8 +15,11 @@
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid.hpp"
 
+#include <Shared/Command.hpp>
+
 using namespace std;
 using namespace sf;
+using namespace network::protocol;
 
 bool Connection::Start(string ip, int port) {
     status = Status::WAITING;
@@ -68,8 +72,9 @@ void Connection::session() {
 void Connection::sendCommands() {
     while (!commandQueue.Empty()) {
         sf::Packet packet;
+		uf::InputArchive ar(packet);
         ClientCommand *temp = commandQueue.Pop();
-        packet << temp;
+        ar << *temp;
         if (temp) delete temp;
         while (socket.send(packet) == sf::Socket::Partial);
     }
@@ -299,59 +304,6 @@ void Connection::parsePacket(Packet &packet) {
             break;
         }
     };
-}
-
-Packet &operator<<(Packet &packet, ClientCommand *command) {
-    packet << Int32(command->GetCode());
-    switch (command->GetCode()) {
-        case ClientCommand::Code::AUTH_REQ: {
-            auto c = dynamic_cast<AuthorizationClientCommand *>(command);
-            packet << String(c->login) << String(c->password);
-            break;
-        }
-        case ClientCommand::Code::REG_REQ: {
-            auto c = dynamic_cast<RegistrationClientCommand *>(command);
-            packet << String(c->login) << String(c->password);
-            break;
-        }
-        case ClientCommand::Code::JOIN_GAME: {
-            auto c = dynamic_cast<JoinGameClientCommand *>(command);
-            packet << Int32(c->id);
-            break;
-        }
-        case ClientCommand::Code::MOVE: {
-            auto c = dynamic_cast<MoveClientCommand *>(command);
-            packet << sf::Int8(c->direction);
-            break;
-        }
-        case ClientCommand::Code::MOVEZ: {
-            auto c = dynamic_cast<MoveZClientCommand *>(command);
-            packet << c->up;
-            break;
-        }
-        case ClientCommand::Code::CLICK_OBJECT: {
-            auto c = dynamic_cast<ClickObjectClientCommand *>(command);
-            packet << sf::Int32(c->id);
-            break;
-        }
-        case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-            auto c = dynamic_cast<SendChatMessageClientCommand *>(command);
-            packet << c->message;
-            break;
-        }
-		case ClientCommand::Code::UI_INPUT: {
-			auto c = dynamic_cast<UIInputClientCommand *>(command);
-			auto ar = uf::InputArchive(packet);
-			ar << *c->data;
-			break;
-		}
-		case ClientCommand::Code::CALL_VERB: {
-			auto c = dynamic_cast<CallVerbClientCommand *>(command);
-			packet << c->verb;
-			break;
-		}
-    }
-    return packet;
 }
 
 Packet &operator>>(Packet &packet, TileGrid &tileGrid) {

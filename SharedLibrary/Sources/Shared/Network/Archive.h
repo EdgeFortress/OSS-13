@@ -6,6 +6,8 @@
 #include <Shared/Types.hpp>
 #include <Shared/Network/ISerializable.h>
 
+#include "PacketConverters.h"
+
 namespace uf {
 
 class Archive  {
@@ -38,6 +40,7 @@ public:
 	}
 
 	uptr<ISerializable> UnpackSerializable();
+	bool IsOutput() { return isOut; }
 
 protected:
 	template<class T>

@@ -9,120 +9,6 @@
 
 #include "Types.hpp"
 
-struct ClientCommand {
-	enum class Code : char {
-		AUTH_REQ = 1,
-		REG_REQ,
-		SERVER_LIST_REQ,
-
-		CREATE_GAME,
-		JOIN_GAME,
-		DISCONNECT,
-
-		MOVE,
-		MOVEZ,
-        CLICK_OBJECT,
-		DROP,
-		SEND_CHAT_MESSAGE,
-		BUILD,
-		GHOST,
-
-		UI_INPUT,
-		CALL_VERB
-	};
-
-	virtual Code GetCode() const final;
-
-protected:
-	explicit ClientCommand(Code code);
-private:
-	Code code;
-};
-
-struct AuthorizationClientCommand : public ClientCommand {
-	std::string login;
-	std::string password;
-
-	AuthorizationClientCommand(const std::string &login, const std::string &password);
-};
-
-struct RegistrationClientCommand : public ClientCommand {
-	std::string login;
-	std::string password;
-
-	RegistrationClientCommand(const std::string &login, const std::string &password);
-};
-
-struct GameListClientRequest : public ClientCommand {
-	GameListClientRequest();
-};
-
-struct CreateGameClientCommand : public ClientCommand {
-	std::string title;
-
-	CreateGameClientCommand(const std::string &title);
-};
-
-struct JoinGameClientCommand : public ClientCommand {
-	int id;
-
-	JoinGameClientCommand(int id);
-};
-
-struct DisconnectionClientCommand : public ClientCommand {
-	DisconnectionClientCommand();
-};
-
-struct MoveClientCommand : public ClientCommand {
-	uf::Direction direction;
-
-	MoveClientCommand(uf::Direction direction);
-};
-
-struct MoveZClientCommand : public ClientCommand {
-	bool up;
-
-	MoveZClientCommand(bool up);
-};
-
-struct ClickObjectClientCommand : public ClientCommand {
-    int id;
-
-    ClickObjectClientCommand(int id);
-};
-
-struct DropClientCommand : public ClientCommand {
-	DropClientCommand();
-};
-
-struct SendChatMessageClientCommand : public ClientCommand {
-	std::string message;
-
-	SendChatMessageClientCommand(const std::string &message);
-};
-
-struct BuildClientCommand : public ClientCommand {
-	BuildClientCommand();
-};
-
-struct GhostClientCommand : public ClientCommand {
-	GhostClientCommand();
-};
-
-struct UIInputClientCommand : public ClientCommand {
-	std::string handle;
-	uptr<UIData> data;
-
-	UIInputClientCommand(const std::string &handle, uptr<UIData> &data);
-};
-
-struct CallVerbClientCommand : public ClientCommand {
-	std::string verb;
-
-	CallVerbClientCommand(const std::string &verb);
-};
-
-
 struct ServerCommand {
 	enum class Code : char {
 		AUTH_SUCCESS = 1,
@@ -220,7 +106,7 @@ struct GraphicsUpdateServerCommand : public ServerCommand {
 };
 
 struct OverlayUpdateServerCommand : public ServerCommand {
-	std::vector<OverlayInfo> overlayInfo;
+	std::vector<network::protocol::OverlayInfo> overlayInfo;
 
 	OverlayUpdateServerCommand();
 };

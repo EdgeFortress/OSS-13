@@ -3,12 +3,15 @@
 #include <SFML/Network.hpp>
 
 #include <Shared/Global.hpp>
+#include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/InputData.h>
 
 #include <Server.hpp>
 #include <Player.hpp>
 
 #include "Connection.hpp"
+
+using namespace network::protocol;
 
 void NetworkController::working() {
     sf::TcpListener listener;
@@ -79,139 +82,128 @@ void NetworkController::working() {
 }
 
 bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connection) {
-    sf::Int32 code;
-    packet >> code;
+	uf::OutputArchive ar(packet);
+	auto p = ar.UnpackSerializable();
 
-    switch (ClientCommand::Code(code)) {
-        case ClientCommand::Code::AUTH_REQ: {
-            sf::String login, password;
-            packet >> login >> password;
-			
-			bool secondConnection = false;
-			for (auto &connection : connections) {
-				if (connection->player && connection->player->GetCKey() == login) {
-					secondConnection = true;
-					Server::log << "Player" << login.toAnsiString() << password.toAnsiString() << "is trying to authorize second time" << std::endl;
-					break;
-				}
+	if (auto *command = dynamic_cast<AuthorizationClientCommand *>(p.get())) {
+		bool secondConnection = false;
+		for (auto &connection : connections) {
+			if (connection->player && connection->player->GetCKey() == command->login) {
+				secondConnection = true;
+				Server::log << "Player" << command->login << command->password << "is trying to authorize second time" << std::endl;
+				break;
 			}
+		}
 
-			if (!secondConnection) {
-				if (Player *player = Server::Get()->Authorization(std::string(login.toAnsiString()), std::string(password.toAnsiString()))) {
-					player->SetConnection(connection);
-					connection->player = sptr<Player>(player);
-					connection->commandsToClient.Push(new AuthSuccessServerCommand());
-					break;
-				}
+		if (!secondConnection) {
+			if (Player *player = Server::Get()->Authorization(command->login, command->password)) {
+				player->SetConnection(connection);
+				connection->player = sptr<Player>(player);
+				connection->commandsToClient.Push(new AuthSuccessServerCommand());
+				return true;
 			}
-			connection->commandsToClient.Push(new AuthErrorServerCommand());
-            break;
-        }
-        case ClientCommand::Code::REG_REQ: {
-            sf::String login, password;
-            packet >> login >> password;
-			if (Server::Get()->Registration(login.toAnsiString(), password.toAnsiString()))
-				connection->commandsToClient.Push(new RegSuccessServerCommand());
-			else
-				connection->commandsToClient.Push(new RegErrorServerCommand());
-            break;
-        }
-        case ClientCommand::Code::CREATE_GAME: {
-            sf::String title;
-            packet >> title;
-            Server::log << "Request for creating game" << std::endl;
-            break;
-        }
-        case ClientCommand::Code::SERVER_LIST_REQ: {
-			
-				connection->player->UpdateServerList();
-            break;
-        }
-        case ClientCommand::Code::JOIN_GAME: {
-            sf::Int32 id;
-            packet >> id;
-			if (connection->player) {
-				if (Game *game = Server::Get()->JoinGame(id, connection->player)) {
-					connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
-				} else {
-					connection->commandsToClient.Push(new GameJoinErrorServerCommand());
-				}
+		}
+		connection->commandsToClient.Push(new AuthErrorServerCommand());
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<RegistrationClientCommand *>(p.get())) {
+		if (Server::Get()->Registration(command->login, command->password))
+			connection->commandsToClient.Push(new RegSuccessServerCommand());
+		else
+			connection->commandsToClient.Push(new RegErrorServerCommand());
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<CreateGameClientCommand *>(p.get())) {
+		// unused command->title;
+		Server::log << "Request for creating game" << std::endl;
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<GamelistRequestClientCommand *>(p.get())) {
+		connection->player->UpdateServerList();
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<JoinGameClientCommand *>(p.get())) {
+		if (connection->player) {
+			if (Game *game = Server::Get()->JoinGame(command->id, connection->player)) {
+				connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
+			} else {
+				connection->commandsToClient.Push(new GameJoinErrorServerCommand());
 			}
-            break;
-        }
-        case ClientCommand::Code::MOVE: {
-            sf::Int8 direction;
-            packet >> direction;
-			if (connection->player)
-				connection->player->Move(uf::Direction(direction));
-            break;
-        }
-        case ClientCommand::Code::MOVEZ: {
-            bool up;
-            packet >> up;
-			if (connection->player)
-				connection->player->MoveZ(up);
-            break;
-        }
-        case ClientCommand::Code::CLICK_OBJECT: {
-            sf::Int32 id;
-            packet >> id;
-            if (connection->player)
-                connection->player->ClickObject(id);
-            break;
-        }
-		case ClientCommand::Code::SEND_CHAT_MESSAGE: {
-			std::string message;
-			packet >> message;
-			if (connection->player)
-				connection->player->ChatMessage(message);
-			break;
 		}
-		case ClientCommand::Code::DROP:
-		{
-			if (connection->player)
-				connection->player->Drop();
-			break;
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<MoveClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->Move(uf::Direction(command->direction));
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<MoveZClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->MoveZ(command->up);
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<ClickObjectClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->ClickObject(command->id);
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<SendChatMessageClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->ChatMessage(command->message);
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<DropClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->Drop();
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<BuildClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->Build();
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<GhostClientCommand *>(p.get())) {
+		if (connection->player)
+			connection->player->Ghost();
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<DisconnectionClientCommand *>(p.get())) {
+		if (connection->player)
+			Server::log << "Client" << connection->player->GetCKey() << "disconnected" << std::endl;
+		return false;
+	}
+
+	if (auto *command = dynamic_cast<UIInputClientCommand *>(p.get())) {
+		if (connection->player) {
+			connection->player->UIInput(command->data->handle, std::move(command->data));
 		}
-		case ClientCommand::Code::BUILD: {
-			if (connection->player)
-				connection->player->Build();
-			break;
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<CallVerbClientCommand *>(p.get())) {
+		if (connection->player) {
+			connection->player->CallVerb(command->verb);
 		}
-		case ClientCommand::Code::GHOST: {
-			if (connection->player)
-				connection->player->Ghost();
-			break;
-		}
-        case ClientCommand::Code::DISCONNECT: {
-			if (connection->player)
-				Server::log << "Client" << connection->player->GetCKey() << "disconnected" << std::endl;
-			return false;
-            break;
-        }
-		case ClientCommand::Code::UI_INPUT: {
-			if (connection->player) {
-				uf::OutputArchive ar(packet);
-				auto ser =  ar.UnpackSerializable();
-				auto data = std::unique_ptr<UIData>(dynamic_cast<UIData *>(ser.release()));
-				connection->player->UIInput(data->handle, std::move(data));
-			}
-			break;
-		}
-		case ClientCommand::Code::CALL_VERB: {
-			if (connection->player) {
-				std::string verb;
-				packet >> verb;
-				connection->player->CallVerb(verb);
-			}
-			break;
-		}
-        default:
-			if (connection->player)
-				Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;
-			else
-				Server::log << "Unknown Command received from unregistered client" << std::endl; 
-    }
+		return true;
+	}
+
+	if (connection->player)
+		Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;
+	else
+		Server::log << "Unknown Command received from unregistered client" << std::endl; 
+
 	return true;
 }
 

@@ -43,7 +43,7 @@ public:
 	void Build();
 	void Ghost();
 
-	void UIInput(const std::string &handle, uptr<UIData> &&data);
+	void UIInput(const std::string &handle, uptr<network::protocol::UIData> &&data);
 	void CallVerb(const std::string &verb);
     ///
 

@@ -3,6 +3,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+#include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/OverlayInfo.h>
 
 #include "Shared/Global.hpp"
@@ -14,6 +15,8 @@
 #include "Tile.hpp"
 
 #include "Shared/Array.hpp"
+
+using namespace network::protocol;
 
 TileGrid::TileGrid() :
     tileSize(0),
@@ -191,7 +194,9 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
     if (actionSendPause == sf::Time::Zero) {
 		if (stun == sf::Time::Zero && moveCommand) {
-			Connection::commandQueue.Push(new MoveClientCommand(uf::VectToDirection(moveCommand)));
+			auto *p = new MoveClientCommand();
+			p->direction = uf::VectToDirection(moveCommand);
+			Connection::commandQueue.Push(p);
 
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();
@@ -222,12 +227,17 @@ void TileGrid::Update(sf::Time timeElapsed) {
 		moveCommand = sf::Vector2i();
 
 		if (stun == sf::Time::Zero && moveZCommand) {
-			Connection::commandQueue.Push(new MoveZClientCommand(moveZCommand>0));
+			auto *p = new MoveZClientCommand();
+			p->up = moveZCommand > 0;
+			Connection::commandQueue.Push(p);
 		}
 		moveZCommand = 0;
 
-        if (stun == sf::Time::Zero && objectClicked && underCursorObject)
-			Connection::commandQueue.Push(new ClickObjectClientCommand(underCursorObject->GetID()));
+        if (stun == sf::Time::Zero && objectClicked && underCursorObject) {
+			auto *p = new ClickObjectClientCommand();
+			p->id = underCursorObject->GetID();
+			Connection::commandQueue.Push(p);
+		}
 
 		if (stun == sf::Time::Zero && dropButtonPressed)
 			Connection::commandQueue.Push(new DropClientCommand());
@@ -444,7 +454,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 void TileGrid::UpdateOverlay(sf::Packet &packet) {
 	for (auto tile: blocks) {
 		if (tile) {
-			OverlayInfo overlayInfo;
+			network::protocol::OverlayInfo overlayInfo;
 			uf::OutputArchive r = uf::OutputArchive(packet);
 			overlayInfo.Serialize(r);
 			tile->SetOverlay(overlayInfo.text);

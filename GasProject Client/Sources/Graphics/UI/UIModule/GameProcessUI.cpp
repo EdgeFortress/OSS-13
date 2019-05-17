@@ -2,12 +2,16 @@
 
 #include <memory>
 
+#include <Shared/Network/Protocol/ClientCommand.h>
+
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
 #include "Graphics/TileGrid.hpp"
 #include "Graphics/UI/Widget/ContextMenu.hpp"
 #include "../UI.hpp"
 #include "Network.hpp"
+
+using namespace network::protocol;
 
 GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     infoLabel(new InfoLabel(ui->GetFont()))
@@ -51,8 +55,11 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 void GameProcessUI::Initialize() { }
 
 void GameProcessUI::send() {
-    if (!entry->Empty())
-        Connection::commandQueue.Push(new SendChatMessageClientCommand(entry->GetText()));
+    if (!entry->Empty()) {
+		auto *p = new SendChatMessageClientCommand();
+		p->message = entry->GetText();
+        Connection::commandQueue.Push(p);
+	}
 }
 
 void GameProcessUI::Receive(const std::string &message) {

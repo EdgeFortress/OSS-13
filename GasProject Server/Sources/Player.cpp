@@ -64,9 +64,9 @@ void Player::Ghost() {
 	actions.Push(new GhostPlayerCommand());
 }
 
-void Player::UIInput(const std::string &handle, std::unique_ptr<UIData> &&data) {
+void Player::UIInput(const std::string &handle, std::unique_ptr<network::protocol::UIData> &&data) {
 	if (uiSinks.size())
-		uiSinks[0]->OnInput(handle, std::forward<std::unique_ptr<UIData>>(data));
+		uiSinks[0]->OnInput(handle, std::forward<std::unique_ptr<network::protocol::UIData>>(data));
 }
 
 void Player::CallVerb(const std::string &verb) {

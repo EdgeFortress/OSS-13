@@ -36,7 +36,7 @@ void Camera::updateOverlay(sf::Time timeElapsed) {
 		return;
 
 	if (overlay->IsShouldBeUpdated(timeElapsed)) {
-		std::vector<OverlayInfo> overlayTileData;
+		std::vector<network::protocol::OverlayInfo> overlayTileData;
 
 		overlayTileData.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 		for (auto &tile: visibleBlocks) {

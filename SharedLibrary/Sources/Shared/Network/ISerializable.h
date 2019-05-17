@@ -23,3 +23,9 @@ public:
 };
 
 }
+
+#define DEFINE_SERIALIZABLE(TypeName, ParentName) \
+	struct TypeName : public ParentName {         \
+		DEFINE_SERID(#TypeName##_crc32)
+
+

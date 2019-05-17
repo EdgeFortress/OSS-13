@@ -35,6 +35,7 @@
     <ClCompile Include="Sources\Shared\Log.cpp" />
     <ClCompile Include="Sources\Shared\Network\Archive.cpp" />
     <ClCompile Include="Sources\Shared\Network\ISerializable.cpp" />
+    <ClCompile Include="Sources\Shared\Network\PacketConverters.cpp" />
     <ClCompile Include="Sources\Shared\OS.cpp" />
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp" />
     <ClCompile Include="Sources\Shared\Timer.cpp" />
@@ -62,6 +63,8 @@
     <ClInclude Include="Sources\Shared\Math.hpp" />
     <ClInclude Include="Sources\Shared\Network\Archive.h" />
     <ClInclude Include="Sources\Shared\Network\ISerializable.h" />
+    <ClInclude Include="Sources\Shared\Network\PacketConverters.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\ClientCommand.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />

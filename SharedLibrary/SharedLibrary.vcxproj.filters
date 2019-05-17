@@ -18,6 +18,9 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
@@ -72,6 +75,9 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\Network\ISerializable.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Shared\Network\PacketConverters.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,6 +164,12 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\CRC32.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ClientCommand.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\PacketConverters.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

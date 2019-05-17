@@ -11,7 +11,9 @@
 #include <Client.hpp>
 #include <Network.hpp>
 
-#include <Shared/Command.hpp>
+#include <Shared/Network/Protocol/ClientCommand.h>
+
+using namespace network::protocol;
 
 Console::Console() :
 	scrollToBottom(true)
@@ -66,7 +68,9 @@ void Console::Update(sf::Time timeElapsed) {
 		if (com_iter != commands.end()) {
 			com_iter->second();
 		} else {
-			Connection::commandQueue.Push(new CallVerbClientCommand(command));
+			auto *p = new CallVerbClientCommand();
+			p->verb = command;
+			Connection::commandQueue.Push(p);
 			//command_notFound(command);
 		}
 
