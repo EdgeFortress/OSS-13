@@ -126,6 +126,7 @@
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
+    <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp" />
     <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
     <ClCompile Include="Sources\World\Camera\Camera.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Sources\VerbsHolder.h" />
     <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
     <ClInclude Include="Sources\World\Atmos\AtmosCameraOverlay.h" />
+    <ClInclude Include="Sources\World\Atmos\AtmosOverlayWindowSink.h" />
     <ClInclude Include="Sources\World\Atmos\Gases.hpp" />
     <ClInclude Include="Sources\World\Atmos\Locale.hpp" />
     <ClInclude Include="Sources\World\Block.hpp" />

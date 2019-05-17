@@ -1,11 +1,18 @@
 #include "Atmos.hpp"
 
 #include <Server.hpp>
+#include <Player.hpp>
 #include <World/World.hpp>
 #include <World/Tile.hpp>
 
+#include "AtmosOverlayWindowSink.h"
+
+void ToggleAtmosOverlayVerb(Player *player) {
+	player->OpenWindow<AtmosOverlayWindowSink>();
+}
+
 Atmos::Atmos(Map* map) : map(map) {
-    
+	AddVerb("toogleoverlay", &ToggleAtmosOverlayVerb);
 }
 
 void Atmos::Update(sf::Time timeElapsed) {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "WindowSink.h"
+#include <ClientUI/WindowSink.h>
 
-class WelcomeWindowSink : public WindowSink {
+class AtmosOverlayWindowSink : public WindowSink {
 public:
-	WelcomeWindowSink(Player *player);
+	AtmosOverlayWindowSink(Player *player);
 
 	void OnTrigger(const std::string &trigger) override;
 	void OnInput(const std::string &input, uptr<UIData> &&data) override;

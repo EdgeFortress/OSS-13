@@ -2,8 +2,8 @@
 
 #include <Server.hpp>
 
-WelcomeWindowSink::WelcomeWindowSink(Player *player, const std::string &layout) :
-	WindowSink(player, layout) 
+WelcomeWindowSink::WelcomeWindowSink(Player *player) :
+	WindowSink(player, "DynamicWindow.json") 
 { }
 
 void WelcomeWindowSink::OnTrigger(const std::string &trigger) {

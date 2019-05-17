@@ -1,0 +1,35 @@
+{
+  "id": "AtmosOverlayWindow",
+  "position": [ 400, 200 ],
+  "size": [ 300, 200 ],
+  "content": [
+    {
+      "type": "RadioButton",
+      "label": "Locale Number",
+      "radio_button_type": "int",
+      "handle": "Mode",
+      "value": 1
+    },
+    {
+      "type": "RadioButton",
+      "label": "Total Pressure",
+      "radio_button_type": "int",
+      "handle": "Mode",
+      "value": 2
+    },
+    {
+      "type": "RadioButton",
+      "label": "Temperature",
+      "radio_button_type": "int",
+      "handle": "Mode",
+      "value": 3
+    },
+    {
+      "type": "RadioButton",
+      "label": "Oxygen Pressure",
+      "radio_button_type": "int",
+      "handle": "Mode",
+      "value": 4
+    }
+  ]
+}

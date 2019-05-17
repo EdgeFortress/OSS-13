@@ -50,6 +50,11 @@ public:
     void Update();
     void SendGraphicsUpdates(sf::Time timeElapsed);
 
+	template <class T>
+	void OpenWindow() {
+		uiSinks.push_back(std::make_unique<T>(this));
+	}
+
 	void OpenWindow(const char *layout);
 
     std::string GetCKey() { return ckey; }

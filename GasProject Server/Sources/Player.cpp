@@ -7,6 +7,7 @@
 #include <World/World.hpp>
 #include <World/Tile.hpp>
 #include <World/Objects.hpp>
+#include <World/Map.hpp>
 #include <ClientUI/WelcomeWindowSink.h>
 
 #include <Shared/Command.hpp>
@@ -92,7 +93,8 @@ void Player::Update() {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
                     SetControl(game->GetStartControl(this));
-					OpenWindow("DynamicWindow.json");
+					verbsHolders["atmos"] = GetControl()->GetOwner()->GetTile()->GetMap()->GetAtmos();
+					OpenWindow<WelcomeWindowSink>();
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
@@ -156,10 +158,6 @@ void Player::SendGraphicsUpdates(sf::Time timeElapsed) {
     if (camera) {
         camera->UpdateView(timeElapsed);
     }
-}
-
-void Player::OpenWindow(const char *layout) {
-	uiSinks.push_back(std::make_unique<WelcomeWindowSink>(this, layout));
 }
 
 void Player::Suspend() {

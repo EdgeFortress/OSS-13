@@ -114,6 +114,9 @@
     <ClCompile Include="Sources\ClientUI\WindowSink.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp">
@@ -237,6 +240,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\VerbsHolder.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Atmos\AtmosOverlayWindowSink.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

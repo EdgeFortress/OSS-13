@@ -2,14 +2,16 @@
 
 #include <list>
 
+#include <VerbsHolder.h>
+#include <Shared/Types.hpp>
+
 #include "Locale.hpp"
 #include "Gases.hpp"
-#include "Shared/Types.hpp"
 
 class Map;
 class Tile;
 
-class Atmos {
+class Atmos : public VerbsHolder {
 public:
     explicit Atmos(Map *map);
 
