@@ -161,6 +161,7 @@
     <ClInclude Include="Sources\Resources\IconInfo.h" />
     <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
     <ClInclude Include="Sources\Server.hpp" />
+    <ClInclude Include="Sources\VerbsHolder.h" />
     <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
     <ClInclude Include="Sources\World\Atmos\AtmosCameraOverlay.h" />
     <ClInclude Include="Sources\World\Atmos\Gases.hpp" />

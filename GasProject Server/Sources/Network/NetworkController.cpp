@@ -198,6 +198,14 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 			}
 			break;
 		}
+		case ClientCommand::Code::CALL_VERB: {
+			if (connection->player) {
+				std::string verb;
+				packet >> verb;
+				connection->player->CallVerb(verb);
+			}
+			break;
+		}
         default:
 			if (connection->player)
 				Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;

@@ -9,6 +9,9 @@
 #include <imgui_stdlib.h>
 
 #include <Client.hpp>
+#include <Network.hpp>
+
+#include <Shared/Command.hpp>
 
 Console::Console() :
 	scrollToBottom(true)
@@ -63,7 +66,8 @@ void Console::Update(sf::Time timeElapsed) {
 		if (com_iter != commands.end()) {
 			com_iter->second();
 		} else {
-			command_notFound(command);
+			Connection::commandQueue.Push(new CallVerbClientCommand(command));
+			//command_notFound(command);
 		}
 
 		ImGui::SetKeyboardFocusHere(-1);

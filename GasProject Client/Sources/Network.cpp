@@ -343,6 +343,12 @@ Packet &operator<<(Packet &packet, ClientCommand *command) {
 			auto c = dynamic_cast<UIInputClientCommand *>(command);
 			auto ar = uf::InputArchive(packet);
 			ar << *c->data;
+			break;
+		}
+		case ClientCommand::Code::CALL_VERB: {
+			auto c = dynamic_cast<CallVerbClientCommand *>(command);
+			packet << c->verb;
+			break;
 		}
     }
     return packet;

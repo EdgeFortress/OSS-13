@@ -64,6 +64,11 @@ UIInputClientCommand::UIInputClientCommand(const std::string &handle, uptr<UIDat
 	data(std::move(data))
 { }
 
+CallVerbClientCommand::CallVerbClientCommand(const std::string &verb) :
+	ClientCommand(Code::CALL_VERB),
+	verb(verb)
+{ }
+
 
 ServerCommand::ServerCommand(Code code) :
 	code(code) { }

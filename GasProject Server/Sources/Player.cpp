@@ -68,6 +68,23 @@ void Player::UIInput(const std::string &handle, std::unique_ptr<UIData> &&data) 
 		uiSinks[0]->OnInput(handle, std::forward<std::unique_ptr<UIData>>(data));
 }
 
+void Player::CallVerb(const std::string &verb) {
+	auto delimiter = verb.find(".");
+	std::string verbHolder = verb.substr(0, delimiter);
+	std::string verbName = verb.substr(delimiter + 1);
+
+	auto verbHolderIter = verbsHolders.find(verbHolder);
+
+	if (verbHolderIter != verbsHolders.end()) {
+		auto v = verbHolderIter->second->GetVerbs();
+		auto pair = v.find(verbName);
+		auto f = pair->second;
+		f(this);
+	}
+	else
+		Server::log << "Bad VerbHolder: " << verbHolder << std::endl;
+}
+
 void Player::Update() {
     while (!actions.Empty()) {
         PlayerCommand *temp = actions.Pop();

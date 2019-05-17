@@ -236,5 +236,8 @@
     <ClInclude Include="Sources\ClientUI\WindowSink.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\VerbsHolder.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

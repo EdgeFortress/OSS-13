@@ -12,6 +12,8 @@
 
 #include <SFML/System/Time.hpp>
 
+#include "VerbsHolder.h"
+
 class Server;
 class Game;
 class NetworkController;
@@ -42,6 +44,7 @@ public:
 	void Ghost();
 
 	void UIInput(const std::string &handle, uptr<UIData> &&data);
+	void CallVerb(const std::string &verb);
     ///
 
     void Update();
@@ -77,4 +80,5 @@ private:
 	bool atmosOverlayToggled;
 
 	std::vector<uptr<WindowSink>> uiSinks;
+	std::map<std::string, const IVerbsHolder *> verbsHolders;
 };

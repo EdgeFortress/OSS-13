@@ -27,7 +27,8 @@ struct ClientCommand {
 		BUILD,
 		GHOST,
 
-		UI_INPUT
+		UI_INPUT,
+		CALL_VERB
 	};
 
 	virtual Code GetCode() const final;
@@ -113,6 +114,12 @@ struct UIInputClientCommand : public ClientCommand {
 	uptr<UIData> data;
 
 	UIInputClientCommand(const std::string &handle, uptr<UIData> &data);
+};
+
+struct CallVerbClientCommand : public ClientCommand {
+	std::string verb;
+
+	CallVerbClientCommand(const std::string &verb);
 };
 
 
