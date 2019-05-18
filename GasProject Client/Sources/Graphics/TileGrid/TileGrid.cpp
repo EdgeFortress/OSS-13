@@ -19,7 +19,7 @@
 using namespace network::protocol;
 
 TileGrid::TileGrid() :
-    tileSize(0),
+    tileSize(0), overlayToggled(false),
     controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
     underCursorObject(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
@@ -80,13 +80,16 @@ void TileGrid::draw() const {
     }
 
 	// Thirdly, draw overlay
-	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
-		for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
-			Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
-			if (tile) {
-				tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+	
+	if (overlayToggled) {
+		for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
+			for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
+				Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
+				if (tile) {
+					tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+				}
 			}
-		}
+	}
 
 	buffer.display();
 }
@@ -452,13 +455,22 @@ void TileGrid::SetControllable(uint id, float speed) {
 }
 
 void TileGrid::UpdateOverlay(sf::Packet &packet) {
-	for (auto tile: blocks) {
+	overlayToggled = true;
+	for (auto &tile : blocks) {
 		if (tile) {
 			network::protocol::OverlayInfo overlayInfo;
-			uf::OutputArchive r = uf::OutputArchive(packet);
-			overlayInfo.Serialize(r);
+			uf::OutputArchive r(packet);
+			r >> overlayInfo;
 			tile->SetOverlay(overlayInfo.text);
 		}
+	}
+}
+
+void TileGrid::ResetOverlay() {
+	overlayToggled = false;
+	for (auto &tile : blocks) {
+		if (tile)
+			tile->SetOverlay("");
 	}
 }
 

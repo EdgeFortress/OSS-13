@@ -51,6 +51,7 @@ public:
         void SetBlock(apos pos, Tile *);
         void SetControllable(uint id, float speed);
 		void UpdateOverlay(sf::Packet &packet); // TODO: get rid of Network crutch sf::packet and refactor this, when Blocks will be removed
+		void ResetOverlay();
 
     ////
 
@@ -87,6 +88,8 @@ private:
 
     mutable std::mutex mutex;
     mutable std::vector< std::vector<Object *> > layersBuffer;
+
+	bool overlayToggled;
 
     // Controls
     Object *controllable;
