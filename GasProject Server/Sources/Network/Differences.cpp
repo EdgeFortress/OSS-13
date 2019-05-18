@@ -34,13 +34,15 @@ MoveDiff::MoveDiff(const Object *object, uf::Direction direction, float speed, T
 	direction(direction), lastblock(lastblock), speed(speed)
 { }
 
-AddDiff::AddDiff(const Object *object) :
+AddDiff::AddDiff(const Object *object, int toX, int toY, int toZ) :
 	Diff(object, Global::DiffType::ADD),
+	toX(toX), toY(toY), toZ(toZ),
 	objectInfo(object->GetObjectInfo())
 { }
 
 AddDiff::AddDiff(const ReplaceDiff &replaceDiff) :
 	Diff(replaceDiff.id, replaceDiff.invisibility, Global::DiffType::ADD),
+	toX(replaceDiff.toX), toY(replaceDiff.toY), toZ(replaceDiff.toZ),
 	objectInfo(replaceDiff.objectInfo)
 { }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_set>
 
 #include <SFML/System/Time.hpp>
 
@@ -52,6 +53,7 @@ private:
 	int firstBlockZ;
 	std::vector<Tile *> visibleBlocks;
 	std::vector<bool> blocksSync;
+	std::unordered_set<uint> visibleObjects;
 
 	bool suspense;
 	bool changeFocus;

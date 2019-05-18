@@ -36,7 +36,8 @@ struct ReplaceDiff : public Diff {
 
 struct AddDiff : public Diff {
 	ObjectInfo objectInfo;
-	explicit AddDiff(const Object *object);
+    int toX, toY, toZ, toObjectNum;
+	explicit AddDiff(const Object *object, int toX, int toY, int toZ);
 	explicit AddDiff(const ReplaceDiff &replaceDiff);
 };
 

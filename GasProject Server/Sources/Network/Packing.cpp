@@ -97,6 +97,7 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
         case Global::DiffType::ADD: {
             const AddDiff &addDiff = dynamic_cast<const AddDiff &>(diff);
             packet << addDiff.objectInfo;
+            packet << Int32(addDiff.toX) << Int32(addDiff.toY) << Int32(addDiff.toZ) << Int32(addDiff.toObjectNum);
             break;
         }
         case Global::DiffType::REMOVE: {

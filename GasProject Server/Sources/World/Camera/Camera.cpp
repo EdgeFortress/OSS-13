@@ -72,28 +72,59 @@ void Camera::UpdateView(sf::Time timeElapsed) {
 					if (!diff->CheckVisibility(seeInvisibleAbility)) continue;
 
 					// If client doesn't know about moved object, we need to add it
-					if (diff->GetType() == Global::DiffType::RELOCATE) {
-						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
-						Tile *lastBlock = replaceDiff->lastBlock;
-						if (!lastBlock ||
-							lastBlock->X() < firstBlockX || lastBlock->X() >= firstBlockX + int(visibleTilesSide) ||
-							lastBlock->Y() < firstBlockY || lastBlock->Y() >= firstBlockY + int(visibleTilesSide) ||
-							lastBlock->Z() < firstBlockZ || lastBlock->Z() >= firstBlockZ + int(visibleTilesHeight)) 
-						{
-							command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
-						}
+					switch(diff->GetType()) {
+					case Global::DiffType::ADD: {
+						AddDiff *addDiff = dynamic_cast<AddDiff *>(diff.get());
+						visibleObjects.insert(addDiff->id);
+						command->diffs.push_back(diff);
+						break;
 					}
-					//if (diff->GetType() == Global::DiffType::SHIFT) {
-					//    continue;
-					//}
-					command->diffs.push_back(diff);
+					case Global::DiffType::MOVE: {
+						MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
+						if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
+							apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction));
+							command->diffs.push_back(std::make_shared<AddDiff>(CurThreadGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z));
+							visibleObjects.insert(moveDiff->id);
+							break;
+						}
+						command->diffs.push_back(diff);
+						break;
+					}
+					case Global::DiffType::RELOCATE: {
+						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
+						if (visibleObjects.find(replaceDiff->id) == visibleObjects.end()) {
+							command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
+							visibleObjects.insert(replaceDiff->id);
+							break;
+						}
+						command->diffs.push_back(diff);
+						break;
+					}
+					case Global::DiffType::REMOVE: {
+						RemoveDiff *removeDiff = dynamic_cast<RemoveDiff *>(diff.get());
+						visibleObjects.erase(removeDiff->id);
+						command->diffs.push_back(diff);
+						break;
+					}
+					default:
+						command->diffs.push_back(diff);
+					}
 				}
 			} else {
 				command->blocksInfo.push_back(block->GetTileInfo(seeInvisibleAbility));
+				for (auto &object: block->Content()) {
+					visibleObjects.insert(object->ID());
+				}
 				blocksSync[i] = true;
 			}
 		}
 	}
+	command->diffs.sort([](const sptr<Diff> &a, const sptr<Diff> &b) {
+		Global::DiffType A = a->GetType(), B = b->GetType();
+		return A != B &&
+		      (A == Global::DiffType::ADD ||
+		       B == Global::DiffType::REMOVE);
+	});
 
     if (blockShifted) {
         updateOptions |= GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT;

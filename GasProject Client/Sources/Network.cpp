@@ -182,6 +182,10 @@ void Connection::parsePacket(Packet &packet) {
                             packet >> *object;
 
                             tileGrid->AddObject(object);
+                            Int32 toX, toY, toZ, toObjectNum;
+                            packet >> toX >> toY >> toZ >> toObjectNum;
+
+                            tileGrid->RelocateObject(id, apos(toX, toY, toZ), toObjectNum);
 
                             break;
                         }
