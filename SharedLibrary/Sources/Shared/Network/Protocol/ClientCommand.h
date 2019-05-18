@@ -23,7 +23,7 @@ DEFINE_SERIALIZABLE(AuthorizationClientCommand, ClientCommand)
 		ar & login;
 		ar & password;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(RegistrationClientCommand, ClientCommand)
 	std::string login;
@@ -34,7 +34,7 @@ DEFINE_SERIALIZABLE(RegistrationClientCommand, ClientCommand)
 		ar & login;
 		ar & password;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(GamelistRequestClientCommand, ClientCommand) 
 };
@@ -46,7 +46,7 @@ DEFINE_SERIALIZABLE(CreateGameClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & title;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(JoinGameClientCommand, ClientCommand)
 	int id;
@@ -55,10 +55,10 @@ DEFINE_SERIALIZABLE(JoinGameClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & id;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(DisconnectionClientCommand, ClientCommand)
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(MoveClientCommand, ClientCommand)
 	uf::Direction direction;
@@ -67,7 +67,7 @@ DEFINE_SERIALIZABLE(MoveClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & direction;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(MoveZClientCommand, ClientCommand)
 	bool up;
@@ -76,7 +76,7 @@ DEFINE_SERIALIZABLE(MoveZClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & up;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(ClickObjectClientCommand, ClientCommand)
 	int id;
@@ -85,7 +85,7 @@ DEFINE_SERIALIZABLE(ClickObjectClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & id;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(DropClientCommand, ClientCommand)
 };
@@ -97,13 +97,13 @@ DEFINE_SERIALIZABLE(SendChatMessageClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & message;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(BuildClientCommand, ClientCommand)
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(GhostClientCommand, ClientCommand)
-};
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(UIInputClientCommand, ClientCommand)
 	std::string handle;
@@ -117,7 +117,18 @@ DEFINE_SERIALIZABLE(UIInputClientCommand, ClientCommand)
 		else
 			ar << *data;
 	}
-};
+DEFINE_SERIALIZABLE_END
+
+DEFINE_SERIALIZABLE(UITriggerClientCommand, ClientCommand)
+	std::string window;
+	std::string trigger;
+
+	void Serialize(uf::Archive &ar) override {
+		ClientCommand::Serialize(ar);
+		ar & window;
+		ar & trigger;
+	}
+DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(CallVerbClientCommand, ClientCommand)
 	std::string verb;
@@ -126,7 +137,7 @@ DEFINE_SERIALIZABLE(CallVerbClientCommand, ClientCommand)
 		ClientCommand::Serialize(ar);
 		ar & verb;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 } // namespace protocol
 } // namespace network

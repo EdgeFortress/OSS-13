@@ -187,7 +187,14 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 
 	if (auto *command = dynamic_cast<UIInputClientCommand *>(p.get())) {
 		if (connection->player) {
-			connection->player->UIInput(command->data->handle, std::move(command->data));
+			connection->player->UIInput(std::move(command->data));
+		}
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<UITriggerClientCommand *>(p.get())) {
+		if (connection->player) {
+			connection->player->UITrigger(command->window, command->trigger);
 		}
 		return true;
 	}

@@ -43,19 +43,20 @@ public:
 	void Build();
 	void Ghost();
 
-	void UIInput(const std::string &handle, uptr<network::protocol::UIData> &&data);
+	void UIInput(uptr<network::protocol::UIData> &&data);
+	void UITrigger(const std::string &window, const std::string &trigger);
 	void CallVerb(const std::string &verb);
     ///
 
-    void Update();
+    void Update(sf::Time timeElapsed);
     void SendGraphicsUpdates(sf::Time timeElapsed);
 
 	template <class T>
 	void OpenWindow() {
-		uiSinks.push_back(std::make_unique<T>(this));
+		auto &window = std::make_unique<T>(this);
+		window->Initialize();
+		uiSinks[window->Id()] = std::move(window);
 	}
-
-	void OpenWindow(const char *layout);
 
     std::string GetCKey() { return ckey; }
 
@@ -71,6 +72,9 @@ public:
     void AddCommandToClient(ServerCommand *);
 
 private:
+	void updateUISinks(sf::Time timeElapsed);
+
+private:
 	std::string ckey;
 
 	//bool connected;
@@ -84,6 +88,6 @@ private:
 
 	bool atmosOverlayToggled;
 
-	std::vector<uptr<WindowSink>> uiSinks;
+	std::map<std::string, uptr<WindowSink>> uiSinks;
 	std::map<std::string, const IVerbsHolder *> verbsHolders;
 };

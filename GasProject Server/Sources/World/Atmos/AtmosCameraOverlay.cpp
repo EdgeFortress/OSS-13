@@ -39,7 +39,8 @@ OverlayInfo AtmosCameraOverlay::GetOverlayInfo(Tile tile) const {
 			break;
 		}
 		default: {
-			throw std::exception(); // TODO
+			result.text = "NULL";
+			break;
 		}
 	}
 	return result;

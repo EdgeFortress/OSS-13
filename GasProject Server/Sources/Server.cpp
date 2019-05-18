@@ -46,7 +46,7 @@ void Game::update(sf::Time timeElapsed) {
         for (auto iter = players.begin(); iter != players.end();) {
 			sptr<Player> player = *iter;
 			if (player->IsConnected()) {
-				player->Update();
+				player->Update(timeElapsed);
 				iter++;
 			} else {
 				// If player disconnected, move him into disconnectedPlayers list

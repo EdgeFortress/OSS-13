@@ -24,17 +24,11 @@ Camera::Camera(const Tile * const tile) :
     blocksSync.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
     SetPosition(tile);
-
-	overlays.push_back(std::make_unique<AtmosCameraOverlay>());
 }
 
 void Camera::updateOverlay(sf::Time timeElapsed) {
-	ICameraOverlay *overlay;
-	if (overlays.size())
-		overlay = overlays[0].get();
-	else
+	if (!overlay)
 		return;
-
 	if (overlay->IsShouldBeUpdated(timeElapsed)) {
 		std::vector<network::protocol::OverlayInfo> overlayTileData;
 
@@ -147,6 +141,15 @@ void Camera::Suspend() {
     tile = nullptr;
     lasttile = nullptr;
     suspense = true;
+}
+
+void Camera::SetOverlay(uptr<ICameraOverlay> &&overlay) {
+	this->overlay = std::forward<uptr<ICameraOverlay>>(overlay);
+}
+
+void Camera::ResetOverlay() {
+	this->overlay.reset();
+	player->AddCommandToClient(new OverlayResetServerCommand());
 }
 
 // Fill Visible Blocks vector by actual blocks pointers

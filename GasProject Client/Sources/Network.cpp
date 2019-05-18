@@ -16,6 +16,7 @@
 #include "Graphics/TileGrid.hpp"
 
 #include <Shared/Command.hpp>
+#include <Shared/Network/Protocol/WindowData.h>
 
 using namespace std;
 using namespace sf;
@@ -289,11 +290,32 @@ void Connection::parsePacket(Packet &packet) {
 			tileGrid->UnlockDrawing();
 			break;
 		}
+		case ServerCommand::Code::OVERLAY_RESET:
+		{
+			GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+			if (!gameProcessUI) break;
+			TileGrid *tileGrid = gameProcessUI->GetTileGrid();
+			tileGrid->LockDrawing();
+			tileGrid->ResetOverlay();
+			tileGrid->UnlockDrawing();
+			break;
+		}
 		case ServerCommand::Code::OPEN_WINDOW: {
-			std::string layout;
-			packet >> layout;
+			uf::OutputArchive ar(packet);
+			std::string id;
+			ar >> id;
+			network::protocol::WindowData data;
+			ar >> data;
 			UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
-			uiModule->OpenWindow(layout.c_str());
+			uiModule->OpenWindow(id.c_str(), std::move(data));
+			break;
+		}
+		case ServerCommand::Code::UPDATE_WINDOW: {
+			uf::OutputArchive ar(packet);
+			auto ser = ar.UnpackSerializable();
+			auto *data = dynamic_cast<UIData *>(ser.get());
+			UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
+			uiModule->UpdateWindow(data->window, *data);
 			break;
 		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {

@@ -26,11 +26,11 @@ void from_json(const json& j, uf::vec2<T>& p) {
 }
 
 
-DynamicWidget::DynamicWidget(const char *layout)
+DynamicWidget::DynamicWidget(const std::string &id) :
+	id(id)
 {
-	auto path = std::string("Resources/Layouts/") + layout;
-	std::ifstream(path) >> this->layout;
-	id = this->layout["id"].get<std::string>();
+	auto path = std::string("Resources/Layouts/") + id + ".json";
+	std::ifstream(path) >> layout;
 }
 
 void DynamicWidget::Update(sf::Time) {
@@ -41,6 +41,11 @@ void DynamicWidget::Update(sf::Time) {
 void DynamicWidget::render() {
 	json::iterator it;
 
+	std::string title = id;
+	it = layout.find("title");
+	if (it != layout.end())
+		title = it->get<std::string>();
+
 	it = layout.find("position");
 	if (it != layout.end())
 		ImGui::SetNextWindowPos(it->get<uf::vec2f>(), ImGuiCond_Once);
@@ -49,11 +54,11 @@ void DynamicWidget::render() {
 	if (it != layout.end())
 		ImGui::SetNextWindowSize(it->get<uf::vec2f>(), ImGuiCond_Once);
 
-	ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings;
+	ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize;
 
 	bool isOpen = true;
 
-	if (!ImGui::Begin(id.c_str(), &isOpen, flags)) {
+	if (!ImGui::Begin(title.c_str(), &isOpen, flags)) {
 		ImGui::End();
 		return;
 	}
@@ -74,8 +79,10 @@ void DynamicWidget::render() {
 
 	ImGui::End();
 
-	if (!isOpen)
+	if (!isOpen) {
+		triggers.push(ImGuiTrigger{std::string("Close")});
 		Close();
+	}
 }
 
 void DynamicWidget::sendUpdates() {
@@ -90,7 +97,14 @@ void DynamicWidget::sendUpdates() {
 			Connection::commandQueue.Push(p);
 		}
 	}
-	//Connection::commandQueue.Push();
+
+	while (!triggers.empty()) {
+		auto trigger = std::move(triggers.front()); triggers.pop();
+		auto *p = new UITriggerClientCommand();
+		p->trigger = trigger.trigger;
+		p->window = id;
+		Connection::commandQueue.Push(p);
+	}
 }
 
 void DynamicWidget::renderTest(json &layout) {

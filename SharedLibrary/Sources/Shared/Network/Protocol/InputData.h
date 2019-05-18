@@ -17,16 +17,22 @@ struct UIData : public uf::ISerializable {
 		ar & window;
 		ar & handle;
 	}
+
+	virtual uptr<UIData> Clone() const = 0;
 };
 
 DEFINE_SERIALIZABLE(RadioButtonUIData, UIData)
-	uint8_t data;
+	int data;
 
 	void Serialize(uf::Archive &ar) override {
 		UIData::Serialize(ar);
 		ar & data;
 	}
-};
+
+	uptr<UIData> Clone() const override { 
+		return std::make_unique<RadioButtonUIData>(*this);
+	}
+DEFINE_SERIALIZABLE_END
 
 } // namespace protocol
 } // namespace network

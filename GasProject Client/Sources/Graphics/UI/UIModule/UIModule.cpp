@@ -123,12 +123,26 @@ bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {
     return false;
 }
 
-void UIModule::OpenWindow(const char *layout) {
+void UIModule::OpenWindow(const std::string &id, network::protocol::WindowData &&data) {
 	try {
-		auto dynamicWidget = std::make_unique<DynamicWidget>(layout);
+		auto dynamicWidget = std::make_unique<DynamicWidget>(id);
+
+		for (auto &field : data.fields) {
+			dynamicWidget->SetData(*field);
+		}
+
 		widgets.push_back(std::move(dynamicWidget));
 	} catch (std::exception e) {
-		LOGE << "DynamicWindow with layout \"" << layout << "\" cannot be open!\n"
+		LOGE << "DynamicWindow with id \"" << id << "\" cannot be open!\n"
 			 << "\tException: " << e.what();
+	}
+}
+
+void UIModule::UpdateWindow(const std::string &window, const network::protocol::UIData &data) {
+	for (auto &widget : widgets) {
+		if (auto *dw = dynamic_cast<DynamicWidget *>(widget.get())) {
+			if (dw->Id() == window)
+				dw->SetData(data);
+		}
 	}
 }

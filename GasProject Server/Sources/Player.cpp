@@ -64,9 +64,16 @@ void Player::Ghost() {
 	actions.Push(new GhostPlayerCommand());
 }
 
-void Player::UIInput(const std::string &handle, std::unique_ptr<network::protocol::UIData> &&data) {
-	if (uiSinks.size())
-		uiSinks[0]->OnInput(handle, std::forward<std::unique_ptr<network::protocol::UIData>>(data));
+void Player::UIInput(uptr<network::protocol::UIData> &&data) {
+	auto iter = uiSinks.find(data->window);
+	if (iter != uiSinks.end())
+		iter->second->OnInput(data->handle, std::forward<std::unique_ptr<network::protocol::UIData>>(data));
+}
+
+void Player::UITrigger(const std::string &window, const std::string &trigger) {
+	auto iter = uiSinks.find(window);
+	if (iter != uiSinks.end())
+		iter->second->OnTrigger(trigger);
 }
 
 void Player::CallVerb(const std::string &verb) {
@@ -77,16 +84,30 @@ void Player::CallVerb(const std::string &verb) {
 	auto verbHolderIter = verbsHolders.find(verbHolder);
 
 	if (verbHolderIter != verbsHolders.end()) {
-		auto v = verbHolderIter->second->GetVerbs();
-		auto pair = v.find(verbName);
-		auto f = pair->second;
-		f(this);
+		auto &verbs = verbHolderIter->second->GetVerbs();
+		auto iter = verbs.find(verbName);
+		if (iter != verbs.end()) {
+			iter->second(this);
+		} else {
+			Server::log << "Error: Verb wasn't found! VerbHolder: " << verbHolder << ", Verb: " << verb << std::endl;
+		}
 	}
 	else
-		Server::log << "Bad VerbHolder: " << verbHolder << std::endl;
+		Server::log << "Error: VerbHolder wasn't found! VerbHolder: " << verbHolder << std::endl;
 }
 
-void Player::Update() {
+void Player::updateUISinks(sf::Time timeElapsed) {
+	for (auto iter = uiSinks.begin(); iter != uiSinks.end();) {
+		auto *sink = iter->second.get();
+		sink->Update(timeElapsed);
+		if (sink->IsClosed())
+			iter = uiSinks.erase(iter);
+		else
+			iter++;
+	}
+}
+
+void Player::Update(sf::Time timeElapsed) {
     while (!actions.Empty()) {
         PlayerCommand *temp = actions.Pop();
         if (temp) {
@@ -94,7 +115,6 @@ void Player::Update() {
                 case PlayerCommand::Code::JOIN: {
                     SetControl(game->GetStartControl(this));
 					verbsHolders["atmos"] = GetControl()->GetOwner()->GetTile()->GetMap()->GetAtmos();
-					OpenWindow<WelcomeWindowSink>();
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
@@ -152,6 +172,8 @@ void Player::Update() {
     }
 
     if (control->GetOwner()->GetTile() != camera->GetPosition()) camera->SetPosition(control->GetOwner()->GetTile());
+
+	updateUISinks(timeElapsed);
 }
 
 void Player::SendGraphicsUpdates(sf::Time timeElapsed) {

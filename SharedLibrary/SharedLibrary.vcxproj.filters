@@ -21,6 +21,9 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
@@ -170,6 +173,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\Network\PacketConverters.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\WindowData.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

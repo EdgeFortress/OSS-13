@@ -27,6 +27,8 @@ public:
     void SetPosition(const Tile * const tile);
     void Suspend();
 	void SetInvisibleVisibility(uint visibility) { seeInvisibleAbility = visibility; }
+	void SetOverlay(uptr<ICameraOverlay> &&cameraOverlay);
+	void ResetOverlay();
 
     bool IsSuspense() const { return suspense; }
 	const Tile * const GetPosition() const { return tile; }
@@ -54,7 +56,7 @@ private:
 	bool suspense;
 	bool changeFocus;
 
-	std::vector<uptr<ICameraOverlay>> overlays;
+	uptr<ICameraOverlay> overlay;
 
 	// Update options
 	bool blockShifted;

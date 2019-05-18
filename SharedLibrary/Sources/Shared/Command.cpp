@@ -50,9 +50,19 @@ OverlayUpdateServerCommand::OverlayUpdateServerCommand() :
 	ServerCommand(Code::OVERLAY_UPDATE) 
 { }
 
-OpenWindowServerCommand::OpenWindowServerCommand(const std::string &layout) :
+OverlayResetServerCommand::OverlayResetServerCommand() :
+	ServerCommand(Code::OVERLAY_RESET)
+{ }
+
+OpenWindowServerCommand::OpenWindowServerCommand(const std::string &id, network::protocol::WindowData &&fields) :
 	ServerCommand(Code::OPEN_WINDOW),
-	layout(layout)
+	id(id),
+	data(std::forward<network::protocol::WindowData>(fields))
+{ }
+
+UpdateWindowServerCommand::UpdateWindowServerCommand(uptr<network::protocol::UIData> &&data) :
+	ServerCommand(Code::UPDATE_WINDOW),
+	data(std::forward<uptr<network::protocol::UIData>>(data))
 { }
 
 SendChatMessageServerCommand::SendChatMessageServerCommand(std::string &message) : 

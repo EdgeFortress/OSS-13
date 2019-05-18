@@ -26,7 +26,7 @@ public:
 
 	template<class T>
 	void SetData(const T &data) {
-		if (std::any_cast<T>(uiData) != data) {
+		if (!uiData.has_value() || std::any_cast<T>(uiData) != data) {
 			uiData = data;
 			isChanged = true;
 		}
@@ -55,9 +55,19 @@ struct ImGuiTrigger {
 
 class DynamicWidget : public ImGuiWidget {
 public:
-	DynamicWidget(const char *layout);
+	DynamicWidget(const std::string &id);
 
 	void Update(sf::Time timeElapsed);
+
+	void SetData(const network::protocol::UIData &data) {
+		auto &a = dynamic_cast<const network::protocol::RadioButtonUIData &>(data);
+
+		handles[data.handle].SetData(a.data);
+	}
+
+	const std::string &Id() const {
+		return id;
+	}
 
 private:
 	void render();

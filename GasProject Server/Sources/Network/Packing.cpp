@@ -48,14 +48,23 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
 			auto command = dynamic_cast<OverlayUpdateServerCommand *>(serverCommand);
 			for (auto &overlayTileInfo : command->overlayInfo) {
 				uf::InputArchive r(packet);
-				overlayTileInfo.Serialize(r);
+				r << overlayTileInfo;
 			}
 			break;
 		}
 		case ServerCommand::Code::OPEN_WINDOW:
 		{
 			auto c = dynamic_cast<OpenWindowServerCommand *>(serverCommand);
-			packet << c->layout;
+			uf::InputArchive ar(packet);
+			ar << c->id;
+			ar << c->data;
+			break;
+		}
+		case ServerCommand::Code::UPDATE_WINDOW:
+		{
+			auto c = dynamic_cast<UpdateWindowServerCommand *>(serverCommand);
+			uf::InputArchive ar(packet);
+			ar << *c->data;
 			break;
 		}
         case ServerCommand::Code::SEND_CHAT_MESSAGE: {

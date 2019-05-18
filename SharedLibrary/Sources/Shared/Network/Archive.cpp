@@ -5,6 +5,7 @@
 #include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/OverlayInfo.h>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/Protocol/WindowData.h>
 
 using namespace uf;
 using namespace network::protocol;
@@ -25,6 +26,7 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 	switch (id) {
 		DECLARE_SER(OverlayInfo)
 		DECLARE_SER(RadioButtonUIData)
+		DECLARE_SER(WindowData)
 
 		// Client Commands
 		DECLARE_SER(AuthorizationClientCommand)
@@ -40,6 +42,7 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 		DECLARE_SER(BuildClientCommand)
 		DECLARE_SER(GhostClientCommand)
 		DECLARE_SER(UIInputClientCommand)
+		DECLARE_SER(UITriggerClientCommand)
 		DECLARE_SER(CallVerbClientCommand)
 		DECLARE_SER(DisconnectionClientCommand)
 

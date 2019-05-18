@@ -1,7 +1,6 @@
 {
-  "id": "AtmosOverlayWindow",
-  "position": [ 400, 200 ],
-  "size": [ 300, 200 ],
+  "title": "Atmos Overlay",
+  "position": [ 700, 20 ],
   "content": [
     {
       "type": "RadioButton",

@@ -12,7 +12,7 @@ void ToggleAtmosOverlayVerb(Player *player) {
 }
 
 Atmos::Atmos(Map* map) : map(map) {
-	AddVerb("toogleoverlay", &ToggleAtmosOverlayVerb);
+	AddVerb("toggleoverlay", &ToggleAtmosOverlayVerb);
 }
 
 void Atmos::Update(sf::Time timeElapsed) {

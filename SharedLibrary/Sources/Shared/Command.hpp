@@ -6,6 +6,7 @@
 
 #include <Shared/Network/Protocol/OverlayInfo.h>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/Protocol/WindowData.h>
 
 #include "Types.hpp"
 
@@ -24,8 +25,10 @@ struct ServerCommand {
 
 		GRAPHICS_UPDATE,
 		OVERLAY_UPDATE,
+		OVERLAY_RESET,
 
 		OPEN_WINDOW,
+		UPDATE_WINDOW,
 
 		SEND_CHAT_MESSAGE,
 
@@ -111,10 +114,21 @@ struct OverlayUpdateServerCommand : public ServerCommand {
 	OverlayUpdateServerCommand();
 };
 
-struct OpenWindowServerCommand : public ServerCommand {
-	std::string layout;
+struct OverlayResetServerCommand : public ServerCommand { 
+	OverlayResetServerCommand();
+};
 
-	OpenWindowServerCommand(const std::string &layout);
+struct OpenWindowServerCommand : public ServerCommand {
+	std::string id;
+	network::protocol::WindowData data;
+
+	OpenWindowServerCommand(const std::string &id, network::protocol::WindowData &&data);
+};
+
+struct UpdateWindowServerCommand : public ServerCommand {
+	uptr<network::protocol::UIData> data;
+
+	UpdateWindowServerCommand(uptr<network::protocol::UIData> &&data);
 };
 
 struct SendChatMessageServerCommand : public ServerCommand {

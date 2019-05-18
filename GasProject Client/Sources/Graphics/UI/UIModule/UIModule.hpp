@@ -2,7 +2,8 @@
 
 #include <list>
 
-#include "Shared/Types.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/Network/Protocol/WindowData.h>
 
 class UI;
 class Widget;
@@ -28,7 +29,8 @@ public:
     virtual void Update(sf::Time timeElapsed);
     virtual void HandleEvent(sf::Event event);
 
-	void OpenWindow(const char *layout);
+	void OpenWindow(const std::string &id, network::protocol::WindowData &&data);
+	void UpdateWindow(const std::string &window, const network::protocol::UIData &data);
 
 protected:
 	UI *ui;

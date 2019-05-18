@@ -67,6 +67,7 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\ClientCommand.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\WindowData.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />
