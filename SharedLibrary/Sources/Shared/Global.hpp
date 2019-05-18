@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Global {
-	const int PORT = 55678;
+	const int PORT = 55700;
 
 	const int FOV = 15; // Field Of View
 	const int MIN_PADDING = 3;
