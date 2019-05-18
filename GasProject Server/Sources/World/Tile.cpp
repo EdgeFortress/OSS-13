@@ -113,6 +113,8 @@ bool Tile::MoveTo(Object *obj) {
     rpos delta = GetPos() - lastTile->GetPos();
     if (abs(delta.x) > 1 || abs(delta.y) > 1)
         Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
+    if (delta.z)
+        Server::log << "Warning! Moving between Z-levels. (Tile::MoveTo)" << std::endl;
     const uf::Direction direction = uf::VectToDirection(delta);
     addObject(obj);
     AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastTile));
