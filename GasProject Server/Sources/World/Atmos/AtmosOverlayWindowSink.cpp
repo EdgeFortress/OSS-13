@@ -13,7 +13,7 @@ using namespace network::protocol;
 AtmosOverlayWindowSink::AtmosOverlayWindowSink(Player *player) :
 	WindowSink(player, "AtmosOverlayWindow")
 {
-	auto &mode = std::make_unique<RadioButtonUIData>();
+	auto mode = std::make_unique<RadioButtonUIData>();
 	mode->data = 1;
 	mode->handle = "Mode";
 	fields["Mode"] = std::move(mode);
@@ -22,7 +22,7 @@ AtmosOverlayWindowSink::AtmosOverlayWindowSink(Player *player) :
 	if (!camera)
 		throw std::exception(); // TODO
 
-	auto &overlay = std::make_unique<AtmosCameraOverlay>();
+	auto overlay = std::make_unique<AtmosCameraOverlay>();
 	this->overlay = overlay.get();
 	camera->SetOverlay(std::move(overlay));
 }

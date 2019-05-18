@@ -53,7 +53,7 @@ public:
 
 	template <class T>
 	void OpenWindow() {
-		auto &window = std::make_unique<T>(this);
+		auto window = std::make_unique<T>(this);
 		window->Initialize();
 		uiSinks[window->Id()] = std::move(window);
 	}
