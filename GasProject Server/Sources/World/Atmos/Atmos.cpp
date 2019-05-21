@@ -1,5 +1,7 @@
 #include "Atmos.hpp"
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <Player.hpp>
 #include <World/World.hpp>
@@ -33,7 +35,7 @@ void Atmos::CreateLocale(Tile *tile) {
 
 void Atmos::RemoveLocale(Locale *locale) {
     if (!locale) {
-        Server::log << "Error: try to remove nullptr locale from Atmos (Atmos::RemoveLocale)" << std::endl;
+        LOGE << "Error: try to remove nullptr locale from Atmos (Atmos::RemoveLocale)";
         return;
     }
     for (auto iter = locales.begin(); iter != locales.end(); iter++) {
@@ -46,5 +48,5 @@ void Atmos::RemoveLocale(Locale *locale) {
             return;
         }
     }
-    Server::log << "Warning: try to remove locale from Atmos which doesn't exist (Atmos::RemoveLocale)" << std::endl;
+    LOGW << "Warning: try to remove locale from Atmos which doesn't exist (Atmos::RemoveLocale)";
 }

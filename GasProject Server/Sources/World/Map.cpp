@@ -1,5 +1,7 @@
 #include "Map.hpp"
 
+#include <plog/Log.h>
+
 #include "Server.hpp"
 #include "Tile.hpp"
 #include "Atmos/Atmos.hpp"
@@ -7,7 +9,7 @@
 #include "Shared/Array.hpp"
 
 Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
-    size(sizeX, sizeY, sizeZ)
+	size(sizeX, sizeY, sizeZ)
 {
 	tiles.reserve(sizeX*sizeY*sizeZ);
 	for (uint z = 0; z < sizeZ; z++) {
@@ -17,9 +19,9 @@ Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
 			}
 		}
 	}
-    Server::log << "Map created: " << sizeX << "x" << sizeY << "x" << sizeZ << std::endl;
+	LOGI << "Map is created with size: " << sizeX << "x" << sizeY << "x" << sizeZ << std::endl;
 
-    atmos = std::make_unique<Atmos>(this);
+	atmos = std::make_unique<Atmos>(this);
 }
 
 void Map::ClearDiffs() {

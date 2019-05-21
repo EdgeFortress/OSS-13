@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <Network/Connection.hpp>
 #include <World/World.hpp>
@@ -89,11 +91,11 @@ void Player::CallVerb(const std::string &verb) {
 		if (iter != verbs.end()) {
 			iter->second(this);
 		} else {
-			Server::log << "Error: Verb wasn't found! VerbHolder: " << verbHolder << ", Verb: " << verb << std::endl;
+			LOGE << "Error: Verb wasn't found! VerbHolder: " << verbHolder << ", Verb: " << verb;
 		}
 	}
 	else
-		Server::log << "Error: VerbHolder wasn't found! VerbHolder: " << verbHolder << std::endl;
+		LOGE << "Error: VerbHolder wasn't found! VerbHolder: " << verbHolder;
 }
 
 void Player::updateUISinks(sf::Time timeElapsed) {

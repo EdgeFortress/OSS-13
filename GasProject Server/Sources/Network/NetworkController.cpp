@@ -2,6 +2,8 @@
 
 #include <SFML/Network.hpp>
 
+#include <plog/Log.h>
+
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/InputData.h>
@@ -32,7 +34,7 @@ void NetworkController::working() {
 					new_connection->socket.reset(socket);
 					connections.push_back(sptr<Connection>(new_connection));
                 } else
-                    Server::log << "New connection accepting error" << std::endl;
+                    LOGE << "New connection accepting error";
             } else {
                 for (auto iter = connections.begin(); iter != connections.end();) {
 					
@@ -52,9 +54,9 @@ void NetworkController::working() {
                                 break;
                             case sf::Socket::Disconnected:
 								if (player) {
-									Server::log << "Lost client" << player->GetCKey() << "signal" << std::endl;
+									LOGI << "Lost client " << player->GetCKey() << " connection";
 								} else
-									Server::log << "Lost unregistered client signal" << std::endl;
+									LOGI << "Lost unregistered client signal";
                                 selector.remove(*socket);
                                 iter = connections.erase(iter);
                                 continue;
@@ -90,7 +92,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		for (auto &connection : connections) {
 			if (connection->player && connection->player->GetCKey() == command->login) {
 				secondConnection = true;
-				Server::log << "Player" << command->login << command->password << "is trying to authorize second time" << std::endl;
+				LOGI << "Player " << command->login << " " << command->password << " is trying to authorize second time";
 				break;
 			}
 		}
@@ -117,7 +119,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 
 	if (auto *command = dynamic_cast<CreateGameClientCommand *>(p.get())) {
 		// unused command->title;
-		Server::log << "Request for creating game" << std::endl;
+		LOGI << "Request for creating game";
 		return true;
 	}
 
@@ -181,7 +183,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 
 	if (auto *command = dynamic_cast<DisconnectionClientCommand *>(p.get())) {
 		if (connection->player)
-			Server::log << "Client" << connection->player->GetCKey() << "disconnected" << std::endl;
+			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
 		return false;
 	}
 
@@ -207,9 +209,9 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 	}
 
 	if (connection->player)
-		Server::log << "Unknown Command received from" << connection->player->GetCKey() << std::endl;
+		LOGE << "Unknown Command is received from " << connection->player->GetCKey();
 	else
-		Server::log << "Unknown Command received from unregistered client" << std::endl; 
+		LOGE << "Unknown Command is received from unregistered client"; 
 
 	return true;
 }

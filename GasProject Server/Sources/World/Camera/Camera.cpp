@@ -1,5 +1,7 @@
 #include "Camera.hpp"
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <Network/Differences.hpp>
 #include <Player.hpp>
@@ -47,7 +49,7 @@ void Camera::updateOverlay(sf::Time timeElapsed) {
 
 void Camera::UpdateView(sf::Time timeElapsed) {
     if (unsuspensed && cameraMoved) 
-        Server::log << "Logic error: camera unsuspensed and moved at one time" << std::endl;
+        LOGE << "Logic error: camera unsuspensed and moved at one time";
 
     int updateOptions = GraphicsUpdateServerCommand::Option::EMPTY;
     auto command = std::make_unique<GraphicsUpdateServerCommand>();
@@ -186,7 +188,7 @@ void Camera::ResetOverlay() {
 // Fill Visible Blocks vector by actual blocks pointers
 void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     if (!tile) {
-        Server::log << "Error: fullRecountVisibleBlocks called with nullptr param" << std::endl;
+        LOGE << "Error: fullRecountVisibleBlocks called with nullptr param";
         return;
     }
 
@@ -212,11 +214,11 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
 // Commit shift to Visible Blocks vector, saving seen blocks with their sync param
 void Camera::refreshVisibleBlocks(const Tile * const tile) {
     if (suspense) {
-        Server::log << "Error: refreshVisibleBlocks called by suspensed camera" << std::endl;
+        LOGE << "Error: refreshVisibleBlocks called by suspensed camera";
         return;
     }
     if (!tile) {
-        Server::log << "Error: refreshVisibleBlocks called with nullptr param" << std::endl;
+        LOGE << "Error: refreshVisibleBlocks called with nullptr param";
         return;
     }
 

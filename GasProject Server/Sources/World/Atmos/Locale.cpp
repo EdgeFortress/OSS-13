@@ -1,5 +1,7 @@
 ﻿#include "Locale.hpp"
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
@@ -35,11 +37,11 @@ void Locale::Update(sf::Time timeElapsed) {
 
 void Locale::AddTile(Tile* tile) {
     if (!tile) {
-        Server::log << "Error: try to add nullptr to Locale" << std::endl;
+        LOGE << "Error: try to add nullptr to Locale";
         return;
     }
     if (tile->locale == this) {
-        Server::log << "Warning: try to add tile to Locale twice" << std::endl;
+        LOGW << "Warning: try to add tile to Locale twice";
         return;
     }
     tiles.push_back(tile);
@@ -48,7 +50,7 @@ void Locale::AddTile(Tile* tile) {
 
 void Locale::RemoveTile(Tile* tile) {
     if (!tile) {
-        Server::log << "Error: try to remove nullptr from Locale" << std::endl;
+        LOGE << "Error: try to remove nullptr from Locale";
         return;
     }
 
@@ -59,7 +61,7 @@ void Locale::RemoveTile(Tile* tile) {
             return;
         }
     }
-    Server::log << "Warning: try to remove tile from Locale, but it doesn't contain it" << std::endl;
+    LOGW << "Warning: try to remove tile from Locale, but it doesn't contain it";
 }
 
 void Locale::Merge(Locale *locale) {

@@ -32,7 +32,6 @@
     <ClCompile Include="Sources\Shared\Command.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp" />
-    <ClCompile Include="Sources\Shared\Log.cpp" />
     <ClCompile Include="Sources\Shared\Network\Archive.cpp" />
     <ClCompile Include="Sources\Shared\Network\ISerializable.cpp" />
     <ClCompile Include="Sources\Shared\Network\PacketConverters.cpp" />
@@ -59,7 +58,6 @@
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\IFaces\IHasRepeatableID.h" />
     <ClInclude Include="Sources\Shared\JSON.hpp" />
-    <ClInclude Include="Sources\Shared\Log.hpp" />
     <ClInclude Include="Sources\Shared\Math.hpp" />
     <ClInclude Include="Sources\Shared\Network\Archive.h" />
     <ClInclude Include="Sources\Shared\Network\ISerializable.h" />

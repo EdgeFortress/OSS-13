@@ -3,11 +3,11 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include <Resources/ResourceManager.hpp>
 
 #include <Shared/Types.hpp>
-#include <Shared/Log.hpp>
 
 class Player;
 class Server;
@@ -120,6 +120,4 @@ public:
     Game *JoinGame(const int id, sptr<Player> &player) const;
 
     static Server *Get() { return instance; }
-
-    static uf::Log log;
 };

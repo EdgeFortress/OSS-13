@@ -4,6 +4,10 @@
 #include <list>
 #include <mutex>
 
+#include <plog/Log.h>
+#include <plog/Appenders/ConsoleAppender.h>
+#include <plog/Formatters/MessageOnlyFormatter.h>
+
 #include <SFML/System.hpp>
 
 #include <Network/NetworkController.hpp>
@@ -113,6 +117,10 @@ Server::Server() : new_game_id(1),
                    UDB(new UsersDB())
 {
     instance = this;
+
+	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
+	plog::init(plog::verbose, &appender);
+
 	RM->AfterCreation();
     networkController->Start();
     CreateGame("One Super Test Game");
@@ -122,27 +130,27 @@ Server::Server() : new_game_id(1),
 }
 
 Player *Server::Authorization(const string &login, const string &password) {
-    if (UDB->Check(login, password)) {
-		Server::log << "Player is authorized:" << login << password << endl;
+	if (UDB->Check(login, password)) {
+		LOGI << "Player is authorized: " << login << " " << password;
 		return new Player(login);
-    }
-    Server::log << "Wrong login data received:" << login << password << endl;
+	}
+	LOGI << "Wrong login data received: " << login << " " << password;
 	return nullptr;
 }
 
 bool Server::Registration(const string &login, const string &password) const {
-    if (UDB->Add(login, password)) {
-        Server::log << "New player is registrated:" << login << password << endl;
-        return true;
-    }
-    Server::log << "Player is trying make account with wrong account data:" << login << password << endl;
-    return false;
+	if (UDB->Add(login, password)) {
+		LOGI << "New player is registrated:" << login << " " << password << endl;
+		return true;
+	}
+	LOGI << "Player is trying make account with wrong account data:" << login << " " << password << endl;
+	return false;
 }
 
 bool Server::CreateGame(string title) {
-    games.push_back(uptr<Game>(new Game(title, new_game_id)));
-    new_game_id++;
-    return true;
+	games.push_back(uptr<Game>(new Game(title, new_game_id)));
+	new_game_id++;
+	return true;
 }
 
 const std::list<uptr<Game>> * const Server::GetGamesList() const {
@@ -154,17 +162,16 @@ Game *Server::JoinGame(const int id, sptr<Player> &player) const {
 		if (game->GetID() == id) {
 			game->AddPlayer(player);
 			return game.get();
-        }
-    }
-    return nullptr;
+		}
+	}
+	return nullptr;
 }
 
 int main() {
-    Server server;
+	Server server;
 
-    return 0;
+	return 0;
 }
 
-uf::Log Server::log;
 Server *Server::instance;
 thread_local Game *CurThreadGame = nullptr;

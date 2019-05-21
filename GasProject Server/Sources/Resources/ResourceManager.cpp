@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 
 #include <Shared/OS.hpp>
@@ -37,7 +39,7 @@ void ResourceManager::loadIcons() {
 		}
 	}
 
-	Server::log << "ResourceManager created." << lastIconNum << "sprites loaded!" << std::endl;
+	LOGE << "ResourceManager created. " << lastIconNum << " sprites loaded!";
 }
 
 IconInfo ResourceManager::parseIconInfo(const json &icon_config) {

@@ -1,5 +1,7 @@
 #include "Tile.hpp"
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <Network/Differences.hpp>
 #include <World/World.hpp>
@@ -98,7 +100,7 @@ bool Tile::MoveTo(Object *obj) {
     if (!obj) return false;
 
     if (!obj->IsMovable()) {
-        Server::log << "Warning! Try to move immovable object" << std::endl;
+        LOGW << "Warning! Try to move immovable object";
         return false;
     }
 
@@ -112,9 +114,9 @@ bool Tile::MoveTo(Object *obj) {
     Tile *lastTile = obj->GetTile();
     rpos delta = GetPos() - lastTile->GetPos();
     if (abs(delta.x) > 1 || abs(delta.y) > 1)
-        Server::log << "Warning! Moving more than a one tile. (Tile::MoveTo)" << std::endl;
+        LOGW << "Warning! Moving more than a one tile. (Tile::MoveTo)";
     if (delta.z)
-        Server::log << "Warning! Moving between Z-levels. (Tile::MoveTo)" << std::endl;
+        LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
     const uf::Direction direction = uf::VectToDirection(delta);
     addObject(obj);
     AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastTile));
@@ -142,7 +144,7 @@ void Tile::PlaceTo(Object *obj) {
         CheckLocale();
     } else if (dynamic_cast<Wall *>(obj)) {
         if (!hasFloor) {
-            Server::log << "Warning! Try to place wall without floor" << std::endl;
+            LOGW << "Warning! Try to place wall without floor";
             return;
         }
         if (fullBlocked) {

@@ -1,5 +1,7 @@
 #include "Creature.hpp"
 
+#include <plog/Log.h>
+
 #include <Server.hpp>
 #include <Network/Differences.hpp>
 #include <World/Map.hpp>
@@ -23,7 +25,6 @@ void Creature::Update(sf::Time timeElapsed) {
 }
 
 bool Creature::InteractedBy(Object *) {
-    Server::log << "Creature clicked" << std::endl;
 	return true;
 }
 
@@ -64,7 +65,7 @@ bool Creature::TryInteractWith(Object *obj) {
 void Creature::Stun() {
 	GetTile()->AddDiff(new StunnedDiff(this, sf::seconds(3)));
 	stun = sf::seconds(3);
-    Server::log << "Creature stunned" << std::endl;
+	LOGI << "Creature stunned" << std::endl;
 }
 
 bool Creature::PutOn(Clothing *) {

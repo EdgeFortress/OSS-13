@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <plog/Log.h>
+
 #include "UsersDB.hpp"
 #include "Global.hpp"
 #include "Server.hpp"
@@ -11,7 +13,7 @@ UsersDB::UsersDB() : adr(Global::DatabaseName),
                      loaded(false) {
     adr = Global::DatabaseName;
     loaded = load();
-    if (!loaded) Server::log << "Database reading error!" << endl;
+    if (!loaded) LOGE << "Database reading error!";
 }
 
 bool UsersDB::load() {
