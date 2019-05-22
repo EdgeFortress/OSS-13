@@ -53,6 +53,7 @@
     <ClInclude Include="Sources\Shared\Array.hpp" />
     <ClInclude Include="Sources\Shared\Command.hpp" />
     <ClInclude Include="Sources\Shared\CRC32.h" />
+    <ClInclude Include="Sources\Shared\ErrorHandling.h" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />

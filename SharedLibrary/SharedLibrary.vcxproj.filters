@@ -175,5 +175,8 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\WindowData.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\ErrorHandling.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

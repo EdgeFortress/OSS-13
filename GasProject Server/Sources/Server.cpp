@@ -121,12 +121,12 @@ Server::Server() : new_game_id(1),
 	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
 	plog::init(plog::verbose, &appender);
 
-	RM->AfterCreation();
     networkController->Start();
     CreateGame("One Super Test Game");
     while (true) {
         sleep(seconds(1));
     }
+	ASSERT_WITH_MSG(RM->Initialize(), "Failed to Initialize ResourceManager!");
 }
 
 Player *Server::Authorization(const string &login, const string &password) {
