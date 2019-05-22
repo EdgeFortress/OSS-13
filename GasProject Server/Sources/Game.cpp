@@ -9,6 +9,7 @@
 #include <World/World.hpp>
 #include <World/Objects/Control.hpp>
 #include <World/Objects/Creature.hpp>
+#include <World/Map.hpp>
 
 Game::Game() :
 	active(true)

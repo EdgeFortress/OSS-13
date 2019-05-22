@@ -3,7 +3,7 @@
 #include <plog/Log.h>
 
 struct ExpectationFailedException : public std::exception {
-	const char *what() const override {
+	const char *what() const noexcept override {
 		return "Expectation failed";
 	}
 };

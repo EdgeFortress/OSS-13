@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <thread>
 
 #include <SFML/Network/Packet.hpp>
