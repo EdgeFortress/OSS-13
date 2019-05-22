@@ -43,16 +43,10 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 
 void Object::Update(sf::Time timeElapsed) {
     // Movement
-    uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
+
+	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
 
     shift += deltaShift;
-
-    if (moveIntent) {
-        if (abs(shift.x) >= 1) 
-            moveIntent.x = moveIntentApproved.x;
-        if (abs(shift.y) >= 1)
-            moveIntent.y = moveIntentApproved.y;
-    }
 
     // Animation and animated icon handling
     if (animationProcess) {
@@ -110,9 +104,9 @@ void Object::SetMoveSpeed(float moveSpeed) {
 void Object::SetMoveIntent(uf::vec2i moveIntent, bool approved) {
     if (approved) {
         this->moveIntentApproved = moveIntent;
-        if (this->moveIntent.x < moveIntentApproved.x)
+        if (uf::abs(this->moveIntent.x) < uf::abs(moveIntentApproved.x))
             this->moveIntent.x = moveIntentApproved.x;
-        if (this->moveIntent.y < moveIntentApproved.y)
+        if (uf::abs(this->moveIntent.y) < uf::abs(moveIntentApproved.y))
             this->moveIntent.y = moveIntentApproved.y;
     } else
 	    this->moveIntent = moveIntent;
@@ -125,8 +119,8 @@ void Object::ResetShiftingState() {
 
 void Object::ReverseShifting(uf::Direction direction) {
 	uf::vec2i directionVect = uf::DirectionToVect(direction);
-	if (directionVect.x) moveIntent.x = 0;
-	if (directionVect.y) moveIntent.y = 0;
+	if (directionVect.x) moveIntent.x = 0, moveIntentApproved.x = 0;
+	if (directionVect.y) moveIntent.y = 0, moveIntentApproved.y = 0;
 	shift -= directionVect;
 }
 

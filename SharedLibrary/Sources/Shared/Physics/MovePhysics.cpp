@@ -23,9 +23,9 @@ namespace uf {
                 shift += deltaShift;
                 //// Stop moving if shift > moveIntent
                 if (moveIntent) {
-                    if (uf::abs(shift.x) > uf::abs(moveIntent.x))
+                    if (moveIntent.x && uf::abs(shift.x) > uf::abs(moveIntent.x) && shift.x * moveIntent.x > 0)
                         deltaShift.x += moveIntent.x - shift.x;
-                    if (uf::abs(shift.y) > uf::abs(moveIntent.y))
+                    if (moveIntent.y && uf::abs(shift.y) > uf::abs(moveIntent.y) && shift.y * moveIntent.y > 0)
                         deltaShift.y += moveIntent.y - shift.y;
                 }
 
@@ -40,7 +40,7 @@ namespace uf {
                         else deltaShift.x -= shift.x;
                     }
                     // Y
-                    if (!moveIntent.y && deltaShift.x == 0 && shift.y != 0) {
+                    if (!moveIntent.y && deltaShift.y == 0 && shift.y != 0) {
                         if (shift.y * uf::sgn(shift.y) > delta)
                             deltaShift.y -= uf::sgn(shift.y) * delta;
                         else deltaShift.y -= shift.y;

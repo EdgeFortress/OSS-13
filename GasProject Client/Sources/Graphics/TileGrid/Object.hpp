@@ -45,6 +45,7 @@ public:
 	uint GetID() const;
 	std::string GetName() const;
 	//Sprite *GetSprite() const;
+	uf::Direction GetDirection() const { return direction; }
 	uint GetLayer() const;
     bool PixelTransparent(uf::vec2i pixel) const;
 
