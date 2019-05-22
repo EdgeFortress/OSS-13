@@ -1,6 +1,7 @@
 #pragma once
 
 #include <World/Objects/ObjectHolder.h>
+#include <World/Objects/Object.hpp>
 
 using std::vector;
 
