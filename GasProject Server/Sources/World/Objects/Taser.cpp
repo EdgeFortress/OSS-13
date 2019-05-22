@@ -1,6 +1,6 @@
 #include "Taser.hpp"
 
-#include <Server.hpp>
+#include <IGame.h>
 #include <World/World.hpp>
 #include <World/Tile.hpp>
 #include <World/Objects/Projectile.hpp>
@@ -18,5 +18,5 @@ void Taser::InteractWith(Object *obj) {
 		return;
 
 	uf::vec2i direction = (obj->GetTile()->GetPos() - GetTile()->GetPos()).xy();
-	CurThreadGame->GetWorld()->CreateObject<Projectile>(GetTile(), direction);
+	GGame->GetWorld()->CreateObject<Projectile>(GetTile(), direction);
 }

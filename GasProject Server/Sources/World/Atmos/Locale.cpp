@@ -2,7 +2,6 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 

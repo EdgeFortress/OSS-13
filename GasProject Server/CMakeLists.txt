@@ -11,6 +11,7 @@ target_link_libraries(${EXECUTABLE_NAME} Shared)
 target_link_libraries(${EXECUTABLE_NAME} pthread)
 
 include_directories(Sources)
+include_directories(Include)
 include_directories("${CMAKE_SOURCE_DIR}/SharedLibrary/Sources")
 
 find_package(SFML REQUIRED system window graphics network) #audio

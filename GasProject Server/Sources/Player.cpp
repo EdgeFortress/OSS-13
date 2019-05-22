@@ -4,7 +4,8 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
+#include <IGame.h>
+#include <Chat.h>
 #include <Network/Connection.hpp>
 #include <World/World.hpp>
 #include <World/Tile.hpp>
@@ -17,7 +18,6 @@
 class Server;
 
 Player::Player(std::string ckey) : ckey(ckey) {
-    game = nullptr;
 	control = nullptr;
 }
 
@@ -33,13 +33,12 @@ void Player::UpdateServerList() {
 		connect->commandsToClient.Push(new GameListServerCommand());
 }
 
-void Player::JoinToGame(Game *game) {
-	this->game = game;
+void Player::JoinToGame() {
 	actions.Push(new JoinPlayerCommand);
 }
 
 void Player::ChatMessage(std::string &message) {
-    game->GetChat()->AddMessage("<" + ckey + ">" + message);
+	GGame->GetChat()->AddMessage("<" + ckey + ">" + message);
 }
 
 void Player::Move(uf::Direction direction) {
@@ -115,7 +114,7 @@ void Player::Update(sf::Time timeElapsed) {
         if (temp) {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
-                    SetControl(game->GetStartControl(this));
+                    SetControl(GGame->GetStartControl(this));
 					verbsHolders["atmos"] = GetControl()->GetOwner()->GetTile()->GetMap()->GetAtmos();
                     break;
                 }
@@ -150,14 +149,14 @@ void Player::Update(sf::Time timeElapsed) {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();
 					if (tile)
-						CurThreadGame->GetWorld()->CreateObject<Wall>(tile);
+						GGame->GetWorld()->CreateObject<Wall>(tile);
 					break;
 				}
 				case PlayerCommand::Code::GHOST: {
 					if (!control) break;
 					auto *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
 					if (!ghost) {
-						ghost = CurThreadGame->GetWorld()->CreateObject<::Ghost>(control->GetOwner()->GetTile());
+						ghost = GGame->GetWorld()->CreateObject<::Ghost>(control->GetOwner()->GetTile());
 						ghost->SetHostControl(control);
 						SetControl(ghost->GetComponent<Control>());
 					} else {

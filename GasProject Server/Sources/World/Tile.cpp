@@ -2,7 +2,8 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
+#include <IServer.h>
+#include <Resources/ResourceManager.hpp>
 #include <Network/Differences.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
@@ -16,7 +17,7 @@ Tile::Tile(Map *map, apos pos) :
 {
     uint ux = uint(pos.x);
     uint uy = uint(pos.y);
-	icon = Server::Get()->RM->GetIconInfo("space");
+	icon = GServer->GetRM()->GetIconInfo("space");
 	icon.id += ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;

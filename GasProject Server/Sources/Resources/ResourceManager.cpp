@@ -5,7 +5,7 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
+#include <IServer.h>
 
 #include <Shared/OS.hpp>
 

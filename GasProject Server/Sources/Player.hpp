@@ -33,7 +33,7 @@ public:
 
     /// Client interface
     void UpdateServerList();
-    void JoinToGame(Game *game);
+    void JoinToGame();
     void ChatMessage(std::string &message);
 
     void Move(uf::Direction);
@@ -76,9 +76,6 @@ private:
 
 private:
 	std::string ckey;
-
-	//bool connected;
-	Game *game;
 
 	Control *control;
 	uptr<Camera> camera;

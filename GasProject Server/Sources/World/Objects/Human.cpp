@@ -1,6 +1,7 @@
 #include "Human.hpp"
 
-#include <Server.hpp>
+#include <IServer.h>
+#include <Resources/ResourceManager.hpp>
 #include <World/Tile.hpp>
 #include <World/Objects.hpp>
 
@@ -119,7 +120,7 @@ void Human::pushToIcons(ClothSlot slot) const {
 	}
 
 	if (item)
-		icons.push_back(Server::Get()->RM->GetIconInfo(item->GetSprite(), state));
+		icons.push_back(GServer->GetRM()->GetIconInfo(item->GetSprite(), state));
 }
 
 bool Human::RemoveObject(Object *objToRemove) {

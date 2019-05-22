@@ -2,7 +2,6 @@
 
 #include <functional>
 
-#include "Server.hpp"
 #include "World/World.hpp"
 #include "Network/Differences.hpp"
 

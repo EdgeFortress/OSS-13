@@ -2,7 +2,6 @@
 
 #include <Shared/Network/Protocol/InputData.h>
 
-#include <Server.hpp>
 #include <Player.hpp>
 #include <World/Camera/Camera.hpp>
 

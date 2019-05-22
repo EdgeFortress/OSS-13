@@ -1,6 +1,7 @@
 #include "Object.hpp"
 
-#include <Server.hpp>
+#include <IServer.h>
+#include <Resources/ResourceManager.hpp>
 #include <Network/Differences.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
@@ -119,7 +120,7 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> &
 	if (!animationTimer.IsStopped())
 		return false;
 
-	auto iconInfo = Server::Get()->RM->GetIconInfo(animation);
+	auto iconInfo = GServer->GetRM()->GetIconInfo(animation);
 
     GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
 
@@ -214,7 +215,7 @@ ObjectInfo Object::GetObjectInfo() const {
 
 void Object::updateIcons() const {
 	icons.clear();
-	icons.push_back(Server::Get()->RM->GetIconInfo(sprite));
+	icons.push_back(GServer->GetRM()->GetIconInfo(sprite));
 }
 
 void Object::askToUpdateIcons() {

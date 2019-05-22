@@ -1,6 +1,6 @@
 #include "NetworkController.hpp"
 
-#include <Server.hpp>
+#include <IServer.h>
 #include <World/World.hpp>
 
 #include <Shared/Network/Archive.h>

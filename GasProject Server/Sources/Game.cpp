@@ -73,7 +73,7 @@ bool Game::AddPlayer(sptr<Player> &player) {
 		}
 	}
 	players.push_back(player);
-	player->JoinToGame(this);
+	player->JoinToGame();
 
 	return true;
 }
@@ -93,3 +93,5 @@ Game::~Game() {
 	active = false;
 	thread->join();
 }
+
+IGame *GGame = nullptr;

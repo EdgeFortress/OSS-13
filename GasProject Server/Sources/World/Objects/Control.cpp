@@ -1,6 +1,6 @@
 #include "Control.hpp"
 
-#include <Server.hpp>
+#include <IGame.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects/Creature.hpp>
@@ -35,7 +35,7 @@ void Control::Update(sf::Time timeElapsed) {
     //// Click
     ////
     if (clickedObjectID) {
-        Object *clickedObject = CurThreadGame->GetWorld()->GetObject(clickedObjectID);
+        Object *clickedObject = GGame->GetWorld()->GetObject(clickedObjectID);
 
         if (auto *creature = dynamic_cast<Creature *>(owner))
             creature->TryInteractWith(clickedObject);

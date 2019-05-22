@@ -178,5 +178,8 @@
     <ClInclude Include="Sources\Shared\ErrorHandling.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\IFaces\INonCopyable.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

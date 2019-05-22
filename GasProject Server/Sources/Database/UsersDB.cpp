@@ -3,9 +3,10 @@
 
 #include <plog/Log.h>
 
+#include <IServer.h>
+
 #include "UsersDB.hpp"
 #include "Global.hpp"
-#include "Server.hpp"
 
 using namespace std;
 

@@ -2,7 +2,6 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
 #include <Network/Differences.hpp>
 #include <World/Map.hpp>
 #include <World/Tile.hpp>

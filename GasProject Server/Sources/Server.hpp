@@ -1,47 +1,28 @@
 #pragma once
 
-#include <list>
-#include <string>
-#include <vector>
-#include <mutex>
-
-#include <Game.h>
 #include <Resources/ResourceManager.hpp>
+#include <Network/NetworkController.hpp>
+#include <Database/UsersDB.hpp>
 
-#include <Shared/Types.hpp>
+#include <IServer.h>
 
-class Player;
-class Server;
-class NetworkController;
-class World;
-class Chat;
-class UsersDB;
-class Control;
+class Game;
 
-namespace sf {
-    class Packet;
-    class Time;
-}
-
-namespace std {
-    class thread;
-}
-
-class Server {
+class Server : public IServer {
 public:
-	uptr<UsersDB> UDB;
-	uptr<ResourceManager> RM;
-
 	Server();
-	Player *Authorization(const std::string &login, const std::string &password);
-	bool Registration(const std::string &login, const std::string &password) const;
-	bool JoinGame(sptr<Player> &player) const;
 
-	static Server *Get() { return instance; }
-	Game *GetGame() { return game.get(); }
+// IServer
+	Player *Authorization(const std::string &login, const std::string &password) const override;
+	bool Registration(const std::string &login, const std::string &password) const override;
+	bool JoinGame(sptr<Player> &player) const override;
+
+	IGame *GetGame() const;
+	ResourceManager *GetRM() const;
 
 private:
+	uptr<UsersDB> UDB;
+	uptr<ResourceManager> RM;
 	uptr<NetworkController> networkController;
 	uptr<Game> game;
-	static Server *instance;
 };

@@ -2,7 +2,7 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
+#include <IGame.h>
 #include <Network/Differences.hpp>
 #include <Player.hpp>
 #include <World/World.hpp>
@@ -85,7 +85,7 @@ void Camera::UpdateView(sf::Time timeElapsed) {
 						MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
 						if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
 							apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction));
-							command->diffs.push_back(std::make_shared<AddDiff>(CurThreadGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z));
+							command->diffs.push_back(std::make_shared<AddDiff>(GGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z));
 							visibleObjects.insert(moveDiff->id);
 							break;
 						}

@@ -1,5 +1,6 @@
 #include "ObjectHolder.h"
 
+#include <IGame.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Tile.hpp>
@@ -22,5 +23,5 @@ void ObjectHolder::placeTo(Object *obj, Tile *tile) {
 }
 
 Tile *ObjectHolder::getTile(apos coords) {
-	return CurThreadGame->GetWorld()->GetMap()->GetTile(coords);
+	return GGame->GetWorld()->GetMap()->GetTile(coords);
 }

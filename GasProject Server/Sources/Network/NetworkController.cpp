@@ -8,7 +8,7 @@
 #include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/InputData.h>
 
-#include <Server.hpp>
+#include <IServer.h>
 #include <Player.hpp>
 
 #include "Connection.hpp"
@@ -98,7 +98,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		}
 
 		if (!secondConnection) {
-			if (Player *player = Server::Get()->Authorization(command->login, command->password)) {
+			if (Player *player = GServer->Authorization(command->login, command->password)) {
 				player->SetConnection(connection);
 				connection->player = sptr<Player>(player);
 				connection->commandsToClient.Push(new AuthSuccessServerCommand());
@@ -110,7 +110,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 	}
 
 	if (auto *command = dynamic_cast<RegistrationClientCommand *>(p.get())) {
-		if (Server::Get()->Registration(command->login, command->password))
+		if (GServer->Registration(command->login, command->password))
 			connection->commandsToClient.Push(new RegSuccessServerCommand());
 		else
 			connection->commandsToClient.Push(new RegErrorServerCommand());
@@ -124,7 +124,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 
 	if (auto *command = dynamic_cast<JoinGameClientCommand *>(p.get())) {
 		if (connection->player) {
-			if (Server::Get()->JoinGame(connection->player)) {
+			if (GServer->JoinGame(connection->player)) {
 				connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
 			} else {
 				connection->commandsToClient.Push(new GameJoinErrorServerCommand());

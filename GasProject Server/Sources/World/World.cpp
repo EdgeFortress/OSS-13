@@ -1,6 +1,5 @@
 #include "World.hpp"
 
-#include "Server.hpp"
 #include "Map.hpp"
 #include "Tile.hpp"
 #include "Objects.hpp"

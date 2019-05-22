@@ -2,7 +2,7 @@
 
 #include <plog/Log.h>
 
-#include <Server.hpp>
+#include <IServer.h>
 #include <Player.hpp>
 #include <World/World.hpp>
 #include <World/Tile.hpp>

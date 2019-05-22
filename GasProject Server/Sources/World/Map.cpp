@@ -2,7 +2,6 @@
 
 #include <plog/Log.h>
 
-#include "Server.hpp"
 #include "Tile.hpp"
 #include "Atmos/Atmos.hpp"
 #include "Shared/Global.hpp"

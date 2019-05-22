@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include <Server.hpp>
 #include <Shared/Types.hpp>
 
 #include "Object.hpp"

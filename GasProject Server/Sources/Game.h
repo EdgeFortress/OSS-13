@@ -6,12 +6,13 @@
 
 #include <Shared/Types.hpp>
 
+#include <IGame.h>
 #include <Player.hpp>
 #include <Chat.h>
 
 class World;
 
-class Game {
+class Game : public IGame {
 public:
 	Game();
 
@@ -42,5 +43,3 @@ private:
 
 	void update(sf::Time timeElapsed);
 };
-
-extern Game *CurThreadGame;

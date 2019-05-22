@@ -22,6 +22,8 @@
 #include <Shared/Command.hpp>
 #include <Shared/ErrorHandling.h>
 
+#include "Game.h"
+
 using namespace std;
 using namespace sf;
 
@@ -30,7 +32,7 @@ Server::Server() :
 	RM(std::make_unique<ResourceManager>()),
 	UDB(std::make_unique<UsersDB>())
 {
-	instance = this;
+	GServer = this;
 
 	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
 	plog::init(plog::verbose, &appender);
@@ -38,13 +40,13 @@ Server::Server() :
 	ASSERT_WITH_MSG(RM->Initialize(), "Failed to Initialize ResourceManager!");
 	networkController->Start();
 	game = std::make_unique<Game>();
-	CurThreadGame = game.get();
+	GGame = game.get();
 	while (true) {
 		sleep(seconds(1));
 	}
 }
 
-Player *Server::Authorization(const string &login, const string &password) {
+Player *Server::Authorization(const string &login, const string &password) const {
 	if (UDB->Check(login, password)) {
 		LOGI << "Player is authorized: " << login << " " << password;
 		return new Player(login);
@@ -66,11 +68,13 @@ bool Server::JoinGame(sptr<Player> &player) const {
 	return game->AddPlayer(player);
 }
 
+IGame *Server::GetGame() const { return static_cast<IGame *>(game.get()); }
+ResourceManager *Server::GetRM() const { return RM.get(); }
+
 int main() {
 	Server server;
 
 	return 0;
 }
 
-Server *Server::instance;
-Game *CurThreadGame = nullptr;
+IServer *GServer = nullptr;
