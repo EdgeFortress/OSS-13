@@ -137,7 +137,6 @@
     <ClCompile Include="Sources\Graphics\UI\Style.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\UIModule\GameListUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameProcessUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\UIModule.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Sources\Graphics\UI\UI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModules.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\UIModule\GameListUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\GameProcessUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\UIModule.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />

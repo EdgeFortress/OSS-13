@@ -19,28 +19,27 @@
 #include <World/Objects.hpp>
 
 #include <Shared/Command.hpp>
+#include <Shared/ErrorHandling.h>
 
 using namespace std;
 using namespace sf;
 
-Game::Game(string title, int id) : title(title),
-                                   id(id),
-                                   active(true),
-                                   thread(new std::thread(&Game::gameProcess, this)) {
-
+Game::Game() :
+	active(true)
+{
+	thread = std::make_unique<std::thread>(&Game::gameProcess, this);
 }
 
 void Game::gameProcess() {
-    CurThreadGame = this;
-    world.reset(new World());
-    world->FillingWorld();
-    Clock clock;
-    while (active) {
+	world.reset(new World());
+	world->FillingWorld();
+	Clock clock;
+	while (active) {
 		update(clock.restart());
 		sf::Time timeToSleep = seconds(0.05f) - clock.getElapsedTime(); // 10 ticks per second
 		if (timeToSleep > sf::Time::Zero)
 			sleep(timeToSleep);
-    }
+	}
 }
 
 void Game::update(sf::Time timeElapsed) {
@@ -73,8 +72,6 @@ void Game::update(sf::Time timeElapsed) {
     }
     SendChatMessages();
 }
-
-const int Game::GetID() const { return id; }
 
 bool Game::AddPlayer(sptr<Player> &player) {
     std::unique_lock<std::mutex> lock(playersLock);
@@ -111,22 +108,23 @@ Game::~Game() {
     thread->join();
 }
 
-Server::Server() : new_game_id(1),
-                   networkController(new NetworkController()),
-                   RM(new ResourceManager()),
-                   UDB(new UsersDB())
+Server::Server() :
+	networkController(std::make_unique<NetworkController>()),
+	RM(std::make_unique<ResourceManager>()),
+	UDB(std::make_unique<UsersDB>())
 {
-    instance = this;
+	instance = this;
 
 	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
 	plog::init(plog::verbose, &appender);
 
-    networkController->Start();
-    CreateGame("One Super Test Game");
-    while (true) {
-        sleep(seconds(1));
-    }
 	ASSERT_WITH_MSG(RM->Initialize(), "Failed to Initialize ResourceManager!");
+	networkController->Start();
+	game = std::make_unique<Game>();
+	CurThreadGame = game.get();
+	while (true) {
+		sleep(seconds(1));
+	}
 }
 
 Player *Server::Authorization(const string &login, const string &password) {
@@ -147,24 +145,8 @@ bool Server::Registration(const string &login, const string &password) const {
 	return false;
 }
 
-bool Server::CreateGame(string title) {
-	games.push_back(uptr<Game>(new Game(title, new_game_id)));
-	new_game_id++;
-	return true;
-}
-
-const std::list<uptr<Game>> * const Server::GetGamesList() const {
-    return &games;
-}
-
-Game *Server::JoinGame(const int id, sptr<Player> &player) const {
-    for (auto &game : games) {
-		if (game->GetID() == id) {
-			game->AddPlayer(player);
-			return game.get();
-		}
-	}
-	return nullptr;
+bool Server::JoinGame(sptr<Player> &player) const {
+	return game->AddPlayer(player);
 }
 
 int main() {
@@ -174,4 +156,4 @@ int main() {
 }
 
 Server *Server::instance;
-thread_local Game *CurThreadGame = nullptr;
+Game *CurThreadGame = nullptr;

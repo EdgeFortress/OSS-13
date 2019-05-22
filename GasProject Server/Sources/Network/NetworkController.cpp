@@ -117,12 +117,6 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<CreateGameClientCommand *>(p.get())) {
-		// unused command->title;
-		LOGI << "Request for creating game";
-		return true;
-	}
-
 	if (auto *command = dynamic_cast<GamelistRequestClientCommand *>(p.get())) {
 		connection->player->UpdateServerList();
 		return true;
@@ -130,7 +124,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 
 	if (auto *command = dynamic_cast<JoinGameClientCommand *>(p.get())) {
 		if (connection->player) {
-			if (Game *game = Server::Get()->JoinGame(command->id, connection->player)) {
+			if (Server::Get()->JoinGame(connection->player)) {
 				connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
 			} else {
 				connection->commandsToClient.Push(new GameJoinErrorServerCommand());

@@ -43,7 +43,9 @@ void AuthUI::Update(sf::Time timeElapsed) {
             if (comState == AuthUI::ComState::LOGIN) {
                 if (answer.result) {
                     LOGI << "Successfully logged in";
-                    ui->ChangeModule<GameListUI>();
+					auto *p = new JoinGameClientCommand();
+					Connection::commandQueue.Push(p);
+                    ui->ChangeModule<GameProcessUI>();
                 }
                 else {
                     LOGE << "Failed to log in";

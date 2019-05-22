@@ -27,9 +27,6 @@
     <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Graphics\UI\UIModule\GameListUI.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameProcessUI.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Graphics\UI\UIModule\GameListUI.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Graphics\UI\UIModule\GameProcessUI.hpp">

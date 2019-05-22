@@ -60,64 +60,57 @@ public:
 };
 
 class Game {
-private:
-    std::string title;
-    const int id;
-    bool active;
-    uptr<std::thread> thread;
-    uptr<World> world;
-
-    std::list<sptr<Player>> players;
-	std::list<sptr<Player>> disconnectedPlayers;
-    std::mutex playersLock;
-
-    Chat chat;
-
-    void gameProcess();
-
-    void update(sf::Time timeElapsed);
-
 public:
-    Game(std::string title, int id);
+	Game();
 
 	// True if new player created, false if exist player reconnected
-    bool AddPlayer(sptr<Player> &);
+	bool AddPlayer(sptr<Player> &);
 
 	Control *GetStartControl(Player *);
 
-    const uptr<World> &GetWorld() const { return world; }
+	const uptr<World> &GetWorld() const { return world; }
 
-    const int GetID() const;
-    Chat *GetChat() { return &chat; }
+	const int GetID() const;
+	Chat *GetChat() { return &chat; }
 
-    void SendChatMessages();
-    ~Game();
+	void SendChatMessages();
+	~Game();
 
-    friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
+	friend sf::Packet &operator<<(sf::Packet &packet, Game &game);
+
+private:
+	bool active;
+	uptr<std::thread> thread;
+	uptr<World> world;
+
+	std::list<sptr<Player>> players;
+	std::list<sptr<Player>> disconnectedPlayers;
+	std::mutex playersLock;
+
+	Chat chat;
+
+	void gameProcess();
+
+	void update(sf::Time timeElapsed);
 };
 
-extern thread_local Game *CurThreadGame;
+extern Game *CurThreadGame;
 
 class Server {
-private:
-    int new_game_id;
-
-    uptr<NetworkController> networkController;
-
-    std::list<uptr<Game>> games;
-
-    static Server *instance;
-
 public:
-    uptr<UsersDB> UDB;
-    uptr<ResourceManager> RM;
+	uptr<UsersDB> UDB;
+	uptr<ResourceManager> RM;
 
-    Server();
-    Player *Authorization(const std::string &login, const std::string &password);
-    bool Registration(const std::string &login, const std::string &password) const;
-    bool CreateGame(std::string title);
-    const std::list<uptr<Game>> * const GetGamesList() const;
-    Game *JoinGame(const int id, sptr<Player> &player) const;
+	Server();
+	Player *Authorization(const std::string &login, const std::string &password);
+	bool Registration(const std::string &login, const std::string &password) const;
+	bool JoinGame(sptr<Player> &player) const;
 
-    static Server *Get() { return instance; }
+	static Server *Get() { return instance; }
+	Game *GetGame() { return game.get(); }
+
+private:
+	uptr<NetworkController> networkController;
+	uptr<Game> game;
+	static Server *instance;
 };

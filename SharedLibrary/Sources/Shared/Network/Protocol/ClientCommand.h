@@ -39,15 +39,6 @@ DEFINE_SERIALIZABLE_END
 DEFINE_SERIALIZABLE(GamelistRequestClientCommand, ClientCommand) 
 };
 
-DEFINE_SERIALIZABLE(CreateGameClientCommand, ClientCommand)
-	std::string title;
-
-	void Serialize(uf::Archive &ar) override {
-		ClientCommand::Serialize(ar);
-		ar & title;
-	}
-DEFINE_SERIALIZABLE_END
-
 DEFINE_SERIALIZABLE(JoinGameClientCommand, ClientCommand)
 	int id;
 

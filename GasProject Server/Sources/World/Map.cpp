@@ -19,7 +19,7 @@ Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
 			}
 		}
 	}
-	LOGI << "Map is created with size: " << sizeX << "x" << sizeY << "x" << sizeZ << std::endl;
+	LOGI << "Map is created with size: " << sizeX << "x" << sizeY << "x" << sizeZ;
 
 	atmos = std::make_unique<Atmos>(this);
 }

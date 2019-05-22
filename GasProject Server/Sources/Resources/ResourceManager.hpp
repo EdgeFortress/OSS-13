@@ -10,7 +10,7 @@
 class ResourceManager {
 public:
     ResourceManager() = default;
-	void AfterCreation();
+	bool Initialize();
 
 	IconInfo GetIconInfo(const std::string &spriteName, Global::ItemSpriteState spriteState = Global::ItemSpriteState::DEFAULT);
 

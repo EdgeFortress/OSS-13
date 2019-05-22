@@ -13,13 +13,6 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
     ServerCommand::Code code = serverCommand->GetCode();
     packet << sf::Int32(code);
     switch (code) {
-        case ServerCommand::Code::GAME_LIST: {
-            packet << sf::Int32(Server::Get()->GetGamesList()->size());
-            for (auto &game : *(Server::Get()->GetGamesList())) {
-                packet << *(game.get());
-            }
-            break;
-        }
         case ServerCommand::Code::GRAPHICS_UPDATE: {
             GraphicsUpdateServerCommand *command = dynamic_cast<GraphicsUpdateServerCommand *>(serverCommand);
             packet << sf::Int32(command->options);
@@ -74,13 +67,6 @@ Packet &operator<<(Packet &packet, ServerCommand *serverCommand) {
         }
     }
 
-    return packet;
-}
-
-Packet &operator<<(Packet &packet, Game &game) {
-    packet << sf::Int32(game.id);
-    packet << sf::String(game.title);
-    packet << sf::Int32(game.players.size());
     return packet;
 }
 

@@ -1,6 +1,7 @@
 #include "ResourceManager.hpp"
 
 #include <fstream>
+#include <filesystem>
 
 #include <plog/Log.h>
 
@@ -10,8 +11,14 @@
 
 using json = nlohmann::json;
 
-void ResourceManager::AfterCreation() { 
-	loadIcons();
+bool ResourceManager::Initialize() {
+	try {
+		loadIcons();
+	} catch (std::filesystem::filesystem_error e) {
+		LOGE << e.what();
+		return false;
+	}
+	return true;
 }
 
 void ResourceManager::loadIcons() {
@@ -39,7 +46,7 @@ void ResourceManager::loadIcons() {
 		}
 	}
 
-	LOGE << "ResourceManager created. " << lastIconNum << " sprites loaded!";
+	LOGI << "ResourceManager created. " << lastIconNum << " sprites loaded!";
 }
 
 IconInfo ResourceManager::parseIconInfo(const json &icon_config) {

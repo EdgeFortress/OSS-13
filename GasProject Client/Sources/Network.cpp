@@ -8,7 +8,6 @@
 
 #include "Graphics/UI/UI.hpp"
 #include "Graphics/UI/UIModule/AuthUI.hpp"
-#include "Graphics/UI/UIModule/GameListUI.hpp"
 #include "Graphics/UI/UIModule/GameProcessUI.hpp"
 
 #include "Client.hpp"
@@ -109,32 +108,6 @@ void Connection::parsePacket(Packet &packet) {
 		authUI->SetServerAnswer(false);
             break;
 	}
-        case ServerCommand::Code::GAME_CREATE_SUCCESS:
-            break;
-        case ServerCommand::Code::GAME_CREATE_ERROR:
-            break;
-		case ServerCommand::Code::GAME_LIST: {
-			GameListUI *gameListUI = dynamic_cast<GameListUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-			if (!gameListUI) break;
-			CC::Get()->GetWindow()->GetUI()->Lock();
-			gameListUI->Clear();
-			Int32 size;
-			packet >> size;
-			for (int i = 1; i <= size; i++) {
-				Int32 id, num_of_players;
-				String title;
-				packet >> id >> title >> num_of_players;
-				gameListUI->AddGame(id, title.toAnsiString(), num_of_players);
-			}
-			CC::Get()->GetWindow()->GetUI()->Unlock();
-			break;
-		}
-        case ServerCommand::Code::GAME_JOIN_SUCCESS:
-            LOGI << "You join the game";
-            break;
-        case ServerCommand::Code::GAME_JOIN_ERROR:
-            LOGE << "Fail to join the game";
-            break;
         case ServerCommand::Code::GRAPHICS_UPDATE:
         {
             GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());

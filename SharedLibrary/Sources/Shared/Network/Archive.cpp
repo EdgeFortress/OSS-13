@@ -32,7 +32,6 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 		DECLARE_SER(AuthorizationClientCommand)
 		DECLARE_SER(RegistrationClientCommand)
 		DECLARE_SER(GamelistRequestClientCommand)
-		DECLARE_SER(CreateGameClientCommand)
 		DECLARE_SER(JoinGameClientCommand)
 		DECLARE_SER(MoveClientCommand)
 		DECLARE_SER(MoveZClientCommand)
