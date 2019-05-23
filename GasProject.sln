@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedLibrary", "SharedLibr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedLibrary_Test", "SharedLibrary\Tests\SharedLibrary_Test.vcxproj", "{9D9EB597-A767-41B6-B1E9-334CE0FDADAD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LTBL2", "External\LTBL2\LTBL2.vcxproj", "{F4842821-F5B7-4029-9228-C75417464F42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -57,6 +59,14 @@ Global
 		{9D9EB597-A767-41B6-B1E9-334CE0FDADAD}.Release|x64.Build.0 = Release|x64
 		{9D9EB597-A767-41B6-B1E9-334CE0FDADAD}.Release|x86.ActiveCfg = Release|Win32
 		{9D9EB597-A767-41B6-B1E9-334CE0FDADAD}.Release|x86.Build.0 = Release|Win32
+		{F4842821-F5B7-4029-9228-C75417464F42}.Debug|x64.ActiveCfg = Debug|x64
+		{F4842821-F5B7-4029-9228-C75417464F42}.Debug|x64.Build.0 = Debug|x64
+		{F4842821-F5B7-4029-9228-C75417464F42}.Debug|x86.ActiveCfg = Debug|Win32
+		{F4842821-F5B7-4029-9228-C75417464F42}.Debug|x86.Build.0 = Debug|Win32
+		{F4842821-F5B7-4029-9228-C75417464F42}.Release|x64.ActiveCfg = Release|x64
+		{F4842821-F5B7-4029-9228-C75417464F42}.Release|x64.Build.0 = Release|x64
+		{F4842821-F5B7-4029-9228-C75417464F42}.Release|x86.ActiveCfg = Release|Win32
+		{F4842821-F5B7-4029-9228-C75417464F42}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

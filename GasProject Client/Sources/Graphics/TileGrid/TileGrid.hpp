@@ -9,6 +9,8 @@
 #include <Graphics/UI/Widget/CustomWidget.h>
 #include "Tile.hpp"
 
+#include "Light.h"
+
 namespace sf { 
     class Event;
     class Packet;
@@ -85,6 +87,8 @@ private:
 
     std::vector< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
+
+	uptr<Light> light;
 
     mutable std::mutex mutex;
     mutable std::vector< std::vector<Object *> > layersBuffer;

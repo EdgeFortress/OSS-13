@@ -7,6 +7,7 @@
 #include "Shared/Global.hpp"
 
 #include <iostream>
+#include <fstream>
 
 ClientController::ClientController() : 
     player(new Player),
@@ -16,6 +17,7 @@ ClientController::ClientController() :
 }
 
 void ClientController::Run() {
+	sf::err();
 	plog::init(plog::verbose, this);
 
 	RM.Initialize();

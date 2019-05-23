@@ -194,5 +194,8 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\DynamicWidget.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Graphics\TileGrid\Light.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

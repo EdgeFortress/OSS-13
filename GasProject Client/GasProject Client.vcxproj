@@ -80,10 +80,14 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\LTBL2\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\LTBL2\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
@@ -97,6 +101,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\LTBL2\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -111,6 +116,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\LTBL2\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,6 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\LTBL2\LTBL2.vcxproj">
+      <Project>{f4842821-f5b7-4029-9228-c75417464f42}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SharedLibrary\SharedLibrary.vcxproj">
       <Project>{7434416a-7972-4353-af2f-709a7eca887b}</Project>
     </ProjectReference>
@@ -163,6 +172,7 @@
     <ClInclude Include="Sources\Graphics\TextureHolder.h" />
     <ClInclude Include="Sources\Graphics\TileGrid.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\Light.h" />
     <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Tile.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />

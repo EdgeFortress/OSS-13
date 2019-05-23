@@ -22,6 +22,7 @@ void Window::Initialize() {
     width = int(0.8 * videoMode.width);
     height = int(0.8 * videoMode.height);
     window.reset(new sf::RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
+	window->setVerticalSyncEnabled(true);
     ui->ChangeModule<AuthUI>();
     resize(window->getSize().x, window->getSize().y);
 

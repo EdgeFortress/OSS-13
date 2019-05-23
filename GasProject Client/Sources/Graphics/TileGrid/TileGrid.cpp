@@ -39,6 +39,8 @@ TileGrid::TileGrid() :
 	canBeActive = true;
 
     layersBuffer.resize(101);
+
+	light = std::make_unique<Light>(GetSize());
 }
 
 void TileGrid::draw() const {
@@ -91,6 +93,7 @@ void TileGrid::draw() const {
 			}
 	}
 
+	light->Update(&buffer);
 	buffer.display();
 }
 

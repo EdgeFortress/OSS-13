@@ -17,19 +17,19 @@ int main()
 
 	// Load light texture
 	sf::Texture pointLightTexture;
-	pointLightTexture.loadFromFile("LTBL2/examples/pointLightTexture.png");
+	pointLightTexture.loadFromFile("examples/pointLightTexture.png");
 	pointLightTexture.setSmooth(true);
 	sf::Texture spookyLightTexture;
-	spookyLightTexture.loadFromFile("LTBL2/examples/spookyLightTexture.png");
+	spookyLightTexture.loadFromFile("examples/spookyLightTexture.png");
 	spookyLightTexture.setSmooth(true);
 	sf::Texture backgroundTexture;
-	backgroundTexture.loadFromFile("LTBL2/examples/background.png");
+	backgroundTexture.loadFromFile("examples/background.png");
 	sf::Texture backgroundTextureNormals;
-	backgroundTextureNormals.loadFromFile("LTBL2/examples/background_NORMALS.png");
+	backgroundTextureNormals.loadFromFile("examples/background_NORMALS.png");
 	sf::Texture headTexture;
-	headTexture.loadFromFile("LTBL2/examples/head.png");
+	headTexture.loadFromFile("examples/head.png");
 	sf::Texture headTextureNormals;
-	headTextureNormals.loadFromFile("LTBL2/examples/head_NORMALS.png");
+	headTextureNormals.loadFromFile("examples/head_NORMALS.png");
 
 	// Add a sun light
 	ltbl::LightDirectionEmission* sun = ls.createLightDirectionEmission();
