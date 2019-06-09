@@ -10,23 +10,23 @@
 #include <Shared/Types.hpp>
 #include <Shared/Global.hpp>
 #include <Shared/Timer.h>
+#include <Shared/IFaces/INonCopyable.h>
 
 class ObjectHolder;
 class Tile;
 struct ObjectInfo;
 
-class Object {
+class Object : public INonCopyable {
 	friend ObjectHolder;
 	friend Tile;
 
-protected:
-	Object(); // Use ObjectHolder to create objects!
-
 public:
-    virtual ~Object() = default;
+	Object(); // Use ObjectHolder to create objects!
+	virtual ~Object() = default;
 
 	virtual void AfterCreation();
     virtual void Update(sf::Time timeElapsed);
+	virtual void UpdateWithoutTime() {}; // TODO: Remove this
 
     virtual bool InteractedBy(Object *) = 0;
 
@@ -34,29 +34,37 @@ public:
 	virtual bool RemoveObject(Object *);
     void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
-    void SetSprite(const std::string &sprite);
+    virtual void Delete();
+
+    uint ID() const;
+
+    const std::string &GetName() const;
+	void SetName(const std::string& name);
+
+	const std::string &GetSprite() const;
+	void SetSprite(const std::string &sprite);
+
+	uint GetLayer() const;
+	void SetLayer(uint);
+
 	void SetSpriteState(Global::ItemSpriteState);
 	// False if another animation is playing already. Callback will be called after animation
 	bool PlayAnimation(const std::string &sprite, std::function<void()> &&callback = {});
-    void Delete();
 
-    uint ID() const;
-    std::string GetName() const;
+	void SetDensity(bool);
+	bool GetDensity() const;
+
     Tile *GetTile() const;
 	Object *GetHolder() const;
     template<class T> T *GetComponent();
+	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
 
-    bool GetDensity() const;
     bool IsMovable() const;
     bool IsCloseTo(Object *) const;
     // True if visibility bits allows to see invisibility bits
     bool CheckVisibility(uint visibility) const;
     // Get Invisibility bits
     uint GetInvisibility() const;
-
-	std::string GetSprite() const;
-
-    uint GetLayer() const;
 
 	//
 	// For control purposes
@@ -107,7 +115,7 @@ protected:
 	mutable std::vector<IconInfo> icons;
 
 private:
-    uint id;
+	uint id;
     Tile *tile;
 	Object *holder;
 	std::list<Object *> content;
@@ -121,6 +129,7 @@ private:
 
     uf::vec2f shift;
 
+	bool justCreated{true};
 	bool iconsOutdated;
 };
 

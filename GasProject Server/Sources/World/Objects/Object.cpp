@@ -1,6 +1,7 @@
 #include "Object.hpp"
 
 #include <IServer.h>
+#include <IGame.h>
 #include <Resources/ResourceManager.hpp>
 #include <Network/Differences.hpp>
 #include <World/World.hpp>
@@ -107,10 +108,24 @@ void Object::SetConstSpeed(uf::vec2f speed) {
     constSpeed = speed;
 }
 
+void Object::Delete() {
+    if (tile) tile->RemoveObject(this);
+    id = 0;
+}
+
+uint Object::ID() const { return id; }
+
+const std::string &Object::GetName() const { return name; }
+void Object::SetName(const std::string& name) { this->name = name; };
+
+const std::string &Object::GetSprite() const { return sprite; }
 void Object::SetSprite(const std::string &sprite) {
-    this->sprite = sprite;
+	this->sprite = sprite;
 	askToUpdateIcons();
 }
+
+uint Object::GetLayer() const { return layer; }
+void Object::SetLayer(uint layer) { this->layer = layer; }
 
 void Object::SetSpriteState(Global::ItemSpriteState newState) {
 	spriteState = newState;
@@ -122,23 +137,18 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> &
 
 	auto iconInfo = GServer->GetRM()->GetIconInfo(animation);
 
-    GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
+	GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
 
 	animationTimer.Start(iconInfo.animation_time, std::forward<std::function<void()>>(callback));
 	return true;
 }
 
-void Object::Delete() {
-    if (tile) tile->RemoveObject(this);
-    id = 0;
-}
+bool Object::GetDensity() const { return density; };
+void Object::SetDensity(bool density) { this->density = density; }
 
-uint Object::ID() const { return id; }
-std::string Object::GetName() const { return name; }
 Tile *Object::GetTile() const { return tile; }
 Object *Object::GetHolder() const { return holder; }
 
-bool Object::GetDensity() const { return density; };
 bool Object::IsMovable() const { return movable; };
 bool Object::IsCloseTo(Object *other) const {
     auto pos = GetTile()->GetPos();
@@ -152,9 +162,6 @@ uint Object::GetInvisibility() const { return invisibility; }
 bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
 }
-
-std::string Object::GetSprite() const { return sprite; }
-uint Object::GetLayer() const { return layer; }
 
 
 void Object::SetMoveIntent(uf::vec2i moveIntent) {

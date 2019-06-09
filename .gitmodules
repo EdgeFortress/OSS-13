@@ -1,3 +1,6 @@
 [submodule "External/plog"]
 	path = External/plog
 	url = https://github.com/SergiusTheBest/plog
+[submodule "External/pybind11"]
+	path = External/pybind11
+	url = https://github.com/pybind/pybind11

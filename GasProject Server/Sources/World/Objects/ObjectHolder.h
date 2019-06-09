@@ -16,13 +16,17 @@ public:
 	template<typename T, typename... TArgs>
 	T *CreateObject(apos tile, TArgs&&... Args);
 
+	Object *CreateScriptObject(const std::string &module, Tile *tile = nullptr);
+	Object *CreateScriptObject(const std::string &module, apos coords);
+
+	void AddObject(std::shared_ptr<Object> obj);
+
 private:
-	uint32_t addObject(Object *);
 	void placeTo(Object *, Tile *);
 	Tile *getTile(apos);
 
 protected: // TODO: make it private!
-	std::vector<uptr<Object>> objects;
+	std::vector<sptr<Object>> objects;
 	std::vector<uint> free_ids;
 };
 
@@ -39,7 +43,7 @@ protected:
 	{ }
 
 	virtual ~Factory() { }
-	T *GetObject() { return this; }
+	T *GetObject() { return static_cast<T *>(this); }
 };
 
 }
@@ -47,9 +51,9 @@ protected:
 template<typename T, typename... TArgs>
 T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
 	auto *factory = new detail::Factory<T>(std::forward<TArgs>(Args)...);
-	Object *obj = factory->GetObject(); // Object * is important! It's check for correct type.
+	auto *obj = static_cast<Object *>(factory->GetObject());
 
-	obj->id = addObject(obj);
+	AddObject(std::shared_ptr<Object>(obj));
 	placeTo(obj, tile);
 
 	obj->AfterCreation();

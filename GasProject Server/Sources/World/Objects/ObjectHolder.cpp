@@ -1,19 +1,36 @@
 #include "ObjectHolder.h"
 
 #include <IGame.h>
+#include <IScriptEngine.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Tile.hpp>
+#include <World/Objects/Object.hpp>
 
-uint32_t ObjectHolder::addObject(Object *obj) {
+Object *ObjectHolder::CreateScriptObject(const std::string &module, Tile *tile) {
+	auto obj = GGame->GetScriptEngine()->CreateObject(module);
+	if (!obj)
+		return {};
+
+	placeTo(obj, tile);
+
+	obj->AfterCreation();
+	return obj;
+}
+
+Object *ObjectHolder::CreateScriptObject(const std::string &module, apos coords) {
+	return CreateScriptObject(module, getTile(coords));
+}
+
+void ObjectHolder::AddObject(std::shared_ptr<Object> obj) {
 	if (free_ids.empty()) {
-		objects.push_back(uptr<Object>(obj));
-		return uint32_t(objects.size());
+		objects.push_back(obj);
+		obj->id = uint32_t(objects.size());
 	} else {
 		auto id = free_ids.back();
 		free_ids.pop_back();
-		objects[id - 1] = uptr<Object>(obj);
-		return id;
+		objects[id - 1] = obj;
+		obj->id = id;
 	}
 }
 

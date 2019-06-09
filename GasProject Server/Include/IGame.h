@@ -7,6 +7,7 @@ class Player;
 class Control;
 class World;
 class Chat;
+class IScriptEngine;
 
 class IGame : public INonCopyable {
 public:
@@ -16,6 +17,7 @@ public:
 
 	virtual Control *GetStartControl(Player *) = 0;
 	virtual const uptr<World> &GetWorld() const = 0;
+	virtual IScriptEngine *GetScriptEngine() const = 0;
 	virtual Chat *GetChat() = 0;
 };
 

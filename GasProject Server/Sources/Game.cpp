@@ -6,6 +6,7 @@
 #include <Shared/Command.hpp>
 
 #include <Network/Connection.hpp>
+#include <ScriptEngine/ScriptEngine.h>
 #include <World/World.hpp>
 #include <World/Objects/Control.hpp>
 #include <World/Objects/Creature.hpp>
@@ -18,6 +19,7 @@ Game::Game() :
 }
 
 void Game::gameProcess() {
+	scriptEngine = std::make_unique<ScriptEngine>();
 	world.reset(new World());
 	world->FillingWorld();
 	sf::Clock clock;

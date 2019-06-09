@@ -6,6 +6,8 @@
 #include "Objects/Control.hpp"
 #include "Player.hpp"
 
+#include <Shared/ErrorHandling.h>
+
 World::World() : 
 	map(new Map(100, 100, 3))
 { }
@@ -30,17 +32,22 @@ void World::Update(sf::Time timeElapsed) {
 
     // update objects
     for (uint i = 0; i < objects.size(); i++) {
-        if (!objects[i].get()) continue; // already deleted
+        if (!objects[i]) continue; // already deleted
         if (!objects[i]->ID()) {         // waiting for delete
-            objects[i].release();
+			EXPECT_WITH_MSG(objects[i].use_count() == 1, "Something is holding object!");
+            objects[i].reset();
             free_ids.push_back(i + 1);
             continue;
         }
+		if (objects[i]->CheckIfJustCreated()) // don't update objects created at current tick
+			continue;
         objects[i]->Update(timeElapsed);
     }
 }
 
 void World::FillingWorld() {
+	CreateScriptObject("Item.Clothing.Clothing", {48, 48, 0});
+
     for (uint i = 45; i <= 55; i++) {
         for (uint j = 45; j <= 55; j++) {
 			CreateObject<Floor>({ i, j, 0 });

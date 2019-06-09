@@ -23,6 +23,7 @@ public:
 	Control *GetStartControl(Player *);
 
 	const uptr<World> &GetWorld() const { return world; }
+	IScriptEngine *GetScriptEngine() const { return scriptEngine.get(); }
 
 	Chat *GetChat() { return &chat; }
 
@@ -33,6 +34,7 @@ private:
 	bool active;
 	uptr<std::thread> thread;
 	uptr<World> world;
+	uptr<IScriptEngine> scriptEngine;
 
 	std::list<sptr<Player>> players;
 	std::list<sptr<Player>> disconnectedPlayers;

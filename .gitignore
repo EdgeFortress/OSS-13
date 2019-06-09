@@ -216,3 +216,4 @@ ModelManifest.xml
 
 Resources/Icons/Thumbs.db
 imgui.ini
+**/__pycache__/
