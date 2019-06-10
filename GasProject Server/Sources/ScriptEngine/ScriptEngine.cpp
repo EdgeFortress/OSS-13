@@ -42,7 +42,7 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 		if (!type.size()) {
 			auto index = m.find_last_of('.');
 			EXPECT_WITH_MSG(index != std::string::npos, "Wrong script object module! Module is " + m);
-			std::string &type = m.substr(m.find_last_of('.') + 1);
+			std::string type = m.substr(m.find_last_of('.') + 1);
 			return py::module::import(m.c_str()).attr(type.c_str())().cast<Object *>();
 		} else {
 			return py::module::import(m.c_str()).attr(type.c_str())().cast<Object *>();
