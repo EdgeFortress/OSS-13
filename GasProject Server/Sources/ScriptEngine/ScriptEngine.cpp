@@ -1,5 +1,7 @@
 #include "ScriptEngine.h"
 
+#include <Python.h>
+
 #include <pybind11/embed.h>
 #include <plog/Log.h>
 

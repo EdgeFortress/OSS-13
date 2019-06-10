@@ -95,7 +95,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -108,7 +108,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -121,7 +121,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -140,6 +140,7 @@
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\PlayerCommand.cpp" />
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
+    <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\IGame.h" />
+    <ClInclude Include="Include\IScriptEngine.h" />
     <ClInclude Include="Include\IServer.h" />
     <ClInclude Include="Sources\Chat.h" />
     <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h" />
@@ -182,6 +184,8 @@
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Resources\IconInfo.h" />
     <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
+    <ClInclude Include="Sources\ScriptEngine\ScriptEngine.h" />
+    <ClInclude Include="Sources\ScriptEngine\Trampoline\PyObject.h" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\VerbsHolder.h" />
     <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
