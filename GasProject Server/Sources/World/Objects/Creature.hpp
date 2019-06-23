@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SFML/System/Time.hpp>
-
 #include "Object.hpp"
 
 class Clothing;
@@ -11,7 +9,7 @@ protected:
 	Creature();
 
 public:
-	virtual void Update(sf::Time timeElapsed) override;
+	virtual void Update(std::chrono::microseconds timeElapsed) override;
     bool InteractedBy(Object *) override;
 
 	virtual void MoveZ(int order) {};
@@ -28,5 +26,5 @@ protected:
 	uint seeInvisibleAbility;
 
 private:
-	sf::Time stun;
+	std::chrono::microseconds stun;
 };

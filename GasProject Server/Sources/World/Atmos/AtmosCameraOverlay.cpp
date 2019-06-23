@@ -3,6 +3,8 @@
 #include <World/Tile.hpp>
 #include <World/Atmos/Locale.hpp>
 
+using namespace std::chrono_literals;
+
 AtmosCameraOverlay::AtmosCameraOverlay() :
 	mode(AtmosCameraOverlayMode::Locale)
 { }
@@ -11,11 +13,11 @@ void AtmosCameraOverlay::SetMode(AtmosCameraOverlayMode newMode) {
 	mode = newMode;
 }
 
-bool AtmosCameraOverlay::IsShouldBeUpdated(sf::Time timeElapsed) const {
+bool AtmosCameraOverlay::IsShouldBeUpdated(std::chrono::microseconds timeElapsed) const {
 	timeAfterLastUpdate += timeElapsed;
 
-	if (timeAfterLastUpdate > sf::seconds(1)) {
-		timeAfterLastUpdate = sf::Time::Zero;
+	if (timeAfterLastUpdate > 1s) {
+		timeAfterLastUpdate = timeAfterLastUpdate.zero();
 		return true;
 	}
 

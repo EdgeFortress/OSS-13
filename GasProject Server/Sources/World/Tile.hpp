@@ -26,7 +26,7 @@ public:
     friend Locale;
     Tile(Map *map, apos pos);
 
-    void Update(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
 
     // Call it when atmos initialized or tile atmos properties changed (floor or wall status updated)
     void CheckLocale();

@@ -28,12 +28,12 @@ void Object::AfterCreation() {
 	askToUpdateIcons();
 }
 
-void Object::Update(sf::Time timeElapsed) {
+void Object::Update(std::chrono::microseconds timeElapsed) {
 	for (auto &idAndComponent : components) {
 		idAndComponent.second->Update(timeElapsed);
 	}
 
-	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
+	uf::vec2f deltaShift = uf::phys::countDeltaShift(sf::microseconds(timeElapsed.count()), shift, moveSpeed, moveIntent, constSpeed, physSpeed);
 	shift += deltaShift;
 
 	if (shift) {

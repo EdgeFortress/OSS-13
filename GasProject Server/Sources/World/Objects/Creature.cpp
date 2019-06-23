@@ -7,6 +7,8 @@
 #include <World/Tile.hpp>
 #include <World/Objects/Control.hpp>
 
+using namespace std::chrono_literals;
+
 Creature::Creature() {
 	layer = 75;
 	name = "Creature";
@@ -14,12 +16,12 @@ Creature::Creature() {
 	AddComponent(new Control());
 }
 
-void Creature::Update(sf::Time timeElapsed) {
+void Creature::Update(std::chrono::microseconds timeElapsed) {
 	Object::Update(timeElapsed);
 	if (stun > timeElapsed)
 		stun -= timeElapsed;
 	else
-		stun = sf::Time::Zero;
+		stun = stun.zero();
 }
 
 bool Creature::InteractedBy(Object *) {
@@ -33,8 +35,8 @@ bool Creature::TryInteractWith(Object *obj) {
 }
 
 void Creature::Stun() {
-	GetTile()->AddDiff(new StunnedDiff(this, sf::seconds(3)));
-	stun = sf::seconds(3);
+	GetTile()->AddDiff(new StunnedDiff(this, 3s));
+	stun = 3s;
 	LOGI << "Creature stunned" << std::endl;
 }
 
@@ -44,4 +46,4 @@ bool Creature::PutOn(Clothing *) {
 
 uint Creature::GetInvisibleVisibility() const { return seeInvisibleAbility; }
 
-bool Creature::IsStunned() const { return stun > sf::Time::Zero; }
+bool Creature::IsStunned() const { return stun > stun.zero(); }

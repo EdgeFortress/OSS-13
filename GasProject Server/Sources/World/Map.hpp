@@ -14,7 +14,7 @@ public:
     explicit Map(const uint sizeX, const uint sizeY, const uint sizeZ);
 
     void ClearDiffs();
-    void Update(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
 
     apos GetSize() const;
     Atmos *GetAtmos() const;

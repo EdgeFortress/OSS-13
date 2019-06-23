@@ -97,7 +97,7 @@ void Player::CallVerb(const std::string &verb) {
 		LOGE << "Error: VerbHolder wasn't found! VerbHolder: " << verbHolder;
 }
 
-void Player::updateUISinks(sf::Time timeElapsed) {
+void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
 	for (auto iter = uiSinks.begin(); iter != uiSinks.end();) {
 		auto *sink = iter->second.get();
 		sink->Update(timeElapsed);
@@ -108,7 +108,7 @@ void Player::updateUISinks(sf::Time timeElapsed) {
 	}
 }
 
-void Player::Update(sf::Time timeElapsed) {
+void Player::Update(std::chrono::microseconds timeElapsed) {
     while (!actions.Empty()) {
         PlayerCommand *temp = actions.Pop();
         if (temp) {
@@ -177,7 +177,7 @@ void Player::Update(sf::Time timeElapsed) {
 	updateUISinks(timeElapsed);
 }
 
-void Player::SendGraphicsUpdates(sf::Time timeElapsed) {
+void Player::SendGraphicsUpdates(std::chrono::microseconds timeElapsed) {
     if (camera) {
         camera->UpdateView(timeElapsed);
     }

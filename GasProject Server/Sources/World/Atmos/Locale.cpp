@@ -15,7 +15,7 @@ Locale::Locale(Atmos *atmos, Tile *tile) :
     tile->locale = this;
 }
 
-void Locale::Update(sf::Time timeElapsed) {
+void Locale::Update(std::chrono::microseconds timeElapsed) {
     if (needToCheckCloseness) {
         for (auto tile : tiles) {
             for (int dx = -1; dx <= 1; dx++)

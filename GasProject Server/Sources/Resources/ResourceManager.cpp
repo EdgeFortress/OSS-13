@@ -10,6 +10,7 @@
 #include <Shared/OS.hpp>
 
 using json = nlohmann::json;
+using namespace std::chrono_literals;
 
 bool ResourceManager::Initialize() {
 	try {
@@ -57,9 +58,9 @@ IconInfo ResourceManager::parseIconInfo(const json &icon_config) {
 		iconInfo.isAnimation = true;
 		auto loop_time = icon_config.find("loop_time");
 		if (loop_time != icon_config.end())
-			iconInfo.animation_time = sf::seconds(loop_time->get<float>());
+			iconInfo.animation_time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::duration<float>(loop_time->get<float>()));
 		else
-			iconInfo.animation_time = float(frames->get<int>()) * sf::seconds(0.1f);
+			iconInfo.animation_time = frames->get<int>() * 100us;
 	}
 
 	return iconInfo;

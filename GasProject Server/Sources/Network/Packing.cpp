@@ -129,7 +129,7 @@ Packet &operator<<(Packet &packet, const Diff &diff) {
 		{
 			packet << Int32(diff.id);
 			const StunnedDiff &stunnedDiff = dynamic_cast<const StunnedDiff &>(diff);
-			packet << stunnedDiff.duration.asMilliseconds();
+			packet << Int32(std::chrono::duration_cast<std::chrono::milliseconds>(stunnedDiff.duration).count());
 			break;
 		}
     }

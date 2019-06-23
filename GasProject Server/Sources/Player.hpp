@@ -10,8 +10,6 @@
 #include <Shared/ThreadSafeQueue.hpp>
 #include <Shared/Network/Protocol/InputData.h>
 
-#include <SFML/System/Time.hpp>
-
 #include "VerbsHolder.h"
 
 class Server;
@@ -48,8 +46,8 @@ public:
 	void CallVerb(const std::string &verb);
     ///
 
-    void Update(sf::Time timeElapsed);
-    void SendGraphicsUpdates(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
+    void SendGraphicsUpdates(std::chrono::microseconds timeElapsed);
 
 	template <class T>
 	void OpenWindow() {
@@ -72,7 +70,7 @@ public:
     void AddCommandToClient(ServerCommand *);
 
 private:
-	void updateUISinks(sf::Time timeElapsed);
+	void updateUISinks(std::chrono::microseconds timeElapsed);
 
 private:
 	std::string ckey;

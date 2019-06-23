@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-
-#include <SFML/System/Time.hpp>
+#include <chrono>
 
 #include <Shared/Network/Protocol/OverlayInfo.h>
 
@@ -12,6 +11,6 @@ class ICameraOverlay {
 public:
 	virtual ~ICameraOverlay() = default;
 
-	virtual bool IsShouldBeUpdated(sf::Time timeElapsed) const = 0;
+	virtual bool IsShouldBeUpdated(std::chrono::microseconds timeElapsed) const = 0;
 	virtual network::protocol::OverlayInfo GetOverlayInfo(Tile tile) const = 0;
 };

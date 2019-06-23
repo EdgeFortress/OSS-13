@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-
-#include <SFML/System/Time.hpp>
+#include <chrono>
 
 class Object;
 
@@ -16,10 +15,9 @@ public:
     Component(std::string &&id);
     virtual ~Component() = default;
 
-	virtual void Update(sf::Time timeElapsed) = 0;
+	virtual void Update(std::chrono::microseconds timeElapsed) = 0;
 
 	const std::string &ID();
 	Object *GetOwner() const;
 	virtual void SetOwner(Object *owner);
 };
-

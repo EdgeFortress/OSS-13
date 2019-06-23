@@ -13,7 +13,7 @@ Airlock::Airlock() {
     locked = false;
 }
 
-void Airlock::Update(sf::Time timeElapsed) {
+void Airlock::Update(std::chrono::microseconds timeElapsed) {
 	Turf::Update(timeElapsed);
 	closeTimer.Update(timeElapsed);
 }

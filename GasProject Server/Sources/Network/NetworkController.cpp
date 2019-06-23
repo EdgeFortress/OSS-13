@@ -24,7 +24,7 @@ void NetworkController::working() {
     selector.add(listener);
 
     while (active) {
-        if (selector.wait(TIMEOUT)) {
+        if (selector.wait(sf::microseconds(TIMEOUT.count()))) {
             // Receiving from client
             if (selector.isReady(listener)) {
                 sf::TcpSocket *socket = new sf::TcpSocket;

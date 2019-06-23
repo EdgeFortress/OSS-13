@@ -13,7 +13,7 @@ public:
 
     explicit Control();
 
-    void Update(sf::Time timeElapsed) override;
+    void Update(std::chrono::microseconds timeElapsed) override;
 
     void MoveCommand(uf::vec2i order);
     void MoveZCommand(bool order);

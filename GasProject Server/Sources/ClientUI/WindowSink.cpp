@@ -20,7 +20,7 @@ void WindowSink::Initialize() {
 	player->AddCommandToClient(new OpenWindowServerCommand(id, std::move(data)));
 }
 
-void WindowSink::Update(sf::Time elapsed) { }
+void WindowSink::Update(std::chrono::microseconds elapsed) { }
 
 void WindowSink::OnTrigger(const std::string &trigger) {
 	if (trigger == "Close") {

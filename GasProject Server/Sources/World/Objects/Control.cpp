@@ -18,7 +18,7 @@ Control::Control() :
 
 }
 
-void Control::Update(sf::Time timeElapsed) {
+void Control::Update(std::chrono::microseconds timeElapsed) {
     ////
     //// Movement
     ////

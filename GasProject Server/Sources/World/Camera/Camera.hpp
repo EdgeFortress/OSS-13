@@ -3,8 +3,6 @@
 #include <vector>
 #include <unordered_set>
 
-#include <SFML/System/Time.hpp>
-
 #include <Shared/Types.hpp>
 
 #include "ICameraOverlay.h"
@@ -22,7 +20,7 @@ class Camera {
 public:
     explicit Camera(const Tile * const tile = nullptr);
 
-    void UpdateView(sf::Time timeElapsed);
+    void UpdateView(std::chrono::microseconds timeElapsed);
 
     void SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
     void SetPosition(const Tile * const tile);
@@ -36,7 +34,7 @@ public:
 	uint GetInvisibleVisibility() const { return seeInvisibleAbility; }
 
 private:
-	void updateOverlay(sf::Time timeElapsed);
+	void updateOverlay(std::chrono::microseconds timeElapsed);
 
 private:
 	Player *player;

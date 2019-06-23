@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cstdint>
-
-#include <SFML/System/Time.hpp>
+#include <chrono>
 
 #include <Shared/Global.hpp>
 
@@ -13,5 +12,5 @@ struct IconInfo {
 	Global::ItemSpriteState state;
 
 	bool isAnimation;
-	sf::Time animation_time;
+	std::chrono::microseconds animation_time;
 };

@@ -2,8 +2,7 @@
 
 #include <string>
 #include <map>
-
-#include <SFML/System/Time.hpp>
+#include <chrono>
 
 #include <Shared/Network/Protocol/InputData.h>
 
@@ -15,7 +14,7 @@ public:
 	virtual ~WindowSink() = default;
 	void Initialize();
 
-	virtual void Update(sf::Time timeElapsed);
+	virtual void Update(std::chrono::microseconds timeElapsed);
 
 	virtual void OnTrigger(const std::string &trigger);
 	virtual void OnInput(const std::string &input, uptr<network::protocol::UIData> &&data);

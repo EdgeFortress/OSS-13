@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <chrono>
 
 #include <SFML/Network.hpp>
 
@@ -12,7 +13,7 @@ struct Diff;
 
 class NetworkController {
 private:
-    const sf::Time TIMEOUT = sf::microseconds(100);
+	const std::chrono::microseconds TIMEOUT{100};
 
     bool active;
     uptr<std::thread> thread;

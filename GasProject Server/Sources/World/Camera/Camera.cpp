@@ -28,7 +28,7 @@ Camera::Camera(const Tile * const tile) :
     SetPosition(tile);
 }
 
-void Camera::updateOverlay(sf::Time timeElapsed) {
+void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 	if (!overlay)
 		return;
 	if (overlay->IsShouldBeUpdated(timeElapsed)) {
@@ -47,7 +47,7 @@ void Camera::updateOverlay(sf::Time timeElapsed) {
 	}
 }
 
-void Camera::UpdateView(sf::Time timeElapsed) {
+void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
     if (unsuspensed && cameraMoved) 
         LOGE << "Logic error: camera unsuspensed and moved at one time";
 

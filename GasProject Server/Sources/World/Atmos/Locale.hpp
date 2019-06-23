@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <list>
-#include <SFML/System.hpp>
+#include <chrono>
 
 #include <Shared/Types.hpp>
 #include <Shared/IFaces/IHasRepeatableID.h>
@@ -16,7 +16,7 @@ class Locale : public IHasRepeatableID {
 public:
     explicit Locale(Atmos *, Tile *);
 
-    void Update(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
 
     // Add Tile to locale
     void AddTile(Tile *tile);

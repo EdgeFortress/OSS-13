@@ -17,7 +17,7 @@ Atmos::Atmos(Map* map) : map(map) {
 	AddVerb("toggleoverlay", &ToggleAtmosOverlayVerb);
 }
 
-void Atmos::Update(sf::Time timeElapsed) {
+void Atmos::Update(std::chrono::microseconds timeElapsed) {
     for (auto iter = locales.begin(); iter != locales.end(); ) {
         Locale *locale = iter->get();
         if (locale->IsEmpty()) {

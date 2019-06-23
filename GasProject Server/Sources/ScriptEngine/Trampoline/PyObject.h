@@ -10,7 +10,7 @@ namespace script_engine {
 
 class PyObject : public Object, public std::enable_shared_from_this<PyObject> {
 public:
-	void Update(sf::Time timeElapsed) override
+	void Update(std::chrono::microseconds timeElapsed) override
 	{
 		Object::Update(timeElapsed);
 		UpdateWithoutTime();

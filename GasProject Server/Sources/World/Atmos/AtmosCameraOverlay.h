@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SFML/System/Time.hpp>
-
 #include <World/Camera/ICameraOverlay.h>
 
 #include <Shared/Network/Protocol/OverlayInfo.h>
@@ -21,10 +19,10 @@ public:
 	void SetMode(AtmosCameraOverlayMode mode);
 
 // ICameraOverlay
-	bool IsShouldBeUpdated(sf::Time timeElapsed) const override;
+	bool IsShouldBeUpdated(std::chrono::microseconds timeElapsed) const override;
 	network::protocol::OverlayInfo GetOverlayInfo(Tile tile) const override;
 
 private:
-	mutable sf::Time timeAfterLastUpdate;
+	mutable std::chrono::microseconds timeAfterLastUpdate;
 	AtmosCameraOverlayMode mode;
 };

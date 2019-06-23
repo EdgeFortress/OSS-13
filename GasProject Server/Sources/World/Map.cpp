@@ -28,7 +28,7 @@ void Map::ClearDiffs() {
         tile->ClearDiffs();
 }
 
-void Map::Update(sf::Time timeElapsed) {
+void Map::Update(std::chrono::microseconds timeElapsed) {
     for (auto &tile : tiles)
 		tile->Update(timeElapsed);
     atmos->Update(timeElapsed);

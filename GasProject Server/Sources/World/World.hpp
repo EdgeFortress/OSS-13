@@ -14,7 +14,7 @@ public:
 
     World();
 
-    void Update(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
 
     void FillingWorld();
     Creature *CreateNewPlayerCreature();

@@ -12,7 +12,7 @@ World::World() :
 	map(new Map(100, 100, 3))
 { }
 
-void World::Update(sf::Time timeElapsed) {
+void World::Update(std::chrono::microseconds timeElapsed) {
     map->ClearDiffs();
 
 	// Simple walking mob AI for moving testing

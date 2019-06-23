@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <chrono>
 
 #include <World/Objects/Component.hpp>
 #include <Resources/IconInfo.h>
@@ -25,7 +26,7 @@ public:
 	virtual ~Object() = default;
 
 	virtual void AfterCreation();
-    virtual void Update(sf::Time timeElapsed);
+    virtual void Update(std::chrono::microseconds timeElapsed);
 	virtual void UpdateWithoutTime() {}; // TODO: Remove this
 
     virtual bool InteractedBy(Object *) = 0;

@@ -12,6 +12,8 @@
 #include <World/Objects/Creature.hpp>
 #include <World/Map.hpp>
 
+using namespace std::chrono_literals;
+
 Game::Game() :
 	active(true)
 {
@@ -22,16 +24,19 @@ void Game::gameProcess() {
 	scriptEngine = std::make_unique<ScriptEngine>();
 	world.reset(new World());
 	world->FillingWorld();
-	sf::Clock clock;
+	auto lastTime = std::chrono::steady_clock::now();
 	while (active) {
-		update(clock.restart());
-		sf::Time timeToSleep = sf::seconds(0.05f) - clock.getElapsedTime(); // 10 ticks per second
-		if (timeToSleep > sf::Time::Zero)
-			sf::sleep(timeToSleep);
+		auto curTime = std::chrono::steady_clock::now();
+		auto timeElapsed = curTime - lastTime;
+		lastTime = curTime;
+		update(std::chrono::duration_cast<std::chrono::microseconds>(timeElapsed));
+		auto timeToSleep = 50us - timeElapsed; // 10 ticks per second
+		if (timeToSleep > timeToSleep.zero())
+			std::this_thread::sleep_for(timeToSleep);
 	}
 }
 
-void Game::update(sf::Time timeElapsed) {
+void Game::update(std::chrono::microseconds timeElapsed) {
 	world->Update(timeElapsed);
 	{
 		std::unique_lock<std::mutex> lock(playersLock);

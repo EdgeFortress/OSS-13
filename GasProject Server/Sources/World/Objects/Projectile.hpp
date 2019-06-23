@@ -9,7 +9,7 @@ protected:
 public:
     // Object
 	virtual void AfterCreation() final;
-    virtual void Update(sf::Time timeElapsed) final;
+    virtual void Update(std::chrono::microseconds timeElapsed) final;
 	virtual bool InteractedBy(Object *) final { return false; }
 
 protected:

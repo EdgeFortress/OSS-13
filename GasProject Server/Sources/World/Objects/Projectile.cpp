@@ -21,7 +21,7 @@ void Projectile::AfterCreation() {
 	Object::AfterCreation();
 }
 
-void Projectile::Update(sf::Time timeElapsed) {
+void Projectile::Update(std::chrono::microseconds timeElapsed) {
     Object::Update(timeElapsed);
 
 	if (!GetTile())

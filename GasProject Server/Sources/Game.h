@@ -44,5 +44,5 @@ private:
 
 	void gameProcess();
 
-	void update(sf::Time timeElapsed);
+	void update(std::chrono::microseconds timeElapsed);
 };

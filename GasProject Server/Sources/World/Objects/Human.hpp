@@ -14,8 +14,6 @@ class Human : public Creature {
 protected:
 	Human();
 public:
-	//virtual void Update(sf::Time timeElapsed) override;
-
 	virtual bool RemoveObject(Object *) override;
 	virtual bool InteractedBy(Object *) final;
     virtual bool TryInteractWith(Object *) override;

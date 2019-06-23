@@ -9,7 +9,7 @@ protected:
     Airlock();
 
 public:
-	virtual void Update(sf::Time timeElapsed) final;
+	virtual void Update(std::chrono::microseconds timeElapsed) final;
     virtual bool InteractedBy(Object *) final;
 
     void Activate();
@@ -21,7 +21,7 @@ private:
 	void autocloseCallback();
 
 private:
-	const sf::Time AUTOCLOSE_TIME = sf::seconds(5);
+	const std::chrono::seconds AUTOCLOSE_TIME{5};
 
 	uf::Timer closeTimer;
     bool opened;

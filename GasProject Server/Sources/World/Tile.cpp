@@ -23,7 +23,7 @@ Tile::Tile(Map *map, apos pos) :
     totalPressure = 0;
 }
 
-void Tile::Update(sf::Time timeElapsed) {
+void Tile::Update(std::chrono::microseconds timeElapsed) {
     // Update locale, if wall/floor state was changed
     if (needToUpdateLocale) {
         // Atmos-available tile

@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include <SFML/System/Time.hpp>
-
 #include <Resources/IconInfo.h>
 
 #include <Shared/Types.hpp>
@@ -78,7 +76,7 @@ struct ChangeDirectionDiff : public Diff {
 };
 
 struct StunnedDiff : public Diff {
-	sf::Time duration;
+	std::chrono::microseconds duration;
 
-	StunnedDiff(const Object *object, sf::Time duration);
+	StunnedDiff(const Object *object, std::chrono::microseconds duration);
 };

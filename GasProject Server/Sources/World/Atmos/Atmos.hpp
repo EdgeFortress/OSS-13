@@ -15,7 +15,7 @@ class Atmos : public VerbsHolder {
 public:
     explicit Atmos(Map *map);
 
-    void Update(sf::Time timeElapsed);
+    void Update(std::chrono::microseconds timeElapsed);
 
     void CreateLocale(Tile *);
     void RemoveLocale(Locale *);
