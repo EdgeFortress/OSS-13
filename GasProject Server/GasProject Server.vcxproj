@@ -83,7 +83,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

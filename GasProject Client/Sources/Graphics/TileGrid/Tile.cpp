@@ -48,7 +48,7 @@ void Tile::AddObject(Object *obj, int num) {
     }
     obj->tile = this;
 
-	if (num < content.size() && num >= 0) {
+	if (num < static_cast<int>(content.size()) && num >= 0) {
 		auto iter = content.begin();
 		for (int i = 0; i < num && iter != content.end(); iter++, i++);
 		    content.insert(iter, obj);
