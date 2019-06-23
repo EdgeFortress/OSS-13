@@ -19,11 +19,12 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 	py::class_<Object, se::PyObject, PyObjectPtr<Object>> object(m, "Object");
 	object
 		.def(py::init<>())
-		.def("Update", &Object::UpdateWithoutTime)
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
-		.def_property("density", &Object::GetDensity, &Object::SetDensity);
+		.def_property("density", &Object::GetDensity, &Object::SetDensity)
+		.def("Update", &Object::UpdateWithoutTime)
+		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent);
 }
 
 ScriptEngine::ScriptEngine() {

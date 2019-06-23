@@ -30,9 +30,16 @@ public:
 
     virtual bool InteractedBy(Object *) = 0;
 
+	virtual void Move(uf::vec2i order);
+
+	void AddComponent(Component *);
+	void AddComponent(const std::string &componentId);
+	Component *GetComponent(const std::string &componentId);
+	template<class T> 
+	T *GetComponent();
+
 	void AddObject(Object *);
 	virtual bool RemoveObject(Object *);
-    void AddComponent(Component *);
     void SetConstSpeed(uf::vec2f speed);
     virtual void Delete();
 
@@ -56,7 +63,6 @@ public:
 
     Tile *GetTile() const;
 	Object *GetHolder() const;
-    template<class T> T *GetComponent();
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
 
     bool IsMovable() const;
@@ -119,7 +125,7 @@ private:
     Tile *tile;
 	Object *holder;
 	std::list<Object *> content;
-    std::list<uptr<Component>> components;
+	std::unordered_map<std::string, uptr<Component>> components;
 
     // Movement
     float moveSpeed;
@@ -134,8 +140,8 @@ private:
 };
 
 template <class T> T *Object::GetComponent() {
-	for (auto &component : components) {
-		if (auto temp = dynamic_cast<T *>(component.get()))
+	for (auto &idAndComponent : components) {
+		if (auto temp = dynamic_cast<T *>(idAndComponent.second.get()))
 			return temp;
 	}
 	return nullptr;

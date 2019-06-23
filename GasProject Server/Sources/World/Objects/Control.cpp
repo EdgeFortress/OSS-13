@@ -9,8 +9,9 @@
 
 #include "Object.hpp"
 
-Control::Control(float speed) : 
-	speed(speed), 
+Control::Control() : 
+	Component("Control"),
+	speed(4), 
     player(nullptr), 
     clickedObjectID(0)
 {

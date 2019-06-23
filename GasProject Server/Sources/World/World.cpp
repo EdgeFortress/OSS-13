@@ -46,7 +46,7 @@ void World::Update(sf::Time timeElapsed) {
 }
 
 void World::FillingWorld() {
-	CreateScriptObject("Item.Clothing.Clothing", {48, 48, 0});
+	CreateScriptObject("Creature.Creature", {48, 48, 0});
 
     for (uint i = 45; i <= 55; i++) {
         for (uint j = 45; j <= 55; j++) {

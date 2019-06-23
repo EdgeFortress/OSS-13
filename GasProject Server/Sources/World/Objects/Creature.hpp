@@ -14,7 +14,6 @@ public:
 	virtual void Update(sf::Time timeElapsed) override;
     bool InteractedBy(Object *) override;
 
-	virtual void Move(uf::vec2i order);
 	virtual void MoveZ(int order) {};
     virtual bool TryInteractWith(Object *);
     virtual void Stun();

@@ -11,7 +11,7 @@ class Control : public Component {
 public:
     friend Player;
 
-    explicit Control(float speed);
+    explicit Control();
 
     void Update(sf::Time timeElapsed) override;
 

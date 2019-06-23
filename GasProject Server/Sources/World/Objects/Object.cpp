@@ -6,6 +6,7 @@
 #include <Network/Differences.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
+#include <World/Objects/Control.hpp>
 
 #include <Shared/TileGrid_Info.hpp>
 #include <Shared/Math.hpp>
@@ -28,38 +29,38 @@ void Object::AfterCreation() {
 }
 
 void Object::Update(sf::Time timeElapsed) {
-    for (auto &component : components) {
-        component->Update(timeElapsed);
-    }
+	for (auto &idAndComponent : components) {
+		idAndComponent.second->Update(timeElapsed);
+	}
 
-    uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
-    shift += deltaShift;
+	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
+	shift += deltaShift;
 
-    if (shift) {
-        int dx, dy;
-        dy = dx = 0;
-        uf::vec2f shiftChange;
-        if (abs(shift.x) >= 0.5f) {
-            dx += int(uf::sgn(shift.x) * floor(abs(shift.x) - 0.5f + 1.f));
-            shiftChange.x -= dx;
-        }
-        if (abs(shift.y) >= 0.5f) {
-            dy += int(uf::sgn(shift.y) * floor(abs(shift.y) - 0.5f + 1.f));
-            shiftChange.y -= dy;
-        }
-        shift += shiftChange;
+	if (shift) {
+		int dx, dy;
+		dy = dx = 0;
+		uf::vec2f shiftChange;
+		if (abs(shift.x) >= 0.5f) {
+			dx += int(uf::sgn(shift.x) * floor(abs(shift.x) - 0.5f + 1.f));
+			shiftChange.x -= dx;
+		}
+		if (abs(shift.y) >= 0.5f) {
+			dy += int(uf::sgn(shift.y) * floor(abs(shift.y) - 0.5f + 1.f));
+			shiftChange.y -= dy;
+		}
+		shift += shiftChange;
 
-        if (dx || dy) {
-            Tile *tile = GetTile();
-            Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(dx, dy, 0));
-            if (dest_tile) {
-                dest_tile->MoveTo(this);
-            }
+		if (dx || dy) {
+			Tile *tile = GetTile();
+			Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(dx, dy, 0));
+			if (dest_tile) {
+				dest_tile->MoveTo(this);
+			}
 
-            if (dx) moveIntent.x = 0;
-            if (dy) moveIntent.y = 0;
-        }
-    }
+			if (dx) moveIntent.x = 0;
+			if (dy) moveIntent.y = 0;
+		}
+	}
 
 	if (iconsOutdated) {
 		updateIcons();
@@ -68,6 +69,56 @@ void Object::Update(sf::Time timeElapsed) {
 	}
 
 	animationTimer.Update(timeElapsed);
+}
+
+void Object::Move(uf::vec2i order) {
+	if (!order)
+		return;
+
+	// Form the intent based on the order
+	SetDirection(uf::VectToDirection(order));
+
+	Tile *tile = GetTile();
+	if (tile) {
+		uf::vec2i moveIntent;
+
+		if (order.x) moveIntent.x = order.x;
+		if (order.y) moveIntent.y = order.y;
+
+		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent, 0));
+		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y, tile->GetPos().z });
+		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
+
+		if (GetDensity()) {
+			if (!newTileDiag || newTileDiag->IsDense()) moveIntent = GetMoveIntent();
+			if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
+			if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
+		}
+
+		SetMoveIntent(moveIntent);
+	}
+}
+
+void Object::AddComponent(Component *new_component) {
+	if (!new_component) return;
+	new_component->SetOwner(this);
+	components[new_component->ID()] = uptr<Component>(new_component);
+}
+
+void Object::AddComponent(const std::string &id) {
+	uptr<Component> component;
+	if (name == "Control") {
+		component.reset(new Control());	
+	}
+
+	if (component) {
+		component->SetOwner(this);
+		components[component->ID()] = std::move(component);
+	}
+}
+
+Component *Object::GetComponent(const std::string &id) {
+	return components[id].get();
 }
 
 void Object::AddObject(Object *obj) {
@@ -96,12 +147,6 @@ bool Object::RemoveObject(Object *obj) {
         }
     }
     return false;
-}
-
-void Object::AddComponent(Component *new_component) {
-	if (!new_component) return;
-    new_component->SetOwner(this);
-    components.push_back(uptr<Component>(new_component));
 }
 
 void Object::SetConstSpeed(uf::vec2f speed) {
