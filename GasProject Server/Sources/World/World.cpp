@@ -25,7 +25,7 @@ void World::Update(sf::Time timeElapsed) {
         if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
         if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-		testMob->GetComponent<Control>()->MoveCommand(sf::Vector2i(test_dx, test_dy));
+		dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
     }
     
     map->Update(timeElapsed);
@@ -47,6 +47,7 @@ void World::Update(sf::Time timeElapsed) {
 
 void World::FillingWorld() {
 	CreateScriptObject("Creature.Creature", {48, 48, 0});
+	CreateScriptObject("Creature.Ghost", { 48, 49, 0 });
 
     for (uint i = 45; i <= 55; i++) {
         for (uint j = 45; j <= 55; j++) {
@@ -73,7 +74,7 @@ void World::FillingWorld() {
         }
     }
 
-	testMob = CreateObject<Ghost>({ 49, 49, 0 });
+	testMob = CreateScriptObject("Creature.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;
 
     test_dx = 1;

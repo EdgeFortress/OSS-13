@@ -65,12 +65,12 @@ public:
 	Object *GetHolder() const;
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
 
-    bool IsMovable() const;
-    bool IsCloseTo(Object *) const;
-    // True if visibility bits allows to see invisibility bits
-    bool CheckVisibility(uint visibility) const;
-    // Get Invisibility bits
-    uint GetInvisibility() const;
+	bool IsMovable() const;
+	bool IsCloseTo(Object *) const;
+	// True if visibility bits allow to see invisibility bits
+	bool CheckVisibility(uint visibility) const;
+	void SetInvisibility(uint);
+	uint GetInvisibility() const;
 
 	//
 	// For control purposes

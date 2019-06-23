@@ -25,7 +25,7 @@ public:
 private:
     uptr<Map> map;
 
-    Creature *testMob;
+    Object *testMob;
     Tile *testMob_lastPosition;
     int test_dx;
     int test_dy;

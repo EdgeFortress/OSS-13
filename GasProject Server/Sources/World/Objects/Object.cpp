@@ -107,7 +107,7 @@ void Object::AddComponent(Component *new_component) {
 
 void Object::AddComponent(const std::string &id) {
 	uptr<Component> component;
-	if (name == "Control") {
+	if (id == "Control") {
 		component.reset(new Control());	
 	}
 
@@ -203,10 +203,12 @@ bool Object::IsCloseTo(Object *other) const {
 	return false;
 }
 
-uint Object::GetInvisibility() const { return invisibility; }
 bool Object::CheckVisibility(uint visibility) const {
     return !(~(~invisibility | visibility)); // if invisible flag then visible flag
 }
+
+uint Object::GetInvisibility() const { return invisibility; }
+void Object::SetInvisibility(uint invisibility) { this->invisibility = invisibility; }
 
 
 void Object::SetMoveIntent(uf::vec2i moveIntent) {

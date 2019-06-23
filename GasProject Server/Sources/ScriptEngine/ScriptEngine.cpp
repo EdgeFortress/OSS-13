@@ -23,6 +23,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
+		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
 		.def("Update", &Object::UpdateWithoutTime)
 		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent);
 }
@@ -49,7 +50,7 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 			return py::module::import(m.c_str()).attr(type.c_str())().cast<Object *>();
 		}
 	} catch (const std::exception &e) {
-		LOGE << "Failed to create script object" << "\n"
+		LOGE << "Failed to create script object " << m << " " << type << "\n"
 			 << e.what();
 		return nullptr;
 	}
