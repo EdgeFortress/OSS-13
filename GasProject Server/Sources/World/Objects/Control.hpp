@@ -24,6 +24,9 @@ public:
     float GetSpeed() const;
     Player *GetPlayer() const;
 
+	uf::vec2i GetAndDropMoveOrder();
+	int GetAndDropMoveZOrder();
+
 private:
 	float speed;
 	// uf::vec2i moveIntent;

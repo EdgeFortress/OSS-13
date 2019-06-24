@@ -272,5 +272,8 @@
     <ClInclude Include="Include\IScriptEngine.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\ScriptEngine\Trampoline\PyComponent.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

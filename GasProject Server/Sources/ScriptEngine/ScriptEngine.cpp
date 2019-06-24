@@ -7,25 +7,46 @@
 
 #include <Shared/ErrorHandling.h>
 
-#include <IGame.h>
-#include <World/World.hpp>
-
 #include "Trampoline/PyObject.h"
+#include "Trampoline/PyComponent.h"
+
+#include <World/Objects/Control.hpp>
+
+#include <Shared/Geometry/Vec2.hpp>
 
 namespace py = pybind11;
 namespace se = script_engine;
 
 PYBIND11_EMBEDDED_MODULE(Engine, m) {
-	py::class_<Object, se::PyObject, PyObjectPtr<Object>> object(m, "Object");
-	object
+	py::class_<uf::vec2i>(m, "Vec2i")
+		.def(py::init<>())
+		.def(py::init<int, int>())
+		.def(py::init<int>())
+		.def_readwrite("x", &uf::vec2i::x)
+		.def_readwrite("y", &uf::vec2i::y)
+		.def("__repr__", &uf::vec2i::toString)
+		.def("__bool__", &uf::vec2i::operator bool);
+
+	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "Object")
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
-		.def("Update", &Object::UpdateWithoutTime)
-		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent);
+		.def("Update", &Object::Update)
+		.def("Move", &Object::Move)
+		.def("MoveZ", &Object::MoveZ)
+		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent)
+		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent);
+
+	py::class_<Component, se::PyComponent>(m, "Component")
+		.def(py::init<std::string &&>())
+		.def("Update", &Component::Update);
+
+	py::class_<Control, Component>(m, "Control")
+		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
+		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder);
 }
 
 ScriptEngine::ScriptEngine() {

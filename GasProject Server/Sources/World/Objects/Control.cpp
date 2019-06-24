@@ -22,12 +22,9 @@ void Control::Update(std::chrono::microseconds timeElapsed) {
     ////
     //// Movement
     ////
-	uf::vec2i order = moveOrder;
-	int zOrder = moveZOrder;
-    moveOrder = {};
-    moveZOrder = 0;
-
 	if (auto *creature = dynamic_cast<Creature *>(owner)) {
+		uf::vec2i order = GetAndDropMoveOrder();
+		int zOrder = GetAndDropMoveZOrder();
 		creature->Move(order);
 		creature->MoveZ(zOrder);
 	}
@@ -66,3 +63,6 @@ void Control::SetOwner(Object *owner) {
 
 float Control::GetSpeed() const { return speed; }
 Player *Control::GetPlayer() const { return player; }
+
+uf::vec2i Control::GetAndDropMoveOrder() { auto tmp = moveOrder; moveOrder = {}; return tmp; };
+int Control::GetAndDropMoveZOrder() { auto tmp = moveZOrder; moveZOrder = {}; return tmp; };

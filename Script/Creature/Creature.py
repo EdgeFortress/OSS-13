@@ -10,3 +10,19 @@ class Creature(Object):
 		self.name = "Python Creature"
 		self.sprite = "human"
 		self.AddComponent("Control")
+
+		self.control = self.GetComponent("Control")
+
+	def Update(self, timeElapsed):
+		moveOrder = self.control.GetAndDropMoveOrder()
+		if moveOrder: self.OnMoveOrder(moveOrder)
+
+		moveZOrder = self.control.GetAndDropMoveZOrder()
+		if moveZOrder: self.OnMoveZOrder(moveZOrder)
+		
+
+	def OnMoveOrder(self, order):
+		self.Move(order)
+
+	def OnMoveZOrder(self, order):
+		self.MoveZ(order)

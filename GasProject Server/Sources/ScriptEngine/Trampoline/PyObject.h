@@ -1,7 +1,10 @@
 #pragma once
 
 #include <pybind11/pytypes.h>
+#include <pybind11/chrono.h>
 
+#include <IGame.h>
+#include <World/World.hpp>
 #include <World/Objects/Object.hpp>
 
 namespace py = pybind11;
@@ -13,11 +16,7 @@ public:
 	void Update(std::chrono::microseconds timeElapsed) override
 	{
 		Object::Update(timeElapsed);
-		UpdateWithoutTime();
-	}
-
-	void UpdateWithoutTime() override {
-		PYBIND11_OVERLOAD_PURE_NAME(void, Object, "Update", UpdateWithoutTime, );
+		PYBIND11_OVERLOAD_PURE_NAME(void, Object, "Update", Update, timeElapsed);
 	}
 
 	void Delete() final {

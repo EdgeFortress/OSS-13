@@ -12,7 +12,6 @@ public:
 	virtual void Update(std::chrono::microseconds timeElapsed) override;
     bool InteractedBy(Object *) override;
 
-	virtual void MoveZ(int order) {};
     virtual bool TryInteractWith(Object *);
     virtual void Stun();
 	virtual bool PutOn(Clothing *);

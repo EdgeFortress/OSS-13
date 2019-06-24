@@ -1,5 +1,7 @@
 #include <Game.h>
 
+#include <plog/Log.h>
+
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
 
@@ -29,7 +31,14 @@ void Game::gameProcess() {
 		auto curTime = std::chrono::steady_clock::now();
 		auto timeElapsed = curTime - lastTime;
 		lastTime = curTime;
-		update(std::chrono::duration_cast<std::chrono::microseconds>(timeElapsed));
+
+		try {
+			update(std::chrono::duration_cast<std::chrono::microseconds>(timeElapsed));
+		} catch (const std::exception &e) {
+			LOGE << "Main game cycle failed due exception: " << "\n"
+				 << e.what();
+		}
+
 		auto timeToSleep = 50us - timeElapsed; // 10 ticks per second
 		if (timeToSleep > timeToSleep.zero())
 			std::this_thread::sleep_for(timeToSleep);
