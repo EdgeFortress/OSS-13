@@ -20,7 +20,7 @@ struct ServerCommand;
 
 class Control;
 
-class Player {
+class Player : public VerbsHolder {
 friend NetworkController;
 friend Server;
 

@@ -123,6 +123,9 @@
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\VerbHolder.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp">
@@ -273,6 +276,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\ScriptEngine\Trampoline\PyComponent.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\IVerbsHolder.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

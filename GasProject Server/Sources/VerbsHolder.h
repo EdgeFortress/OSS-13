@@ -1,30 +1,12 @@
 #pragma once
 
-#include <functional>
-#include <string>
-#include <map>
-
-class Player;
-
-using Verb = std::function<void(Player *)>;
-
-class IVerbsHolder {
-public:
-	virtual void AddVerb(std::string key, Verb action) = 0;
-	virtual const std::map<std::string, Verb> &GetVerbs() const = 0;
-
-	virtual ~IVerbsHolder() = default;
-};
+#include <IVerbsHolder.h>
 
 class VerbsHolder : public IVerbsHolder {
 public:
-	void AddVerb(std::string key, Verb action) final {
-		verbs[key] = action;
-	}
-
-	const std::map<std::string, Verb> &GetVerbs() const final {
-		return verbs;
-	}
+	void AddVerb(const std::string &name, Verb action) final;
+	void CallVerb(Player *player, const std::string &name) const final;
+	const std::map<std::string, Verb> &GetVerbs() const final;
 
 private:
 	std::map<std::string, Verb> verbs;

@@ -142,6 +142,7 @@
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
+    <ClCompile Include="Sources\VerbHolder.cpp" />
     <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Include\IGame.h" />
     <ClInclude Include="Include\IScriptEngine.h" />
     <ClInclude Include="Include\IServer.h" />
+    <ClInclude Include="Include\IVerbsHolder.h" />
     <ClInclude Include="Sources\Chat.h" />
     <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />

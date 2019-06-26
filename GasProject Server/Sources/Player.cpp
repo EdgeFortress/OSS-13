@@ -13,9 +13,12 @@
 #include <World/Map.hpp>
 #include <ClientUI/WelcomeWindowSink.h>
 
+#include <Shared/ErrorHandling.h>
 #include <Shared/Command.hpp>
 
 class Server;
+
+using namespace std::string_literals;
 
 Player::Player(std::string ckey) : ckey(ckey) {
 	control = nullptr;
@@ -78,23 +81,19 @@ void Player::UITrigger(const std::string &window, const std::string &trigger) {
 }
 
 void Player::CallVerb(const std::string &verb) {
-	auto delimiter = verb.find(".");
-	std::string verbHolder = verb.substr(0, delimiter);
-	std::string verbName = verb.substr(delimiter + 1);
+	try {
+		auto delimiter = verb.find(".");
+		EXPECT(delimiter != verb.npos);
+		std::string verbHolder = verb.substr(0, delimiter);
+		std::string verbName = verb.substr(delimiter + 1);
 
-	auto verbHolderIter = verbsHolders.find(verbHolder);
+		auto nameAndVerbHolder = verbsHolders.find(verbHolder);
+		EXPECT_WITH_MSG(nameAndVerbHolder != verbsHolders.end(), "VerbHolder \""s + verbHolder + "\" doesn't exist!");
 
-	if (verbHolderIter != verbsHolders.end()) {
-		auto &verbs = verbHolderIter->second->GetVerbs();
-		auto iter = verbs.find(verbName);
-		if (iter != verbs.end()) {
-			iter->second(this);
-		} else {
-			LOGE << "Error: Verb wasn't found! VerbHolder: " << verbHolder << ", Verb: " << verb;
-		}
+		nameAndVerbHolder->second->CallVerb(this, verbName);
+	} catch (const std::exception &e) {
+		MANAGE_EXCEPTION(e);
 	}
-	else
-		LOGE << "Error: VerbHolder wasn't found! VerbHolder: " << verbHolder;
 }
 
 void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
