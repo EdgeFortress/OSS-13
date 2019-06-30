@@ -39,7 +39,6 @@ public:
     void ClickObject(uint id);
 	void Drop();
 	void Build();
-	void Ghost();
 
 	void UIInput(uptr<network::protocol::UIData> &&data);
 	void UITrigger(const std::string &window, const std::string &trigger);

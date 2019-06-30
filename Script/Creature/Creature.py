@@ -2,16 +2,25 @@ from Object import Object
 
 class Creature(Object):
 	speed = 4
-	seeInvisibleAbility = 0
 
 	def __init__(self):
 		Object.__init__(self)
 		self.layer = 75
 		self.name = "Python Creature"
 		self.sprite = "human"
-		self.AddComponent("Control")
 
+		self.AddComponent("Control")
 		self.control = self.GetComponent("Control")
+
+	@property
+	def seeInvisibleAbility(self):
+		return _seeInvisibleAbility
+
+	@seeInvisibleAbility.setter
+	def seeInvisibleAbility(self, value):
+		if self.control is not None:
+			_seeInvisibleAbility = value
+			self.control.seeInvisibleAbility = value
 
 	def Update(self, timeElapsed):
 		moveOrder = self.control.GetAndDropMoveOrder()

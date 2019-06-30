@@ -64,10 +64,6 @@ void Player::Build() {
 	actions.Push(new BuildPlayerCommand());
 }
 
-void Player::Ghost() {
-	actions.Push(new GhostPlayerCommand());
-}
-
 void Player::CallVerb(const std::string &verb) {
 	actions.Push(new VerbPlayerCommand(verb));
 }
@@ -140,19 +136,6 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
 						GGame->GetWorld()->CreateObject<Wall>(tile);
 					break;
 				}
-				case PlayerCommand::Code::GHOST: {
-					if (!control) break;
-					auto *ghost = dynamic_cast<::Ghost *>(control->GetOwner());
-					if (!ghost) {
-						ghost = GGame->GetWorld()->CreateObject<::Ghost>(control->GetOwner()->GetTile());
-						ghost->SetHostControl(control);
-						SetControl(ghost->GetComponent<Control>());
-					} else {
-						SetControl(ghost->GetHostControl());
-                        ghost->Delete();
-					}
-					break;
-				}
 				case PlayerCommand::Code::VERB: {
 					auto verbPlayerCommand = dynamic_cast<VerbPlayerCommand *>(temp);
 					auto &verb = verbPlayerCommand->verb;
@@ -177,8 +160,7 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
         }
     }
 
-    if (control->GetOwner()->GetTile() != camera->GetPosition()) camera->SetPosition(control->GetOwner()->GetTile());
-
+	camera->Update(timeElapsed);
 	updateUISinks(timeElapsed);
 }
 
@@ -198,9 +180,8 @@ void Player::SetControl(Control *control) {
 	control->player = this;
     SetCamera(new Camera(control->GetOwner()->GetTile()));
     camera->SetPlayer(this);
-	// Get Ability to see Invisibile from the mob (if control owner is mob)
-	if (Creature *creature = dynamic_cast<Creature *>(control->GetOwner()))
-		camera->SetInvisibleVisibility(creature->GetInvisibleVisibility());
+	camera->TrackObject(control->GetOwner());
+	camera->SetInvisibleVisibility(control->GetSeeInvisibleAbility());
 };
 
 void Player::SetCamera(Camera *camera) { this->camera.reset(camera); }

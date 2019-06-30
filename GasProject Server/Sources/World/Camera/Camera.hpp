@@ -8,7 +8,7 @@
 #include "ICameraOverlay.h"
 
 class Tile;
-class Mob;
+class Object;
 class Player;
 struct Diff;
 
@@ -20,9 +20,11 @@ class Camera {
 public:
     explicit Camera(const Tile * const tile = nullptr);
 
+	void Update(std::chrono::microseconds timeElapsed);
     void UpdateView(std::chrono::microseconds timeElapsed);
 
-    void SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
+    void SetPlayer(Player * const player);
+	void TrackObject(Object *obj);
     void SetPosition(const Tile * const tile);
     void Suspend();
 	void SetInvisibleVisibility(uint visibility) { seeInvisibleAbility = visibility; }
@@ -38,6 +40,7 @@ private:
 
 private:
 	Player *player{nullptr};
+	Object *trackingObject{nullptr};
 
 	uint seeInvisibleAbility{0};
 

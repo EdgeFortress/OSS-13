@@ -48,7 +48,7 @@ public:
     bool IsSpace() const;
 	Locale *GetLocale() const;
 
-    const TileInfo GetTileInfo(uint visibility) const;
+    const TileInfo GetTileInfo(uint viewerId, uint visibility) const;
 
     void AddDiff(Diff *diff);
     const list<sptr<Diff>> GetDifferences() const { return differences; }

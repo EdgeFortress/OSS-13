@@ -155,7 +155,6 @@
     <ClCompile Include="Sources\World\Objects\Control.cpp" />
     <ClCompile Include="Sources\World\Objects\CreateObject.cpp" />
     <ClCompile Include="Sources\World\Objects\Creature.cpp" />
-    <ClCompile Include="Sources\World\Objects\Ghost.cpp" />
     <ClCompile Include="Sources\World\Objects\Human.cpp" />
     <ClCompile Include="Sources\World\Objects\Item.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
@@ -208,7 +207,6 @@
     <ClInclude Include="Sources\World\Objects\Control.hpp" />
     <ClInclude Include="Sources\World\Objects\CreateObject.h" />
     <ClInclude Include="Sources\World\Objects\Creature.hpp" />
-    <ClInclude Include="Sources\World\Objects\Ghost.hpp" />
     <ClInclude Include="Sources\World\Objects\Human.hpp" />
     <ClInclude Include="Sources\World\Objects\Item.hpp" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />

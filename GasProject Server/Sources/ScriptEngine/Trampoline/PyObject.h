@@ -21,10 +21,6 @@ public:
 
 	void Delete() final {
 		Object::Delete();
-		if (pyImpl) {
-			pyImpl.dec_ref();
-			pyImpl.release();
-		}
 		LOGI << "Released";
 	}
 

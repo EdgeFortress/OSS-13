@@ -196,7 +196,7 @@ Locale *Tile::GetLocale() const {
 	return locale;
 }
 
-const TileInfo Tile::GetTileInfo(uint visibility) const {
+const TileInfo Tile::GetTileInfo(uint viewerId, uint visibility) const {
 	TileInfo tileInfo;
 	tileInfo.x = pos.x;
 	tileInfo.y = pos.y;
@@ -204,7 +204,7 @@ const TileInfo Tile::GetTileInfo(uint visibility) const {
 	tileInfo.sprite = icon.id;
 
 	for (auto &obj : this->content) {
-		if (obj->CheckVisibility(visibility))
+		if (obj->CheckVisibility(viewerId, visibility))
 			tileInfo.content.push_back(obj->GetObjectInfo());
 	}
 

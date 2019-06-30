@@ -13,7 +13,6 @@ struct PlayerCommand {
         CLICK_OBJECT,
 		DROP,
 		BUILD,
-		GHOST,
 		VERB
     };
 
@@ -50,10 +49,6 @@ struct DropPlayerCommand : public PlayerCommand {
 
 struct BuildPlayerCommand : public PlayerCommand {
 	BuildPlayerCommand();
-};
-
-struct GhostPlayerCommand : public PlayerCommand {
-	GhostPlayerCommand();
 };
 
 struct VerbPlayerCommand : public PlayerCommand {

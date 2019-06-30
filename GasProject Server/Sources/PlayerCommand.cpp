@@ -28,9 +28,6 @@ DropPlayerCommand::DropPlayerCommand() :
 BuildPlayerCommand::BuildPlayerCommand() :
 	PlayerCommand(Code::BUILD) { }
 
-GhostPlayerCommand::GhostPlayerCommand() :
-	PlayerCommand(Code::GHOST) { }
-
 VerbPlayerCommand::VerbPlayerCommand(const std::string &verb) :
 	PlayerCommand(Code::VERB),
 	verb(verb)

@@ -61,6 +61,9 @@ void Control::SetOwner(Object *owner) {
     }
 }
 
+uint Control::GetSeeInvisibleAbility() const { return camera_seeInvisibleAbility; }
+void Control::SetSeeInvisibleAbility(uint flags) { camera_seeInvisibleAbility = flags; };
+
 float Control::GetSpeed() const { return speed; }
 Player *Control::GetPlayer() const { return player; }
 

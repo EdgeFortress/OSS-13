@@ -37,7 +37,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 
 	py::class_<Player, VerbsHolder>(m, "Player")
 		.def_property_readonly("ckey", &Player::GetCKey)
-		.def("GetControl", &Player::GetControl, "", py::return_value_policy::reference);
+		.def_property("control", &Player::GetControl, &Player::SetControl, "", py::return_value_policy::reference);
 
 	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "Object")
 		.def(py::init<>())
@@ -51,7 +51,8 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("Move", &Object::Move)
 		.def("MoveZ", &Object::MoveZ)
 		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent)
-		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent);
+		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent)
+		.def("Delete", &Object::Delete);
 
 	m.def("CreateObject", &CreateObject);
 
@@ -61,6 +62,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // remove policy, when all objects are implemented in scripts
 
 	py::class_<Control, Component>(m, "Control")
+		.def_property("seeInvisibleAbility", &Control::GetSeeInvisibleAbility, &Control::SetSeeInvisibleAbility)
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
 		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder);
 }

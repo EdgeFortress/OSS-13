@@ -21,6 +21,9 @@ public:
 
     virtual void SetOwner(Object *owner) override;
 
+	uint GetSeeInvisibleAbility() const;
+	void SetSeeInvisibleAbility(uint flags);
+
     float GetSpeed() const;
     Player *GetPlayer() const;
 
@@ -29,7 +32,7 @@ public:
 
 private:
 	float speed;
-	// uf::vec2i moveIntent;
+	uint camera_seeInvisibleAbility{0}; // crutch. TODO: divide camera and control logics
 
     // receive from player
 	uf::vec2i moveOrder; 

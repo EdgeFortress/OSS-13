@@ -248,8 +248,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 		if (stun == sf::Time::Zero && buildButtonPressed)
 			Connection::commandQueue.Push(new BuildClientCommand());
 
-		if (ghostButtonPressed)
-			Connection::commandQueue.Push(new GhostClientCommand());
+		if (ghostButtonPressed) { // TODO: implement hotkeys
+			auto *p = new CallVerbClientCommand();
+			p->verb = "player.ghost";
+			Connection::commandQueue.Push(p);
+		}
 
 		objectClicked = false;
 		dropButtonPressed = false;

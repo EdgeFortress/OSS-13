@@ -11,7 +11,24 @@ class Ghost(Creature):
 		self.seeInvisibleAbility = 1
 		self.invisibility = 1
 
+	@property
+	def hostControl(self):
+		return self._hostControl
+
+	@hostControl.setter
+	def hostControl(self, value):
+		self._hostControl = value
+
+
 def Ghostize(player):
-	pos = player.GetControl().GetOwner().position
-	ghost = CreateObject("Creature.Ghost", pos)
-	print(player.ckey + " wants to be a ghost, wow!")
+	mob = player.control.GetOwner()
+
+	if not isinstance(mob, Ghost):
+		pos = player.control.GetOwner().position
+		ghost = CreateObject("Creature.Ghost", pos)
+		ghost.hostControl = player.control
+		player.control = ghost.GetComponent("Control")
+	else:
+		ghost = mob
+		player.control = ghost.hostControl
+		ghost.Delete()

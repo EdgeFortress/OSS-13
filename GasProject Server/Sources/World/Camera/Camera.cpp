@@ -28,6 +28,12 @@ Camera::Camera(const Tile * const tile) :
     SetPosition(tile);
 }
 
+void Camera::Update(std::chrono::microseconds timeElapsed) {
+	if (trackingObject)
+		if (tile != trackingObject->GetTile())
+			SetPosition(trackingObject->GetTile());
+}
+
 void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 	if (!overlay)
 		return;
@@ -157,6 +163,9 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 
 	updateOverlay(timeElapsed);
 }
+
+void Camera::SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
+void Camera::TrackObject(Object *obj) { trackingObject = obj; }
 
 void Camera::SetPosition(const Tile * const tile) {
     if (!tile || tile == this->tile) return;

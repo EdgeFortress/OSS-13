@@ -169,12 +169,6 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<GhostClientCommand *>(p.get())) {
-		if (connection->player)
-			connection->player->Ghost();
-		return true;
-	}
-
 	if (auto *command = dynamic_cast<DisconnectionClientCommand *>(p.get())) {
 		if (connection->player)
 			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
