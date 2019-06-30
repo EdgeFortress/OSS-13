@@ -24,11 +24,10 @@ Object::Object() :
     moveSpeed(0)
 { }
 
-void Object::AfterCreation() { 
-	askToUpdateIcons();
-}
-
 void Object::Update(std::chrono::microseconds timeElapsed) {
+	if (!GetTile())
+		return;
+
 	for (auto &idAndComponent : components) {
 		idAndComponent.second->Update(timeElapsed);
 	}
@@ -190,6 +189,26 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> &
 
 bool Object::GetDensity() const { return density; };
 void Object::SetDensity(bool density) { this->density = density; }
+
+void Object::SetPosition(uf::vec2i newPos) {
+	if (newPos > uf::vec2i(0, 0)) {
+		auto tile = GGame->GetWorld()->GetMap()->GetTile(apos(newPos));
+		if (tile) {
+			tile->PlaceTo(this);
+		}
+	}
+	// incorrect newPos
+	if (tile)
+		tile->RemoveObject(this);
+}
+
+uf::vec2i Object::GetPosition() const {
+	auto tile = GetTile();
+	if (tile)
+		return uf::vec2i(tile->GetPos().xy());
+	else
+		return {-1, -1};
+}
 
 Tile *Object::GetTile() const { return tile; }
 Object *Object::GetHolder() const { return holder; }

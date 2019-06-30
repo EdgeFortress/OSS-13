@@ -13,16 +13,11 @@ Projectile::Projectile(uf::vec2i direction) :
     SetConstSpeed(direction.normalize() * speed);
 }
 
-void Projectile::AfterCreation() {
-	if (!GetTile())
-		throw std::exception(); // "Unexpected: projectile's tile is null after creation!"
-	startTile = GetTile();
-
-	Object::AfterCreation();
-}
-
 void Projectile::Update(std::chrono::microseconds timeElapsed) {
     Object::Update(timeElapsed);
+
+	if (CheckIfJustCreated())
+		startTile = GetTile();
 
 	if (!GetTile())
 		throw std::exception(); // "Unexpected: projectile's tile is null!"

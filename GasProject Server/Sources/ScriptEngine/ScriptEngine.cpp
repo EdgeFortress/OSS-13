@@ -3,6 +3,7 @@
 #include <Python.h>
 
 #include <pybind11/embed.h>
+#include <pybind11/functional.h>
 #include <plog/Log.h>
 
 #include <Shared/ErrorHandling.h>
@@ -10,6 +11,10 @@
 #include "Trampoline/PyObject.h"
 #include "Trampoline/PyComponent.h"
 
+#include <VerbsHolder.h>
+#include <Player.hpp>
+#include <World/Tile.hpp>
+#include <World/Objects/CreateObject.h>
 #include <World/Objects/Control.hpp>
 
 #include <Shared/Geometry/Vec2.hpp>
@@ -27,6 +32,13 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("__repr__", &uf::vec2i::toString)
 		.def("__bool__", &uf::vec2i::operator bool);
 
+	py::class_<VerbsHolder>(m, "VerbHolder")
+		.def("AddVerb", &VerbsHolder::AddVerb);
+
+	py::class_<Player, VerbsHolder>(m, "Player")
+		.def_property_readonly("ckey", &Player::GetCKey)
+		.def("GetControl", &Player::GetControl, "", py::return_value_policy::reference);
+
 	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "Object")
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
@@ -34,15 +46,19 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
+		.def_property("position", &Object::GetPosition, &Object::SetPosition)
 		.def("Update", &Object::Update)
 		.def("Move", &Object::Move)
 		.def("MoveZ", &Object::MoveZ)
 		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent)
 		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent);
 
+	m.def("CreateObject", &CreateObject);
+
 	py::class_<Component, se::PyComponent>(m, "Component")
 		.def(py::init<std::string &&>())
-		.def("Update", &Component::Update);
+		.def("Update", &Component::Update)
+		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // remove policy, when all objects are implemented in scripts
 
 	py::class_<Control, Component>(m, "Control")
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
@@ -74,5 +90,13 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 		LOGE << "Failed to create script object " << m << " " << type << "\n"
 			 << e.what();
 		return nullptr;
+	}
+}
+
+void ScriptEngine::OnPlayerJoined(Player *player) {
+	try {
+		py::module::import("EngineHook").attr("OnPlayerJoined")(player);
+	} catch (const std::exception &e) {
+		MANAGE_EXCEPTION(e);
 	}
 }

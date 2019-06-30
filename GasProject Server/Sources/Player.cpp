@@ -68,6 +68,10 @@ void Player::Ghost() {
 	actions.Push(new GhostPlayerCommand());
 }
 
+void Player::CallVerb(const std::string &verb) {
+	actions.Push(new VerbPlayerCommand(verb));
+}
+
 void Player::UIInput(uptr<network::protocol::UIData> &&data) {
 	auto iter = uiSinks.find(data->window);
 	if (iter != uiSinks.end())
@@ -78,22 +82,6 @@ void Player::UITrigger(const std::string &window, const std::string &trigger) {
 	auto iter = uiSinks.find(window);
 	if (iter != uiSinks.end())
 		iter->second->OnTrigger(trigger);
-}
-
-void Player::CallVerb(const std::string &verb) {
-	try {
-		auto delimiter = verb.find(".");
-		EXPECT(delimiter != verb.npos);
-		std::string verbHolder = verb.substr(0, delimiter);
-		std::string verbName = verb.substr(delimiter + 1);
-
-		auto nameAndVerbHolder = verbsHolders.find(verbHolder);
-		EXPECT_WITH_MSG(nameAndVerbHolder != verbsHolders.end(), "VerbHolder \""s + verbHolder + "\" doesn't exist!");
-
-		nameAndVerbHolder->second->CallVerb(this, verbName);
-	} catch (const std::exception &e) {
-		MANAGE_EXCEPTION(e);
-	}
 }
 
 void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
@@ -114,6 +102,7 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
             switch (temp->GetCode()) {
                 case PlayerCommand::Code::JOIN: {
                     SetControl(GGame->GetStartControl(this));
+					verbsHolders["player"] = this;
 					verbsHolders["atmos"] = GetControl()->GetOwner()->GetTile()->GetMap()->GetAtmos();
                     break;
                 }
@@ -163,6 +152,23 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
                         ghost->Delete();
 					}
 					break;
+				}
+				case PlayerCommand::Code::VERB: {
+					auto verbPlayerCommand = dynamic_cast<VerbPlayerCommand *>(temp);
+					auto &verb = verbPlayerCommand->verb;
+					try {
+						auto delimiter = verb.find(".");
+						EXPECT(delimiter != verb.npos);
+						std::string verbHolder = verb.substr(0, delimiter);
+						std::string verbName = verb.substr(delimiter + 1);
+
+						auto nameAndVerbHolder = verbsHolders.find(verbHolder);
+						EXPECT_WITH_MSG(nameAndVerbHolder != verbsHolders.end(), "VerbHolder \""s + verbHolder + "\" doesn't exist!");
+
+						nameAndVerbHolder->second->CallVerb(this, verbName);
+					} catch (const std::exception &e) {
+						MANAGE_EXCEPTION(e);
+					}
 				}
                 default:
                     break;

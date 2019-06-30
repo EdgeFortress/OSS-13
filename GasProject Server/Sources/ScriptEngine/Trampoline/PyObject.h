@@ -25,13 +25,14 @@ public:
 			pyImpl.dec_ref();
 			pyImpl.release();
 		}
+		LOGI << "Released";
 	}
 
 	bool InteractedBy(Object *) override { return false; }
 
-	void SetImpl(PyObject *pyImpl) {
-		this->pyImpl = py::cast(pyImpl); // Get Python object. Here cycling link is created. We should broke it in Delete method.
-		GGame->GetWorld()->AddObject(pyImpl->shared_from_this()); // Add object to ObjectHolder
+	void SetImpl() {
+		this->pyImpl = py::cast(this); // Get Python object. Here cycling link is created. We should broke it in Delete method.
+		GGame->GetWorld()->AddObject(shared_from_this()); // Add object to ObjectHolder
 	}
 
 private:
@@ -51,9 +52,12 @@ public:
 	using element_type = T;
 
 	PyObjectPtr(T *obj) { // obj - C++ object corresponding to Python object
-		auto *trampoline = dynamic_cast<script_engine::PyObject *>(obj);
-		_impl.reset(trampoline);
-		trampoline->SetImpl(trampoline);
+		if (auto *trampoline = dynamic_cast<script_engine::PyObject *>(obj)) {
+			_impl.reset(trampoline);
+			trampoline->SetImpl();
+		} else {
+			_impl.reset(obj); // TODO: remove this, when all objects are implemented in scripts
+		}
 	}
 
 	PyObjectPtr(PyObjectPtr &&) = default;

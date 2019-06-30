@@ -56,7 +56,7 @@ public:
 		uiSinks[window->Id()] = std::move(window);
 	}
 
-    std::string GetCKey() { return ckey; }
+	const std::string &GetCKey() const { return ckey; }
 
 	void Suspend();
     void SetControl(Control *control);

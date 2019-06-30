@@ -14,7 +14,6 @@ Object *ObjectHolder::CreateScriptObject(const std::string &module, Tile *tile) 
 
 	placeTo(obj, tile);
 
-	obj->AfterCreation();
 	return obj;
 }
 

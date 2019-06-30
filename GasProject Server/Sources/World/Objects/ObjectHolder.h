@@ -56,7 +56,6 @@ T *ObjectHolder::CreateObject(Tile *tile, TArgs&&... Args) {
 	AddObject(std::shared_ptr<Object>(obj));
 	placeTo(obj, tile);
 
-	obj->AfterCreation();
 	return static_cast<T *>(obj);
 }
 

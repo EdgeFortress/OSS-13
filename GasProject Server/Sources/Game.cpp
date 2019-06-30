@@ -96,6 +96,7 @@ bool Game::AddPlayer(sptr<Player> &player) {
 }
 
 Control *Game::GetStartControl(Player *player) {
+	GetScriptEngine()->OnPlayerJoined(player);
 	return world->CreateNewPlayerCreature()->GetComponent<Control>();
 }
 

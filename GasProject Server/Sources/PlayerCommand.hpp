@@ -13,7 +13,8 @@ struct PlayerCommand {
         CLICK_OBJECT,
 		DROP,
 		BUILD,
-		GHOST
+		GHOST,
+		VERB
     };
 
     virtual const Code GetCode() const final;
@@ -53,4 +54,9 @@ struct BuildPlayerCommand : public PlayerCommand {
 
 struct GhostPlayerCommand : public PlayerCommand {
 	GhostPlayerCommand();
+};
+
+struct VerbPlayerCommand : public PlayerCommand {
+	std::string verb;
+	VerbPlayerCommand(const std::string &verb);
 };

@@ -4,24 +4,20 @@
 #include <plog/Log.h>
 
 struct ExpectationFailedException : public std::exception {
-	ExpectationFailedException(const char *file, const char *function, int line) :
-		file(file),
-		function(function),
-		line(line)
-	{ }
-
-	const char *what() const noexcept override {
+	ExpectationFailedException(const char *file, const char *function, int line) {
 		std::stringstream ss;
 		ss << "Expectation failed\n"
-			<< "\t" << "File: " << file
-			<< "\t" << "Function: " << function
+			<< "\t" << "File: " << file << "\n"
+			<< "\t" << "Function: " << function << "\n"
 			<< "\t" << "Line: " << line;
-		return ss.str().c_str();
+		msg = std::move(ss.str());
 	}
 
-	const char *file;
-	const char *function;
-	int line;
+	const char *what() const noexcept override {
+		return msg.c_str();
+	}
+
+	std::string msg;
 };
 
 #define _ASSERT_MSG(cond) LOGE << "Assertion " << #cond << " failed"

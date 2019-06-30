@@ -25,7 +25,6 @@ public:
 	Object(); // Use ObjectHolder to create objects!
 	virtual ~Object() = default;
 
-	virtual void AfterCreation();
     virtual void Update(std::chrono::microseconds timeElapsed);
 	virtual void UpdateWithoutTime() {}; // TODO: Remove this
 
@@ -63,7 +62,10 @@ public:
 	void SetDensity(bool);
 	bool GetDensity() const;
 
-    Tile *GetTile() const;
+	void SetPosition(uf::vec2i);
+	uf::vec2i GetPosition() const;
+
+	Tile *GetTile() const;
 	Object *GetHolder() const;
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
 
@@ -138,7 +140,7 @@ private:
     uf::vec2f shift;
 
 	bool justCreated{true};
-	bool iconsOutdated;
+	bool iconsOutdated{true};
 };
 
 template <class T> T *Object::GetComponent() {

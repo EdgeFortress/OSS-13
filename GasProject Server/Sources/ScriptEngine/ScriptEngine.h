@@ -9,5 +9,7 @@ public:
 	ScriptEngine();
 	~ScriptEngine();
 
-	Object *CreateObject(const std::string& module, const std::string& type) override;
+	Object *CreateObject(const std::string& module, const std::string& type) final;
+
+	void OnPlayerJoined(Player *player) final;
 };
