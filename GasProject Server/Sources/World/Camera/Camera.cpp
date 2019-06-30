@@ -65,13 +65,16 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 
     unsuspensed = cameraMoved = false;
 
+	Object *viewer = player->GetControl()->GetOwner();
+	uint viewerId = viewer ? viewer->ID() : 0;
+
     for (uint i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
 		Tile *block = visibleBlocks[i];
 		if (block) {
 			if (blocksSync[i]) {
 				for (auto &diff : block->GetDifferences()) {
-					// Check diff visibility
-					if (!diff->CheckVisibility(seeInvisibleAbility)) continue;
+					if (!diff->CheckVisibility(viewerId, seeInvisibleAbility)) 
+						continue;
 
 					// If client doesn't know about moved object, we need to add it
 					switch(diff->GetType()) {
@@ -113,7 +116,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 					}
 				}
 			} else {
-				command->blocksInfo.push_back(block->GetTileInfo(seeInvisibleAbility));
+				command->blocksInfo.push_back(block->GetTileInfo(viewerId, seeInvisibleAbility));
 				for (auto &object: block->Content()) {
 					visibleObjects.insert(object->ID());
 				}

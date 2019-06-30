@@ -222,8 +222,10 @@ bool Object::IsCloseTo(Object *other) const {
 	return false;
 }
 
-bool Object::CheckVisibility(uint visibility) const {
-    return !(~(~invisibility | visibility)); // if invisible flag then visible flag
+bool Object::CheckVisibility(uint viewerId, uint visibility) const {
+	return !id                               // viewer is pure camera without object => we can see everything
+		|| id == viewerId                    // diff related to viewer itself
+		|| !(~(~invisibility | visibility)); // if invisible flag is true, then corresponding visible flag should be true
 }
 
 uint Object::GetInvisibility() const { return invisibility; }

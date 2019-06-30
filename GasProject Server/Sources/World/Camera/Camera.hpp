@@ -37,9 +37,9 @@ private:
 	void updateOverlay(std::chrono::microseconds timeElapsed);
 
 private:
-	Player *player;
+	Player *player{nullptr};
 
-	uint seeInvisibleAbility;
+	uint seeInvisibleAbility{0};
 
 	// View information
 	const Tile *tile;

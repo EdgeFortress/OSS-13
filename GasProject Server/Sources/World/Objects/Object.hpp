@@ -72,7 +72,7 @@ public:
 	bool IsMovable() const;
 	bool IsCloseTo(Object *) const;
 	// True if visibility bits allow to see invisibility bits
-	bool CheckVisibility(uint visibility) const;
+	bool CheckVisibility(uint viewerId, uint visibility) const;
 	void SetInvisibility(uint);
 	uint GetInvisibility() const;
 

@@ -16,7 +16,7 @@ struct Diff {
 	uint invisibility;
 
 	virtual Global::DiffType GetType() const final;
-	bool CheckVisibility(uint visibility) const;
+	bool CheckVisibility(uint viewerId, uint visibility) const;
 protected:
 	Diff(const Object *object, Global::DiffType diffType = Global::DiffType::NONE);
 	Diff(uint id, uint invisibility, Global::DiffType diffType);

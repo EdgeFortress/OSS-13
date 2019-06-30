@@ -12,8 +12,10 @@ Diff::Diff(uint id, uint invisibility, Global::DiffType diffType) :
 	id(id),
 	invisibility(invisibility)
 { }
-bool Diff::CheckVisibility(uint visibility) const {
-	return !(~(~invisibility | visibility)); // if invisible flag then visible flag
+bool Diff::CheckVisibility(uint viewerId, uint visibility) const { // TODO: copypast from object::CheckVisibility - remove it
+	return !id                               // viewer is pure camera without object => we can see everything
+		|| id == viewerId                    // diff related to viewer itself
+		|| !(~(~invisibility | visibility)); // if invisible flag is true, then corresponding visible flag should be true
 }
 Global::DiffType Diff::GetType() const { return diffType; }
 
