@@ -2,6 +2,8 @@ from Object import Object
 
 class Item(Object):
 	def __init__(self):
-		Object.__init__(self)
+		super().__init__()
 		self.layer = 50
-		self.density = False
+	
+	def InteractWith(self, object):
+		return False

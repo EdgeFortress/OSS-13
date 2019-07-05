@@ -84,6 +84,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -96,6 +97,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,6 +111,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,6 +125,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -149,18 +153,11 @@
     <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
     <ClCompile Include="Sources\World\Camera\Camera.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
-    <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp" />
-    <ClCompile Include="Sources\World\Objects\Clothing\Uniform\Uniform.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\World\Objects\Control.cpp" />
     <ClCompile Include="Sources\World\Objects\CreateObject.cpp" />
-    <ClCompile Include="Sources\World\Objects\Creature.cpp" />
-    <ClCompile Include="Sources\World\Objects\Human.cpp" />
-    <ClCompile Include="Sources\World\Objects\Item.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp" />
-    <ClCompile Include="Sources\World\Objects\Projectile.cpp" />
-    <ClCompile Include="Sources\World\Objects\Taser.cpp" />
     <ClCompile Include="Sources\World\Objects\Turfs\Airlock.cpp" />
     <ClCompile Include="Sources\World\Objects\Turfs\Floor.cpp" />
     <ClCompile Include="Sources\World\Objects\Turfs\Turf.cpp" />
@@ -201,18 +198,11 @@
     <ClInclude Include="Sources\World\Camera\ICameraOverlay.h" />
     <ClInclude Include="Sources\World\Map.hpp" />
     <ClInclude Include="Sources\World\Objects.hpp" />
-    <ClInclude Include="Sources\World\Objects\Clothing\Clothing.h" />
-    <ClInclude Include="Sources\World\Objects\Clothing\Uniform\Uniform.h" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\World\Objects\Control.hpp" />
     <ClInclude Include="Sources\World\Objects\CreateObject.h" />
-    <ClInclude Include="Sources\World\Objects\Creature.hpp" />
-    <ClInclude Include="Sources\World\Objects\Human.hpp" />
-    <ClInclude Include="Sources\World\Objects\Item.hpp" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />
     <ClInclude Include="Sources\World\Objects\ObjectHolder.h" />
-    <ClInclude Include="Sources\World\Objects\Projectile.hpp" />
-    <ClInclude Include="Sources\World\Objects\Taser.hpp" />
     <ClInclude Include="Sources\World\Objects\Turfs.hpp" />
     <ClInclude Include="Sources\World\Objects\Turfs\Airlock.hpp" />
     <ClInclude Include="Sources\World\Objects\Turfs\Floor.hpp" />

@@ -18,17 +18,19 @@ void World::Update(std::chrono::microseconds timeElapsed) {
     map->ClearDiffs();
 
 	// Simple walking mob AI for moving testing
-    if (testMob_lastPosition != testMob->GetTile()) {
-		testMob_lastPosition = testMob->GetTile();
-        const int x = testMob->GetTile()->GetPos().x + test_dx;
-        const int y = testMob->GetTile()->GetPos().y + test_dy;
-        if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
-        if (test_dy == 1 && y == 53) test_dx = -1, test_dy = 0;
-        if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
-        if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
+	if (testMob) {
+		if (testMob_lastPosition != testMob->GetTile()) {
+			testMob_lastPosition = testMob->GetTile();
+			const int x = testMob->GetTile()->GetPos().x + test_dx;
+			const int y = testMob->GetTile()->GetPos().y + test_dy;
+			if (test_dx == 1 && x == 53) test_dx = 0, test_dy = 1;
+			if (test_dy == 1 && y == 53) test_dx = -1, test_dy = 0;
+			if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
+			if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-		dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
-    }
+			dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
+		}
+	}
     
     map->Update(timeElapsed);
 
@@ -36,7 +38,7 @@ void World::Update(std::chrono::microseconds timeElapsed) {
     for (uint i = 0; i < objects.size(); i++) {
         if (!objects[i]) continue; // already deleted
         if (!objects[i]->ID()) {         // waiting for delete
-			EXPECT_WITH_MSG(objects[i].use_count() == 2, "Wrong ref counter value: "s + std::to_string(objects[i].use_count()));
+			CHECK_WITH_MSG(objects[i].use_count() == 2, "Wrong ref counter value: "s + std::to_string(objects[i].use_count()));
             objects[i].reset();
             free_ids.push_back(i + 1);
             continue;
@@ -48,8 +50,7 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 }
 
 void World::FillingWorld() {
-	CreateScriptObject("Creature.Creature", {48, 48, 0});
-	CreateScriptObject("Creature.Ghost", { 48, 49, 0 });
+	CreateScriptObject("Objects.Creatures.Human", {48, 48, 0});
 
     for (uint i = 45; i <= 55; i++) {
         for (uint j = 45; j <= 55; j++) {
@@ -65,10 +66,7 @@ void World::FillingWorld() {
         }
     }
 
-	CreateObject<Taser>({ 50, 50, 0 });
-	CreateObject<Taser>({ 55, 50, 0 });
-	CreateObject<Taser>({ 52, 50, 0 });
-	CreateObject<Uniform>({ 49, 50, 0 });
+	CreateScriptObject("Objects.Items.Taser", {50, 51, 0});
 
     for (uint i = 5; i <= 10; i++) {
         for (uint j = 5; j <= 10; j++) {
@@ -76,7 +74,7 @@ void World::FillingWorld() {
         }
     }
 
-	testMob = CreateScriptObject("Creature.Ghost", { 49, 49, 0 });
+	testMob = CreateScriptObject("Objects.Creatures.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;
 
     test_dx = 1;
@@ -89,15 +87,10 @@ void World::FillingWorld() {
     }
 }
 
-Creature *World::CreateNewPlayerCreature() {
-	auto human = CreateObject<Human>();
+Object *World::CreateNewPlayerCreature() {
+	auto human = CreateScriptObject("Objects.Creatures.Human", { 50, 50, 0 });
 
-	auto uniform = CreateObject<Uniform>();
-	human->PutOn(uniform);
-
-    map->GetTile({ 50, 50, 0 })->PlaceTo(human);
-
-    return human;
+	return human;
 }
 
 Object *World::GetObject(uint id) const {

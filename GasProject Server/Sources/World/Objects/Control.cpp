@@ -3,7 +3,6 @@
 #include <IGame.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
-#include <World/Objects/Creature.hpp>
 
 #include <Shared/Math.hpp>
 
@@ -18,29 +17,8 @@ Control::Control() :
 
 }
 
-void Control::Update(std::chrono::microseconds timeElapsed) {
-    ////
-    //// Movement
-    ////
-	if (auto *creature = dynamic_cast<Creature *>(owner)) {
-		uf::vec2i order = GetAndDropMoveOrder();
-		int zOrder = GetAndDropMoveZOrder();
-		creature->Move(order);
-		creature->MoveZ(zOrder);
-	}
-
-    ////
-    //// Click
-    ////
-    if (clickedObjectID) {
-        Object *clickedObject = GGame->GetWorld()->GetObject(clickedObjectID);
-
-        if (auto *creature = dynamic_cast<Creature *>(owner))
-            creature->TryInteractWith(clickedObject);
-
-        clickedObjectID = 0;
-    }
-}
+void Control::Update(std::chrono::microseconds timeElapsed) 
+{ }
 
 void Control::MoveCommand(uf::vec2i order) {
 	moveOrder = order;
@@ -69,3 +47,12 @@ Player *Control::GetPlayer() const { return player; }
 
 uf::vec2i Control::GetAndDropMoveOrder() { auto tmp = moveOrder; moveOrder = {}; return tmp; };
 int Control::GetAndDropMoveZOrder() { auto tmp = moveZOrder; moveZOrder = {}; return tmp; };
+
+Object *Control::GetAndDropClickedObject() {
+	Object *obj = nullptr;
+	if (clickedObjectID) {
+		obj = GGame->GetWorld()->GetObject(clickedObjectID);
+		clickedObjectID = 0;
+	}
+	return obj;
+}

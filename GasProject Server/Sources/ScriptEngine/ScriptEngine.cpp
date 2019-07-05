@@ -4,6 +4,7 @@
 
 #include <pybind11/embed.h>
 #include <pybind11/functional.h>
+#include <pybind11/operators.h>
 #include <plog/Log.h>
 
 #include <Shared/ErrorHandling.h>
@@ -11,26 +12,46 @@
 #include "Trampoline/PyObject.h"
 #include "Trampoline/PyComponent.h"
 
+#include <IServer.h>
 #include <VerbsHolder.h>
 #include <Player.hpp>
+#include <Resources/ResourceManager.hpp>
 #include <World/Tile.hpp>
 #include <World/Objects/CreateObject.h>
 #include <World/Objects/Control.hpp>
 
+#include <Shared/Global.hpp>
 #include <Shared/Geometry/Vec2.hpp>
 
 namespace py = pybind11;
 namespace se = script_engine;
 
-PYBIND11_EMBEDDED_MODULE(Engine, m) {
-	py::class_<uf::vec2i>(m, "Vec2i")
+template<typename T>
+void RegistrateVector(pybind11::module m, const char *name) {
+	py::class_<uf::vec2<T>>(m, name)
 		.def(py::init<>())
-		.def(py::init<int, int>())
-		.def(py::init<int>())
-		.def_readwrite("x", &uf::vec2i::x)
-		.def_readwrite("y", &uf::vec2i::y)
-		.def("__repr__", &uf::vec2i::toString)
-		.def("__bool__", &uf::vec2i::operator bool);
+		.def(py::init<T, T>())
+		.def(py::init<T>())
+		.def_readwrite("x", &uf::vec2<T>::x)
+		.def_readwrite("y", &uf::vec2<T>::y)
+		.def("Normalize", &uf::vec2<T>::normalize)
+		.def(py::self + py::self)
+		.def(py::self - py::self)
+		.def(py::self * int())
+		.def(py::self * float())
+		.def(py::self / int())
+		.def(py::self / float())
+		.def("__repr__", &uf::vec2<T>::toString)
+		.def("__bool__", &uf::vec2<T>::operator bool);
+}
+
+PYBIND11_EMBEDDED_MODULE(Engine, m) {
+	RegistrateVector<int64_t> (m, "Vec2i");
+	RegistrateVector<double>  (m, "Vec2f");
+
+	RegistrateVector<int32_t>(m, "Vec2i_32"); // only for compatibility, _32 types are useless in python
+	RegistrateVector<uint32_t>(m , "Vec2i_32_unsigned");
+	RegistrateVector<float>(m, "Vec2f_32");
 
 	py::class_<VerbsHolder>(m, "VerbHolder")
 		.def("AddVerb", &VerbsHolder::AddVerb);
@@ -39,6 +60,14 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property_readonly("ckey", &Player::GetCKey)
 		.def_property("control", &Player::GetControl, &Player::SetControl, "", py::return_value_policy::reference);
 
+	py::class_<Tile>(m, "Tile")
+		.def_property_readonly("x", &Tile::X)
+		.def_property_readonly("y", &Tile::Y)
+		.def_property_readonly("z", &Tile::Z)
+		.def("IsDense", &Tile::IsDense)
+		.def("IsSpace", &Tile::IsSpace)
+		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
+
 	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "Object")
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
@@ -46,25 +75,51 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
+		.def_property("tile", &Object::GetTile, &Object::SetTile)
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
+		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
+		.def("InteractedBy", &Object::InteractedBy)
 		.def("Move", &Object::Move)
 		.def("MoveZ", &Object::MoveZ)
 		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent)
 		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent)
-		.def("Delete", &Object::Delete);
+		.def("AddObject", &Object::AddObject)
+		.def("RemoveObject", &Object::RemoveObject, py::return_value_policy::reference)
+		.def("SetConstSpeed", &Object::SetConstSpeed)
+		.def("SetSpriteState", &Object::SetSpriteState)
+		.def("Delete", &Object::Delete)
+		.def("_updateIcons", &Object::updateIcons)
+		.def("_pushToIcons", &Object::pushToIcons);
 
 	m.def("CreateObject", &CreateObject);
 
 	py::class_<Component, se::PyComponent>(m, "Component")
 		.def(py::init<std::string &&>())
 		.def("Update", &Component::Update)
-		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // remove policy, when all objects are implemented in scripts
+		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // TODO: remove policy, when all objects will be implemented in scripts
 
 	py::class_<Control, Component>(m, "Control")
 		.def_property("seeInvisibleAbility", &Control::GetSeeInvisibleAbility, &Control::SetSeeInvisibleAbility)
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
-		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder);
+		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder)
+		.def("GetAndDropClickedObject", &Control::GetAndDropClickedObject, py::return_value_policy::reference);
+
+	py::class_<IconInfo>(m, "Icon");
+
+	py::class_<ResourceManager>(m, "ResourceManager")
+		.def("GetIcon", &ResourceManager::GetIconInfo);
+
+	py::class_<IServer>(m, "Server")
+		.def_property_readonly_static("RM", [](py::object) { return IServer::RM(); }, py::return_value_policy::reference);
+}
+
+PYBIND11_EMBEDDED_MODULE(Shared, m) {
+	py::enum_<Global::ItemSpriteState>(m, "ItemSpriteState")
+		.value("DEFAULT",       Global::ItemSpriteState::DEFAULT)
+		.value("ON_MOB",        Global::ItemSpriteState::ON_MOB)
+		.value("IN_HAND_LEFT",  Global::ItemSpriteState::IN_HAND_LEFT)
+		.value("IN_HAND_RIGHT", Global::ItemSpriteState::IN_HAND_RIGHT);
 }
 
 ScriptEngine::ScriptEngine() {

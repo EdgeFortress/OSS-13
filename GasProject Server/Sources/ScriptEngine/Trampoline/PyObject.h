@@ -13,10 +13,17 @@ namespace script_engine {
 
 class PyObject : public Object, public std::enable_shared_from_this<PyObject> {
 public:
-	void Update(std::chrono::microseconds timeElapsed) override
-	{
+	void Update(std::chrono::microseconds timeElapsed) override {
 		Object::Update(timeElapsed);
 		PYBIND11_OVERLOAD_PURE_NAME(void, Object, "Update", Update, timeElapsed);
+	}
+
+	bool InteractedBy(Object *obj) override {
+		PYBIND11_OVERLOAD_PURE_NAME(bool, Object, "InteractedBy", InteractedBy, obj);
+	}
+
+	bool RemoveObject(Object *obj) override {
+		PYBIND11_OVERLOAD_NAME(bool, Object, "RemoveObject", RemoveObject, obj);
 	}
 
 	void Delete() final {
@@ -24,7 +31,9 @@ public:
 		LOGI << "Released";
 	}
 
-	bool InteractedBy(Object *) override { return false; }
+	void updateIcons() override {
+		PYBIND11_OVERLOAD_NAME(void, Object, "_updateIcons", updateIcons);
+	}
 
 	void SetImpl() {
 		this->pyImpl = py::cast(this); // Get Python object. Here cycling link is created. We should broke it in Delete method.

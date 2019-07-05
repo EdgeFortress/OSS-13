@@ -157,12 +157,6 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<DropClientCommand *>(p.get())) {
-		if (connection->player)
-			connection->player->Drop();
-		return true;
-	}
-
 	if (auto *command = dynamic_cast<BuildClientCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->Build();

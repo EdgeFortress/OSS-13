@@ -29,15 +29,15 @@ using namespace sf;
 
 Server::Server() :
 	networkController(std::make_unique<NetworkController>()),
-	RM(std::make_unique<ResourceManager>()),
-	UDB(std::make_unique<UsersDB>())
+	rm(std::make_unique<ResourceManager>()),
+	udb(std::make_unique<UsersDB>())
 {
 	GServer = this;
 
 	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
 	plog::init(plog::verbose, &appender);
 
-	ASSERT_WITH_MSG(RM->Initialize(), "Failed to Initialize ResourceManager!");
+	ASSERT_WITH_MSG(rm->Initialize(), "Failed to Initialize ResourceManager!");
 	networkController->Start();
 	game = std::make_unique<Game>();
 	GGame = game.get();
@@ -47,7 +47,7 @@ Server::Server() :
 }
 
 Player *Server::Authorization(const string &login, const string &password) const {
-	if (UDB->Check(login, password)) {
+	if (udb->Check(login, password)) {
 		LOGI << "Player is authorized: " << login << " " << password;
 		return new Player(login);
 	}
@@ -56,7 +56,7 @@ Player *Server::Authorization(const string &login, const string &password) const
 }
 
 bool Server::Registration(const string &login, const string &password) const {
-	if (UDB->Add(login, password)) {
+	if (udb->Add(login, password)) {
 		LOGI << "New player is registrated:" << login << " " << password << endl;
 		return true;
 	}
@@ -68,8 +68,9 @@ bool Server::JoinGame(sptr<Player> &player) const {
 	return game->AddPlayer(player);
 }
 
-IGame *Server::GetGame() const { return static_cast<IGame *>(game.get()); }
-ResourceManager *Server::GetRM() const { return RM.get(); }
+ResourceManager *Server::GetRM() const { return rm.get(); }
+
+ResourceManager *IServer::RM() { EXPECT(GServer); return static_cast<Server *>(GServer)->GetRM(); }
 
 int main() {
 	Server server;

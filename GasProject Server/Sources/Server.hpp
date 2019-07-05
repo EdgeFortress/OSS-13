@@ -17,12 +17,11 @@ public:
 	bool Registration(const std::string &login, const std::string &password) const override;
 	bool JoinGame(sptr<Player> &player) const override;
 
-	IGame *GetGame() const;
 	ResourceManager *GetRM() const;
 
 private:
-	uptr<UsersDB> UDB;
-	uptr<ResourceManager> RM;
+	uptr<UsersDB> udb;
+	uptr<ResourceManager> rm;
 	uptr<NetworkController> networkController;
 	uptr<Game> game;
 };

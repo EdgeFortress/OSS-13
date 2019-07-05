@@ -17,7 +17,7 @@ Tile::Tile(Map *map, apos pos) :
 {
     uint ux = uint(pos.x);
     uint uy = uint(pos.y);
-	icon = GServer->GetRM()->GetIconInfo("space");
+	icon = IServer::RM()->GetIconInfo("space");
 	icon.id += ((ux + uy) ^ ~(ux * uy)) % 25;
 
     totalPressure = 0;
@@ -120,7 +120,7 @@ bool Tile::MoveTo(Object *obj) {
         LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
     const uf::Direction direction = uf::VectToDirection(delta);
     addObject(obj);
-    AddDiff(new MoveDiff(obj, direction, obj->GetMoveSpeed(), lastTile));
+    AddDiff(new MoveDiff(obj, direction, obj->GetSpeed(), lastTile));
 
     return true;
 }

@@ -1,4 +1,4 @@
-from Creature.Creature import Creature
+from Objects.Creature import Creature
 from Engine import CreateObject, Vec2i
 
 class Ghost(Creature):
@@ -24,8 +24,8 @@ def Ghostize(player):
 	mob = player.control.GetOwner()
 
 	if not isinstance(mob, Ghost):
-		pos = player.control.GetOwner().position
-		ghost = CreateObject("Creature.Ghost", pos)
+		tile = player.control.GetOwner().tile
+		ghost = CreateObject("Objects.Creatures.Ghost", tile)
 		ghost.hostControl = player.control
 		player.control = ghost.GetComponent("Control")
 	else:

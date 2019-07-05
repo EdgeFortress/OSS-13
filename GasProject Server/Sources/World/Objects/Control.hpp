@@ -29,6 +29,7 @@ public:
 
 	uf::vec2i GetAndDropMoveOrder();
 	int GetAndDropMoveZOrder();
+	Object *GetAndDropClickedObject();
 
 private:
 	float speed;

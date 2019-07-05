@@ -17,7 +17,7 @@ public:
     void Update(std::chrono::microseconds timeElapsed);
 
     void FillingWorld();
-    Creature *CreateNewPlayerCreature();
+	Object *CreateNewPlayerCreature();
 
     Object *GetObject(uint id) const;
 	Map *GetMap() const;
@@ -25,7 +25,7 @@ public:
 private:
     uptr<Map> map;
 
-    Object *testMob;
+	Object *testMob{nullptr};
     Tile *testMob_lastPosition;
     int test_dx;
     int test_dy;

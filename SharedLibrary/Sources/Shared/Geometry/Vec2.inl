@@ -27,7 +27,7 @@ namespace uf {
     }
 
     template <typename T>
-    vec2<double> vec2<T>::normalize() const {
+    vec2<float> vec2<T>::normalize() const {
         return uf::normalize<T>(*this);
     }
 

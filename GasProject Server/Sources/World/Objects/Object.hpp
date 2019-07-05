@@ -5,6 +5,7 @@
 #include <vector>
 #include <chrono>
 
+#include <VerbsHolder.h>
 #include <World/Objects/Component.hpp>
 #include <Resources/IconInfo.h>
 
@@ -17,7 +18,7 @@ class ObjectHolder;
 class Tile;
 struct ObjectInfo;
 
-class Object : public INonCopyable {
+class Object : public VerbsHolder, public INonCopyable {
 	friend ObjectHolder;
 	friend Tile;
 
@@ -26,9 +27,8 @@ public:
 	virtual ~Object() = default;
 
     virtual void Update(std::chrono::microseconds timeElapsed);
-	virtual void UpdateWithoutTime() {}; // TODO: Remove this
 
-    virtual bool InteractedBy(Object *) = 0;
+	virtual bool InteractedBy(Object *) = 0;
 
 	virtual void Move(uf::vec2i order);
 	virtual void MoveZ(int order) {};
@@ -66,6 +66,8 @@ public:
 	uf::vec2i GetPosition() const;
 
 	Tile *GetTile() const;
+	void SetTile(Tile *tile);
+
 	Object *GetHolder() const;
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
 
@@ -87,18 +89,18 @@ public:
 
         void SetMoveSpeed(float speed);
         float GetMoveSpeed() const;
-        //void SetSpeed(float speed);
+        float GetSpeed() const;
 		//void AddShift(uf::vec2f);
 		//void SetShift(uf::vec2f);
 	//
 
 	ObjectInfo GetObjectInfo() const;
 
-protected:
 	// refresh std::vector<uint32_t> icons
 	// last in, last drawn
 	// shouldn't be called as is, use askToUpdateIcons()!
-	virtual void updateIcons() const;
+	virtual void updateIcons();
+	void pushToIcons(const IconInfo &icon);
 	void askToUpdateIcons();
 
 private:

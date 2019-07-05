@@ -11,7 +11,6 @@ struct PlayerCommand {
 		MOVE,
 		MOVEZ,
         CLICK_OBJECT,
-		DROP,
 		BUILD,
 		VERB
     };
@@ -41,10 +40,6 @@ struct MoveZPlayerCommand : public PlayerCommand {
 struct ClickObjectPlayerCommand : public PlayerCommand {
     uint id;
     ClickObjectPlayerCommand(uint id);
-};
-
-struct DropPlayerCommand : public PlayerCommand {
-	DropPlayerCommand();
 };
 
 struct BuildPlayerCommand : public PlayerCommand {

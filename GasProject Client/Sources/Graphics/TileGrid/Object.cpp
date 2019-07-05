@@ -98,7 +98,7 @@ void Object::SetDirection(const uf::Direction newdirection) {
 }
 
 void Object::SetMoveSpeed(float moveSpeed) {
-	moveSpeed = moveSpeed;
+	this->moveSpeed = moveSpeed;
 }
 
 void Object::SetMoveIntent(uf::vec2i moveIntent, bool approved) {

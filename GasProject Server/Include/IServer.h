@@ -13,9 +13,7 @@ public:
 	virtual bool Registration(const std::string &login, const std::string &password) const = 0;
 	virtual bool JoinGame(sptr<Player> &player) const = 0;
 
-	virtual IGame *GetGame() const = 0;
-	//virtual UsersDB *GetUDB() const;
-	virtual ResourceManager *GetRM() const = 0;
+	static ResourceManager *RM();
 };
 
 extern IServer *GServer;

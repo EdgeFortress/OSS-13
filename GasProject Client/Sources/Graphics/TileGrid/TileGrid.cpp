@@ -242,8 +242,11 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			Connection::commandQueue.Push(p);
 		}
 
-		if (stun == sf::Time::Zero && dropButtonPressed)
-			Connection::commandQueue.Push(new DropClientCommand());
+		if (stun == sf::Time::Zero && dropButtonPressed) {
+			auto *p = new CallVerbClientCommand();
+			p->verb = "creature.drop";
+			Connection::commandQueue.Push(p);
+		}
 		
 		if (stun == sf::Time::Zero && buildButtonPressed)
 			Connection::commandQueue.Push(new BuildClientCommand());
@@ -345,7 +348,7 @@ void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
     LOGE << "Try to set MoveIntent to unknown object (id: " << id << ")(TileGrid::SetMoveIntentObject)" << std::endl;
 }
 
-void TileGrid::MoveObject(uint id, uf::Direction direction) {
+void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
     auto iter = objects.find(id);
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
@@ -363,6 +366,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction) {
         }
 
         //obj->SetShifting(direction, speed);
+		obj->SetMoveSpeed(speed);
         tile->AddObject(obj, 0);
         obj->ReverseShifting(direction);
         if (obj == controllable) shift = controllable->GetShift();

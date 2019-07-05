@@ -217,3 +217,5 @@ ModelManifest.xml
 Resources/Icons/Thumbs.db
 imgui.ini
 **/__pycache__/
+.idea/
+cmake-build-debug/

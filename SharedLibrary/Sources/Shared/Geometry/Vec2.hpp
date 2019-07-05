@@ -21,7 +21,7 @@ namespace uf {
 
 		double length() const;
 
-		vec2<double> normalize() const;
+		vec2<float> normalize() const;
 
 		// Angle in radians counter-clockwise ((1, 0) - 0 angle)
 		double GetAngle() const;

@@ -201,7 +201,7 @@ void Connection::parsePacket(Packet &packet) {
                             float speed;
                             packet >> speed;
 
-                            tileGrid->MoveObject(id, uf::Direction(direction));
+                            tileGrid->MoveObject(id, uf::Direction(direction), speed);
 
                             break;
                         }

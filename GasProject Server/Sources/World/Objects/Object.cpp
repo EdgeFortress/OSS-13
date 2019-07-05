@@ -1,5 +1,7 @@
 #include "Object.hpp"
 
+#include <plog/Log.h>
+
 #include <IServer.h>
 #include <IGame.h>
 #include <Resources/ResourceManager.hpp>
@@ -142,6 +144,7 @@ bool Object::RemoveObject(Object *obj) {
             obj->setTile(nullptr);
             obj->holder = nullptr;
             content.erase(iter);
+			askToUpdateIcons();
             return true;
         }
     }
@@ -179,7 +182,7 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> &
 	if (!animationTimer.IsStopped())
 		return false;
 
-	auto iconInfo = GServer->GetRM()->GetIconInfo(animation);
+	auto iconInfo = IServer::RM()->GetIconInfo(animation);
 
 	GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
 
@@ -195,11 +198,12 @@ void Object::SetPosition(uf::vec2i newPos) {
 		auto tile = GGame->GetWorld()->GetMap()->GetTile(apos(newPos));
 		if (tile) {
 			tile->PlaceTo(this);
+			return;
 		}
 	}
 	// incorrect newPos
-	if (tile)
-		tile->RemoveObject(this);
+	if (this->tile)
+		this->tile->RemoveObject(this);
 }
 
 uf::vec2i Object::GetPosition() const {
@@ -211,6 +215,14 @@ uf::vec2i Object::GetPosition() const {
 }
 
 Tile *Object::GetTile() const { return tile; }
+void Object::SetTile(Tile *tile) {
+	if (!tile) {
+		if (this->tile)
+			this->tile->RemoveObject(this);
+	}
+	tile->PlaceTo(this);
+}
+
 Object *Object::GetHolder() const { return holder; }
 
 bool Object::IsMovable() const { return movable; };
@@ -253,12 +265,12 @@ float Object::GetMoveSpeed() const {
 }
 
 //uf::vec2f Object::GetShift() const { return shift + delta_shift; }
-//float Object::GetSpeed() const { 
-//    if (constSpeed) {
-//        return constSpeed.y;
-//    }
-//    return speed; 
-//}
+float Object::GetSpeed() const {
+	if (constSpeed) {
+		return uf::abs(constSpeed.y);
+	}
+	return moveSpeed;
+}
 
 void Object::SetDirection(uf::Direction direction) {
     if (direction > uf::Direction::EAST)
@@ -288,9 +300,13 @@ ObjectInfo Object::GetObjectInfo() const {
     return objectInfo;
 }
 
-void Object::updateIcons() const {
+void Object::updateIcons() {
 	icons.clear();
-	icons.push_back(GServer->GetRM()->GetIconInfo(sprite));
+	icons.push_back(IServer::RM()->GetIconInfo(sprite));
+}
+
+void Object::pushToIcons(const IconInfo &icon) {
+	icons.push_back(icon);
 }
 
 void Object::askToUpdateIcons() {

@@ -56,10 +56,6 @@ void Player::ClickObject(uint id) {
     actions.Push(new ClickObjectPlayerCommand(id));
 }
 
-void Player::Drop() {
-	actions.Push(new DropPlayerCommand());
-}
-
 void Player::Build() {
 	actions.Push(new BuildPlayerCommand());
 }
@@ -100,6 +96,7 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
                     SetControl(GGame->GetStartControl(this));
 					verbsHolders["player"] = this;
 					verbsHolders["atmos"] = GetControl()->GetOwner()->GetTile()->GetMap()->GetAtmos();
+					verbsHolders["creature"] = GetControl()->GetOwner();
                     break;
                 }
 				case PlayerCommand::Code::MOVE: {
@@ -123,12 +120,6 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
                     }
                     break;
                 }
-				case PlayerCommand::Code::DROP: {
-					if (!control) break;
-					if (auto *creature = dynamic_cast<Creature *>(control->GetOwner()))
-						creature->Drop();
-					break;
-				}
 				case PlayerCommand::Code::BUILD: {
 					if (!control) break;
 					Tile *tile = control->GetOwner()->GetTile();

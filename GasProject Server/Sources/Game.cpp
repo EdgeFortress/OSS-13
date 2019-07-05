@@ -11,7 +11,6 @@
 #include <ScriptEngine/ScriptEngine.h>
 #include <World/World.hpp>
 #include <World/Objects/Control.hpp>
-#include <World/Objects/Creature.hpp>
 #include <World/Map.hpp>
 
 using namespace std::chrono_literals;
@@ -37,6 +36,7 @@ void Game::gameProcess() {
 		} catch (const std::exception &e) {
 			LOGE << "Main game cycle failed due exception: " << "\n"
 				 << e.what();
+			getchar();
 		}
 
 		auto timeToSleep = 50us - timeElapsed; // 10 ticks per second
@@ -97,7 +97,7 @@ bool Game::AddPlayer(sptr<Player> &player) {
 
 Control *Game::GetStartControl(Player *player) {
 	GetScriptEngine()->OnPlayerJoined(player);
-	return world->CreateNewPlayerCreature()->GetComponent<Control>();
+	return dynamic_cast<Control *>(world->CreateNewPlayerCreature()->GetComponent("Control"));
 }
 
 void Game::SendChatMessages() {

@@ -36,12 +36,6 @@
     <ClCompile Include="Sources\World\Atmos\Locale.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Clothing\Uniform\Uniform.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Clothing\Clothing.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\World\Objects\Turfs\Airlock.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -60,25 +54,10 @@
     <ClCompile Include="Sources\World\Objects\Control.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Creature.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Human.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Item.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\World\Objects\Object.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Projectile.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Objects\Taser.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\World\Map.cpp">
@@ -155,12 +134,6 @@
     <ClInclude Include="Sources\World\Atmos\Locale.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Clothing\Uniform\Uniform.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Clothing\Clothing.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\World\Objects\Turfs\Airlock.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -179,25 +152,10 @@
     <ClInclude Include="Sources\World\Objects\Control.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Creature.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Human.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Item.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\World\Objects\Object.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\ObjectHolder.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Projectile.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Objects\Taser.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\Turfs.hpp">
