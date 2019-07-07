@@ -178,7 +178,7 @@ void Object::SetSpriteState(Global::ItemSpriteState newState) {
 	spriteState = newState;
 }
 
-bool Object::PlayAnimation(const std::string &animation, std::function<void()> &&callback) {
+bool Object::PlayAnimation(const std::string &animation, std::function<void()> callback) {
 	if (!animationTimer.IsStopped())
 		return false;
 

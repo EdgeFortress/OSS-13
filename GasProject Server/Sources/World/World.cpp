@@ -66,6 +66,8 @@ void World::FillingWorld() {
         }
     }
 
+	CreateScriptObject("Objects.Turfs.Airlock", {50, 48, 0});
+
 	CreateScriptObject("Objects.Items.Taser", {50, 51, 0});
 
     for (uint i = 5; i <= 10; i++) {

@@ -88,6 +88,8 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("RemoveObject", &Object::RemoveObject, py::return_value_policy::reference)
 		.def("SetConstSpeed", &Object::SetConstSpeed)
 		.def("SetSpriteState", &Object::SetSpriteState)
+		.def("PlayAnimation", &Object::PlayAnimation, "Play animation",
+			 py::arg("animation"), py::arg("callback") = nullptr)
 		.def("Delete", &Object::Delete)
 		.def("_updateIcons", &Object::updateIcons)
 		.def("_pushToIcons", &Object::pushToIcons);

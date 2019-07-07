@@ -36,6 +36,18 @@
     <Compile Include="Objects\Projectile.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Objects\Turf.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Turfs\Airlock.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Turfs\Floor.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Turfs\Wall.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\__init__.py" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +55,7 @@
     <Folder Include="Objects\Items\" />
     <Folder Include="Objects\Items\Clothes\" />
     <Folder Include="Objects\" />
+    <Folder Include="Objects\Turfs\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

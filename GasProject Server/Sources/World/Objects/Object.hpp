@@ -57,7 +57,7 @@ public:
 
 	void SetSpriteState(Global::ItemSpriteState);
 	// False if another animation is playing already. Callback will be called after animation
-	bool PlayAnimation(const std::string &sprite, std::function<void()> &&callback = {});
+	bool PlayAnimation(const std::string &sprite, std::function<void()> callback = {});
 
 	void SetDensity(bool);
 	bool GetDensity() const;
