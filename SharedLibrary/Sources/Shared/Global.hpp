@@ -12,6 +12,7 @@ namespace Global {
 		ADD,
 		REMOVE,
 		RELOCATE,
+		RELOCATE_AWAY,
         MOVE_INTENT,
 		MOVE,
 		UPDATE_ICONS,

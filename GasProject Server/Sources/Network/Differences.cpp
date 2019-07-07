@@ -26,6 +26,13 @@ ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, int toZ, Tile *
 	objectInfo(object->GetObjectInfo())
 { }
 
+ReplaceDiff::ReplaceDiff(const Object *object, int toX, int toY, int toZ) :
+	Diff(object, Global::DiffType::RELOCATE_AWAY),
+	lastBlock(object->GetTile()),
+	toX(toX), toY(toY), toZ(toZ),
+	objectInfo(object->GetObjectInfo())
+{ }
+
 MoveIntentDiff::MoveIntentDiff(const Object *object, uf::Direction direction) :
     Diff(object, Global::DiffType::MOVE_INTENT),
     direction(direction)

@@ -119,6 +119,7 @@ bool Tile::MoveTo(Object *obj) {
     if (delta.z)
         LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
     const uf::Direction direction = uf::VectToDirection(delta);
+    lastTile->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z));
     addObject(obj);
     AddDiff(new MoveDiff(obj, direction, obj->GetSpeed(), lastTile));
 
@@ -161,6 +162,9 @@ void Tile::PlaceTo(Object *obj) {
         CheckLocale();
     }
 
+	if(lastTile) {
+		lastTile->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z));
+	}
     addObject(obj);
     AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z, lastTile));
 }

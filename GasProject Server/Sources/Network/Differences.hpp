@@ -30,6 +30,7 @@ struct ReplaceDiff : public Diff {
     int toX, toY, toZ, toObjectNum;
 
 	ReplaceDiff(const Object *object, int toX, int toY, int toZ, Tile* lastBlock);
+	ReplaceDiff(const Object *object, int toX, int toY, int toZ);
 };
 
 struct AddDiff : public Diff {

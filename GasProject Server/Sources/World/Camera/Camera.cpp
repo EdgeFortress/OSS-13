@@ -13,6 +13,8 @@
 #include <Shared/Command.hpp>
 #include <Shared/Array.hpp>
 
+#include <Shared/ErrorHandling.h>
+
 Camera::Camera(const Tile * const tile) :
     tile(nullptr), lasttile(nullptr), suspense(true),
     changeFocus(false),
@@ -61,8 +63,10 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
     auto command = std::make_unique<GraphicsUpdateServerCommand>();
 
     if (unsuspensed || cameraMoved) {
-        if (unsuspensed) fullRecountVisibleBlocks(tile);
-        else refreshVisibleBlocks(tile);
+        if (unsuspensed) {
+			fullRecountVisibleBlocks(tile);
+			visibleObjects.clear();
+		} else refreshVisibleBlocks(tile);
         updateOptions |= GraphicsUpdateServerCommand::Option::CAMERA_MOVE;
         command->cameraX = tile->GetPos().x;
         command->cameraY = tile->GetPos().y;
@@ -86,6 +90,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 					switch(diff->GetType()) {
 					case Global::DiffType::ADD: {
 						AddDiff *addDiff = dynamic_cast<AddDiff *>(diff.get());
+						CHECK(visibleObjects.find(addDiff->id) == visibleObjects.end())
 						visibleObjects.insert(addDiff->id);
 						command->diffs.push_back(diff);
 						break;
@@ -93,7 +98,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 					case Global::DiffType::MOVE: {
 						MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
 						if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
-							apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction));
+							apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction),0);
 							command->diffs.push_back(std::make_shared<AddDiff>(GGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z));
 							visibleObjects.insert(moveDiff->id);
 							break;
@@ -111,8 +116,22 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 						command->diffs.push_back(diff);
 						break;
 					}
+					case Global::DiffType::RELOCATE_AWAY: {
+						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
+						CHECK(visibleObjects.find(replaceDiff->id) != visibleObjects.end())
+						rpos to = rpos(replaceDiff->toX,replaceDiff->toY,replaceDiff->toZ);
+						if (to >= rpos(firstBlockX,firstBlockY,firstBlockZ) &&
+						    to < rpos(firstBlockX+visibleTilesSide,firstBlockY+visibleTilesSide,firstBlockZ+visibleTilesHeight))
+						{
+							break;
+						}
+						visibleObjects.erase(replaceDiff->id);
+						command->diffs.push_back(std::make_shared<RemoveDiff>(GGame->GetWorld()->GetObject(replaceDiff->id)));
+						break;
+					}
 					case Global::DiffType::REMOVE: {
 						RemoveDiff *removeDiff = dynamic_cast<RemoveDiff *>(diff.get());
+						CHECK(visibleObjects.find(removeDiff->id) != visibleObjects.end())
 						visibleObjects.erase(removeDiff->id);
 						command->diffs.push_back(diff);
 						break;
@@ -124,6 +143,9 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 			} else {
 				command->blocksInfo.push_back(block->GetTileInfo(viewerId, seeInvisibleAbility));
 				for (auto &object: block->Content()) {
+					if (!object->CheckVisibility(viewerId, seeInvisibleAbility)) {
+						continue;
+					}
 					visibleObjects.insert(object->ID());
 				}
 				blocksSync[i] = true;
@@ -259,11 +281,21 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
         for (int y = 0; y < visibleTilesSide; y++)
             for (int x = 0; x < visibleTilesSide; x++)
 				for (int z = 0; z < visibleTilesHeight; z++) {
-                if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
-                    y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
-                    z - block_dz >= 0 && z - block_dz < visibleTilesHeight &&
-                    blocksSync[flat_index({x,y,z})])
-                    saved[flat_index({x-block_dx,y-block_dy,z-block_dz})] = true;
+					if (blocksSync[flat_index({x,y,z})]) {
+						if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
+							y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
+							z - block_dz >= 0 && z - block_dz < visibleTilesHeight)
+						{
+							saved[flat_index({x-block_dx,y-block_dy,z-block_dz})] = true;
+						} else {
+							Tile *block = visibleBlocks[flat_index({x,y,z})];
+							if (block) {
+								for (auto &object: block->Content()) {
+									visibleObjects.erase(object->ID());
+								}
+							}
+						}
+					}
 				}
 
         fullRecountVisibleBlocks(tile);
