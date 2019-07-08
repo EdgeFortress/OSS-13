@@ -11,9 +11,11 @@
 #include <Player.hpp>
 #include <Chat.h>
 
+#include "DelayedActivitiesManager.h"
+
 class World;
 
-class Game : public IGame {
+class Game : public IGame, public DelayedActivitiesManager, public INonCopyable {
 public:
 	Game();
 
@@ -22,7 +24,7 @@ public:
 
 	Control *GetStartControl(Player *);
 
-	const uptr<World> &GetWorld() const { return world; }
+	World *GetWorld() const { return world.get(); }
 	IScriptEngine *GetScriptEngine() const { return scriptEngine.get(); }
 
 	Chat *GetChat() { return &chat; }

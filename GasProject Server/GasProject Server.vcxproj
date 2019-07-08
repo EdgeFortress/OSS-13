@@ -137,6 +137,7 @@
     <ClCompile Include="Sources\ClientUI\WelcomeWindowSink.cpp" />
     <ClCompile Include="Sources\Database\UsersDB.cpp" />
     <ClCompile Include="Sources\ClientUI\WindowSink.cpp" />
+    <ClCompile Include="Sources\DelayedActivitiesManager.cpp" />
     <ClCompile Include="Sources\Game.cpp" />
     <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
@@ -146,7 +147,7 @@
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
-    <ClCompile Include="Sources\VerbHolder.cpp" />
+    <ClCompile Include="Sources\VerbsHolder.cpp" />
     <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
     <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
     <ClInclude Include="Sources\ClientUI\WindowSink.h" />
+    <ClInclude Include="Sources\DelayedActivitiesManager.h" />
     <ClInclude Include="Sources\Game.h" />
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Connection.hpp" />

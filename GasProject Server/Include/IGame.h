@@ -9,14 +9,14 @@ class World;
 class Chat;
 class IScriptEngine;
 
-class IGame : public INonCopyable {
+class IGame {
 public:
 	// True if new player created, false if exist player reconnected
 	virtual bool AddPlayer(sptr<Player> &) = 0;
 	virtual void SendChatMessages() = 0;
 
 	virtual Control *GetStartControl(Player *) = 0;
-	virtual const uptr<World> &GetWorld() const = 0;
+	virtual World *GetWorld() const = 0;
 	virtual IScriptEngine *GetScriptEngine() const = 0;
 	virtual Chat *GetChat() = 0;
 };

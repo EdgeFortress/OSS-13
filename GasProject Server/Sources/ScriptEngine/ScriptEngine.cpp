@@ -13,6 +13,7 @@
 #include "Trampoline/PyComponent.h"
 
 #include <IServer.h>
+#include <Game.h>
 #include <VerbsHolder.h>
 #include <Player.hpp>
 #include <Resources/ResourceManager.hpp>
@@ -107,6 +108,9 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder)
 		.def("GetAndDropClickedObject", &Control::GetAndDropClickedObject, py::return_value_policy::reference);
 
+	py::class_<Game>(m, "Game")
+		.def("AddDelayedActivity", &Game::AddDelayedActivity);
+
 	py::class_<IconInfo>(m, "Icon");
 
 	py::class_<ResourceManager>(m, "ResourceManager")
@@ -114,6 +118,8 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 
 	py::class_<IServer>(m, "Server")
 		.def_property_readonly_static("RM", [](py::object) { return IServer::RM(); }, py::return_value_policy::reference);
+
+	m.attr("GGame") = GGame;
 }
 
 PYBIND11_EMBEDDED_MODULE(Shared, m) {

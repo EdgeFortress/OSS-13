@@ -35,3 +35,7 @@ class Airlock(Turf):
 		self.opened = True
 		self.density = False
 
+	def __autocloseCallback(self):
+		if self.opened:
+			self.Activate()
+

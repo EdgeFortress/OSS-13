@@ -46,7 +46,10 @@ void Game::gameProcess() {
 }
 
 void Game::update(std::chrono::microseconds timeElapsed) {
+	DelayedActivitiesManager::Update(timeElapsed);
+
 	world->Update(timeElapsed);
+
 	{
 		std::unique_lock<std::mutex> lock(playersLock);
 		for (auto iter = players.begin(); iter != players.end();) {
@@ -73,6 +76,7 @@ void Game::update(std::chrono::microseconds timeElapsed) {
 			if (sptr<Player> player_s = player.lock())
 				player_s->SendGraphicsUpdates(timeElapsed);
 	}
+
 	SendChatMessages();
 }
 
