@@ -11,6 +11,8 @@ class Airlock(Turf):
 		self.locked = False
 		
 	def InteractedBy(self, object):
+		if not self.IsCloseTo(object):
+			return False
 		self.Activate()
 		return True
 

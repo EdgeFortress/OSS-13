@@ -81,6 +81,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)
+		.def("IsCloseTo", &Object::IsCloseTo)
 		.def("Move", &Object::Move)
 		.def("MoveZ", &Object::MoveZ)
 		.def("AddComponent", (void (Object::*)(const std::string &)) &Object::AddComponent)

@@ -83,11 +83,13 @@ class Creature(Object):
 		return False
 
 	def Take(self, object) -> bool:
-		if self.__handItem is None:
-			self.AddObject(object)
-			self.__handItem = object
-			return True
-		return False
+		if self.__handItem:
+			return False
+		if not self.IsCloseTo(object):
+			return False
+		self.AddObject(object)
+		self.__handItem = object
+		return True
 
 	def PutOn(self, clothing) -> bool:
 		if not isinstance(clothing, Clothing):
