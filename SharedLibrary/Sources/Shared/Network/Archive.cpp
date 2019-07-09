@@ -2,10 +2,12 @@
 
 #include "ISerializable.h"
 
-#include <Shared/Network/Protocol/ClientCommand.h>
-#include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/ErrorHandling.h>
+
 #include <Shared/Network/Protocol/InputData.h>
-#include <Shared/Network/Protocol/WindowData.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 
 using namespace uf;
 using namespace network::protocol;
@@ -24,30 +26,29 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 	packet >> id;
 
 	switch (id) {
-		DECLARE_SER(OverlayInfo)
-		DECLARE_SER(RadioButtonUIData)
-		DECLARE_SER(WindowData)
-
-		// Client Commands
-		DECLARE_SER(AuthorizationClientCommand)
-		DECLARE_SER(RegistrationClientCommand)
-		DECLARE_SER(GamelistRequestClientCommand)
-		DECLARE_SER(JoinGameClientCommand)
-		DECLARE_SER(MoveClientCommand)
-		DECLARE_SER(MoveZClientCommand)
-		DECLARE_SER(ClickObjectClientCommand)
-		DECLARE_SER(DropClientCommand)
-		DECLARE_SER(SendChatMessageClientCommand)
-		DECLARE_SER(BuildClientCommand)
-		DECLARE_SER(GhostClientCommand)
-		DECLARE_SER(UIInputClientCommand)
-		DECLARE_SER(UITriggerClientCommand)
-		DECLARE_SER(CallVerbClientCommand)
-		DECLARE_SER(DisconnectionClientCommand)
-
-		default:
-			throw std::exception(); // unknown id
+		using namespace client;
+		DECLARE_SER(AuthorizationCommand)
+		DECLARE_SER(RegistrationCommand)
+		DECLARE_SER(GamelistRequestCommand)
+		DECLARE_SER(JoinGameCommand)
+		DECLARE_SER(MoveCommand)
+		DECLARE_SER(MoveZCommand)
+		DECLARE_SER(ClickObjectCommand)
+		DECLARE_SER(SendChatMessageCommand)
+		DECLARE_SER(BuildCommand)
+		DECLARE_SER(UIInputCommand)
+		DECLARE_SER(UITriggerCommand)
+		DECLARE_SER(CallVerbCommand)
+		DECLARE_SER(DisconnectionCommand)
 	}
+
+	switch (id) {
+		DECLARE_SER(RadioButtonUIData)
+		DECLARE_SER(OverlayInfo)
+		DECLARE_SER(WindowData)
+	}
+
+	EXPECT_WITH_MSG(false, "Unknown id received: " + std::to_string(id));
 }
 
 

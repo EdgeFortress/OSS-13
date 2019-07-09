@@ -2,7 +2,7 @@
 
 #include <Player.hpp>
 #include <Shared/Command.hpp>
-#include <Shared/Network/Protocol/WindowData.h>
+#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 
 using namespace network::protocol;
 

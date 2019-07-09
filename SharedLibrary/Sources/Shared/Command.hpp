@@ -4,9 +4,9 @@
 #include <list>
 #include <vector>
 
-#include <Shared/Network/Protocol/OverlayInfo.h>
 #include <Shared/Network/Protocol/InputData.h>
-#include <Shared/Network/Protocol/WindowData.h>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 
 #include "Types.hpp"
 

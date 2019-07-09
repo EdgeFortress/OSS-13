@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <typeinfo>
 
-#include <Shared/Network/Protocol/ClientCommand.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 #include "Graphics/UI/UI.hpp"
 #include "Client.hpp"
@@ -43,7 +43,7 @@ void AuthUI::Update(sf::Time timeElapsed) {
             if (comState == AuthUI::ComState::LOGIN) {
                 if (answer.result) {
                     LOGI << "Successfully logged in";
-					auto *p = new JoinGameClientCommand();
+					auto *p = new client::JoinGameCommand();
 					Connection::commandQueue.Push(p);
                     ui->ChangeModule<GameProcessUI>();
                 }
@@ -170,7 +170,7 @@ void AuthUI::closeReg() {
 
 void AuthUI::login() {
     if (comState == ComState::NOTHING) {
-		auto *p = new AuthorizationClientCommand();
+		auto *p = new client::AuthorizationCommand();
 		p->login = my_login_entry->GetText();
 		p->password = my_passw_entry->GetText();
         Connection::commandQueue.Push(p);
@@ -182,7 +182,7 @@ void AuthUI::login() {
 
 void AuthUI::registration() {
     if (comState == ComState::NOTHING) {
-		auto *p = new RegistrationClientCommand();
+		auto *p = new client::RegistrationCommand();
 		p->login = my_login_entry->GetText();
 		p->password = my_passw_entry->GetText();
         Connection::commandQueue.Push(p);

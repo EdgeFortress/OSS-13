@@ -64,10 +64,11 @@
     <ClInclude Include="Sources\Shared\Network\Archive.h" />
     <ClInclude Include="Sources\Shared\Network\ISerializable.h" />
     <ClInclude Include="Sources\Shared\Network\PacketConverters.h" />
-    <ClInclude Include="Sources\Shared\Network\Protocol\ClientCommand.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\ClientToServer\Commands.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
-    <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h" />
-    <ClInclude Include="Sources\Shared\Network\Protocol\WindowData.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\OverlayInfo.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\WindowData.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\Command.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />

@@ -8,16 +8,14 @@
 namespace network {
 namespace protocol {
 
-struct OverlayInfo : public uf::ISerializable {
-	DEFINE_SERID("OverlayInfo"_crc32)
-
+DEFINE_SERIALIZABLE(OverlayInfo, uf::ISerializable)
 	std::string text;
 
 	void Serialize(uf::Archive &archive) {
 		uf::ISerializable::Serialize(archive);
 		archive & text;
 	}
-};
+DEFINE_SERIALIZABLE_END
 
 } // namespace protocol
 } // namespace network

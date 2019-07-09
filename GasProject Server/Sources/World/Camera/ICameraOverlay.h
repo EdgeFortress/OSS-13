@@ -3,7 +3,7 @@
 #include <string>
 #include <chrono>
 
-#include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
 class Tile;
 

@@ -30,6 +30,9 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
@@ -148,9 +151,6 @@
     <ClInclude Include="..\External\sfml-imgui\imstb_truetype.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Network\Protocol\OverlayInfo.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\IFaces\IHasRepeatableID.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -163,25 +163,31 @@
     <ClInclude Include="Sources\Shared\Array.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\CRC32.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Network\Protocol\ClientCommand.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\Network\PacketConverters.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Shared\Network\Protocol\WindowData.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\ErrorHandling.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\IFaces\INonCopyable.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\Command.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ClientToServer\Commands.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\OverlayInfo.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\WindowData.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@
 #include <Client.hpp>
 #include <Network.hpp>
 
-#include <Shared/Network/Protocol/ClientCommand.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 using namespace network::protocol;
 
@@ -68,7 +68,7 @@ void Console::Update(sf::Time timeElapsed) {
 		if (com_iter != commands.end()) {
 			com_iter->second();
 		} else {
-			auto *p = new CallVerbClientCommand();
+			auto *p = new client::CallVerbCommand();
 			p->verb = command;
 			Connection::commandQueue.Push(p);
 			//command_notFound(command);

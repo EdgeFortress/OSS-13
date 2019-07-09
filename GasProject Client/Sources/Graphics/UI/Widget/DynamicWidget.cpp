@@ -7,7 +7,7 @@
 
 #include <Shared/JSON.hpp>
 #include <Shared/Geometry/Vec2.hpp>
-#include <Shared/Network/Protocol/ClientCommand.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 #include <Network.hpp>
 
@@ -91,7 +91,7 @@ void DynamicWidget::sendUpdates() {
 			auto &&data = pair.second.GetInputData();
 			data->window = id;
 			data->handle = pair.first;
-			auto *p = new UIInputClientCommand();
+			auto *p = new client::UIInputCommand();
 			p->handle = pair.first;
 			p->data = std::move(data);
 			Connection::commandQueue.Push(p);
@@ -100,7 +100,7 @@ void DynamicWidget::sendUpdates() {
 
 	while (!triggers.empty()) {
 		auto trigger = std::move(triggers.front()); triggers.pop();
-		auto *p = new UITriggerClientCommand();
+		auto *p = new client::UITriggerCommand();
 		p->trigger = trigger.trigger;
 		p->window = id;
 		Connection::commandQueue.Push(p);

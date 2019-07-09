@@ -15,7 +15,7 @@
 #include "Graphics/TileGrid.hpp"
 
 #include <Shared/Command.hpp>
-#include <Shared/Network/Protocol/WindowData.h>
+#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 
 using namespace std;
 using namespace sf;
@@ -39,7 +39,7 @@ bool Connection::Start(string ip, int port) {
 }
 
 void Connection::Stop() {
-    Connection::commandQueue.Push(new DisconnectionClientCommand());
+    Connection::commandQueue.Push(new client::DisconnectionCommand());
     status = Status::NOT_CONNECTED;
     thread->join();
 }
@@ -73,7 +73,7 @@ void Connection::sendCommands() {
     while (!commandQueue.Empty()) {
         sf::Packet packet;
 		uf::InputArchive ar(packet);
-        ClientCommand *temp = commandQueue.Pop();
+        Command *temp = commandQueue.Pop();
         ar << *temp;
         if (temp) delete temp;
         while (socket.send(packet) == sf::Socket::Partial);
@@ -378,4 +378,4 @@ int Connection::serverPort;
 Connection::Status Connection::status = Connection::Status::INACTIVE;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
-uf::ThreadSafeQueue<ClientCommand *> Connection::commandQueue;
+uf::ThreadSafeQueue<Command *> Connection::commandQueue;

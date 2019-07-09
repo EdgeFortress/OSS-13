@@ -3,7 +3,7 @@
 #include <list>
 
 #include <Shared/Types.hpp>
-#include <Shared/Network/Protocol/WindowData.h>
+#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 
 class UI;
 class Widget;

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include <Shared/Network/Protocol/ClientCommand.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 #include "Client.hpp"
 #include "Graphics/Window.hpp"
@@ -56,7 +56,7 @@ void GameProcessUI::Initialize() { }
 
 void GameProcessUI::send() {
     if (!entry->Empty()) {
-		auto *p = new SendChatMessageClientCommand();
+		auto *p = new client::SendChatMessageCommand();
 		p->message = entry->GetText();
         Connection::commandQueue.Push(p);
 	}

@@ -2,7 +2,7 @@
 
 #include <World/Camera/ICameraOverlay.h>
 
-#include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
 enum class AtmosCameraOverlayMode : char {
 	None,

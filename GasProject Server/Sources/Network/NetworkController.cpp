@@ -5,8 +5,8 @@
 #include <plog/Log.h>
 
 #include <Shared/Global.hpp>
-#include <Shared/Network/Protocol/ClientCommand.h>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 #include <IServer.h>
 #include <Player.hpp>
@@ -87,7 +87,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 	uf::OutputArchive ar(packet);
 	auto p = ar.UnpackSerializable();
 
-	if (auto *command = dynamic_cast<AuthorizationClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::AuthorizationCommand *>(p.get())) {
 		bool secondConnection = false;
 		for (auto &connection : connections) {
 			if (connection->player && connection->player->GetCKey() == command->login) {
@@ -109,7 +109,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<RegistrationClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::RegistrationCommand *>(p.get())) {
 		if (GServer->Registration(command->login, command->password))
 			connection->commandsToClient.Push(new RegSuccessServerCommand());
 		else
@@ -117,12 +117,12 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<GamelistRequestClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::GamelistRequestCommand *>(p.get())) {
 		connection->player->UpdateServerList();
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<JoinGameClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::JoinGameCommand *>(p.get())) {
 		if (connection->player) {
 			if (GServer->JoinGame(connection->player)) {
 				connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
@@ -133,57 +133,57 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<MoveClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::MoveCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->Move(uf::Direction(command->direction));
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<MoveZClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::MoveZCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->MoveZ(command->up);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<ClickObjectClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::ClickObjectCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->ClickObject(command->id);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<SendChatMessageClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::SendChatMessageCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->ChatMessage(command->message);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<BuildClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::BuildCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->Build();
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<DisconnectionClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::DisconnectionCommand *>(p.get())) {
 		if (connection->player)
 			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
 		return false;
 	}
 
-	if (auto *command = dynamic_cast<UIInputClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::UIInputCommand *>(p.get())) {
 		if (connection->player) {
 			connection->player->UIInput(std::move(command->data));
 		}
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<UITriggerClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::UITriggerCommand *>(p.get())) {
 		if (connection->player) {
 			connection->player->UITrigger(command->window, command->trigger);
 		}
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<CallVerbClientCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::CallVerbCommand *>(p.get())) {
 		if (connection->player) {
 			connection->player->CallVerb(command->verb);
 		}

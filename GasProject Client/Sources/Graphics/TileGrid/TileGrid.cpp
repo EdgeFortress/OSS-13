@@ -3,8 +3,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-#include <Shared/Network/Protocol/ClientCommand.h>
-#include <Shared/Network/Protocol/OverlayInfo.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
 #include "Shared/Global.hpp"
 #include "Client.hpp"
@@ -197,7 +197,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
     if (actionSendPause == sf::Time::Zero) {
 		if (stun == sf::Time::Zero && moveCommand) {
-			auto *p = new MoveClientCommand();
+			auto *p = new client::MoveCommand();
 			p->direction = uf::VectToDirection(moveCommand);
 			Connection::commandQueue.Push(p);
 
@@ -230,29 +230,29 @@ void TileGrid::Update(sf::Time timeElapsed) {
 		moveCommand = sf::Vector2i();
 
 		if (stun == sf::Time::Zero && moveZCommand) {
-			auto *p = new MoveZClientCommand();
+			auto *p = new client::MoveZCommand();
 			p->up = moveZCommand > 0;
 			Connection::commandQueue.Push(p);
 		}
 		moveZCommand = 0;
 
         if (stun == sf::Time::Zero && objectClicked && underCursorObject) {
-			auto *p = new ClickObjectClientCommand();
+			auto *p = new client::ClickObjectCommand();
 			p->id = underCursorObject->GetID();
 			Connection::commandQueue.Push(p);
 		}
 
 		if (stun == sf::Time::Zero && dropButtonPressed) {
-			auto *p = new CallVerbClientCommand();
+			auto *p = new client::CallVerbCommand();
 			p->verb = "creature.drop";
 			Connection::commandQueue.Push(p);
 		}
 		
 		if (stun == sf::Time::Zero && buildButtonPressed)
-			Connection::commandQueue.Push(new BuildClientCommand());
+			Connection::commandQueue.Push(new client::BuildCommand());
 
 		if (ghostButtonPressed) { // TODO: implement hotkeys
-			auto *p = new CallVerbClientCommand();
+			auto *p = new client::CallVerbCommand();
 			p->verb = "player.ghost";
 			Connection::commandQueue.Push(p);
 		}
