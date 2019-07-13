@@ -11,5 +11,6 @@ public:
 
 	Object *CreateObject(const std::string& module, const std::string& type) final;
 
+	void FillMap(Map *map) final;
 	void OnPlayerJoined(Player *player) final;
 };

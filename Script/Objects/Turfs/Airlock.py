@@ -33,6 +33,12 @@ class Airlock(Turf):
 				return
 			self.sprite = "airlock_opened"
 
+	def Lock(self):
+		self.locked = True
+
+	def Unlock(self):
+		self.locked = False
+
 	def __animationOpeningCallback(self):
 		self.opened = True
 		self.density = False

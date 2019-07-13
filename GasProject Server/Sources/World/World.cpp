@@ -49,32 +49,8 @@ void World::Update(std::chrono::microseconds timeElapsed) {
     }
 }
 
-void World::FillingWorld() {
-	CreateScriptObject("Objects.Creatures.Human", {48, 48, 0});
-
-    for (uint i = 45; i <= 55; i++) {
-        for (uint j = 45; j <= 55; j++) {
-			CreateObject<Floor>({ i, j, 0 });
-            if (i == 45 || i == 55 || j == 45 || j == 55) {
-                if (i == 50 || j == 50) {
-					auto airlock = CreateObject<Airlock>({ i, j, 0 });
-                    if (i == 55 && j == 50 || i == 50 && j == 55)
-                        airlock->Lock();
-                }
-                else CreateObject<Wall>({ i, j, 0 });
-            }
-        }
-    }
-
-	CreateScriptObject("Objects.Turfs.Airlock", {50, 48, 0});
-
+void World::CreateTestItems() {
 	CreateScriptObject("Objects.Items.Taser", {50, 51, 0});
-
-    for (uint i = 5; i <= 10; i++) {
-        for (uint j = 5; j <= 10; j++) {
-			CreateObject<Floor>({ i, j, 0 });
-        }
-    }
 
 	testMob = CreateScriptObject("Objects.Creatures.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;

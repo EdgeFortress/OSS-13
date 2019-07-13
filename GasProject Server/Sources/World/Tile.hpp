@@ -42,7 +42,7 @@ public:
     const list<Object *> &Content() const;
     Object *GetDenseObject() const;
 
-    apos GetPos() const;
+	uf::vec3i GetPos() const;
     Map *GetMap() const;
     bool IsDense() const;
     bool IsSpace() const;
@@ -60,7 +60,7 @@ public:
 
 private:
     Map *map;
-    apos pos;
+    uf::vec3i pos;
     IconInfo icon;
 
     list<Object *> content;

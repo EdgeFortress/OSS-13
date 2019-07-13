@@ -176,7 +176,7 @@ Object *Tile::GetDenseObject() const
     return nullptr;
 }
 
-apos Tile::GetPos() const {
+uf::vec3i Tile::GetPos() const {
     return pos;
 }
 

@@ -74,7 +74,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	Object *viewer = player->GetControl()->GetOwner();
 	uint viewerId = viewer ? viewer->ID() : 0;
 
-    for (uint i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
+    for (int i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
 		Tile *block = visibleBlocks[i];
 		if (block) {
 			if (blocksSync[i]) {
@@ -210,9 +210,9 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     firstBlockZ = tile->GetPos().z - Global::Z_FOV / 2;
 
     // Filling our result vector by block pointers
-    for (uint z = 0; z < visibleTilesHeight; z++) {
-		for (uint y = 0; y < visibleTilesSide; y++) {
-			for (uint x = 0; x < visibleTilesSide; x++) {
+    for (int z = 0; z < visibleTilesHeight; z++) {
+		for (int y = 0; y < visibleTilesSide; y++) {
+			for (int x = 0; x < visibleTilesSide; x++) {
 				visibleBlocks[flat_index({x,y,z})] = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
 			}
 		}
@@ -256,9 +256,9 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
 
         std::vector<bool> saved(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
-        for (uint y = 0; y < visibleTilesSide; y++)
-            for (uint x = 0; x < visibleTilesSide; x++)
-				for (uint z = 0; z < visibleTilesHeight; z++) {
+        for (int y = 0; y < visibleTilesSide; y++)
+            for (int x = 0; x < visibleTilesSide; x++)
+				for (int z = 0; z < visibleTilesHeight; z++) {
                 if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
                     y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
                     z - block_dz >= 0 && z - block_dz < visibleTilesHeight &&
@@ -271,6 +271,6 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
     }
 }
 
-uint Camera::flat_index (const apos c) const {
-	return uf::flat_index(c,visibleTilesSide,visibleTilesSide);
+int Camera::flat_index(uf::vec3i c) const {
+	return uf::flat_index(c, visibleTilesSide, visibleTilesSide);
 }

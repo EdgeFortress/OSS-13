@@ -21,6 +21,9 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Map.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\Creature.py" />
     <Compile Include="Objects\Creatures\Ghost.py" />
     <Compile Include="Objects\Creatures\Human.py" />
@@ -46,6 +49,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Turfs\Wall.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Turfs\Window.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Turfs\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\__init__.py" />

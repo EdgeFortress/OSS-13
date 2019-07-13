@@ -37,7 +37,7 @@ void Map::Update(std::chrono::microseconds timeElapsed) {
 apos Map::GetSize() const { return size; }
 Atmos* Map::GetAtmos() const { return atmos.get(); };
 
-Tile *Map::GetTile(apos pos) const {
+Tile *Map::GetTile(vec3i pos) const {
     if (pos < size)
         return tiles[flat_index(pos)].get();
     return nullptr;

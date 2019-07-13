@@ -18,6 +18,7 @@
 #include <Player.hpp>
 #include <Resources/ResourceManager.hpp>
 #include <World/Tile.hpp>
+#include <World/Map.hpp>
 #include <World/Objects/CreateObject.h>
 #include <World/Objects/Control.hpp>
 
@@ -28,7 +29,7 @@ namespace py = pybind11;
 namespace se = script_engine;
 
 template<typename T>
-void RegistrateVector(pybind11::module m, const char *name) {
+void RegistratePlaneVector(pybind11::module m, const char *name) {
 	py::class_<uf::vec2<T>>(m, name)
 		.def(py::init<>())
 		.def(py::init<T, T>())
@@ -46,13 +47,35 @@ void RegistrateVector(pybind11::module m, const char *name) {
 		.def("__bool__", &uf::vec2<T>::operator bool);
 }
 
-PYBIND11_EMBEDDED_MODULE(Engine, m) {
-	RegistrateVector<int64_t> (m, "Vec2i");
-	RegistrateVector<double>  (m, "Vec2f");
+template<typename T>
+void RegistrateSpaceVector(pybind11::module m, const char *name) {
+	py::class_<uf::vec3<T>>(m, name)
+		.def(py::init<>())
+		.def(py::init<T, T, T>())
+		.def(py::init<T>())
+		.def_readwrite("x", &uf::vec3<T>::x)
+		.def_readwrite("y", &uf::vec3<T>::y)
+		.def_readwrite("z", &uf::vec3<T>::z)
+		.def("Normalize", &uf::vec3<T>::normalize)
+		.def(py::self + py::self)
+		.def(py::self - py::self)
+		.def(py::self * int())
+		.def(py::self * float())
+		.def(py::self / int())
+		.def(py::self / float())
+		.def("__repr__", &uf::vec3<T>::toString)
+		.def("__bool__", &uf::vec3<T>::operator bool);
+}
 
-	RegistrateVector<int32_t>(m, "Vec2i_32"); // only for compatibility, _32 types are useless in python
-	RegistrateVector<uint32_t>(m , "Vec2i_32_unsigned");
-	RegistrateVector<float>(m, "Vec2f_32");
+PYBIND11_EMBEDDED_MODULE(Engine, m) {
+	RegistratePlaneVector<int32_t> (m, "Vec2i");
+	RegistratePlaneVector<double>  (m, "Vec2f");
+	RegistrateSpaceVector<int32_t>(m, "Vec3i");
+	RegistrateSpaceVector<double>(m, "Vec3f");
+
+	//RegistratePlaneVector<int32_t>(m, "Vec2i_32"); // only for compatibility, _32 types are useless in python
+	RegistratePlaneVector<uint32_t>(m , "Vec2i_unsigned");
+	RegistratePlaneVector<float>(m, "Vec2f_32");
 
 	py::class_<VerbsHolder>(m, "VerbHolder")
 		.def("AddVerb", &VerbsHolder::AddVerb);
@@ -95,6 +118,9 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("Delete", &Object::Delete)
 		.def("_updateIcons", &Object::updateIcons)
 		.def("_pushToIcons", &Object::pushToIcons);
+
+	py::class_<Map>(m, "Map")
+		.def("GetTile", &Map::GetTile, py::return_value_policy::reference);
 
 	m.def("CreateObject", &CreateObject);
 
@@ -156,6 +182,14 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 		LOGE << "Failed to create script object " << m << " " << type << "\n"
 			 << e.what();
 		return nullptr;
+	}
+}
+
+void ScriptEngine::FillMap(Map *map) {
+	try {
+		py::module::import("Map").attr("FillMap")(map);
+	} catch (const std::exception &e) {
+		MANAGE_EXCEPTION(e);
 	}
 }
 

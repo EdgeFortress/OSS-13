@@ -44,6 +44,8 @@ namespace uf {
         // True if one of the coordinates is different from zero
         operator bool() const;
 
+		std::string toString() { return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")"; }
+
         //friend std::ostream &operator<< <T>(std::ostream &, const vec3<T> &);
 	};
 

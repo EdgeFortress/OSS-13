@@ -28,7 +28,6 @@ public:
 
 	void Delete() final {
 		Object::Delete();
-		LOGI << "Released";
 	}
 
 	void updateIcons() override {

@@ -47,8 +47,8 @@ private:
 	// View information
 	const Tile *tile;
 	const Tile *lasttile;
-	uint visibleTilesSide;
-	uint visibleTilesHeight;
+	int visibleTilesSide;
+	int visibleTilesHeight;
 	int firstBlockX;
 	int firstBlockY;
 	int firstBlockZ;
@@ -69,5 +69,5 @@ private:
 	void fullRecountVisibleBlocks(const Tile * const tile);
 	void refreshVisibleBlocks(const Tile * const tile);
 
-	uint flat_index (const apos c) const;
+	int flat_index (uf::vec3i c) const;
 };

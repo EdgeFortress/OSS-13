@@ -56,6 +56,7 @@
     <ClInclude Include="Sources\Shared\ErrorHandling.h" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
+    <ClInclude Include="Sources\Shared\Geometry\Vec3.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\IFaces\IHasRepeatableID.h" />
     <ClInclude Include="Sources\Shared\IFaces\INonCopyable.h" />

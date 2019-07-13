@@ -16,7 +16,7 @@ public:
 
     void Update(std::chrono::microseconds timeElapsed);
 
-    void FillingWorld();
+    void CreateTestItems();
 	Object *CreateNewPlayerCreature();
 
     Object *GetObject(uint id) const;
