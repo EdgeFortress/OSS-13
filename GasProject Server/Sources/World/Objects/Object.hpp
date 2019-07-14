@@ -94,6 +94,12 @@ public:
 		//void SetShift(uf::vec2f);
 	//
 
+	bool IsFloor() const;
+	void SetIsFloor(bool value);
+
+	bool IsWall() const;
+	void SetIsWall(bool value);
+
 	ObjectInfo GetObjectInfo() const;
 
 	// refresh std::vector<uint32_t> icons
@@ -138,6 +144,10 @@ private:
     uf::vec2i moveIntent;
     uf::vec2f constSpeed;
     uf::vec2f physSpeed;
+
+	// atmos
+	bool isFloor{false};
+	bool isWall{false};
 
     uf::vec2f shift;
 

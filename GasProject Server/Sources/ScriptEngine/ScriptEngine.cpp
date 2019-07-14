@@ -101,6 +101,8 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
 		.def_property("tile", &Object::GetTile, &Object::SetTile)
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
+		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
+		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
 		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)

@@ -284,6 +284,12 @@ void Object::SetDirection(uf::Direction direction) {
 //    delta_shift += shift;
 //}
 
+bool Object::IsFloor() const { return isFloor; }
+void Object::SetIsFloor(bool value) { isFloor = value; }
+
+bool Object::IsWall() const { return isWall; }
+void Object::SetIsWall(bool value) { isWall = value; }
+
 ObjectInfo Object::GetObjectInfo() const {
     ObjectInfo objectInfo;
 	objectInfo.id = id;

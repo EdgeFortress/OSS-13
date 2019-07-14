@@ -130,43 +130,43 @@ void Tile::PlaceTo(Object *obj) {
 	if (!obj)
 		return;
 
-    Tile *lastTile = obj->GetTile();
+	Tile *lastTile = obj->GetTile();
 
-    // If obj is wall or floor - remove previous and change status
-    if (dynamic_cast<Floor *>(obj)) {
-        if (hasFloor) {
-            for (auto iter = content.begin(); iter != content.end(); iter++) {
-                if (dynamic_cast<Floor *>(*iter)) {
-                    content.erase(iter);
-                    break;
-                }
-            }
-        }
-        hasFloor = true;
-        CheckLocale();
-    } else if (dynamic_cast<Wall *>(obj)) {
-        if (!hasFloor) {
-            LOGW << "Warning! Try to place wall without floor";
-            return;
-        }
-        if (fullBlocked) {
-            for (auto iter = content.begin(); iter != content.end(); iter++) {
-                if (dynamic_cast<Wall *>(*iter)) {
-                    content.erase(iter);
-                    break;
-                }
-            }
+	// If obj is wall or floor - remove previous and change status
+	if (obj->IsFloor()) {
+		if (hasFloor) {
+			for (auto iter = content.begin(); iter != content.end(); iter++) {
+				if ((*iter)->IsFloor()) {
+					content.erase(iter);
+					break;
+				}
+			}
+		}
+		hasFloor = true;
+		CheckLocale();
+	} else if (obj->IsWall()) {
+		if (!hasFloor) {
+			LOGW << "Warning! Try to place wall without floor";
+			return;
+		}
+		if (fullBlocked) {
+			for (auto iter = content.begin(); iter != content.end(); iter++) {
+				if ((*iter)->IsWall()) {
+					content.erase(iter);
+					break;
+				}
+			}
             
-        }
-        fullBlocked = true;
-        CheckLocale();
-    }
+		}
+		fullBlocked = true;
+		CheckLocale();
+	}
 
 	if(lastTile) {
 		lastTile->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z));
 	}
-    addObject(obj);
-    AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z, lastTile));
+	addObject(obj);
+	AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z, lastTile));
 }
 
 const list<Object *> &Tile::Content() const {
