@@ -267,7 +267,7 @@ float Object::GetMoveSpeed() const {
 //uf::vec2f Object::GetShift() const { return shift + delta_shift; }
 float Object::GetSpeed() const {
 	if (constSpeed) {
-		return uf::abs(constSpeed.y);
+		return static_cast<float>(constSpeed.length());
 	}
 	return moveSpeed;
 }
