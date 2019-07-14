@@ -244,10 +244,10 @@ void Tile::addObject(Object *obj) {
 bool Tile::removeObject(Object *obj) {
     for (auto iter = content.begin(); iter != content.end(); iter++) {
         if (*iter == obj) {
-            if (dynamic_cast<Floor *>(obj)) {
+            if (obj->IsFloor()) {
                 hasFloor = false;
                 CheckLocale();
-            } else if (dynamic_cast<Wall *>(obj)) {
+            } else if (obj->IsWall()) {
                 fullBlocked = false;
                 CheckLocale();
             }

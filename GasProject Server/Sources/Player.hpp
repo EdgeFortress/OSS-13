@@ -37,7 +37,6 @@ public:
     void Move(uf::Direction);
     void MoveZ(bool up);
     void ClickObject(uint id);
-	void Build();
 
 	void UIInput(uptr<network::protocol::UIData> &&data);
 	void UITrigger(const std::string &window, const std::string &trigger);

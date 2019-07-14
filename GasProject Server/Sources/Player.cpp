@@ -56,10 +56,6 @@ void Player::ClickObject(uint id) {
     actions.Push(new ClickObjectPlayerCommand(id));
 }
 
-void Player::Build() {
-	actions.Push(new BuildPlayerCommand());
-}
-
 void Player::CallVerb(const std::string &verb) {
 	actions.Push(new VerbPlayerCommand(verb));
 }
@@ -120,13 +116,6 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
                     }
                     break;
                 }
-				case PlayerCommand::Code::BUILD: {
-					if (!control) break;
-					Tile *tile = control->GetOwner()->GetTile();
-					if (tile)
-						GGame->GetWorld()->CreateObject<Wall>(tile);
-					break;
-				}
 				case PlayerCommand::Code::VERB: {
 					auto verbPlayerCommand = dynamic_cast<VerbPlayerCommand *>(temp);
 					auto &verb = verbPlayerCommand->verb;

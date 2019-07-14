@@ -159,10 +159,6 @@
     <ClCompile Include="Sources\World\Objects\CreateObject.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Airlock.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Floor.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Turf.cpp" />
-    <ClCompile Include="Sources\World\Objects\Turfs\Wall.cpp" />
     <ClCompile Include="Sources\World\Tile.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
@@ -205,11 +201,6 @@
     <ClInclude Include="Sources\World\Objects\CreateObject.h" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />
     <ClInclude Include="Sources\World\Objects\ObjectHolder.h" />
-    <ClInclude Include="Sources\World\Objects\Turfs.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Airlock.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Floor.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Turf.hpp" />
-    <ClInclude Include="Sources\World\Objects\Turfs\Wall.hpp" />
     <ClInclude Include="Sources\World\Tile.hpp" />
     <ClInclude Include="Sources\World\World.hpp" />
   </ItemGroup>

@@ -55,14 +55,8 @@ void World::CreateTestItems() {
 	testMob = CreateScriptObject("Objects.Creatures.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;
 
-    test_dx = 1;
-    test_dy = 0;
-
-    for (uint i = 85; i <= 95; i++) {
-        for (uint j = 85; j <= 95; j++) {
-			CreateObject<Floor>({ i, j, 0 });
-        }
-    }
+	test_dx = 1;
+	test_dy = 0;
 }
 
 Object *World::CreateNewPlayerCreature() {

@@ -1,6 +1,7 @@
 #include "AtmosOverlayWindowSink.h"
 
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/ErrorHandling.h>
 
 #include <Player.hpp>
 #include <World/Camera/Camera.hpp>
@@ -18,8 +19,7 @@ AtmosOverlayWindowSink::AtmosOverlayWindowSink(Player *player) :
 	fields["Mode"] = std::move(mode);
 
 	Camera *camera = player->GetCamera();
-	if (!camera)
-		throw std::exception(); // TODO
+	EXPECT(camera);
 
 	auto overlay = std::make_unique<AtmosCameraOverlay>();
 	this->overlay = overlay.get();

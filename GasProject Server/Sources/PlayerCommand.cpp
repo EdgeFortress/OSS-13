@@ -21,9 +21,6 @@ ClickObjectPlayerCommand::ClickObjectPlayerCommand(uint id) :
     PlayerCommand(Code::CLICK_OBJECT),
     id(id) { }
 
-BuildPlayerCommand::BuildPlayerCommand() :
-	PlayerCommand(Code::BUILD) { }
-
 VerbPlayerCommand::VerbPlayerCommand(const std::string &verb) :
 	PlayerCommand(Code::VERB),
 	verb(verb)

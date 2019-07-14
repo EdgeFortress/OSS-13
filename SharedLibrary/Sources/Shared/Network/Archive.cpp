@@ -35,7 +35,6 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 		DECLARE_SER(MoveZCommand)
 		DECLARE_SER(ClickObjectCommand)
 		DECLARE_SER(SendChatMessageCommand)
-		DECLARE_SER(BuildCommand)
 		DECLARE_SER(UIInputCommand)
 		DECLARE_SER(UITriggerCommand)
 		DECLARE_SER(CallVerbCommand)

@@ -80,9 +80,6 @@ DEFINE_SERIALIZABLE(SendChatMessageCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
-DEFINE_SERIALIZABLE(BuildCommand, Command)
-DEFINE_SERIALIZABLE_END
-
 DEFINE_SERIALIZABLE(UIInputCommand, Command)
 	std::string handle;
 	uptr<UIData> data;

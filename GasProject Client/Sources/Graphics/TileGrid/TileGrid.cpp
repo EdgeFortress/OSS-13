@@ -247,9 +247,6 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			p->verb = "creature.drop";
 			Connection::commandQueue.Push(p);
 		}
-		
-		if (stun == sf::Time::Zero && buildButtonPressed)
-			Connection::commandQueue.Push(new client::BuildCommand());
 
 		if (ghostButtonPressed) { // TODO: implement hotkeys
 			auto *p = new client::CallVerbCommand();
