@@ -23,6 +23,6 @@ public:
 	network::protocol::OverlayInfo GetOverlayInfo(Tile tile) const override;
 
 private:
-	mutable std::chrono::microseconds timeAfterLastUpdate;
+	mutable std::chrono::microseconds timeAfterLastUpdate{0};
 	AtmosCameraOverlayMode mode;
 };
