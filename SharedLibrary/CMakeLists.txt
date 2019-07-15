@@ -14,6 +14,6 @@ target_link_libraries(${LIBRARY_NAME} GL)
 
 find_package(SFML REQUIRED system window graphics network) #audio
 
-target_link_libraries(${LIBRARY_NAME} sfml-system sfml-graphics)
+target_link_libraries(${LIBRARY_NAME} sfml-system sfml-graphics sfml-network)
 
 add_subdirectory("Tests")
