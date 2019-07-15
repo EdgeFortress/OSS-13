@@ -78,6 +78,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	Object *viewer = player->GetControl()->GetOwner();
 	uint viewerId = viewer ? viewer->ID() : 0;
 
+	auto diffs_it = command->diffs.begin();
     for (int i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
 		Tile *block = visibleBlocks[i];
 		if (block) {
@@ -85,59 +86,15 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 				for (auto &diff : block->GetDifferences()) {
 					if (!diff->CheckVisibility(viewerId, seeInvisibleAbility)) 
 						continue;
-
-					// If client doesn't know about moved object, we need to add it
 					switch(diff->GetType()) {
-					case Global::DiffType::ADD: {
-						AddDiff *addDiff = dynamic_cast<AddDiff *>(diff.get());
-						CHECK(visibleObjects.find(addDiff->id) == visibleObjects.end())
-						visibleObjects.insert(addDiff->id);
+					case Global::DiffType::ADD:
+						command->diffs.insert(++diffs_it, diff);
+						break;
+					case Global::DiffType::REMOVE:
 						command->diffs.push_back(diff);
 						break;
-					}
-					case Global::DiffType::MOVE: {
-						MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diff.get());
-						if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
-							apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction),0);
-							command->diffs.push_back(std::make_shared<AddDiff>(GGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z));
-							visibleObjects.insert(moveDiff->id);
-							break;
-						}
-						command->diffs.push_back(diff);
-						break;
-					}
-					case Global::DiffType::RELOCATE: {
-						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
-						if (visibleObjects.find(replaceDiff->id) == visibleObjects.end()) {
-							command->diffs.push_back(std::make_shared<AddDiff>(*replaceDiff));
-							visibleObjects.insert(replaceDiff->id);
-							break;
-						}
-						command->diffs.push_back(diff);
-						break;
-					}
-					case Global::DiffType::RELOCATE_AWAY: {
-						ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diff.get());
-						CHECK(visibleObjects.find(replaceDiff->id) != visibleObjects.end())
-						rpos to = rpos(replaceDiff->toX,replaceDiff->toY,replaceDiff->toZ);
-						if (to >= rpos(firstBlockX,firstBlockY,firstBlockZ) &&
-						    to < rpos(firstBlockX+visibleTilesSide,firstBlockY+visibleTilesSide,firstBlockZ+visibleTilesHeight))
-						{
-							break;
-						}
-						visibleObjects.erase(replaceDiff->id);
-						command->diffs.push_back(std::make_shared<RemoveDiff>(GGame->GetWorld()->GetObject(replaceDiff->id)));
-						break;
-					}
-					case Global::DiffType::REMOVE: {
-						RemoveDiff *removeDiff = dynamic_cast<RemoveDiff *>(diff.get());
-						CHECK(visibleObjects.find(removeDiff->id) != visibleObjects.end())
-						visibleObjects.erase(removeDiff->id);
-						command->diffs.push_back(diff);
-						break;
-					}
 					default:
-						command->diffs.push_back(diff);
+						command->diffs.insert(std::next(diffs_it), diff);
 					}
 				}
 			} else {
@@ -152,12 +109,56 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 			}
 		}
 	}
-	command->diffs.sort([](const sptr<Diff> &a, const sptr<Diff> &b) {
-		Global::DiffType A = a->GetType(), B = b->GetType();
-		return A != B &&
-		      (A == Global::DiffType::ADD ||
-		       B == Global::DiffType::REMOVE);
-	});
+
+	for(diffs_it = command->diffs.begin(); diffs_it != command->diffs.end();) {
+		// If client doesn't know about moved object, we need to add it
+		switch((*diffs_it)->GetType()) {
+		case Global::DiffType::ADD: {
+			AddDiff *addDiff = dynamic_cast<AddDiff *>(diffs_it->get());
+			CHECK(visibleObjects.find(addDiff->id) == visibleObjects.end())
+			visibleObjects.insert(addDiff->id);
+			break;
+		}
+		case Global::DiffType::MOVE: {
+			MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diffs_it->get());
+			if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
+				apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction),0);
+				*diffs_it = std::make_shared<AddDiff>(GGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z);
+				visibleObjects.insert(moveDiff->id);
+			}
+			break;
+		}
+		case Global::DiffType::RELOCATE: {
+			ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diffs_it->get());
+			if (visibleObjects.find(replaceDiff->id) == visibleObjects.end()) {
+				*diffs_it = std::make_shared<AddDiff>(*replaceDiff);
+				visibleObjects.insert(replaceDiff->id);
+			}
+			break;
+		}
+		case Global::DiffType::RELOCATE_AWAY: {
+			ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diffs_it->get());
+			CHECK(visibleObjects.find(replaceDiff->id) != visibleObjects.end())
+			rpos to = rpos(replaceDiff->toX,replaceDiff->toY,replaceDiff->toZ);
+			if (to >= rpos(firstBlockX,firstBlockY,firstBlockZ) &&
+				to < rpos(firstBlockX+visibleTilesSide,firstBlockY+visibleTilesSide,firstBlockZ+visibleTilesHeight))
+			{
+				diffs_it = command->diffs.erase(diffs_it);
+				continue;
+			}
+			visibleObjects.erase(replaceDiff->id);
+			*diffs_it = std::make_shared<RemoveDiff>(GGame->GetWorld()->GetObject(replaceDiff->id));
+			break;
+		}
+		case Global::DiffType::REMOVE: {
+			RemoveDiff *removeDiff = dynamic_cast<RemoveDiff *>(diffs_it->get());
+			CHECK(visibleObjects.find(removeDiff->id) != visibleObjects.end())
+			visibleObjects.erase(removeDiff->id);
+			break;
+		}
+		}
+		++diffs_it;
+	}
 
     if (blockShifted) {
         updateOptions |= GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT;
