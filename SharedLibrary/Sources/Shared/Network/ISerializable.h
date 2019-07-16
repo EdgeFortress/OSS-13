@@ -4,7 +4,7 @@
 
 #include <Shared/CRC32.h>
 
-#define DEFINE_SERID(id)               \
+#define _DEFINE_SERID(id)               \
 	uint32_t Id() override {           \
 		constexpr uint32_t _id = id;   \
 		return _id;                    \
@@ -24,9 +24,17 @@ public:
 
 }
 
+// Start of serializable struct definition
+//	TypeName - Name of serializable struct
+//	ParentName - Name of inherited serializable (should be at least uf::ISerializable)
 #define DEFINE_SERIALIZABLE(TypeName, ParentName) \
 	struct TypeName : public ParentName {         \
-		DEFINE_SERID(#TypeName##_crc32)
+		_DEFINE_SERID(#TypeName##_crc32)
+
+// End of serializable struct definition
 #define DEFINE_SERIALIZABLE_END };
 
-
+// Define serializable struct without fields
+#define DEFINE_PURE_SERIALIZABLE(TypeName, ParentName) \
+	DEFINE_SERIALIZABLE(TypeName, ParentName)          \
+	DEFINE_SERIALIZABLE_END

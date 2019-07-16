@@ -6,8 +6,6 @@
 #include <Shared/Types.hpp>
 #include <Shared/Network/ISerializable.h>
 
-#include "PacketConverters.h"
-
 namespace uf {
 
 class Archive  {
@@ -49,6 +47,14 @@ protected:
 			packet >> ser;
 		else
 			packet << ser;
+	}
+
+	template<class T>
+	void serialize(uptr<T> &ser) {
+		if (isOut)
+			ser.reset(dynamic_cast<T *>(this->UnpackSerializable().release()));
+		else
+			reinterpret_cast<uf::ISerializable *>(ser.get())->Serialize(*this);
 	}
 
 protected:

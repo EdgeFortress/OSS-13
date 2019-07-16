@@ -36,6 +36,16 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="cpp.hint" />
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
@@ -89,7 +99,7 @@
     <ClCompile Include="Sources\Shared\Network\ISerializable.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Shared\Network\PacketConverters.cpp">
+    <ClCompile Include="Sources\Shared\Network\ArchiveConverters.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -169,9 +179,6 @@
     <ClInclude Include="Sources\Shared\CRC32.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Shared\Network\PacketConverters.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\Shared\ErrorHandling.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -194,6 +201,18 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\Geometry\Vec3.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\Commands.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\WorldInfo.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\ArchiveConverters.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\Diff.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

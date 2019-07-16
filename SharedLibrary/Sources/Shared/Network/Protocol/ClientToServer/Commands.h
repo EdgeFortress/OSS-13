@@ -2,6 +2,7 @@
 
 #include <Shared/Network/Protocol/Command.h>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/ArchiveConverters.h>
 
 namespace network {
 namespace protocol {
@@ -29,8 +30,7 @@ DEFINE_SERIALIZABLE(RegistrationCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
-DEFINE_SERIALIZABLE(GamelistRequestCommand, Command) 
-};
+DEFINE_PURE_SERIALIZABLE(GamelistRequestCommand, Command)
 
 DEFINE_SERIALIZABLE(JoinGameCommand, Command)
 	int id;
@@ -41,8 +41,7 @@ DEFINE_SERIALIZABLE(JoinGameCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
-DEFINE_SERIALIZABLE(DisconnectionCommand, Command)
-DEFINE_SERIALIZABLE_END
+DEFINE_PURE_SERIALIZABLE(DisconnectionCommand, Command)
 
 DEFINE_SERIALIZABLE(MoveCommand, Command)
 	uf::Direction direction;
@@ -87,10 +86,7 @@ DEFINE_SERIALIZABLE(UIInputCommand, Command)
 	void Serialize(uf::Archive &ar) override {
 		Command::Serialize(ar);
 		ar & handle;
-		if (ar.IsOutput())
-			data.reset(dynamic_cast<UIData *>(ar.UnpackSerializable().release()));
-		else
-			ar << *data;
+		ar & data;
 	}
 DEFINE_SERIALIZABLE_END
 
