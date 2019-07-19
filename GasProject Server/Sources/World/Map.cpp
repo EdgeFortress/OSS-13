@@ -38,7 +38,7 @@ apos Map::GetSize() const { return size; }
 Atmos* Map::GetAtmos() const { return atmos.get(); };
 
 Tile *Map::GetTile(vec3i pos) const {
-    if (pos < size)
+    if (pos >= vec3i(0) && pos < size)
         return tiles[flat_index(pos)].get();
     return nullptr;
 }
