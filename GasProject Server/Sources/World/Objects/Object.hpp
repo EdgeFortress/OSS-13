@@ -13,10 +13,10 @@
 #include <Shared/Global.hpp>
 #include <Shared/Timer.h>
 #include <Shared/IFaces/INonCopyable.h>
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class ObjectHolder;
 class Tile;
-struct ObjectInfo;
 
 class Object : public VerbsHolder, public INonCopyable {
 	friend ObjectHolder;
@@ -100,7 +100,7 @@ public:
 	bool IsWall() const;
 	void SetIsWall(bool value);
 
-	ObjectInfo GetObjectInfo() const;
+	network::protocol::ObjectInfo GetObjectInfo() const;
 
 	// refresh std::vector<uint32_t> icons
 	// last in, last drawn
@@ -127,7 +127,7 @@ protected:
     // Invisibility
     //// 8 bits for different kinds of invisibility
     //// Last bit - ghost invisibility
-    uint invisibility;
+	uint invisibility{0};
     //
 
 	mutable std::vector<IconInfo> icons;

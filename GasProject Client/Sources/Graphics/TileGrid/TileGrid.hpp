@@ -48,7 +48,7 @@ public:
         void ShiftBlocks(apos newFirst);
 
         void SetCameraPosition(apos newPos);
-        void SetBlock(apos pos, Tile *);
+        void SetBlock(apos pos, std::shared_ptr<Tile>);
         void SetControllable(uint id, float speed);
 		void UpdateOverlay(sf::Packet &packet); // TODO: get rid of Network crutch sf::packet and refactor this, when Blocks will be removed
 		void ResetOverlay();
@@ -62,6 +62,7 @@ public:
 
     friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
+	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
 
 protected:
     void draw() const override final;

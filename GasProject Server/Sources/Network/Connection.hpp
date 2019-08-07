@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Shared/Types.hpp"
-#include "Shared/ThreadSafeQueue.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/ThreadSafeQueue.hpp>
+#include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
 namespace sf {
 	class TcpSocket;
@@ -12,6 +13,6 @@ struct ServerCommand;
 
 struct Connection {
 	uptr<sf::TcpSocket> socket;
-	uf::ThreadSafeQueue<ServerCommand *> commandsToClient;
+	uf::ThreadSafeQueue<network::protocol::Command *> commandsToClient;
 	sptr<Player> player;
 };

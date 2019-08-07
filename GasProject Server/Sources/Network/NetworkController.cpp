@@ -5,8 +5,11 @@
 #include <plog/Log.h>
 
 #include <Shared/Global.hpp>
+#include <Shared/Network/Archive.h>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/Protocol/ServerToClient/Commands.h>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
+#include <Shared/ErrorHandling.h>
 
 #include <IServer.h>
 #include <Player.hpp>
@@ -72,13 +75,15 @@ void NetworkController::working() {
 
         // Sending to client
         for (auto &connection : connections) {
-            while (!connection->commandsToClient.Empty()) {
+			while (!connection->commandsToClient.Empty()) {
 				sf::Packet packet;
-                ServerCommand *temp = connection->commandsToClient.Pop();
-                packet << temp;
-                if (temp) delete temp;
+				uf::InputArchive ar(packet);
+				network::protocol::Command *command = connection->commandsToClient.Pop();
+				EXPECT(command);
+				ar << *command;
+				delete command;
 				connection->socket->send(packet);
-            }
+			}
         }
     }
 }
@@ -101,33 +106,28 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 			if (Player *player = GServer->Authorization(command->login, command->password)) {
 				player->SetConnection(connection);
 				connection->player = sptr<Player>(player);
-				connection->commandsToClient.Push(new AuthSuccessServerCommand());
+				connection->commandsToClient.Push(new network::protocol::server::AuthorizationSuccessCommand());
 				return true;
 			}
 		}
-		connection->commandsToClient.Push(new AuthErrorServerCommand());
+		connection->commandsToClient.Push(new network::protocol::server::AuthorizationFailedCommand());
 		return true;
 	}
 
 	if (auto *command = dynamic_cast<client::RegistrationCommand *>(p.get())) {
 		if (GServer->Registration(command->login, command->password))
-			connection->commandsToClient.Push(new RegSuccessServerCommand());
+			connection->commandsToClient.Push(new network::protocol::server::RegistrationSuccessCommand());
 		else
-			connection->commandsToClient.Push(new RegErrorServerCommand());
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::GamelistRequestCommand *>(p.get())) {
-		connection->player->UpdateServerList();
+			connection->commandsToClient.Push(new network::protocol::server::RegistrationFailedCommand());
 		return true;
 	}
 
 	if (auto *command = dynamic_cast<client::JoinGameCommand *>(p.get())) {
 		if (connection->player) {
 			if (GServer->JoinGame(connection->player)) {
-				connection->commandsToClient.Push(new GameJoinSuccessServerCommand());
+				connection->commandsToClient.Push(new network::protocol::server::GameJoinSuccessCommand());
 			} else {
-				connection->commandsToClient.Push(new GameJoinErrorServerCommand());
+				connection->commandsToClient.Push(new network::protocol::server::GameJoinErrorCommand());
 			}
 		}
 		return true;

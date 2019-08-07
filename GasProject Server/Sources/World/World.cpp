@@ -15,7 +15,7 @@ World::World() :
 { }
 
 void World::Update(std::chrono::microseconds timeElapsed) {
-    map->ClearDiffs();
+	map->ClearDiffs();
 
 	// Simple walking mob AI for moving testing
 	if (testMob) {
@@ -28,7 +28,7 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 			if (test_dx == -1 && x == 47) test_dx = 0, test_dy = -1;
 			if (test_dy == -1 && y == 47) test_dx = 1, test_dy = 0;
 
-			dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
+			//dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
 		}
 	}
     

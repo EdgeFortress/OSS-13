@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 #include <Shared/CRC32.h>
 
@@ -21,6 +22,8 @@ public:
 
 	virtual ~ISerializable() = default;
 };
+
+std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id);
 
 }
 

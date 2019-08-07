@@ -9,6 +9,7 @@
 #include <Shared/Types.hpp>
 #include <Shared/ThreadSafeQueue.hpp>
 #include <Shared/Network/Protocol/InputData.h>
+#include <Shared/Network/Protocol/Command.h>
 
 #include "VerbsHolder.h"
 
@@ -30,7 +31,6 @@ public:
 	void SetConnection(sptr<Connection> &connection);
 
     /// Client interface
-    void UpdateServerList();
     void JoinToGame();
     void ChatMessage(std::string &message);
 
@@ -64,7 +64,7 @@ public:
 	Camera *GetCamera();
 	bool IsConnected();
 
-    void AddCommandToClient(ServerCommand *);
+    void AddCommandToClient(network::protocol::Command *);
 
 private:
 	void updateUISinks(std::chrono::microseconds timeElapsed);

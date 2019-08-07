@@ -48,7 +48,6 @@ void Game::gameProcess() {
 
 void Game::update(std::chrono::microseconds timeElapsed) {
 	DelayedActivitiesManager::Update(timeElapsed);
-
 	world->Update(timeElapsed);
 
 	{
@@ -107,9 +106,9 @@ Control *Game::GetStartControl(Player *player) {
 
 void Game::SendChatMessages() {
 	std::vector<std::string> messages = chat.GetNewMessages();
-	for (auto &player : players)
-		for (auto &message : messages)
-			player->AddCommandToClient(new SendChatMessageServerCommand(message));
+	//for (auto &player : players)
+	//	for (auto &message : messages)
+	//		player->AddCommandToClient(new SendChatMessageServerCommand(message));
 }
 
 Game::~Game() {

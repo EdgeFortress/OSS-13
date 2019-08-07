@@ -33,7 +33,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(TileInfo, uf::ISerializable)
-	uf::vec2i coords;
+	uf::vec3i coords;
 	uint sprite;
 	std::vector<ObjectInfo> content;
 

@@ -443,9 +443,9 @@ void TileGrid::SetCameraPosition(apos pos) {
 	}
 }
 
-void TileGrid::SetBlock(apos pos, Tile *block) {
-    blocks[flat_index(pos - firstTile)].reset(block);
-    block->relPos = pos - firstTile;
+void TileGrid::SetBlock(apos pos, std::shared_ptr<Tile> tile) {
+    blocks[flat_index(pos - firstTile)] = tile;
+    tile->relPos = pos - firstTile;
 }
 
 void TileGrid::SetControllable(uint id, float speed) {

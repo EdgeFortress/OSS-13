@@ -5,7 +5,7 @@
 #include <SFML/Network.hpp>
 
 #include <Shared/ThreadSafeQueue.hpp>
-#include <Shared/Network/Protocol/ClientToServer/Commands.h>
+#include <Shared/Network/Protocol/Command.h>
 
 namespace std {
     class thread;
@@ -35,7 +35,7 @@ class Connection {
 
     static void session();
     static void sendCommands();
-    static void parsePacket(sf::Packet &);
+    static bool parsePacket(sf::Packet &);
 
 public:
     static uf::ThreadSafeQueue<network::protocol::Command *> commandQueue;

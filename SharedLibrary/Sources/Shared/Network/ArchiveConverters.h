@@ -1,6 +1,9 @@
 #pragma once
 
+#include <chrono>
+
 #include <Shared/Network/Archive.h>
+#include <Shared/ErrorHandling.h>
 
 template<class T>
 uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
@@ -21,16 +24,29 @@ uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 uf::Archive &operator&(uf::Archive &ar, uf::Direction &d);
 
 template<class T>
-uf::Archive &operator&(uf::Archive &ar, uf::vec2<T> vec) {
+uf::Archive &operator&(uf::Archive &ar, uf::vec2<T> &vec) {
 	ar & vec.x;
 	ar & vec.y;
 	return ar;
 }
 
 template<class T>
-uf::Archive &operator&(uf::Archive &ar, uf::vec3<T> vec) {
+uf::Archive &operator&(uf::Archive &ar, uf::vec3<T> &vec) {
 	ar & vec.x;
 	ar & vec.y;
 	ar & vec.z;
 	return ar;
 }
+
+template<class RepType, class Ratio>
+uf::Archive &operator&(uf::Archive &ar, std::chrono::duration<RepType, Ratio> &duration) {
+	if (ar.IsOutput()) {
+		RepType buf;
+		ar >> buf;
+		duration = std::chrono::duration<RepType, Ratio>(buf);
+	} else {
+		ar << duration.count();
+	}
+	return ar;
+}
+

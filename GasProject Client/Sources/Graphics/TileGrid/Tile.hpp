@@ -5,6 +5,8 @@
 
 #include "Graphics/Sprite.hpp"
 #include "Shared/Types.hpp"
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+#include <Shared/IFaces/INonCopyable.h>
 
 class Object;
 class Block;
@@ -15,11 +17,11 @@ namespace sf {
     class Packet;
 }
 
-class Tile {
+class Tile : public INonCopyable {
 public:
 	explicit Tile(TileGrid *tileGrid);
-	Tile(const Tile &) = delete;
-	Tile &operator=(const Tile &) = delete;
+	Tile(Tile &&) = default;
+	Tile &operator=(Tile &&) = default;
 	~Tile();
 
 	void Draw(sf::RenderTarget *, uf::vec2i windowPos) const;
@@ -40,6 +42,7 @@ public:
 	bool IsBlocked();
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
+	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
 	friend TileGrid;
 
 private:

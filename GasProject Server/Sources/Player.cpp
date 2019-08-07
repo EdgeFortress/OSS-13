@@ -31,11 +31,6 @@ void Player::SetConnection(sptr<Connection> &connection) {
 	}
 }
 
-void Player::UpdateServerList() {
-	if (sptr<Connection> connect = connection.lock())
-		connect->commandsToClient.Push(new GameListServerCommand());
-}
-
 void Player::JoinToGame() {
 	actions.Push(new JoinPlayerCommand);
 }
@@ -174,7 +169,7 @@ Control *Player::GetControl() { return control; }
 Camera *Player::GetCamera() { return camera.get(); }
 bool Player::IsConnected() { return !connection.expired(); }
 
-void Player::AddCommandToClient(ServerCommand *command) {
+void Player::AddCommandToClient(network::protocol::Command *command) {
 	if (sptr<Connection> connect = connection.lock())
 		connect->commandsToClient.Push(command);
 }

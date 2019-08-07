@@ -42,7 +42,9 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="cpp.hint" />
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>

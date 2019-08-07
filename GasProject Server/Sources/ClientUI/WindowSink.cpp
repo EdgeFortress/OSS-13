@@ -17,7 +17,7 @@ void WindowSink::Initialize() {
 	for (auto &field : fields) {
 		data.fields.push_back(field.second->Clone());
 	}
-	player->AddCommandToClient(new OpenWindowServerCommand(id, std::move(data)));
+	//player->AddCommandToClient(new OpenWindowServerCommand(id, std::move(data)));
 }
 
 void WindowSink::Update(std::chrono::microseconds elapsed) { }
@@ -29,7 +29,7 @@ void WindowSink::OnTrigger(const std::string &trigger) {
 }
 
 void WindowSink::OnInput(const std::string &input, uptr<UIData> &&data) {
-	player->AddCommandToClient(new UpdateWindowServerCommand(data->Clone()));
+	//player->AddCommandToClient(new UpdateWindowServerCommand(data->Clone()));
 	fields[input] = std::forward<uptr<UIData>>(data);
 }
 
