@@ -5,8 +5,6 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
 
-#include <Shared/Command.hpp>
-
 #include <Network/Connection.hpp>
 #include <ScriptEngine/ScriptEngine.h>
 #include <World/World.hpp>
@@ -48,7 +46,6 @@ void Game::gameProcess() {
 
 void Game::update(std::chrono::microseconds timeElapsed) {
 	DelayedActivitiesManager::Update(timeElapsed);
-
 	world->Update(timeElapsed);
 
 	{
@@ -108,8 +105,11 @@ Control *Game::GetStartControl(Player *player) {
 void Game::SendChatMessages() {
 	std::vector<std::string> messages = chat.GetNewMessages();
 	for (auto &player : players)
-		for (auto &message : messages)
-			player->AddCommandToClient(new SendChatMessageServerCommand(message));
+		for (auto &message : messages) {
+			auto command = std::make_unique<network::protocol::server::AddChatMessageCommand>();
+			command->message = message;
+			player->AddCommandToClient(command.release());
+		}
 }
 
 Game::~Game() {

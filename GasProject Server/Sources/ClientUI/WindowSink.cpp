@@ -2,7 +2,7 @@
 
 #include <Player.hpp>
 #include <Shared/Command.hpp>
-#include <Shared/Network/Protocol/ServerToClient/WindowData.h>
+#include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
 using namespace network::protocol;
 
@@ -13,11 +13,14 @@ WindowSink::WindowSink(Player *player, const std::string &id) :
 { }
 
 void WindowSink::Initialize() {
-	WindowData data;
+	auto command = std::make_unique<network::protocol::server::OpenWindowCommand>();
+
+	command->id = id;
 	for (auto &field : fields) {
-		data.fields.push_back(field.second->Clone());
+		command->data.fields.push_back(field.second->Clone());
 	}
-	player->AddCommandToClient(new OpenWindowServerCommand(id, std::move(data)));
+
+	player->AddCommandToClient(command.release());
 }
 
 void WindowSink::Update(std::chrono::microseconds elapsed) { }
@@ -29,7 +32,10 @@ void WindowSink::OnTrigger(const std::string &trigger) {
 }
 
 void WindowSink::OnInput(const std::string &input, uptr<UIData> &&data) {
-	player->AddCommandToClient(new UpdateWindowServerCommand(data->Clone()));
+	auto command = std::make_unique<network::protocol::server::UpdateWindowCommand>();
+	command->data = data->Clone();
+	player->AddCommandToClient(command.release());
+
 	fields[input] = std::forward<uptr<UIData>>(data);
 }
 

@@ -4,7 +4,6 @@
 #include <SFML/Graphics.hpp>
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
-#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
 #include "Shared/Global.hpp"
 #include "Client.hpp"
@@ -443,9 +442,9 @@ void TileGrid::SetCameraPosition(apos pos) {
 	}
 }
 
-void TileGrid::SetBlock(apos pos, Tile *block) {
-    blocks[flat_index(pos - firstTile)].reset(block);
-    block->relPos = pos - firstTile;
+void TileGrid::SetBlock(apos pos, std::shared_ptr<Tile> tile) {
+    blocks[flat_index(pos - firstTile)] = tile;
+    tile->relPos = pos - firstTile;
 }
 
 void TileGrid::SetControllable(uint id, float speed) {
@@ -458,14 +457,14 @@ void TileGrid::SetControllable(uint id, float speed) {
 	LOGE << "New controllable wasn't founded" << std::endl;
 }
 
-void TileGrid::UpdateOverlay(sf::Packet &packet) {
+void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo) {
 	overlayToggled = true;
+	auto tileOverlayInfo = overlayInfo.begin();
 	for (auto &tile : blocks) {
+		EXPECT(tileOverlayInfo != overlayInfo.end());
 		if (tile) {
-			network::protocol::OverlayInfo overlayInfo;
-			uf::OutputArchive r(packet);
-			r >> overlayInfo;
-			tile->SetOverlay(overlayInfo.text);
+			tile->SetOverlay(tileOverlayInfo->text);
+			tileOverlayInfo++;
 		}
 	}
 }

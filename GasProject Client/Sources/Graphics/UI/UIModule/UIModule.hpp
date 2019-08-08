@@ -29,7 +29,7 @@ public:
     virtual void Update(sf::Time timeElapsed);
     virtual void HandleEvent(sf::Event event);
 
-	void OpenWindow(const std::string &id, network::protocol::WindowData &&data);
+	void OpenWindow(const std::string &id, const network::protocol::WindowData &data);
 	void UpdateWindow(const std::string &window, const network::protocol::UIData &data);
 
 protected:

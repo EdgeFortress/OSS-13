@@ -13,10 +13,10 @@
 #include <Shared/Global.hpp>
 #include <Shared/Timer.h>
 #include <Shared/IFaces/INonCopyable.h>
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class ObjectHolder;
 class Tile;
-struct ObjectInfo;
 
 class Object : public VerbsHolder, public INonCopyable {
 	friend ObjectHolder;
@@ -69,7 +69,10 @@ public:
 	void SetTile(Tile *tile);
 
 	Object *GetHolder() const;
+	virtual sptr<Object> GetOwnershipPointer() = 0;
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
+	bool CheckIfMarkedToBeDeleted() { return markedToBeDeleted; }
+	int IncreaseDeleteAttempts() { return ++deleteAttempts; }
 
 	bool IsMovable() const;
 	bool IsCloseTo(Object *) const;
@@ -100,7 +103,7 @@ public:
 	bool IsWall() const;
 	void SetIsWall(bool value);
 
-	ObjectInfo GetObjectInfo() const;
+	network::protocol::ObjectInfo GetObjectInfo() const;
 
 	// refresh std::vector<uint32_t> icons
 	// last in, last drawn
@@ -127,7 +130,7 @@ protected:
     // Invisibility
     //// 8 bits for different kinds of invisibility
     //// Last bit - ghost invisibility
-    uint invisibility;
+	uint invisibility{0};
     //
 
 	mutable std::vector<IconInfo> icons;
@@ -152,6 +155,8 @@ private:
     uf::vec2f shift;
 
 	bool justCreated{true};
+	bool markedToBeDeleted{false};
+	int deleteAttempts{0};
 	bool iconsOutdated{true};
 };
 

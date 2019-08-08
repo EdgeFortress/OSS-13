@@ -4,11 +4,11 @@
 
 #include <IServer.h>
 #include <Resources/ResourceManager.hpp>
-#include <Network/Differences.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects.hpp>
 #include <World/Atmos/Atmos.hpp>
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 Tile::Tile(Map *map, apos pos) :
     map(map), pos(pos),
@@ -90,40 +90,54 @@ void Tile::CheckLocale() {
 }
 
 bool Tile::RemoveObject(Object *obj) {
-    if (removeObject(obj)) {
-        AddDiff(new RemoveDiff(obj));
-        return true;
-    }
-    return false;
+	if (removeObject(obj)) {
+		auto diff = std::make_shared<network::protocol::RemoveDiff>();
+		diff->objId = obj->ID();
+		AddDiff(diff, obj);
+		return true;
+	}
+	return false;
 }
 
 bool Tile::MoveTo(Object *obj) {
-    if (!obj) return false;
+	if (!obj) return false;
 
-    if (!obj->IsMovable()) {
-        LOGW << "Warning! Try to move immovable object";
-        return false;
-    }
+	if (!obj->IsMovable()) {
+		LOGW << "Warning! Try to move immovable object";
+		return false;
+	}
 
-    if (obj->GetDensity())
-        for (auto &object : content)
-            if (object)
-                if (object->GetDensity()) {
-                    return false;
-                }
+	if (obj->GetDensity())
+		for (auto &object : content)
+			if (object)
+				if (object->GetDensity()) {
+					return false;
+				}
 
-    Tile *lastTile = obj->GetTile();
-    rpos delta = GetPos() - lastTile->GetPos();
-    if (abs(delta.x) > 1 || abs(delta.y) > 1)
-        LOGW << "Warning! Moving more than a one tile. (Tile::MoveTo)";
-    if (delta.z)
-        LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
-    const uf::Direction direction = uf::VectToDirection(delta);
-    lastTile->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z));
-    addObject(obj);
-    AddDiff(new MoveDiff(obj, direction, obj->GetSpeed(), lastTile));
+	Tile *lastTile = obj->GetTile();
+	rpos delta = GetPos() - lastTile->GetPos();
+	if (abs(delta.x) > 1 || abs(delta.y) > 1)
+		LOGW << "Warning! Moving more than a one tile. (Tile::MoveTo)";
+	if (delta.z)
+		LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
+	const uf::Direction direction = uf::VectToDirection(delta);
 
-    return true;
+	auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>(); // TODO: MoveAway???
+	relocateAwayDiff->objId = obj->ID();
+	relocateAwayDiff->newCoords = pos;
+
+	lastTile->AddDiff(std::move(relocateAwayDiff), obj);
+
+	addObject(obj);
+
+	auto moveDiff = std::make_shared<network::protocol::MoveDiff>();
+	moveDiff->objId = obj->ID();
+	moveDiff->direction = direction;
+	moveDiff->speed = obj->GetSpeed();
+
+	AddDiff(moveDiff, obj);
+
+	return true;
 }
 
 void Tile::PlaceTo(Object *obj) {
@@ -162,14 +176,23 @@ void Tile::PlaceTo(Object *obj) {
 		CheckLocale();
 	}
 
-	if(lastTile) {
-		lastTile->AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z));
+	auto objInfo = obj->GetObjectInfo();
+
+	if (lastTile) {
+		auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>();
+		relocateAwayDiff->objId = obj->ID();
+		relocateAwayDiff->newCoords = pos;
+		lastTile->AddDiff(relocateAwayDiff, obj);
 	}
 	addObject(obj);
-	AddDiff(new ReplaceDiff(obj, pos.x, pos.y, pos.z, lastTile));
+
+	auto relocateDiff = std::make_shared<network::protocol::RelocateDiff>();
+	relocateDiff->objId = obj->ID();
+	relocateDiff->newCoords = pos;
+	AddDiff(relocateDiff, obj);
 }
 
-const list<Object *> &Tile::Content() const {
+const std::list<Object *> &Tile::Content() const {
     return content;
 }
 
@@ -200,11 +223,9 @@ Locale *Tile::GetLocale() const {
 	return locale;
 }
 
-const TileInfo Tile::GetTileInfo(uint viewerId, uint visibility) const {
-	TileInfo tileInfo;
-	tileInfo.x = pos.x;
-	tileInfo.y = pos.y;
-	tileInfo.z = pos.z;
+network::protocol::TileInfo Tile::GetTileInfo(uint viewerId, uint visibility) const {
+	network::protocol::TileInfo tileInfo;
+	tileInfo.coords = pos;
 	tileInfo.sprite = icon.id;
 
 	for (auto &obj : this->content) {
@@ -221,48 +242,49 @@ void Tile::addObject(Object *obj) {
 
 	Object *holder = obj->GetHolder();
 	if (holder) {
-		if (!holder->RemoveObject(obj))
-			throw std::exception(); // "Unexpected!"
+		EXPECT(holder->RemoveObject(obj));
 	}
 
 	Tile *lastTile = obj->GetTile();
 	if (lastTile) {
-		if (!lastTile->removeObject(obj))
-			throw std::exception(); // "Unexpected!"
+		EXPECT(lastTile->removeObject(obj));
 	}
 
-    // Count position in tile content by layer
-    auto iter = content.begin();
-    while (iter != content.end() && (*iter)->GetLayer() <= obj->GetLayer())
-        iter++;
-    content.insert(iter, obj);
+	// Count position in tile content by layer
+	auto iter = content.begin();
+	while (iter != content.end() && (*iter)->GetLayer() <= obj->GetLayer())
+		iter++;
+	content.insert(iter, obj);
 
 	obj->setTile(this);
 	obj->SetSpriteState(Global::ItemSpriteState::DEFAULT);
 }
 
 bool Tile::removeObject(Object *obj) {
-    for (auto iter = content.begin(); iter != content.end(); iter++) {
-        if (*iter == obj) {
-            if (obj->IsFloor()) {
-                hasFloor = false;
-                CheckLocale();
-            } else if (obj->IsWall()) {
-                fullBlocked = false;
-                CheckLocale();
-            }
-            obj->setTile(nullptr);
-            content.erase(iter);
-            return true;
-        }
-    }
-    return false;
+	if (!obj) 
+		return false;
+	for (auto iter = content.begin(); iter != content.end(); iter++) {
+		if (*iter == obj) {
+			if (obj->IsFloor()) {
+				hasFloor = false;
+				CheckLocale();
+			} else if (obj->IsWall()) {
+				fullBlocked = false;
+				CheckLocale();
+			}
+			obj->setTile(nullptr);
+			content.erase(iter);
+			return true;
+		}
+	}
+	return false;
 }
 
-void Tile::AddDiff(Diff *diff) {
-    differences.push_back(sptr<Diff>(diff));
+void Tile::AddDiff(std::shared_ptr<network::protocol::Diff> diff, Object *obj) {
+	EXPECT(uf::CreateSerializableById(diff->Id())); // debug
+	differencesWithObject.push_back({diff, obj->GetOwnershipPointer()});
 }
 
 void Tile::ClearDiffs() {
-    differences.clear();
+	differencesWithObject.clear();
 }

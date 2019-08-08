@@ -57,6 +57,14 @@ protected:
 			reinterpret_cast<uf::ISerializable *>(ser.get())->Serialize(*this);
 	}
 
+	template<class T>
+	void serialize(sptr<T> &ser) {
+		if (isOut)
+			ser.reset(dynamic_cast<T *>(this->UnpackSerializable().release()));
+		else
+			reinterpret_cast<uf::ISerializable *>(ser.get())->Serialize(*this);
+	}
+
 protected:
 	bool isOut;
 

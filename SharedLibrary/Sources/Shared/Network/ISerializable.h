@@ -1,13 +1,17 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 #include <Shared/CRC32.h>
 
-#define _DEFINE_SERID(id)               \
-	uint32_t Id() override {           \
-		constexpr uint32_t _id = id;   \
-		return _id;                    \
+#define _DEFINE_SERID(id)                  \
+	uint32_t Id() override {               \
+		constexpr uint32_t _id = id;       \
+		return _id;                        \
+	}                                      \
+	constexpr static uint32_t StaticId() { \
+		return id;                         \
 	}
 
 namespace uf {
@@ -21,6 +25,8 @@ public:
 
 	virtual ~ISerializable() = default;
 };
+
+std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id);
 
 }
 

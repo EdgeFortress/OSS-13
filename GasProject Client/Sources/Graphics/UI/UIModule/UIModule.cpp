@@ -123,7 +123,7 @@ bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {
     return false;
 }
 
-void UIModule::OpenWindow(const std::string &id, network::protocol::WindowData &&data) {
+void UIModule::OpenWindow(const std::string &id, const network::protocol::WindowData &data) {
 	try {
 		auto dynamicWidget = std::make_unique<DynamicWidget>(id);
 
@@ -132,7 +132,7 @@ void UIModule::OpenWindow(const std::string &id, network::protocol::WindowData &
 		}
 
 		widgets.push_back(std::move(dynamicWidget));
-	} catch (std::exception e) {
+	} catch (const std::exception &e) {
 		LOGE << "DynamicWindow with id \"" << id << "\" cannot be open!\n"
 			 << "\tException: " << e.what();
 	}

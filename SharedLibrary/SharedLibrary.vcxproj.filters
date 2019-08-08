@@ -42,7 +42,12 @@
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
-    <None Include="cpp.hint" />
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="Sources\**\*.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
     <None Include="Sources\**\*.inl">
       <Filter>Заголовочные файлы</Filter>
     </None>
@@ -52,9 +57,6 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\Physics\MovePhysics.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Shared\Command.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Shared\OS.cpp">
@@ -102,6 +104,9 @@
     <ClCompile Include="Sources\Shared\Network\ArchiveConverters.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Shared\Network\Protocol\ServerToClient\Diff.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp">
@@ -111,9 +116,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Shared\Command.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\Global.hpp">
@@ -129,9 +131,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Shared\TileGrid_Info.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Shared\Timer.h">

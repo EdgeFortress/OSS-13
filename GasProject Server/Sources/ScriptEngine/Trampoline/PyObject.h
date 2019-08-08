@@ -30,6 +30,10 @@ public:
 		Object::Delete();
 	}
 
+	sptr<Object> GetOwnershipPointer() override {
+		return shared_from_this();
+	}
+
 	void updateIcons() override {
 		PYBIND11_OVERLOAD_NAME(void, Object, "_updateIcons", updateIcons);
 	}

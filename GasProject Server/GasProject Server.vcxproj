@@ -139,9 +139,7 @@
     <ClCompile Include="Sources\ClientUI\WindowSink.cpp" />
     <ClCompile Include="Sources\DelayedActivitiesManager.cpp" />
     <ClCompile Include="Sources\Game.cpp" />
-    <ClCompile Include="Sources\Network\Differences.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
-    <ClCompile Include="Sources\Network\Packing.cpp" />
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\PlayerCommand.cpp" />
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
@@ -175,7 +173,6 @@
     <ClInclude Include="Sources\Game.h" />
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Connection.hpp" />
-    <ClInclude Include="Sources\Network\Differences.hpp" />
     <ClInclude Include="Sources\Network\NetworkController.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
     <ClInclude Include="Sources\PlayerCommand.hpp" />

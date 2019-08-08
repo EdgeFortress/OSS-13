@@ -10,16 +10,12 @@
 
 #include <Shared/Global.hpp>
 #include <Shared/Types.hpp>
-
-using std::list;
-using std::vector;
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
 class Object;
 class Map;
 class Locale;
-
-struct Diff;
-struct TileInfo;
 
 class Tile {
 public:
@@ -39,7 +35,7 @@ public:
 	// Teleport or add to tile from nowhere
     void PlaceTo(Object *);
 
-    const list<Object *> &Content() const;
+    const std::list<Object *> &Content() const;
     Object *GetDenseObject() const;
 
 	uf::vec3i GetPos() const;
@@ -48,10 +44,10 @@ public:
     bool IsSpace() const;
 	Locale *GetLocale() const;
 
-    const TileInfo GetTileInfo(uint viewerId, uint visibility) const;
+	network::protocol::TileInfo GetTileInfo(uint viewerId, uint visibility) const;
 
-    void AddDiff(Diff *diff);
-    const list<sptr<Diff>> GetDifferences() const { return differences; }
+	void AddDiff(std::shared_ptr<network::protocol::Diff> diff, Object *object);
+    const std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> &GetDifferencesWithObject() const { return differencesWithObject; }
     void ClearDiffs();
 
     int X() const { return pos.x; }
@@ -63,21 +59,21 @@ private:
     uf::vec3i pos;
     IconInfo icon;
 
-    list<Object *> content;
+    std::list<Object *> content;
     bool hasFloor;
     // true if has wall
     bool fullBlocked;
     // for thin walls
-    vector<bool> directionsBlocked;
+    std::vector<bool> directionsBlocked;
 
 
     Locale *locale;
     bool needToUpdateLocale;
     // Partional pressures of gases by index
-    vector<pressure> gases;
+    std::vector<pressure> gases;
     pressure totalPressure;
 
-    list<sptr<Diff>> differences;
+    std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObject;
 
     // Add object to the tile, and change object.tile pointer
     // For moving use MoveTo, for placing PlaceTo

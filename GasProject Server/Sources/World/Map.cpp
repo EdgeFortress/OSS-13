@@ -24,8 +24,9 @@ Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
 }
 
 void Map::ClearDiffs() {
-    for (auto &tile : tiles)
-        tile->ClearDiffs();
+	for (auto &tile : tiles)
+		tile->ClearDiffs();
+	network::protocol::Diff::ResetDiffCounter();
 }
 
 void Map::Update(std::chrono::microseconds timeElapsed) {

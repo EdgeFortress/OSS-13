@@ -3,15 +3,14 @@
 #include <plog/Log.h>
 
 #include <IGame.h>
-#include <Network/Differences.hpp>
 #include <Player.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects/Control.hpp>
 #include <World/Atmos/AtmosCameraOverlay.h>
 
-#include <Shared/Command.hpp>
 #include <Shared/Array.hpp>
+#include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
 #include <Shared/ErrorHandling.h>
 
@@ -40,17 +39,15 @@ void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 	if (!overlay)
 		return;
 	if (overlay->IsShouldBeUpdated(timeElapsed)) {
-		std::vector<network::protocol::OverlayInfo> overlayTileData;
+		auto command = std::make_unique<network::protocol::server::OverlayUpdateCommand>();
 
-		overlayTileData.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+		command->overlayInfo.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 		for (auto &tile: visibleBlocks) {
 			if (tile) {
-				overlayTileData.push_back(overlay->GetOverlayInfo(*tile));
+				command->overlayInfo.push_back(overlay->GetOverlayInfo(*tile));
 			}
 		}
 
-		auto command = std::make_unique<OverlayUpdateServerCommand>();
-		command->overlayInfo = std::move(overlayTileData);
 		player->AddCommandToClient(command.release());
 	}
 }
@@ -59,18 +56,18 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
     if (unsuspensed && cameraMoved) 
         LOGE << "Logic error: camera unsuspensed and moved at one time";
 
-    int updateOptions = GraphicsUpdateServerCommand::Option::EMPTY;
-    auto command = std::make_unique<GraphicsUpdateServerCommand>();
+	using namespace network::protocol;
+
+    int updateOptions = server::GraphicsUpdateCommand::Option::EMPTY;
+    auto command = std::make_unique<server::GraphicsUpdateCommand>();
 
     if (unsuspensed || cameraMoved) {
         if (unsuspensed) {
 			fullRecountVisibleBlocks(tile);
 			visibleObjects.clear();
 		} else refreshVisibleBlocks(tile);
-        updateOptions |= GraphicsUpdateServerCommand::Option::CAMERA_MOVE;
-        command->cameraX = tile->GetPos().x;
-        command->cameraY = tile->GetPos().y;
-        command->cameraZ = tile->GetPos().z;
+        updateOptions |= server::GraphicsUpdateCommand::Option::CAMERA_MOVE;
+		command->camera = tile->GetPos();
     }
 
     unsuspensed = cameraMoved = false;
@@ -78,28 +75,70 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	Object *viewer = player->GetControl()->GetOwner();
 	uint viewerId = viewer ? viewer->ID() : 0;
 
-	auto diffs_it = command->diffs.begin();
     for (int i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
-		Tile *block = visibleBlocks[i];
-		if (block) {
+		Tile *tile = visibleBlocks[i];
+		if (tile) {
 			if (blocksSync[i]) {
-				for (auto &diff : block->GetDifferences()) {
-					if (!diff->CheckVisibility(viewerId, seeInvisibleAbility)) 
+				for (auto &diffAndObject : tile->GetDifferencesWithObject()) {
+					auto &generalDiff = diffAndObject.first;
+					auto &object = diffAndObject.second;
+
+					if (!object->CheckVisibility(viewerId, seeInvisibleAbility))
 						continue;
-					switch(diff->GetType()) {
-					case Global::DiffType::ADD:
-						command->diffs.insert(++diffs_it, diff);
-						break;
-					case Global::DiffType::REMOVE:
-						command->diffs.push_back(diff);
-						break;
-					default:
-						command->diffs.insert(std::next(diffs_it), diff);
+
+					if (auto *diff = dynamic_cast<network::protocol::AddDiff *>(generalDiff.get())) {
+						CHECK(visibleObjects.find(diff->objId) == visibleObjects.end()); // debug
+						visibleObjects.insert(diff->objId);
 					}
+					else if (auto *diff = dynamic_cast<network::protocol::MoveDiff *>(generalDiff.get())) {
+						if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
+							apos to = tile->GetPos() - rpos(DirectionToVect(diff->direction), 0);
+							auto addDiff = std::make_shared<network::protocol::AddDiff>();
+							addDiff->objId = diff->objId;
+							addDiff->objectInfo = object->GetObjectInfo();
+							addDiff->coords = to;
+							command->diffs.push_back(std::move(addDiff));
+							visibleObjects.insert(diff->objId);
+							continue;
+						}
+					}
+					else if (auto *diff = dynamic_cast<network::protocol::RelocateAwayDiff *>(generalDiff.get())) {
+						CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
+						if (diff->newCoords >= rpos(firstBlockX, firstBlockY, firstBlockZ) &&
+							diff->newCoords < rpos(firstBlockX + visibleTilesSide, firstBlockY + visibleTilesSide, firstBlockZ + visibleTilesHeight))
+						{
+							continue;
+						}
+						visibleObjects.erase(diff->objId);
+
+						auto removeDiff = std::make_shared<network::protocol::RemoveDiff>();
+						removeDiff->objId = diff->objId;
+
+						command->diffs.push_back(std::move(removeDiff));
+						continue;
+
+					}
+					else if (auto *diff = dynamic_cast<network::protocol::RelocateDiff *>(generalDiff.get())) {
+						if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
+							auto addDiff = std::make_shared<network::protocol::AddDiff>();
+							addDiff->objId = diff->objId;
+							addDiff->objectInfo = object->GetObjectInfo();
+							addDiff->coords = diff->newCoords;
+							command->diffs.push_back(std::move(addDiff));
+							visibleObjects.insert(diff->objId);
+							continue;
+						}
+					}
+					else if (auto *diff = dynamic_cast<network::protocol::RemoveDiff *>(generalDiff.get())) {
+						CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
+						visibleObjects.erase(diff->objId);
+					};
+
+					command->diffs.push_back(generalDiff);
 				}
 			} else {
-				command->blocksInfo.push_back(block->GetTileInfo(viewerId, seeInvisibleAbility));
-				for (auto &object: block->Content()) {
+				command->tilesInfo.push_back(tile->GetTileInfo(viewerId, seeInvisibleAbility));
+				for (auto &object: tile->Content()) {
 					if (!object->CheckVisibility(viewerId, seeInvisibleAbility)) {
 						continue;
 					}
@@ -110,79 +149,31 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 		}
 	}
 
-	for(diffs_it = command->diffs.begin(); diffs_it != command->diffs.end();) {
-		// If client doesn't know about moved object, we need to add it
-		switch((*diffs_it)->GetType()) {
-		case Global::DiffType::ADD: {
-			AddDiff *addDiff = dynamic_cast<AddDiff *>(diffs_it->get());
-			CHECK(visibleObjects.find(addDiff->id) == visibleObjects.end())
-			visibleObjects.insert(addDiff->id);
-			break;
-		}
-		case Global::DiffType::MOVE: {
-			MoveDiff *moveDiff = dynamic_cast<MoveDiff *>(diffs_it->get());
-			if (visibleObjects.find(moveDiff->id) == visibleObjects.end()) {
-				apos to = moveDiff->lastblock->GetPos() + rpos(DirectionToVect(moveDiff->direction),0);
-				*diffs_it = std::make_shared<AddDiff>(GGame->GetWorld()->GetObject(moveDiff->id), to.x, to.y, to.z);
-				visibleObjects.insert(moveDiff->id);
-			}
-			break;
-		}
-		case Global::DiffType::RELOCATE: {
-			ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diffs_it->get());
-			if (visibleObjects.find(replaceDiff->id) == visibleObjects.end()) {
-				*diffs_it = std::make_shared<AddDiff>(*replaceDiff);
-				visibleObjects.insert(replaceDiff->id);
-			}
-			break;
-		}
-		case Global::DiffType::RELOCATE_AWAY: {
-			ReplaceDiff *replaceDiff = dynamic_cast<ReplaceDiff *>(diffs_it->get());
-			CHECK(visibleObjects.find(replaceDiff->id) != visibleObjects.end())
-			rpos to = rpos(replaceDiff->toX,replaceDiff->toY,replaceDiff->toZ);
-			if (to >= rpos(firstBlockX,firstBlockY,firstBlockZ) &&
-				to < rpos(firstBlockX+visibleTilesSide,firstBlockY+visibleTilesSide,firstBlockZ+visibleTilesHeight))
-			{
-				diffs_it = command->diffs.erase(diffs_it);
-				continue;
-			}
-			visibleObjects.erase(replaceDiff->id);
-			*diffs_it = std::make_shared<RemoveDiff>(GGame->GetWorld()->GetObject(replaceDiff->id));
-			break;
-		}
-		case Global::DiffType::REMOVE: {
-			RemoveDiff *removeDiff = dynamic_cast<RemoveDiff *>(diffs_it->get());
-			CHECK(visibleObjects.find(removeDiff->id) != visibleObjects.end())
-			visibleObjects.erase(removeDiff->id);
-			break;
-		}
-		}
-		++diffs_it;
+	std::sort(command->diffs.begin(), command->diffs.end(), [](const sptr<network::protocol::Diff> &a, const sptr<network::protocol::Diff> &b) {
+		return a->GetDiffId() < b->GetDiffId();
+	});
+
+	if (blockShifted) {
+		updateOptions |= server::GraphicsUpdateCommand::Option::TILES_SHIFT;
+		command->firstTile = {firstBlockX, firstBlockY, firstBlockZ};
+		blockShifted = false;
 	}
 
-    if (blockShifted) {
-        updateOptions |= GraphicsUpdateServerCommand::Option::BLOCKS_SHIFT;
-        command->firstBlockX = firstBlockX;
-        command->firstBlockY = firstBlockY;
-        command->firstBlockZ = firstBlockZ;
-        blockShifted = false;
-    }
+	if (command->diffs.size()) {
+		updateOptions |= server::GraphicsUpdateCommand::Option::DIFFERENCES;
+	}
 
-    if (command->diffs.size()) {
-        updateOptions |= GraphicsUpdateServerCommand::Option::DIFFERENCES;
-    }
+	if (changeFocus) {
+		updateOptions |= server::GraphicsUpdateCommand::Option::NEW_CONTROLLABLE;
+		command->controllableId = player->GetControl()->GetOwner()->ID();
+		command->controllableSpeed = player->GetControl()->GetSpeed();
+		changeFocus = false;
+	}
 
-    if (changeFocus) {
-        updateOptions |= GraphicsUpdateServerCommand::Option::NEW_CONTROLLABLE;
-        command->controllable_id = player->GetControl()->GetOwner()->ID();
-        command->controllableSpeed = player->GetControl()->GetSpeed();
-        changeFocus = false;
-    }
-
-    command->options = GraphicsUpdateServerCommand::Option(updateOptions);
+	command->options = server::GraphicsUpdateCommand::Option(updateOptions);
     
-    if (updateOptions)
-        player->AddCommandToClient(command.release());
+	if (updateOptions)
+		player->AddCommandToClient(command.release());
 
 	updateOverlay(timeElapsed);
 }
@@ -217,7 +208,8 @@ void Camera::SetOverlay(uptr<ICameraOverlay> &&overlay) {
 
 void Camera::ResetOverlay() {
 	this->overlay.reset();
-	player->AddCommandToClient(new OverlayResetServerCommand());
+	auto command = std::make_unique<network::protocol::server::OverlayResetCommand>();
+	player->AddCommandToClient(command.release());
 }
 
 // Fill Visible Blocks vector by actual blocks pointers

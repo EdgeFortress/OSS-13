@@ -5,11 +5,9 @@
 
 #include <SFML/Network.hpp>
 
-#include "Shared/Command.hpp"
-#include "Shared/TileGrid_Info.hpp"
+#include <Shared/Types.hpp>
 
 struct Connection;
-struct Diff;
 
 class NetworkController {
 private:
@@ -29,8 +27,3 @@ public:
     void Start();
     void Stop();
 };
-
-sf::Packet &operator<<(sf::Packet &, ServerCommand *);
-sf::Packet &operator<<(sf::Packet &, const Diff &);
-sf::Packet &operator<<(sf::Packet &, const TileInfo &);
-sf::Packet &operator<<(sf::Packet &, const ObjectInfo &);

@@ -5,22 +5,20 @@
 #include <IServer.h>
 #include <IGame.h>
 #include <Resources/ResourceManager.hpp>
-#include <Network/Differences.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects/Control.hpp>
 
-#include <Shared/TileGrid_Info.hpp>
 #include <Shared/Math.hpp>
 #include <Shared/Physics/MovePhysics.hpp>
+#include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
 Object::Object() :
     density(false), 
     movable(true),
 	spriteState(Global::ItemSpriteState::DEFAULT),
     layer(0), 
-    direction(uf::Direction::NONE), 
-    invisibility(0),
+    direction(uf::Direction::NONE),
     tile(nullptr),
 	holder(nullptr),
     moveSpeed(0)
@@ -65,7 +63,11 @@ void Object::Update(std::chrono::microseconds timeElapsed) {
 
 	if (iconsOutdated) {
 		updateIcons();
-		GetTile()->AddDiff(new UpdateIconsDiff(this, icons));
+		auto diff = std::make_shared<network::protocol::UpdateIconsDiff>();
+		diff->objId = ID();
+		for (auto &iconInfo : icons)
+			diff->iconsIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
+		GetTile()->AddDiff(diff, this);
 		iconsOutdated = false;
 	}
 
@@ -157,7 +159,7 @@ void Object::SetConstSpeed(uf::vec2f speed) {
 
 void Object::Delete() {
     if (tile) tile->RemoveObject(this);
-    id = 0;
+    markedToBeDeleted = true;
 }
 
 uint Object::ID() const { return id; }
@@ -184,7 +186,11 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> c
 
 	auto iconInfo = IServer::RM()->GetIconInfo(animation);
 
-	GetTile()->AddDiff(new PlayAnimationDiff(this, iconInfo.id));
+	auto playAnimationDiff = std::make_shared<network::protocol::PlayAnimationDiff>();
+	playAnimationDiff->objId = ID();
+	playAnimationDiff->animationId = iconInfo.id;
+
+	GetTile()->AddDiff(std::move(playAnimationDiff), this);
 
 	animationTimer.Start(iconInfo.animation_time, std::forward<std::function<void()>>(callback));
 	return true;
@@ -245,11 +251,14 @@ void Object::SetInvisibility(uint invisibility) { this->invisibility = invisibil
 
 
 void Object::SetMoveIntent(uf::vec2i moveIntent) {
-    if (tile) {
-        tile->AddDiff(new MoveIntentDiff(this, uf::VectToDirection(moveIntent)));
-    }
-    if (moveIntent.x) this->moveIntent.x = moveIntent.x;
-    if (moveIntent.y) this->moveIntent.y = moveIntent.y;
+	if (tile) {
+		auto moveIntentDiff = std::make_shared<network::protocol::MoveIntentDiff>();
+		moveIntentDiff->objId = ID();
+		moveIntentDiff->direction = uf::VectToDirection(moveIntent);
+		tile->AddDiff(std::move(moveIntentDiff), this);
+	}
+	if (moveIntent.x) this->moveIntent.x = moveIntent.x;
+	if (moveIntent.y) this->moveIntent.y = moveIntent.y;
 }
 
 uf::vec2i Object::GetMoveIntent() const {
@@ -276,8 +285,12 @@ void Object::SetDirection(uf::Direction direction) {
     if (direction > uf::Direction::EAST)
         direction = uf::Direction(char(direction) % 4);
     this->direction = direction;
-	if (tile)
-		tile->AddDiff(new ChangeDirectionDiff(this, direction));
+	if (tile) {
+		auto changeDirectionDiff = std::make_shared<network::protocol::ChangeDirectionDiff>();
+		changeDirectionDiff->objId = ID();
+		changeDirectionDiff->direction = direction;
+		tile->AddDiff(std::move(changeDirectionDiff), this);
+	}
 }
 
 //void Object::AddShift(uf::vec2f shift) {
@@ -290,8 +303,8 @@ void Object::SetIsFloor(bool value) { isFloor = value; }
 bool Object::IsWall() const { return isWall; }
 void Object::SetIsWall(bool value) { isWall = value; }
 
-ObjectInfo Object::GetObjectInfo() const {
-    ObjectInfo objectInfo;
+network::protocol::ObjectInfo Object::GetObjectInfo() const {
+	network::protocol::ObjectInfo objectInfo;
 	objectInfo.id = id;
 	objectInfo.name = name;
 	objectInfo.layer = layer;

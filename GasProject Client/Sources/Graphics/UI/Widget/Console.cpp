@@ -82,11 +82,13 @@ void Console::Update(sf::Time timeElapsed) {
 }
 
 void Console::loadMessages() {
+	CC::Get()->Lock();
 	for (auto &message: CC::Get()->GetMessages()) {
 		rows.push_back(plog::UTF8Converter::convert(message));
 	}
 
 	CC::Get()->GetMessages().clear();
+	CC::Get()->Unlock();
 }
 
 std::string Console::lowerString(const std::string &s) {

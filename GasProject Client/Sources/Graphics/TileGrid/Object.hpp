@@ -8,6 +8,7 @@
 #include <Shared/Types.hpp>
 #include <Shared/Geometry/Direction.hpp>
 #include <Shared/Global.hpp>
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class Sprite;
 class Tile;
@@ -56,6 +57,7 @@ public:
 	bool IsDense();
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
+	friend std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo &objectInfo);
 	friend Tile;
 
 private:
@@ -76,5 +78,5 @@ private:
     uf::vec2f constSpeed;  
     uf::vec2f physSpeed;
 
-    Tile *tile;
+	Tile *tile{nullptr};
 };

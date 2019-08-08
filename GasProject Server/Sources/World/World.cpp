@@ -15,7 +15,7 @@ World::World() :
 { }
 
 void World::Update(std::chrono::microseconds timeElapsed) {
-    map->ClearDiffs();
+	map->ClearDiffs();
 
 	// Simple walking mob AI for moving testing
 	if (testMob) {
@@ -37,11 +37,17 @@ void World::Update(std::chrono::microseconds timeElapsed) {
     // update objects
     for (uint i = 0; i < objects.size(); i++) {
         if (!objects[i]) continue; // already deleted
-        if (!objects[i]->ID()) {         // waiting for delete
-			CHECK_WITH_MSG(objects[i].use_count() == 2, "Wrong ref counter value: "s + std::to_string(objects[i].use_count()));
-            objects[i].reset();
-            free_ids.push_back(i + 1);
-            continue;
+        if (objects[i]->CheckIfMarkedToBeDeleted()) {
+			// Broke cycle ref: PyObject <-> C++ Object
+			if (objects[i].use_count() > 2) { // Object can be captured by Tile's diffs list
+				auto deleteAttempts = objects[i]->IncreaseDeleteAttempts();
+				CHECK_WITH_MSG(deleteAttempts == 5, "Object (id="s + std::to_string(i) + ") wasn't deleted 5 times!"s);
+				CHECK_WITH_MSG(deleteAttempts == 20, "Object (id="s + std::to_string(i) + ") can't be deleted!"s);
+			} else {
+				objects[i].reset();
+				free_ids.push_back(i + 1);
+			}
+			continue;
         }
 		if (objects[i]->CheckIfJustCreated()) // don't update objects created at current tick
 			continue;

@@ -9,7 +9,7 @@
 #include <Graphics/UI/UI.hpp>
 
 Tile::Tile(TileGrid *tileGrid) :
-	tileGrid(tileGrid), relPos()
+	tileGrid(tileGrid)
 { 
 	overlay.setFont(CC::Get()->GetUI()->GetFont());
 	overlay.setCharacterSize(10);

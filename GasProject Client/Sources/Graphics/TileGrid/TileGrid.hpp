@@ -5,9 +5,11 @@
 #include <mutex>
 #include <SFML/System/Time.hpp>
 
-#include <Shared/Types.hpp>
 #include <Graphics/UI/Widget/CustomWidget.h>
 #include "Tile.hpp"
+
+#include <Shared/Types.hpp>
+#include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
 namespace sf { 
     class Event;
@@ -29,28 +31,28 @@ public:
 
     //// FOR NETWORK
 
-        // Lock for network updating
-        void LockDrawing();
-        // Unlock for network updating
-        void UnlockDrawing();
+		// Lock for network updating
+		void LockDrawing();
+		// Unlock for network updating
+		void UnlockDrawing();
 
-        // Differences commiting
-        void AddObject(Object *object);
-        void RemoveObject(uint id);
-        void RelocateObject(uint id, apos toVec, int toObjectNum);
-        void SetMoveIntentObject(uint id, uf::Direction direction);
-        void MoveObject(uint id, uf::Direction direction, float speed);
+		// Differences commiting
+		void AddObject(Object *object);
+		void RemoveObject(uint id);
+		void RelocateObject(uint id, apos toVec, int toObjectNum);
+		void SetMoveIntentObject(uint id, uf::Direction direction);
+		void MoveObject(uint id, uf::Direction direction, float speed);
 		void UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons);
-        void PlayAnimation(uint id, uint animation_id);
+		void PlayAnimation(uint id, uint animation_id);
 		void ChangeObjectDirection(uint id, uf::Direction direction);
 		void Stunned(uint id, sf::Time duration);
 
-        void ShiftBlocks(apos newFirst);
+		void ShiftBlocks(apos newFirst);
 
-        void SetCameraPosition(apos newPos);
-        void SetBlock(apos pos, Tile *);
-        void SetControllable(uint id, float speed);
-		void UpdateOverlay(sf::Packet &packet); // TODO: get rid of Network crutch sf::packet and refactor this, when Blocks will be removed
+		void SetCameraPosition(apos newPos);
+		void SetBlock(apos pos, std::shared_ptr<Tile>);
+		void SetControllable(uint id, float speed);
+		void UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo);
 		void ResetOverlay();
 
     ////
@@ -62,6 +64,7 @@ public:
 
     friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
     friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
+	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
 
 protected:
     void draw() const override final;
