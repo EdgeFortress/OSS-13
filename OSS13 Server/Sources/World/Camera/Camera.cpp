@@ -75,67 +75,14 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	Object *viewer = player->GetControl()->GetOwner();
 	uint viewerId = viewer ? viewer->ID() : 0;
 
-    for (int i = 0; i < visibleTilesSide*visibleTilesSide*visibleTilesHeight; i++) {
+	std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObjects;
+
+	for (int i = 0; i < visibleTilesSide * visibleTilesSide * visibleTilesHeight; i++) {
 		Tile *tile = visibleBlocks[i];
 		if (tile) {
 			if (blocksSync[i]) {
-				for (auto &diffAndObject : tile->GetDifferencesWithObject()) {
-					auto &generalDiff = diffAndObject.first;
-					auto &object = diffAndObject.second;
-
-					if (!object->CheckVisibility(viewerId, seeInvisibleAbility))
-						continue;
-
-					if (auto *diff = dynamic_cast<network::protocol::AddDiff *>(generalDiff.get())) {
-						CHECK(visibleObjects.find(diff->objId) == visibleObjects.end()); // debug
-						visibleObjects.insert(diff->objId);
-					}
-					else if (auto *diff = dynamic_cast<network::protocol::MoveDiff *>(generalDiff.get())) {
-						if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
-							apos to = tile->GetPos() - rpos(DirectionToVect(diff->direction), 0);
-							auto addDiff = std::make_shared<network::protocol::AddDiff>();
-							addDiff->objId = diff->objId;
-							addDiff->objectInfo = object->GetObjectInfo();
-							addDiff->coords = to;
-							command->diffs.push_back(std::move(addDiff));
-							visibleObjects.insert(diff->objId);
-							continue;
-						}
-					}
-					else if (auto *diff = dynamic_cast<network::protocol::RelocateAwayDiff *>(generalDiff.get())) {
-						CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
-						if (diff->newCoords >= rpos(firstBlockX, firstBlockY, firstBlockZ) &&
-							diff->newCoords < rpos(firstBlockX + visibleTilesSide, firstBlockY + visibleTilesSide, firstBlockZ + visibleTilesHeight))
-						{
-							continue;
-						}
-						visibleObjects.erase(diff->objId);
-
-						auto removeDiff = std::make_shared<network::protocol::RemoveDiff>();
-						removeDiff->objId = diff->objId;
-
-						command->diffs.push_back(std::move(removeDiff));
-						continue;
-
-					}
-					else if (auto *diff = dynamic_cast<network::protocol::RelocateDiff *>(generalDiff.get())) {
-						if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
-							auto addDiff = std::make_shared<network::protocol::AddDiff>();
-							addDiff->objId = diff->objId;
-							addDiff->objectInfo = object->GetObjectInfo();
-							addDiff->coords = diff->newCoords;
-							command->diffs.push_back(std::move(addDiff));
-							visibleObjects.insert(diff->objId);
-							continue;
-						}
-					}
-					else if (auto *diff = dynamic_cast<network::protocol::RemoveDiff *>(generalDiff.get())) {
-						CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
-						visibleObjects.erase(diff->objId);
-					};
-
-					command->diffs.push_back(generalDiff);
-				}
+				// Collect differences
+				differencesWithObjects.insert(differencesWithObjects.end(), tile->GetDifferencesWithObject().begin(), tile->GetDifferencesWithObject().end());
 			} else {
 				command->tilesInfo.push_back(tile->GetTileInfo(viewerId, seeInvisibleAbility));
 				for (auto &object: tile->Content()) {
@@ -149,9 +96,67 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 		}
 	}
 
-	std::sort(command->diffs.begin(), command->diffs.end(), [](const sptr<network::protocol::Diff> &a, const sptr<network::protocol::Diff> &b) {
-		return a->GetDiffId() < b->GetDiffId();
-	});
+	// Sort differences
+	std::sort(differencesWithObjects.begin(), differencesWithObjects.end(), 
+			[](const std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>> &a, const std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>> &b) {
+				return a.first->GetDiffId() < b.first->GetDiffId();
+			}
+	);
+
+	// Process differences
+	for (auto &diffAndObject : differencesWithObjects) {
+		auto &generalDiff = diffAndObject.first;
+		auto &object = diffAndObject.second;
+
+		if (!object->CheckVisibility(viewerId, seeInvisibleAbility))
+			continue;
+
+		if (auto *diff = dynamic_cast<network::protocol::AddDiff *>(generalDiff.get())) {
+			CHECK(visibleObjects.find(diff->objId) == visibleObjects.end()); // debug
+			visibleObjects.insert(diff->objId);
+		} else if (auto *diff = dynamic_cast<network::protocol::MoveDiff *>(generalDiff.get())) {
+			if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
+				apos to = apos(object->GetPosition() + DirectionToVect(diff->direction), 0);
+				auto addDiff = std::make_shared<network::protocol::AddDiff>();
+				addDiff->objId = diff->objId;
+				addDiff->objectInfo = object->GetObjectInfo();
+				addDiff->coords = to;
+				command->diffs.push_back(std::move(addDiff));
+				visibleObjects.insert(diff->objId);
+				continue;
+			}
+		} else if (auto *diff = dynamic_cast<network::protocol::RelocateAwayDiff *>(generalDiff.get())) {
+			CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
+			if (diff->newCoords >= rpos(firstBlockX, firstBlockY, firstBlockZ) &&
+				diff->newCoords < rpos(firstBlockX + visibleTilesSide, firstBlockY + visibleTilesSide, firstBlockZ + visibleTilesHeight))
+			{
+				continue;
+			}
+			visibleObjects.erase(diff->objId);
+
+			auto removeDiff = std::make_shared<network::protocol::RemoveDiff>();
+			removeDiff->objId = diff->objId;
+
+			command->diffs.push_back(std::move(removeDiff));
+			continue;
+
+		} else if (auto *diff = dynamic_cast<network::protocol::RelocateDiff *>(generalDiff.get())) {
+			if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
+				auto addDiff = std::make_shared<network::protocol::AddDiff>();
+				addDiff->objId = diff->objId;
+				addDiff->objectInfo = object->GetObjectInfo();
+				addDiff->coords = diff->newCoords;
+				command->diffs.push_back(std::move(addDiff));
+				visibleObjects.insert(diff->objId);
+				continue;
+			}
+		} else if (auto *diff = dynamic_cast<network::protocol::RemoveDiff *>(generalDiff.get())) {
+			CHECK(visibleObjects.find(diff->objId) != visibleObjects.end()); // debug
+			visibleObjects.erase(diff->objId);
+		};
+
+		command->diffs.push_back(std::move(generalDiff));
+	}
 
 	if (blockShifted) {
 		updateOptions |= server::GraphicsUpdateCommand::Option::TILES_SHIFT;
