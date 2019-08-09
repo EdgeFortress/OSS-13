@@ -1,7 +1,6 @@
 #include "WindowSink.h"
 
 #include <Player.hpp>
-#include <Shared/Command.hpp>
 #include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
 using namespace network::protocol;

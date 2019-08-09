@@ -14,7 +14,6 @@
 #include <ClientUI/WelcomeWindowSink.h>
 
 #include <Shared/ErrorHandling.h>
-#include <Shared/Command.hpp>
 
 class Server;
 

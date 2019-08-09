@@ -5,6 +5,8 @@
 #include <Shared/Network/Archive.h>
 #include <Shared/ErrorHandling.h>
 
+uf::Archive &operator&(uf::Archive &ar, long int &li);
+
 template<class T>
 uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 	if (ar.IsOutput()) {

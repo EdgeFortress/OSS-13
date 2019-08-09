@@ -39,7 +39,7 @@ public:
 	}
 
 	void SetImpl() {
-		this->pyImpl = py::cast(this); // Get Python object. Here cycling link is created. We should broke it in Delete method.
+		pyImpl = py::cast(this); // Get Python object. Here cycling link is created. We should broke it in Delete method.
 		GGame->GetWorld()->AddObject(shared_from_this()); // Add object to ObjectHolder
 	}
 
