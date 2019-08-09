@@ -161,7 +161,7 @@ PYBIND11_EMBEDDED_MODULE(Shared, m) {
 
 ScriptEngine::ScriptEngine() {
 	py::initialize_interpreter();
-	py::module::import("sys").attr("path").attr("append")("Script");
+	py::module::import("sys").attr("path").attr("append")("GameLogic");
 	py::print("Script Engine: start.");
 }
 

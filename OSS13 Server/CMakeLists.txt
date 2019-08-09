@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(GasProject_Server)
+project(OSS13-Server)
 
 include(FindPkgConfig)
 
@@ -8,7 +8,7 @@ pkg_search_module(PYTHON REQUIRED python3)
 
 file(GLOB_RECURSE SOURCE_FILES Sources/*.cpp)
 
-set(EXECUTABLE_NAME "GasProject_Server")
+set(EXECUTABLE_NAME "OSS13-Server")
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${EXECUTABLE_NAME} Shared)

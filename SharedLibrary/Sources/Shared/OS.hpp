@@ -17,4 +17,4 @@ FileInfo ParseFilePath(const std::wstring &filePath);
 
 // Find the files by mask in the directory and subdirectories
 // Return list of funded files
-std::list<std::wstring> FindFilesRecursive(std::wstring path, const std::wstring name);
+std::list<std::wstring> FindFilesRecursive(const std::wstring &path, const std::wstring &name);

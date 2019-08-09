@@ -22,6 +22,7 @@
     <ProjectGuid>{8A227764-8BA1-4007-AF4F-B66AA5B36445}</ProjectGuid>
     <RootNamespace>GasProjectClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>OSS13 Client</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
