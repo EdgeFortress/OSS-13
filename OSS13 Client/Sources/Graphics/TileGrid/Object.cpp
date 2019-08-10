@@ -138,4 +138,4 @@ bool Object::PixelTransparent(uf::vec2i pixel) const {
 Tile *Object::GetTile() { return tile; }
 sf::Vector2f Object::GetShift() const { return shift; }
 sf::Vector2i Object::GetMoveIntent() const { return moveIntent; }
-bool Object::IsDense() { return solidity.IsExistsOne({uf::Direction::CENTER}); }
+bool Object::IsDense() const { return solidity.IsExistsOne({uf::Direction::CENTER}); }

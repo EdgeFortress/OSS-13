@@ -55,7 +55,7 @@ public:
 	sf::Vector2f GetShift() const;
     sf::Vector2i GetMoveIntent() const;
 	//sf::Vector2i GetShiftingDirection() const;
-	bool IsDense();
+	bool IsDense() const;
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
 	friend std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo &objectInfo);

@@ -88,7 +88,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property_readonly("x", &Tile::X)
 		.def_property_readonly("y", &Tile::Y)
 		.def_property_readonly("z", &Tile::Z)
-		.def("IsDense", &Tile::IsDense)
+		.def("IsDense", py::overload_cast<>(&Tile::IsDense, py::const_))
 		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 

@@ -10,6 +10,7 @@
 
 #include <Shared/Global.hpp>
 #include <Shared/Types.hpp>
+#include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 #include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
@@ -41,6 +42,7 @@ public:
 	uf::vec3i GetPos() const;
     Map *GetMap() const;
     bool IsDense() const;
+	bool IsDense(uf::DirectionSet directions) const;
     bool IsSpace() const;
 	Locale *GetLocale() const;
 

@@ -10,7 +10,7 @@ namespace uf {
 
 class DirectionSet {
 public:
-	DirectionSet(std::initializer_list<Direction> directions = {}) {
+	explicit DirectionSet(std::initializer_list<Direction> directions = {}) {
 		buffer = 0;
 		Add(directions);
 	}
@@ -20,10 +20,18 @@ public:
 	DirectionSet &operator=(const DirectionSet &) = default;
 	DirectionSet &operator=(DirectionSet &&) = default;
 
+	void Add(DirectionSet directions) {
+		buffer |= directions.buffer;
+	}
+
 	void Add(std::initializer_list<Direction> directions) {
 		for (auto direction : directions) {
 			buffer |= static_cast<char>(direction);
 		}
+	}
+
+	void Remove(DirectionSet directions) {
+		buffer &= ~directions.buffer;
 	}
 
 	void Remove(std::initializer_list<Direction> directions) {
@@ -32,12 +40,20 @@ public:
 		}
 	}
 
+	bool IsExistsOne(DirectionSet directions) const {
+		return buffer & directions.buffer;
+	}
+
 	bool IsExistsOne(std::initializer_list<Direction> directions) const {
 		for (auto direction : directions) {
 			if (buffer & static_cast<char>(direction))
 				return true;
 		}
 		return false;
+	}
+
+	bool AreExistAll(DirectionSet directions) const {
+		return (buffer & directions.buffer) == directions.buffer;
 	}
 
 	bool AreExistAll(std::initializer_list<Direction> directions) const {

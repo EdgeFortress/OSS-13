@@ -215,6 +215,12 @@ bool Tile::IsDense() const {
     return false;
 }
 
+bool Tile::IsDense(uf::DirectionSet directions) const {
+	for (auto &obj : content)
+		if (obj->GetSolidity().IsExistsOne(directions)) return true;
+	return false;
+}
+
 bool Tile::IsSpace() const {
     return !hasFloor && !fullBlocked;
 }
