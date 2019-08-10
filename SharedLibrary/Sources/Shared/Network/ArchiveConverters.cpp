@@ -36,10 +36,10 @@ uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
 uf::Archive &operator&(uf::Archive &ar, uf::DirectionSetFractional &directionSetFractional) {
 	if (ar.IsOutput()) {
 		std::array<float, 5> buf;
-		ar & buf;
+		ar >> buf;
 		directionSetFractional.SetFractions(std::move(buf));
 	} else {
-		ar & directionSetFractional.GetFractions();
+		ar << directionSetFractional.GetFractions();
 	}
 	return ar;
 }

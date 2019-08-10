@@ -100,7 +100,7 @@ public:
 		std::fill(fractions.begin(), fractions.end(), 0.f);
 	}
 
-	std::array<float, 5> GetFractions() const { return fractions; }
+	const std::array<float, 5> &GetFractions() const { return fractions; }
 	void SetFractions(std::array<float, 5> &&fractions) { this->fractions = std::forward<std::array<float, 5>>(fractions); }
 
 private:

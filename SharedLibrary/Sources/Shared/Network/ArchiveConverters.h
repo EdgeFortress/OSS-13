@@ -25,7 +25,7 @@ uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 	return ar;
 }
 
-template<class T, int size>
+template<class T, size_t size>
 uf::Archive &operator&(uf::Archive &ar, std::array<T, size> &array) {
 	for (auto &item : array) {
 		ar & item;
