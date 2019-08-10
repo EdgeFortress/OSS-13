@@ -1,9 +1,11 @@
 #pragma once
 
 #include <chrono>
+#include <array>
 
 #include <Shared/Network/Archive.h>
 #include <Shared/ErrorHandling.h>
+#include <Shared/Geometry/DirectionSet.h>
 
 uf::Archive &operator&(uf::Archive &ar, long int &li);
 
@@ -23,7 +25,17 @@ uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 	return ar;
 }
 
+template<class T, int size>
+uf::Archive &operator&(uf::Archive &ar, std::array<T, size> &array) {
+	for (auto &item : array) {
+		ar & item;
+	}
+	return ar;
+}
+
 uf::Archive &operator&(uf::Archive &ar, uf::Direction &d);
+uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet);
+uf::Archive &operator&(uf::Archive &ar, uf::DirectionSetFractional &directionSetFractional);
 
 template<class T>
 uf::Archive &operator&(uf::Archive &ar, uf::vec2<T> &vec) {

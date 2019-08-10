@@ -18,7 +18,8 @@ namespace uf {
 		SOUTH_WEST,
 		NORTH_WEST,
 		NORTH_EAST,
-		SOUTH_EAST
+		SOUTH_EAST,
+		CENTER
 	};
 
 	Direction VectToDirection(vec2i);

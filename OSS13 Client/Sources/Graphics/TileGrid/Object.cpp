@@ -15,7 +15,6 @@ Object::Object() :
     animationProcess(false),
     direction(uf::Direction::NONE), 
     layer(0), 
-    dense(false),
     moveSpeed(0),
     tile(nullptr)
 { }
@@ -139,4 +138,4 @@ bool Object::PixelTransparent(uf::vec2i pixel) const {
 Tile *Object::GetTile() { return tile; }
 sf::Vector2f Object::GetShift() const { return shift; }
 sf::Vector2i Object::GetMoveIntent() const { return moveIntent; }
-bool Object::IsDense() { return dense; }
+bool Object::IsDense() { return solidity.IsExistsOne({uf::Direction::CENTER}); }

@@ -13,6 +13,7 @@
 #include <Shared/Global.hpp>
 #include <Shared/Timer.h>
 #include <Shared/IFaces/INonCopyable.h>
+#include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class ObjectHolder;
@@ -61,6 +62,15 @@ public:
 
 	void SetDensity(bool);
 	bool GetDensity() const;
+
+	void SetSolidity(uf::DirectionSet directions);
+	uf::DirectionSet GetSolidity() const;
+
+	void SetOpacity(uf::DirectionSetFractional fractionalDirections);
+	uf::DirectionSetFractional GetOpacity() const;
+
+	void SetAirtightness(uf::DirectionSetFractional fractionalDirections);
+	uf::DirectionSetFractional GetAirtightness() const;
 
 	void SetPosition(uf::vec2i);
 	uf::vec2i GetPosition() const;
@@ -118,7 +128,6 @@ private:
 
 protected:
     std::string name;
-    bool density;
     bool movable;
     std::string sprite;
 	Global::ItemSpriteState spriteState; // TODO: move it to Item? Also there is need to reimplement packing???
@@ -126,6 +135,10 @@ protected:
     // Object layer 0-100. The smaller layer is lower.
     uint layer;
     uf::Direction direction;
+
+	uf::DirectionSet solidity;
+	uf::DirectionSetFractional opacity;
+	uf::DirectionSetFractional airtightness;
 
     // Invisibility
     //// 8 bits for different kinds of invisibility

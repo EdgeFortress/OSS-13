@@ -21,3 +21,25 @@ uf::Archive &operator&(uf::Archive &ar, uf::Direction &d) {
 	}
 	return ar;
 }
+
+uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
+	if (ar.IsOutput()) {
+		sf::Int8 buf;
+		ar >> buf;
+		directionSet.SetBuffer(buf);
+	} else {
+		ar << static_cast<sf::Int8>(directionSet.GetBuffer());
+	}
+	return ar;
+}
+
+uf::Archive &operator&(uf::Archive &ar, uf::DirectionSetFractional &directionSetFractional) {
+	if (ar.IsOutput()) {
+		std::array<float, 5> buf;
+		ar & buf;
+		directionSetFractional.SetFractions(std::move(buf));
+	} else {
+		ar & directionSetFractional.GetFractions();
+	}
+	return ar;
+}

@@ -14,7 +14,6 @@
 #include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
 Object::Object() :
-    density(false), 
     movable(true),
 	spriteState(Global::ItemSpriteState::DEFAULT),
     layer(0), 
@@ -196,8 +195,17 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> c
 	return true;
 }
 
-bool Object::GetDensity() const { return density; };
-void Object::SetDensity(bool density) { this->density = density; }
+bool Object::GetDensity() const { return solidity.IsExistsOne({Direction::CENTER}); };
+void Object::SetDensity(bool density) { density ? solidity.Add({Direction::CENTER}) : solidity.Remove({Direction::CENTER}); }
+
+void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
+uf::DirectionSet Object::GetSolidity() const { return solidity; }
+
+void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
+uf::DirectionSetFractional Object::GetOpacity() const { return opacity; };
+
+void Object::SetAirtightness(uf::DirectionSetFractional fractionalDirections) {airtightness = fractionalDirections; }
+uf::DirectionSetFractional Object::GetAirtightness() const { return airtightness; }
 
 void Object::SetPosition(uf::vec2i newPos) {
 	if (newPos > uf::vec2i(0, 0)) {
@@ -309,7 +317,8 @@ network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	objectInfo.name = name;
 	objectInfo.layer = layer;
 	objectInfo.direction = direction;
-	objectInfo.dense = density;
+	objectInfo.solidity = solidity;
+	objectInfo.opacity = opacity;
     objectInfo.constSpeed = constSpeed;
     objectInfo.moveSpeed = moveSpeed;
 

@@ -7,6 +7,7 @@
 
 #include <Shared/Types.hpp>
 #include <Shared/Geometry/Direction.hpp>
+#include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
@@ -68,7 +69,9 @@ private:
     bool animationProcess;
     uf::Direction direction;
     uint layer;
-    bool dense;
+
+	uf::DirectionSet solidity;
+	uf::DirectionSetFractional opacity;
 
     uf::vec2f shift;
     
