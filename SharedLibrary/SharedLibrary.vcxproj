@@ -30,6 +30,7 @@
     <ClCompile Include="..\External\sfml-imgui\imgui_widgets.cpp" />
     <ClCompile Include="Sources\Shared\Array.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
+    <ClCompile Include="Sources\Shared\Geometry\DirectionSet.cpp" />
     <ClCompile Include="Sources\Shared\IFaces\IHasRepeatableID.cpp" />
     <ClCompile Include="Sources\Shared\Network\Archive.cpp" />
     <ClCompile Include="Sources\Shared\Network\ArchiveConverters.cpp" />

@@ -92,9 +92,15 @@ void Object::Move(uf::vec2i order) {
 		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
 
 		if (GetDensity()) {
-			if (!newTileDiag || newTileDiag->IsDense()) moveIntent = GetMoveIntent();
-			if (!newTileX || newTileX->IsDense()) moveIntent.x = 0;
-			if (!newTileY || newTileY->IsDense()) moveIntent.y = 0;
+			auto moveDirection = uf::VectToDirection(moveIntent);
+
+			if (tile->IsDense({moveDirection})) { // exit from current tile
+				moveIntent = GetMoveIntent();
+			} else {
+				if (!newTileDiag || newTileDiag->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent = GetMoveIntent();
+				if (!newTileX || newTileX->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.x = 0;
+				if (!newTileY || newTileY->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.y = 0;
+			}
 		}
 
 		SetMoveIntent(moveIntent);

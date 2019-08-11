@@ -39,7 +39,8 @@ public:
 	apos GetRelPos() const;
 	Object *GetObject(uint id);
     TileGrid *GetTileGrid();
-	bool IsBlocked();
+	bool IsBlocked() const;
+	bool IsBlocked(const std::initializer_list<uf::Direction> &directions) const;
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);

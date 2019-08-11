@@ -57,6 +57,8 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 
 void World::CreateTestItems() {
 	CreateScriptObject("Objects.Items.Taser", {50, 51, 0});
+	auto wall = CreateScriptObject("Objects.Turfs.Wall", {50, 52, 0});
+	wall->SetSolidity(uf::DirectionSet({uf::Direction::SOUTH}));
 
 	testMob = CreateScriptObject("Objects.Creatures.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;

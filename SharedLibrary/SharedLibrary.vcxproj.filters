@@ -110,6 +110,9 @@
     <ClCompile Include="Sources\Shared\Network\Protocol\ServerToClient\Diff.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Shared\Geometry\DirectionSet.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp">

@@ -3,6 +3,7 @@
 #include <Shared/Network/ISerializable.h>
 #include <Shared/Network/Archive.h>
 #include <Shared/Network/ArchiveConverters.h>
+#include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Types.hpp>
 
 namespace network {

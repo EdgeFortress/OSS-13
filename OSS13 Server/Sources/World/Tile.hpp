@@ -42,7 +42,7 @@ public:
 	uf::vec3i GetPos() const;
     Map *GetMap() const;
     bool IsDense() const;
-	bool IsDense(uf::DirectionSet directions) const;
+	bool IsDense(const std::initializer_list<uf::Direction> &directions) const;
     bool IsSpace() const;
 	Locale *GetLocale() const;
 

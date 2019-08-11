@@ -97,9 +97,16 @@ TileGrid *Tile::GetTileGrid() {
     return tileGrid;
 }
 
-bool Tile::IsBlocked() {
+bool Tile::IsBlocked() const {
 	for (auto &obj : content)
 		if (obj->IsDense()) return true;
 	if (!sprite.IsValid()) return true;
 	return false;
 }
+
+bool Tile::IsBlocked(const std::initializer_list<uf::Direction> &directions) const {
+	for (auto &obj : content)
+		if (obj->GetSolidity().IsExistsOne(directions)) return true;
+	return false;
+}
+

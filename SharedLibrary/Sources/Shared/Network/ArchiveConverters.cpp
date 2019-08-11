@@ -24,11 +24,11 @@ uf::Archive &operator&(uf::Archive &ar, uf::Direction &d) {
 
 uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
 	if (ar.IsOutput()) {
-		sf::Int8 buf;
+		auto buf = directionSet.GetBuffer();
 		ar >> buf;
 		directionSet.SetBuffer(buf);
 	} else {
-		ar << static_cast<sf::Int8>(directionSet.GetBuffer());
+		ar << directionSet.GetBuffer();
 	}
 	return ar;
 }

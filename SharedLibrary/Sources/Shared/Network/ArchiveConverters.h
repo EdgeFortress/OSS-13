@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <array>
+#include <bitset>
 
 #include <Shared/Network/Archive.h>
 #include <Shared/ErrorHandling.h>
@@ -21,6 +22,18 @@ uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 	}
 	for (auto &item : vector) {
 		ar & item;
+	}
+	return ar;
+}
+
+template<size_t size>
+uf::Archive &operator&(uf::Archive &ar, std::bitset<size> &set) {
+	if (ar.IsOutput()) {
+		sf::Int32 buffer;
+		ar >> buffer;
+		set = unsigned(buffer);
+	} else {
+		ar << sf::Int32(set.to_ulong());
 	}
 	return ar;
 }

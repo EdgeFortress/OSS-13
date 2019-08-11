@@ -214,9 +214,15 @@ void TileGrid::Update(sf::Time timeElapsed) {
 				Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + rpos(moveIntent,0));
 
 				if (controllable->IsDense()) {
-					if (!newTileDiag || newTileDiag->IsBlocked()) moveIntent = controllable->GetMoveIntent();
-					if (!newTileX || newTileX->IsBlocked()) moveIntent.x = 0;
-					if (!newTileY || newTileY->IsBlocked()) moveIntent.y = 0;
+					auto moveDirection = uf::VectToDirection(moveIntent);
+
+					if (lastTile->IsBlocked({moveDirection})) { // exit from current tile
+						moveIntent = controllable->GetMoveIntent();
+					} else {
+						if (!newTileDiag || newTileDiag->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent = controllable->GetMoveIntent();
+						if (!newTileX || newTileX->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.x = 0;
+						if (!newTileY || newTileY->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.y = 0;
+					}
 				}
 
 				controllable->SetMoveIntent(moveIntent, false);

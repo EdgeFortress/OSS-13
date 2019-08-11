@@ -215,7 +215,7 @@ bool Tile::IsDense() const {
     return false;
 }
 
-bool Tile::IsDense(uf::DirectionSet directions) const {
+bool Tile::IsDense(const std::initializer_list<uf::Direction> &directions) const {
 	for (auto &obj : content)
 		if (obj->GetSolidity().IsExistsOne(directions)) return true;
 	return false;
