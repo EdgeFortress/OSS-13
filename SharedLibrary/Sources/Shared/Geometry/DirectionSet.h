@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <bitset>
 #include <array>
+#include <list>
 
 #include <Shared/ErrorHandling.h>
 #include <Shared/Geometry/Direction.hpp>
@@ -12,7 +13,7 @@ namespace uf {
 class DirectionSet {
 public:
 	DirectionSet() = default;
-	explicit DirectionSet(std::initializer_list<Direction> directions);
+	explicit DirectionSet(std::list<Direction> directions);
 
 	DirectionSet(const DirectionSet &) = default;
 	DirectionSet(DirectionSet &&) = default;
@@ -20,16 +21,16 @@ public:
 	DirectionSet &operator=(DirectionSet &&) = default;
 
 	void Add(DirectionSet directions);
-	void Add(std::initializer_list<Direction> directions);
+	void Add(const std::list<Direction> &directions);
 
 	void Remove(DirectionSet directions);
-	void Remove(std::initializer_list<Direction> directions);
+	void Remove(const std::list<Direction> &directions);
 
 	bool IsExistsOne(DirectionSet directions) const;
-	bool IsExistsOne(std::initializer_list<Direction> directions) const;
+	bool IsExistsOne(const std::list<Direction> &directions) const;
 
 	bool AreExistAll(DirectionSet directions) const;
-	bool AreExistAll(std::initializer_list<Direction> directions) const;
+	bool AreExistAll(const std::list<Direction> &directions) const;
 
 	void Reset();
 

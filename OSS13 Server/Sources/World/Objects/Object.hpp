@@ -64,13 +64,13 @@ public:
 	bool GetDensity() const;
 
 	void SetSolidity(uf::DirectionSet directions);
-	uf::DirectionSet GetSolidity() const;
+	const uf::DirectionSet &GetSolidity() const;
 
 	void SetOpacity(uf::DirectionSetFractional fractionalDirections);
-	uf::DirectionSetFractional GetOpacity() const;
+	const uf::DirectionSetFractional &GetOpacity() const;
 
 	void SetAirtightness(uf::DirectionSetFractional fractionalDirections);
-	uf::DirectionSetFractional GetAirtightness() const;
+	const uf::DirectionSetFractional &GetAirtightness() const;
 
 	void SetPosition(uf::vec2i);
 	uf::vec2i GetPosition() const;

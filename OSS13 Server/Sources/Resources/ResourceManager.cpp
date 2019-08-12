@@ -8,6 +8,7 @@
 #include <IServer.h>
 
 #include <Shared/OS.hpp>
+#include <Shared/ErrorHandling.h>
 
 using json = nlohmann::json;
 using namespace std::chrono_literals;
@@ -73,5 +74,5 @@ IconInfo ResourceManager::GetIconInfo(const std::string &title, Global::ItemSpri
 		iconInfo.state = state;
 		return iconInfo;
 	}
-	throw std::exception(); // "ResourceManager::GetIconInfo miss."
+	EXPECT_WITH_MSG(false, "Unknown icon: \"" + title + "\"");
 }

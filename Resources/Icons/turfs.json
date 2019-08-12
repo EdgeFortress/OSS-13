@@ -43,6 +43,16 @@
             "sprite": "airlock_opened",
             "frames": 1,
             "directed": false
+        },
+        {
+            "sprite": "window",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "reinforced_window",
+            "frames": 1,
+            "directed": false
         }
     ]
 }

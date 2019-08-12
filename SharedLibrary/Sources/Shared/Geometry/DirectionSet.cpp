@@ -9,7 +9,7 @@ constexpr size_t directionToIndex(Direction direction) {
 	return char(direction);
 }
 
-DirectionSet::DirectionSet(std::initializer_list<Direction> directions) {
+DirectionSet::DirectionSet(std::list<Direction> directions) {
 	Add(directions);
 }
 
@@ -17,7 +17,7 @@ void DirectionSet::Add(DirectionSet directions) {
 	buffer |= directions.buffer;
 }
 
-void DirectionSet::Add(std::initializer_list<Direction> directions) {
+void DirectionSet::Add(const std::list<Direction> &directions) {
 	for (auto direction : directions) {
 		Direction first, second;
 		if (SplitDirection(direction, first, second)) {
@@ -33,7 +33,7 @@ void DirectionSet::Remove(DirectionSet directions) {
 	buffer &= ~directions.buffer;
 }
 
-void DirectionSet::Remove(std::initializer_list<Direction> directions) {
+void DirectionSet::Remove(const std::list<Direction> &directions) {
 	Remove(DirectionSet(directions));
 }
 
@@ -41,7 +41,7 @@ bool DirectionSet::IsExistsOne(DirectionSet directions) const {
 	return (buffer & directions.buffer).any();
 }
 
-bool DirectionSet::IsExistsOne(std::initializer_list<Direction> directions) const {
+bool DirectionSet::IsExistsOne(const std::list<Direction> &directions) const {
 	return IsExistsOne(DirectionSet(directions));
 }
 
@@ -49,7 +49,7 @@ bool DirectionSet::AreExistAll(DirectionSet directions) const {
 	return (buffer & directions.buffer) == directions.buffer;
 }
 
-bool DirectionSet::AreExistAll(std::initializer_list<Direction> directions) const {
+bool DirectionSet::AreExistAll(const std::list<Direction> &directions) const {
 	return AreExistAll(DirectionSet(directions));
 }
 

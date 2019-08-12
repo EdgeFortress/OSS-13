@@ -1,8 +1,10 @@
+from Engine import Direction
 from Objects.Turf import Turf
 
 class Window(Turf):
-	def __init__():
+	def __init__(self):
 		super().__init__()
 		self.name = "Window"
-		self.sprite = "wall"
-		self.density = True
+		self.sprite = "window"
+		self.layer = 80
+		self.solidity.Add([Direction.SOUTH])

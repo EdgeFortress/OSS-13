@@ -205,13 +205,13 @@ bool Object::GetDensity() const { return solidity.IsExistsOne({Direction::CENTER
 void Object::SetDensity(bool density) { density ? solidity.Add({Direction::CENTER}) : solidity.Remove({Direction::CENTER}); }
 
 void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
-uf::DirectionSet Object::GetSolidity() const { return solidity; }
+const uf::DirectionSet &Object::GetSolidity() const { return solidity; }
 
 void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
-uf::DirectionSetFractional Object::GetOpacity() const { return opacity; };
+const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; };
 
 void Object::SetAirtightness(uf::DirectionSetFractional fractionalDirections) {airtightness = fractionalDirections; }
-uf::DirectionSetFractional Object::GetAirtightness() const { return airtightness; }
+const uf::DirectionSetFractional &Object::GetAirtightness() const { return airtightness; }
 
 void Object::SetPosition(uf::vec2i newPos) {
 	if (newPos > uf::vec2i(0, 0)) {

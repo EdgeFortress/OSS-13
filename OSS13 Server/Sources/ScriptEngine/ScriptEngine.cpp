@@ -5,6 +5,7 @@
 #include <pybind11/embed.h>
 #include <pybind11/functional.h>
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 #include <plog/Log.h>
 
 #include <Shared/ErrorHandling.h>
@@ -77,6 +78,29 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 	RegistratePlaneVector<uint32_t>(m , "Vec2i_unsigned");
 	RegistratePlaneVector<float>(m, "Vec2f_32");
 
+	py::enum_<uf::Direction>(m, "Direction")
+		.value("NONE",       uf::Direction::NONE)
+		.value("SOUTH",      uf::Direction::SOUTH)
+		.value("WEST",       uf::Direction::WEST)
+		.value("NORTH",      uf::Direction::NORTH)
+		.value("EAST",       uf::Direction::EAST)
+		.value("SOUTH_WEST", uf::Direction::SOUTH_WEST)
+		.value("NORTH_WEST", uf::Direction::NORTH_WEST)
+		.value("NORTH_EAST", uf::Direction::NORTH_EAST)
+		.value("SOUTH_EAST", uf::Direction::SOUTH_EAST)
+		.value("CENTER",     uf::Direction::CENTER);
+
+	py::class_<uf::DirectionSet>(m, "DirectionSet")
+		.def(py::init<>())
+		.def("Add", (void (uf::DirectionSet::*)(const std::list<Direction> &)) &uf::DirectionSet::Add)
+		.def("Remove", (void (uf::DirectionSet::*)(const std::list<Direction> &)) &uf::DirectionSet::Remove)
+		.def("IsExistsOne", (bool (uf::DirectionSet::*)(const std::list<Direction> &) const) &uf::DirectionSet::IsExistsOne)
+		.def("AreExistAll", (bool (uf::DirectionSet::*)(const std::list<Direction> &) const) &uf::DirectionSet::AreExistAll)
+		.def("Reset", &uf::DirectionSet::Reset);
+
+	py::class_<uf::DirectionSetFractional>(m, "DirectionSetFractional")
+		.def("Add", &uf::DirectionSetFractional::Add);
+
 	py::class_<VerbsHolder>(m, "VerbHolder")
 		.def("AddVerb", &VerbsHolder::AddVerb);
 
@@ -98,6 +122,9 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
+		.def_property("solidity", &Object::GetSolidity, &Object::SetSolidity)
+		.def_property("opacity", &Object::GetOpacity, &Object::SetOpacity)
+		.def_property("airtightness", &Object::GetAirtightness, &Object::SetAirtightness)
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
 		.def_property("tile", &Object::GetTile, &Object::SetTile)
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
