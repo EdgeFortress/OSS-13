@@ -38,7 +38,7 @@ void Game::gameProcess() {
 			getchar();
 		}
 
-		auto timeToSleep = 50us - timeElapsed; // 10 ticks per second
+		auto timeToSleep = 50ms - timeElapsed; // 20 ticks per second
 		if (timeToSleep > timeToSleep.zero())
 			std::this_thread::sleep_for(timeToSleep);
 	}
