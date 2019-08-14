@@ -40,6 +40,8 @@ TileGrid::TileGrid() :
 	canBeActive = true;
 
     layersBuffer.resize(101);
+
+	movementPredictionDisabled = CC::Get()->RM.Config()->GetBool("Debug.MovementPredictionDisabled");
 }
 
 void TileGrid::draw() const {
@@ -202,9 +204,8 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			p->direction = uf::VectToDirection(moveCommand);
 			Connection::commandQueue.Push(p);
 
-			//CC::Get()->RM.Config()->GetBool("Debug.MovementPrediction");
-
-			if (controllable) {
+			if (!movementPredictionDisabled) {
+				EXPECT(controllable);
 				Tile *lastTile = controllable->GetTile();
 				if (!lastTile)
 					throw std::exception(); // Where is controllable!?
@@ -231,9 +232,6 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
 				controllable->SetMoveIntent(moveIntent, false);
 				controllable->SetDirection(uf::VectToDirection(moveIntent));
-			}
-			else {
-				throw std::exception(); // Controllable is null!?
 			}
 		}
 		moveCommand = sf::Vector2i();

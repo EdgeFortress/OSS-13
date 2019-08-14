@@ -112,4 +112,6 @@ private:
     bool ghostButtonPressed;
 
     uint flat_index(const apos c) const;
+
+	bool movementPredictionDisabled{false};
 };

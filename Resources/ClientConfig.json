@@ -5,9 +5,6 @@
     "DummyOption3": 12345
   },
   "Debug": {
-    "MovementPrediction": false,
-    "Atmos": {
-      "Pressure": false
-    }
+    "MovementPredictionDisabled": true
   }
 }
