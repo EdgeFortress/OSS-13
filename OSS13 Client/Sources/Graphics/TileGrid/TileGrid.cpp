@@ -190,6 +190,42 @@ bool TileGrid::HandleEvent(sf::Event event) {
 	return false;
 }
 
+void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
+	EXPECT(controllable);
+
+	Tile *lastTile = controllable->GetTile();
+	EXPECT(lastTile);
+
+	uf::vec2i moveIntent = controllable->GetMoveIntent();
+	if (moveCommand.x) moveIntent.x = moveCommand.x;
+	if (moveCommand.y) moveIntent.y = moveCommand.y;
+
+	Tile *newTileX = lastTile->GetTileGrid()->GetTileRel({ lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y, lastTile->GetRelPos().z });
+	uf::Direction xDirection = uf::VectToDirection(newTileX->GetRelPos() - lastTile->GetRelPos());
+
+	Tile *newTileY = lastTile->GetTileGrid()->GetTileRel({ lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y, lastTile->GetRelPos().z });
+	uf::Direction yDirection = uf::VectToDirection(newTileY->GetRelPos() - lastTile->GetRelPos());
+
+	Tile *newTileDiag = lastTile->GetTileGrid()->GetTileRel(lastTile->GetRelPos() + rpos(moveIntent, 0));
+
+	if (controllable->IsDense()) {
+		auto moveDirection = uf::VectToDirection(moveIntent);
+
+		if (lastTile->IsBlocked({ moveDirection })) { // exit from current tile
+			moveIntent = controllable->GetMoveIntent();
+		} else {
+			if (!newTileDiag || newTileDiag->IsBlocked({ uf::InvertDirection(moveDirection), uf::Direction::CENTER })) {
+				return;
+			} else {
+				if (!newTileX || newTileX != lastTile && newTileX->IsBlocked({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })) return;
+				if (!newTileY || newTileY != lastTile && newTileY->IsBlocked({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })) return;
+			}
+		}
+	}
+
+	controllable->SetMoveIntent(moveIntent, false);
+}
+
 void TileGrid::Update(sf::Time timeElapsed) {
     std::unique_lock<std::mutex> lock(mutex);
 
@@ -204,35 +240,10 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			p->direction = uf::VectToDirection(moveCommand);
 			Connection::commandQueue.Push(p);
 
-			if (!movementPredictionDisabled) {
-				EXPECT(controllable);
-				Tile *lastTile = controllable->GetTile();
-				if (!lastTile)
-					throw std::exception(); // Where is controllable!?
+			controllable->SetDirection(uf::VectToDirection(moveCommand));
 
-				uf::vec2i moveIntent = controllable->GetMoveIntent();
-				if (moveCommand.x) moveIntent.x = moveCommand.x;
-				if (moveCommand.y) moveIntent.y = moveCommand.y;
-
-				Tile *newTileX = GetTileRel({lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y, lastTile->GetRelPos().z});
-				Tile *newTileY = GetTileRel({lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y, lastTile->GetRelPos().z});
-				Tile *newTileDiag = GetTileRel(lastTile->GetRelPos() + rpos(moveIntent,0));
-
-				if (controllable->IsDense()) {
-					auto moveDirection = uf::VectToDirection(moveIntent);
-
-					if (lastTile->IsBlocked({moveDirection})) { // exit from current tile
-						moveIntent = controllable->GetMoveIntent();
-					} else {
-						if (!newTileDiag || newTileDiag->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent = controllable->GetMoveIntent();
-						if (!newTileX || newTileX->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.x = 0;
-						if (!newTileY || newTileY->IsBlocked({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.y = 0;
-					}
-				}
-
-				controllable->SetMoveIntent(moveIntent, false);
-				controllable->SetDirection(uf::VectToDirection(moveIntent));
-			}
+			if (!movementPredictionDisabled)
+				MovementPrediction(controllable, moveCommand);
 		}
 		moveCommand = sf::Vector2i();
 
