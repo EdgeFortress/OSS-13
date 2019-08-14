@@ -19,6 +19,8 @@ void DirectionSet::Add(DirectionSet directions) {
 
 void DirectionSet::Add(const std::list<Direction> &directions) {
 	for (auto direction : directions) {
+		if (direction == Direction::NONE)
+			continue;
 		Direction first, second;
 		if (SplitDirection(direction, first, second)) {
 			buffer[directionToIndex(first)] = true;

@@ -77,19 +77,22 @@ void Object::Move(uf::vec2i order) {
 	if (!order)
 		return;
 
-	// Form the intent based on the order
 	SetDirection(uf::VectToDirection(order));
 
 	Tile *tile = GetTile();
 	if (tile) {
-		uf::vec2i moveIntent;
+		uf::vec2i moveIntent = GetMoveIntent();
 
 		if (order.x) moveIntent.x = order.x;
 		if (order.y) moveIntent.y = order.y;
 
-		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent, 0));
 		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y, tile->GetPos().z });
+		Direction xDirection = uf::VectToDirection(newTileX->GetPos() - tile->GetPos());
+
 		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
+		Direction yDirection = uf::VectToDirection(newTileY->GetPos() - tile->GetPos());
+
+		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent, 0));
 
 		if (GetDensity()) {
 			auto moveDirection = uf::VectToDirection(moveIntent);
@@ -97,9 +100,13 @@ void Object::Move(uf::vec2i order) {
 			if (tile->IsDense({moveDirection})) { // exit from current tile
 				moveIntent = GetMoveIntent();
 			} else {
-				if (!newTileDiag || newTileDiag->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent = GetMoveIntent();
-				if (!newTileX || newTileX->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.x = 0;
-				if (!newTileY || newTileY->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) moveIntent.y = 0;
+				if (!newTileDiag || newTileDiag->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) {
+					return;
+				}
+				else {
+					if (!newTileX || newTileX != tile && newTileX->IsDense({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })) return;
+					if (!newTileY || newTileY != tile && newTileY->IsDense({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })) return;
+				}
 			}
 		}
 
