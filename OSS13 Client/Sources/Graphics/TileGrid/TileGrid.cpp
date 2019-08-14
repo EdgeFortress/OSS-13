@@ -3,17 +3,19 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+#include <Shared/Array.hpp>
+#include <Shared/Global.hpp>
+#include <Shared/IFaces/IConfig.h>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
-#include "Shared/Global.hpp"
-#include "Client.hpp"
-#include "Graphics/Window.hpp"
-#include "Network.hpp"
-#include "Graphics/UI/UI.hpp"
+#include <Client.hpp>
+#include <ResourceManager.hpp>
+#include <Network.hpp>
+#include <Graphics/Window.hpp>
+#include <Graphics/UI/UI.hpp>
+
 #include "Object.hpp"
 #include "Tile.hpp"
-
-#include "Shared/Array.hpp"
 
 using namespace network::protocol;
 
@@ -199,6 +201,8 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			auto *p = new client::MoveCommand();
 			p->direction = uf::VectToDirection(moveCommand);
 			Connection::commandQueue.Push(p);
+
+			//CC::Get()->RM.Config()->GetBool("Debug.MovementPrediction");
 
 			if (controllable) {
 				Tile *lastTile = controllable->GetTile();

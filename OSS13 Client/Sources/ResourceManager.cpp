@@ -13,11 +13,17 @@ using json = nlohmann::json;
 ResourceManager::ResourceManager() { }
 
 void ResourceManager::Initialize() {
+	configController.Load(CONFIG_FILE);
+
 	// Load icons list
 	auto config_files = FindFilesRecursive(IMAGE_CONFIGS_PATH, IMAGE_CONFIG_MASK);
 	for (const auto &config_file_path : config_files) {
 		generateTexturesAndSprites(config_file_path);
 	}
+}
+
+const IConfig *ResourceManager::Config() const {
+	return &configController;
 }
 
 void ResourceManager::generateTexturesAndSprites(const std::wstring &configpath) {

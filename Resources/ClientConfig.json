@@ -1,0 +1,13 @@
+{
+  "Main": {
+    "DummyOption1": "Dummy",
+    "DummyOption2": true,
+    "DummyOption3": 12345
+  },
+  "Debug": {
+    "MovementPrediction": false,
+    "Atmos": {
+      "Pressure": false
+    }
+  }
+}
