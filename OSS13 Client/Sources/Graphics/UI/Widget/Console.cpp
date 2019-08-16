@@ -15,8 +15,7 @@
 
 using namespace network::protocol;
 
-Console::Console() :
-	scrollToBottom(true)
+Console::Console()
 {
 	commands["clear"] = std::bind(&Console::command_clear, this);
 	commands["help"] = std::bind(&Console::command_help, this);
@@ -48,18 +47,20 @@ void Console::Update(sf::Time timeElapsed) {
 	if (copy_to_clipboard) ImGui::LogToClipboard();
 
 	for (const auto &row : rows) {
+		scrollToBottom = ImGui::GetScrollY() > ImGui::GetScrollMaxY() - 1.0f;
 		ImGui::TextUnformatted(row.c_str());
+		if (scrollToBottom || input)
+			ImGui::SetScrollHereY(1.0f);
 	}
+	input = false;
 
 	if (copy_to_clipboard) ImGui::LogFinish();
-
-	if (scrollToBottom)
-		ImGui::SetScrollHereY(1.0f);
 
 	ImGui::EndChild();
 
 	ImGui::PushItemWidth(-1.0f);
 	if (ImGui::InputText("", &buffer, ImGuiInputTextFlags_EnterReturnsTrue)) {
+		input = true;
 		std::string command = lowerString(buffer);
 		rows.push_back(std::move(buffer));
 

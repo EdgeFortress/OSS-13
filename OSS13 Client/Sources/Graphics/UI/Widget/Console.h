@@ -25,5 +25,6 @@ private:
 	std::map<std::string, std::function<void()>> commands;
 	std::string buffer;
 
-	bool scrollToBottom;
+	bool scrollToBottom{true};
+	bool input{false};
 };
