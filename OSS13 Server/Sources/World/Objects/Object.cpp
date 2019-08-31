@@ -87,10 +87,10 @@ void Object::Move(uf::vec2i order) {
 		if (order.y) moveIntent.y = order.y;
 
 		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y, tile->GetPos().z });
-		Direction xDirection = uf::VectToDirection(newTileX->GetPos() - tile->GetPos());
+		Direction xDirection = newTileX ? uf::VectToDirection(newTileX->GetPos() - tile->GetPos()) : uf::Direction::NONE;
 
 		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
-		Direction yDirection = uf::VectToDirection(newTileY->GetPos() - tile->GetPos());
+		Direction yDirection = newTileY ? uf::VectToDirection(newTileY->GetPos() - tile->GetPos()) : uf::Direction::NONE;
 
 		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent, 0));
 

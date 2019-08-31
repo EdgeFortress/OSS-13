@@ -201,10 +201,10 @@ void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
 	if (moveCommand.y) moveIntent.y = moveCommand.y;
 
 	Tile *newTileX = lastTile->GetTileGrid()->GetTileRel({ lastTile->GetRelPos().x + moveIntent.x, lastTile->GetRelPos().y, lastTile->GetRelPos().z });
-	uf::Direction xDirection = uf::VectToDirection(newTileX->GetRelPos() - lastTile->GetRelPos());
+	uf::Direction xDirection = newTileX ? uf::VectToDirection(newTileX->GetRelPos() - lastTile->GetRelPos()) : uf::Direction::NONE;
 
 	Tile *newTileY = lastTile->GetTileGrid()->GetTileRel({ lastTile->GetRelPos().x, lastTile->GetRelPos().y + moveIntent.y, lastTile->GetRelPos().z });
-	uf::Direction yDirection = uf::VectToDirection(newTileY->GetRelPos() - lastTile->GetRelPos());
+	uf::Direction yDirection = newTileY ? uf::VectToDirection(newTileY->GetRelPos() - lastTile->GetRelPos()) : uf::Direction::NONE;
 
 	Tile *newTileDiag = lastTile->GetTileGrid()->GetTileRel(lastTile->GetRelPos() + rpos(moveIntent, 0));
 
