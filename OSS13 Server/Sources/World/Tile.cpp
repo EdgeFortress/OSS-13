@@ -133,7 +133,7 @@ bool Tile::MoveTo(Object *obj) {
 	auto moveDiff = std::make_shared<network::protocol::MoveDiff>();
 	moveDiff->objId = obj->ID();
 	moveDiff->direction = direction;
-	moveDiff->speed = obj->GetSpeed();
+	moveDiff->speed = obj->GetMoveSpeed();
 
 	AddDiff(moveDiff, obj);
 

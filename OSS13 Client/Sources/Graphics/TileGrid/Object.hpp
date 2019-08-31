@@ -79,8 +79,7 @@ private:
     float moveSpeed;
     uf::vec2i moveIntent;
     uf::vec2i moveIntentApproved;
-    uf::vec2f constSpeed;  
-    uf::vec2f physSpeed;
+    uf::vec2f speed;
 
 	Tile *tile{nullptr};
 };

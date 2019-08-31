@@ -1,9 +1,8 @@
 from Objects.Item import Item
+from Objects.Projectile import Projectile
 from Engine import CreateObject
 
 class Taser(Item):
-	speed = float(4)
-
 	def __init__(self):
 		super().__init__()
 		self.name = "Python Taser"
@@ -21,4 +20,4 @@ class Taser(Item):
 
 	def CreateProjectile(self, direction):
 		projectile = CreateObject("Objects.Projectile", self.tile)
-		projectile.SetConstSpeed(direction.Normalize() * self.speed)
+		projectile.SetShotDirection(direction)

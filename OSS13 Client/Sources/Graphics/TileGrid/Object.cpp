@@ -43,7 +43,7 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 void Object::Update(sf::Time timeElapsed) {
     // Movement
 
-	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, constSpeed, physSpeed);
+	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, speed);
 
     shift += deltaShift;
 

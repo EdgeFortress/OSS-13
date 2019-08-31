@@ -19,7 +19,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 	uf::DirectionSetFractional opacity;
 
 	float moveSpeed;
-	uf::vec2f constSpeed;
+	uf::vec2f speed;
 
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
@@ -31,7 +31,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 		ar & solidity;
 		ar & opacity;
 		ar & moveSpeed;
-		ar & constSpeed;
+		ar & speed;
 	}
 DEFINE_SERIALIZABLE_END
 

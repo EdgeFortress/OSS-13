@@ -97,7 +97,7 @@ std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo
 	object->solidity = objectInfo.solidity;
 	object->opacity = objectInfo.opacity;
 	object->moveSpeed = objectInfo.moveSpeed;
-	object->constSpeed = objectInfo.constSpeed;
+	object->speed = objectInfo.speed;
 
 	return object;
 }

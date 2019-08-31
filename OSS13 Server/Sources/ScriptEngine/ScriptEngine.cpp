@@ -128,6 +128,8 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def_property("invisibility", &Object::GetInvisibility, &Object::SetInvisibility)
 		.def_property("tile", &Object::GetTile, &Object::SetTile)
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
+		.def_property("speed", &Object::GetSpeed, &Object::SetSpeed)
+		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
 		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
 		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
 		.def("AddVerb", &Object::AddVerb)
@@ -140,7 +142,6 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("GetComponent", (Component *(Object::*)(const std::string &)) &Object::GetComponent)
 		.def("AddObject", &Object::AddObject)
 		.def("RemoveObject", &Object::RemoveObject, py::return_value_policy::reference)
-		.def("SetConstSpeed", &Object::SetConstSpeed)
 		.def("SetSpriteState", &Object::SetSpriteState)
 		.def("PlayAnimation", &Object::PlayAnimation, "Play animation",
 			 py::arg("animation"), py::arg("callback") = nullptr)

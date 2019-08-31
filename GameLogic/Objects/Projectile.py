@@ -9,6 +9,7 @@ class Projectile(Object):
 		self.sprite = "stunorb"
 		self.density = False
 		self.startTile = None
+		self.__absoluteSpeed = 7.0
 	
 	def Update(self, timeElapsed):
 		super().Update(timeElapsed)
@@ -19,6 +20,9 @@ class Projectile(Object):
 			if self.startTile is not self.tile:
 				if self.tile.IsDense():
 					self.Hit(self.tile.GetDenseObject())
+
+	def SetShotDirection(self, direction):
+		self.speed = direction.Normalize() * self.__absoluteSpeed
 
 	def Hit(self, hittedObject):
 		if isinstance(hittedObject, Creature):

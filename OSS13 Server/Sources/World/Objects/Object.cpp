@@ -31,7 +31,7 @@ void Object::Update(std::chrono::microseconds timeElapsed) {
 		idAndComponent.second->Update(timeElapsed);
 	}
 
-	uf::vec2f deltaShift = uf::phys::countDeltaShift(sf::microseconds(timeElapsed.count()), shift, moveSpeed, moveIntent, constSpeed, physSpeed);
+	uf::vec2f deltaShift = uf::phys::countDeltaShift(sf::microseconds(timeElapsed.count()), shift, moveSpeed, moveIntent, speed);
 	shift += deltaShift;
 
 	if (shift) {
@@ -165,10 +165,6 @@ bool Object::RemoveObject(Object *obj) {
     return false;
 }
 
-void Object::SetConstSpeed(uf::vec2f speed) {
-    constSpeed = speed;
-}
-
 void Object::Delete() {
     if (tile) tile->RemoveObject(this);
     markedToBeDeleted = true;
@@ -250,6 +246,12 @@ void Object::SetTile(Tile *tile) {
 	tile->PlaceTo(this);
 }
 
+void Object::SetMoveSpeed(float speed) { this->moveSpeed = speed; }
+float Object::GetMoveSpeed() const { return moveSpeed; }
+
+void Object::SetSpeed(uf::vec2f speed) { this->speed = speed; }
+uf::vec2f Object::GetSpeed() const { return speed; }
+
 Object *Object::GetHolder() const { return holder; }
 
 bool Object::IsMovable() const { return movable; };
@@ -286,22 +288,6 @@ uf::vec2i Object::GetMoveIntent() const {
     return moveIntent;
 }
 
-void Object::SetMoveSpeed(float speed) {
-    this->moveSpeed = speed;
-}
-
-float Object::GetMoveSpeed() const {
-    return moveSpeed;
-}
-
-//uf::vec2f Object::GetShift() const { return shift + delta_shift; }
-float Object::GetSpeed() const {
-	if (constSpeed) {
-		return static_cast<float>(constSpeed.length());
-	}
-	return moveSpeed;
-}
-
 void Object::SetDirection(uf::Direction direction) {
     if (direction > uf::Direction::EAST)
         direction = uf::Direction(char(direction) % 4);
@@ -332,8 +318,8 @@ network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	objectInfo.direction = direction;
 	objectInfo.solidity = solidity;
 	objectInfo.opacity = opacity;
-    objectInfo.constSpeed = constSpeed;
-    objectInfo.moveSpeed = moveSpeed;
+	objectInfo.moveSpeed = moveSpeed;
+	objectInfo.speed = speed;
 
 	for (auto &iconInfo : icons)
 		objectInfo.spriteIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));

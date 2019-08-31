@@ -78,6 +78,12 @@ public:
 	Tile *GetTile() const;
 	void SetTile(Tile *tile);
 
+	void SetMoveSpeed(float speed);
+	float GetMoveSpeed() const;
+
+	void SetSpeed(uf::vec2f speed);
+	uf::vec2f GetSpeed() const;
+
 	Object *GetHolder() const;
 	virtual sptr<Object> GetOwnershipPointer() = 0;
 	bool CheckIfJustCreated() { return justCreated ? justCreated = false, true : false; }; // TODO: remove this
@@ -94,17 +100,10 @@ public:
 	//
 	// For control purposes
 	//
-		//uf::vec2f GetShift() const;
 		void SetDirection(uf::Direction);
 
         void SetMoveIntent(uf::vec2i);
         uf::vec2i GetMoveIntent() const;
-
-        void SetMoveSpeed(float speed);
-        float GetMoveSpeed() const;
-        float GetSpeed() const;
-		//void AddShift(uf::vec2f);
-		//void SetShift(uf::vec2f);
 	//
 
 	bool IsFloor() const;
@@ -155,11 +154,10 @@ private:
 	std::list<Object *> content;
 	std::unordered_map<std::string, uptr<Component>> components;
 
-    // Movement
-    float moveSpeed;
-    uf::vec2i moveIntent;
-    uf::vec2f constSpeed;
-    uf::vec2f physSpeed;
+	// Movement
+	float moveSpeed;
+	uf::vec2i moveIntent;
+	uf::vec2f speed;
 
 	// atmos
 	bool isFloor{false};

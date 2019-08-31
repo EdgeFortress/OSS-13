@@ -5,11 +5,11 @@
 namespace uf {
     namespace phys {
 
-        uf::vec2f countDeltaShift(sf::Time timeElapsed, uf::vec2f shift, float moveSpeed, uf::vec2i moveIntent, uf::vec2f constSpeed, uf::vec2f physSpeed) {
+        uf::vec2f countDeltaShift(sf::Time timeElapsed, uf::vec2f shift, float moveSpeed, uf::vec2i moveIntent, uf::vec2f speed) {
             uf::vec2f deltaShift;
 
-            if (constSpeed) {
-                deltaShift += constSpeed * timeElapsed.asSeconds();
+            if (speed) {
+                deltaShift += speed * timeElapsed.asSeconds();
                 return deltaShift;
             } 
             
