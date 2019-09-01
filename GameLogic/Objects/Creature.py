@@ -8,8 +8,7 @@ class Creature(Object):
 	def __init__(self):
 		Object.__init__(self)
 		self.layer = 75
-		self.name = "Python Creature"
-		self.sprite = "human"
+		self.name = "Creature"
 
 		self.__seeInvisibleAbility = False
 		self.__handItem = None
@@ -17,6 +16,7 @@ class Creature(Object):
 
 		self.AddComponent("Control")
 		self.control = self.GetComponent("Control")
+		self.DefineUI(self.control.ui)
 
 		self.AddVerb("drop", lambda player: self.Drop())
 
@@ -29,6 +29,9 @@ class Creature(Object):
 		if self.control is not None:
 			__seeInvisibleAbility = value
 			self.control.seeInvisibleAbility = value
+
+	def DefineUI(self, ui):
+		pass
 
 	def Update(self, timeElapsed):
 		moveOrder = self.control.GetAndDropMoveOrder()

@@ -2,8 +2,10 @@
 
 #include <SFML/System.hpp>
 
+#include <Shared/Types.hpp>
+
 #include "Component.hpp"
-#include "Shared/Types.hpp"
+#include "ControlUI.h"
 
 class Player;
 
@@ -24,8 +26,9 @@ public:
 	uint GetSeeInvisibleAbility() const;
 	void SetSeeInvisibleAbility(uint flags);
 
-    float GetSpeed() const;
-    Player *GetPlayer() const;
+	float GetSpeed() const;
+	Player *GetPlayer() const;
+	ControlUI *GetUI() const;
 
 	uf::vec2i GetAndDropMoveOrder();
 	int GetAndDropMoveZOrder();
@@ -38,7 +41,8 @@ private:
     // receive from player
 	uf::vec2i moveOrder; 
 	int moveZOrder;
-    uint clickedObjectID;
+	uint clickedObjectID{0};
 
-	Player *player;
+	Player *player{nullptr};
+	std::unique_ptr<ControlUI> ui;
 };

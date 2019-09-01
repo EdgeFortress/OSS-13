@@ -155,6 +155,7 @@
     <ClCompile Include="Sources\World\Map.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
     <ClCompile Include="Sources\World\Objects\Control.cpp" />
+    <ClCompile Include="Sources\World\Objects\ControlUI.cpp" />
     <ClCompile Include="Sources\World\Objects\CreateObject.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Sources\World\Objects.hpp" />
     <ClInclude Include="Sources\World\Objects\Component.hpp" />
     <ClInclude Include="Sources\World\Objects\Control.hpp" />
+    <ClInclude Include="Sources\World\Objects\ControlUI.h" />
     <ClInclude Include="Sources\World\Objects\CreateObject.h" />
     <ClInclude Include="Sources\World\Objects\Object.hpp" />
     <ClInclude Include="Sources\World\Objects\ObjectHolder.h" />

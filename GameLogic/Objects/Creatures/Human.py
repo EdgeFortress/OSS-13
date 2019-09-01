@@ -1,4 +1,4 @@
-from Engine import CreateObject
+from Engine import CreateObject, ControlUIElement, Vec2i
 from Objects.Creature import Creature
 
 class Human(Creature):
@@ -8,3 +8,9 @@ class Human(Creature):
 		self.sprite = "human"
 		self.density = True
 		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
+
+	def DefineUI(self, ui):
+		element = ControlUIElement()
+		element.position = Vec2i(100, 100)
+		element.AddIcon("lhand")
+		ui.UpdateElement("lhand", element)

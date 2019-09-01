@@ -10,12 +10,9 @@
 
 Control::Control() : 
 	Component("Control"),
-	speed(4), 
-    player(nullptr), 
-    clickedObjectID(0)
-{
-
-}
+	ui(std::make_unique<ControlUI>()),
+	speed(4)
+{ }
 
 void Control::Update(std::chrono::microseconds timeElapsed) 
 { }
@@ -44,6 +41,7 @@ void Control::SetSeeInvisibleAbility(uint flags) { camera_seeInvisibleAbility = 
 
 float Control::GetSpeed() const { return speed; }
 Player *Control::GetPlayer() const { return player; }
+ControlUI *Control::GetUI() const { return ui.get(); }
 
 uf::vec2i Control::GetAndDropMoveOrder() { auto tmp = moveOrder; moveOrder = {}; return tmp; };
 int Control::GetAndDropMoveZOrder() { auto tmp = moveZOrder; moveZOrder = {}; return tmp; };

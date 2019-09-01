@@ -22,6 +22,7 @@
 #include <World/Map.hpp>
 #include <World/Objects/CreateObject.h>
 #include <World/Objects/Control.hpp>
+#include <World/Objects/ControlUI.h>
 
 #include <Shared/Global.hpp>
 #include <Shared/Geometry/Vec2.hpp>
@@ -159,7 +160,18 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def("Update", &Component::Update)
 		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // TODO: remove policy, when all objects will be implemented in scripts
 
+	py::class_<ControlUIElement, std::shared_ptr<ControlUIElement>>(m, "ControlUIElement")
+		.def(py::init<>())
+		.def_property("position", &ControlUIElement::GetPosition, &ControlUIElement::SetPosition)
+		.def("AddIcon", &ControlUIElement::AddIcon)
+		.def("ClearIcons", &ControlUIElement::ClearIcons);
+
+	py::class_<ControlUI>(m, "ControlUI")
+		.def("UpdateElement", &ControlUI::UpdateElement)
+		.def("RemoveElement", &ControlUI::RemoveElement);
+
 	py::class_<Control, Component>(m, "Control")
+		.def_property_readonly("ui", &Control::GetUI)
 		.def_property("seeInvisibleAbility", &Control::GetSeeInvisibleAbility, &Control::SetSeeInvisibleAbility)
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
 		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder)
