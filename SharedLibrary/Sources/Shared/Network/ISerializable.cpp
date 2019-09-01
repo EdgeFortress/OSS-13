@@ -46,6 +46,7 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(GameJoinSuccessCommand)
 		DECLARE_SER(GameJoinErrorCommand)
 		DECLARE_SER(GraphicsUpdateCommand)
+		DECLARE_SER(ControlUIUpdateCommand)
 		DECLARE_SER(OverlayUpdateCommand)
 		DECLARE_SER(OverlayResetCommand)
 		DECLARE_SER(OpenWindowCommand)

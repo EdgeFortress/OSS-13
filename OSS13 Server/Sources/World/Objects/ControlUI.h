@@ -1,11 +1,16 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+#include <chrono>
 #include <unordered_map>
 
+#include <Shared/Network/Protocol/ServerToClient/ControlUIData.h>
 #include <Shared/Geometry/Vec2.hpp>
 
-class ControlUIElement
+class Control;
+
+class ControlUIElement : protected network::protocol::ControlUIData
 {
 public:
 	uf::vec2i GetPosition() const;
@@ -14,23 +19,23 @@ public:
 	void AddIcon(const std::string &icon);
 	void ClearIcons();
 
-private:
+	bool GetAndDropUpdatedState();
+
+protected:
 	bool updated{false};
-	uf::vec2i position;
-	std::vector<std::string> icons;
 };
 
-class ControlUI
+class ControlUI : public ControlUIElement
 {
 public:
-	void UpdateElement(const std::string &key, std::shared_ptr<ControlUIElement> element) {
-		elements[key] = std::move(element);
-	}
+	ControlUI(Control *control);
 
-	void RemoveElement(const std::string &key) {
-		elements.erase(key);
-	}
+	void Update(std::chrono::microseconds timeElapsed);
+
+	void UpdateElement(const std::string &key, std::shared_ptr<ControlUIElement> element);
+	void RemoveElement(const std::string &key);
 
 private:
+	Control *control;
 	std::unordered_map<std::string, std::shared_ptr<ControlUIElement>> elements;
 };

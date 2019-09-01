@@ -10,12 +10,13 @@
 
 Control::Control() : 
 	Component("Control"),
-	ui(std::make_unique<ControlUI>()),
+	ui(std::make_unique<ControlUI>(this)),
 	speed(4)
 { }
 
-void Control::Update(std::chrono::microseconds timeElapsed) 
-{ }
+void Control::Update(std::chrono::microseconds timeElapsed) {
+	ui->Update(timeElapsed);
+}
 
 void Control::MoveCommand(uf::vec2i order) {
 	moveOrder = order;

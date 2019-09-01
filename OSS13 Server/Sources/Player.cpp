@@ -139,9 +139,8 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
 }
 
 void Player::SendGraphicsUpdates(std::chrono::microseconds timeElapsed) {
-    if (camera) {
-        camera->UpdateView(timeElapsed);
-    }
+	if (camera)
+		camera->UpdateView(timeElapsed);
 }
 
 void Player::Suspend() {

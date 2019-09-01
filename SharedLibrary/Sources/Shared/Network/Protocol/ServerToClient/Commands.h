@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Shared/Network/Protocol/Command.h>
+#include <Shared/Network/Protocol/ServerToClient/ControlUIData.h>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 #include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
@@ -64,6 +65,15 @@ DEFINE_SERIALIZABLE(GraphicsUpdateCommand, Command)
 			ar & controllableId;
 			ar & controllableSpeed;
 		}
+	}
+DEFINE_SERIALIZABLE_END
+
+DEFINE_SERIALIZABLE(ControlUIUpdateCommand, Command)
+	std::vector<network::protocol::ControlUIData> elements;
+
+	void Serialize(uf::Archive &ar) override {
+		uf::ISerializable::Serialize(ar);
+		ar & elements;
 	}
 DEFINE_SERIALIZABLE_END
 
