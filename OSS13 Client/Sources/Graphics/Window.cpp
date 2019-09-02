@@ -5,11 +5,13 @@
 #include <imgui-SFML.h>
 
 #include <Client.hpp>
+#include <ResourceManager.hpp>
+#include <Graphics/TileGrid/TileGrid.hpp>
+#include <Graphics/UI/UI.hpp>
+
+#include <Shared/IFaces/IConfig.h>
 #include <Shared/JSON.hpp>
 #include <Shared/OS.hpp>
-
-#include "TileGrid.hpp"
-#include "UI/UI.hpp"
 
 Window::Window() {
 	ui.reset(new UI);
@@ -17,11 +19,14 @@ Window::Window() {
 
 void setImGuiStyle(ImGuiStyle& style);
 
+uf::vec2i GetResolution(const IConfig *config) {
+	EXPECT(config);
+	return config->GetVec2i("Graphics.Resolution");
+}
+
 void Window::Initialize() {
-    sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
-    width = int(0.8 * videoMode.width);
-    height = int(0.8 * videoMode.height);
-    window.reset(new sf::RenderWindow(sf::VideoMode(width, height), "GasProjectClient"));
+    resolution = GetResolution(CC::Get()->RM.Config());
+    window.reset(new sf::RenderWindow(sf::VideoMode(resolution.x, resolution.y), "Open Space Station 13"));
     ui->ChangeModule<AuthUI>();
     resize(window->getSize().x, window->getSize().y);
 
@@ -63,8 +68,8 @@ void Window::Update() {
 }
 
 bool Window::isOpen() const { return window->isOpen(); }
-int Window::GetWidth() const { return width; }
-int Window::GetHeight() const { return height; }
+int Window::GetWidth() const { return resolution.x; }
+int Window::GetHeight() const { return resolution.y; }
 sf::Vector2i Window::GetPosition() const { return window->getPosition(); }
 UI *Window::GetUI() const { return ui.get(); }
 
@@ -78,10 +83,10 @@ void Window::fps_sleep() {
 }
 
 void Window::resize(const int newWidth, const int newHeight) {
-    width = newWidth; height = newHeight;
-    const sf::FloatRect visibleArea(0, 0, float(width), float(height));
+	resolution = {newWidth, newHeight};
+    const sf::FloatRect visibleArea(0, 0, float(newWidth), float(newHeight));
     window->setView(sf::View(visibleArea));
-    ui->Resize(width, height);
+    ui->Resize(newWidth, newHeight);
 }
 
 void setImGuiStyle(ImGuiStyle& style) {

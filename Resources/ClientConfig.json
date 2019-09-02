@@ -1,8 +1,6 @@
 {
-  "Main": {
-    "DummyOption1": "Dummy",
-    "DummyOption2": true,
-    "DummyOption3": 12345
+  "Graphics": {
+    "Resolution": [1600, 960]
   },
   "Debug": {
     "MovementPredictionDisabled": false

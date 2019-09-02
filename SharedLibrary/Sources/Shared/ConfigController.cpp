@@ -16,22 +16,35 @@ void ConfigController::Load(const std::wstring &configPath) {
 	}
 }
 
-template<class T>
-T GetValueFromJson(json j, const char *k) {
-	std::string key(k);
+const json &GetJsonNodeByPath(const json &j, const char *path) {
+	std::string key(path);
 
-	json iter = j;
+	auto node = &j;
 	size_t pos = 0;
 	std::string token;
 	while ((pos = key.find('.')) != std::string::npos) {
 		token = key.substr(0, pos);
-		iter = iter[token];
+		node = &(*node)[token];
 		key.erase(0, pos + 1);
 	}
 
-	return iter[key].get<T>();
+	return (*node)[key];
+}
+
+template<class T>
+T GetValueFromJson(const json &j, const char *path) {
+	auto &node = GetJsonNodeByPath(j, path);
+	return node.get<T>();
+}
+
+template<class T>
+uf::vec2<T> GetVectorFromJson(const json &j, const char *path) {
+	auto &node = GetJsonNodeByPath(j, path);
+	return {node[0].get<T>(), node[1].get<T>()};
 }
 
 std::string ConfigController::GetString(const char *option) const { return std::move(GetValueFromJson<std::string>(config, option)); }
 int ConfigController::GetInt(const char *option) const { return GetValueFromJson<int>(config, option); }
 bool ConfigController::GetBool(const char *option) const { return GetValueFromJson<bool>(config, option); }
+uf::vec2i ConfigController::GetVec2i(const char *option) const { return GetVectorFromJson<int>(config, option); }
+uf::vec2f ConfigController::GetVec2f(const char *option) const { return GetVectorFromJson<float>(config, option); }

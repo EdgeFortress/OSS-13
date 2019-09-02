@@ -12,6 +12,8 @@ public:
 	std::string GetString(const char *option) const final;
 	int GetInt(const char *option) const final;
 	bool GetBool(const char *option) const final;
+	uf::vec2i GetVec2i(const char *option) const final;
+	uf::vec2f GetVec2f(const char *option) const final;
 
 private:
 	json config;

@@ -31,7 +31,7 @@ private:
     uptr<UI> ui;
 
     uptr<sf::RenderWindow> window;
-    int width, height;
+    uf::vec2i resolution;
 
     const int req_FPS = 60;
     sf::Clock frame_clock;
