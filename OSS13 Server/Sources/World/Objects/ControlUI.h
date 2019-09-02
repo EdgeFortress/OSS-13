@@ -19,6 +19,9 @@ public:
 	void AddIcon(const std::string &icon);
 	void ClearIcons();
 
+	void SetId(const std::string &id);
+	const std::string &GetId() const;
+
 	bool GetAndDropUpdatedState();
 
 protected:
@@ -32,8 +35,12 @@ public:
 
 	void Update(std::chrono::microseconds timeElapsed);
 
-	void UpdateElement(const std::string &key, std::shared_ptr<ControlUIElement> element);
+	void UpdateElement(std::shared_ptr<ControlUIElement> element);
 	void RemoveElement(const std::string &key);
+
+	uf::vec2i GetResolution() const;
+	uf::vec2i GetCenter() const;
+	uf::vec2i GetIconSize() const;
 
 private:
 	Control *control;

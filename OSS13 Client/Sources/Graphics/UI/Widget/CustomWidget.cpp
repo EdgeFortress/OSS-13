@@ -53,6 +53,11 @@ void CustomWidget::SetSize(const uf::vec2i &size) {
 	}
 }
 
+void CustomWidget::SetScale(const uf::vec2f &scale) {
+	setScale(scale);
+	bufferSprite.setScale(scale);
+}
+
 bool CustomWidget::SetActive(bool active) {
 	if (!canBeActive) return false;
 	this->active = active;
@@ -72,6 +77,8 @@ uf::vec2i CustomWidget::GetAbsPosition() const {
 }
 
 uf::vec2i CustomWidget::GetSize() const { return size; }
+
+uf::vec2f CustomWidget::GetScale() const { return getScale(); }
 
 bool CustomWidget::IsActive() const { return active; }
 

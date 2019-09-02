@@ -20,9 +20,10 @@
 using namespace network::protocol;
 
 TileGrid::TileGrid() :
-    tileSize(0), overlayToggled(false),
-    controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
-    underCursorObject(nullptr), dropButtonPressed(false),
+	tileSize(0), overlayToggled(false),
+	controlUI(std::make_unique<ControlUI>()),
+	controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
+	underCursorObject(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
 {
     //
@@ -94,22 +95,29 @@ void TileGrid::draw() const {
 			}
 	}
 
+	controlUI->Draw(buffer);
+
 	buffer.display();
 }
 
-void TileGrid::SetSize(const uf::vec2i &size) {
-    tileSize = int(std::min(size.x, size.y)) / Global::FOV;
-    numOfTiles = { 15, 15 };
+void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
+    tileSize = int(windowSize.y) / Global::FOV;
+    numOfTiles = { Global::FOV, Global::FOV };
     padding.x = 0;
-    padding.y = (int(size.y) - tileSize * numOfTiles.y) / 2;
+    padding.y = (int(windowSize.y) - tileSize * numOfTiles.y) / 2;
 
     for (auto &object : objects) object.second->Resize(tileSize);
 	for (auto &block : blocks) {
 		if (block) block->Resize(tileSize);
 	}
 
-	CustomWidget::SetSize(uf::vec2i(tileSize) * 15);
+	auto actualSize = uf::vec2i(tileSize) * Global::FOV;
+
+	CustomWidget::SetSize(actualSize);
 	CustomWidget::SetPosition(padding);
+
+	controlUI->AdjustSize(actualSize);
+	controlUI->SetPosition(padding);
 }
 
 bool TileGrid::HandleEvent(sf::Event event) {
@@ -464,6 +472,11 @@ void TileGrid::SetCameraPosition(apos pos) {
 void TileGrid::SetBlock(apos pos, std::shared_ptr<Tile> tile) {
     blocks[flat_index(pos - firstTile)] = tile;
     tile->relPos = pos - firstTile;
+}
+
+void TileGrid::UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements) {
+	for (auto &element: elements)
+		controlUI->UpdateElement(element);
 }
 
 void TileGrid::SetControllable(uint id, float speed) {

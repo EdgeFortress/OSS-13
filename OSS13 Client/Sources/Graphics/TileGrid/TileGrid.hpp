@@ -7,6 +7,7 @@
 
 #include <Graphics/UI/Widget/CustomWidget.h>
 #include "Tile.hpp"
+#include "ControlUI.h"
 
 #include <Shared/Types.hpp>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
@@ -18,16 +19,15 @@ namespace sf {
 
 class TileGrid : public CustomWidget {
 public:
-    TileGrid();
-    TileGrid(const TileGrid &) = delete;
-    TileGrid &operator=(const TileGrid &) = delete;
-    ~TileGrid() = default;
+	TileGrid();
+	TileGrid(const TileGrid &) = delete;
+	TileGrid &operator=(const TileGrid &) = delete;
+	~TileGrid() = default;
 
-    //void Draw(sf::RenderWindow * const);
 	bool HandleEvent(sf::Event event) override final;
 	void Update(sf::Time timeElapsed) override final;
 
-	void SetSize(const uf::vec2i &) override final;
+	void AdjustSize(const uf::vec2i &windowSize);
 
     //// FOR NETWORK
 
@@ -51,6 +51,7 @@ public:
 
 		void SetCameraPosition(apos newPos);
 		void SetBlock(apos pos, std::shared_ptr<Tile>);
+		void UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements);
 		void SetControllable(uint id, float speed);
 		void UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo);
 		void ResetOverlay();
@@ -62,8 +63,6 @@ public:
 	int GetTileSize() const;
     Object *GetObjectUnderCursor() const;
 
-    friend sf::Packet &operator>>(sf::Packet &packet, TileGrid &tileGrid);
-    friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
 
 protected:
@@ -93,6 +92,8 @@ private:
     mutable std::vector< std::vector<Object *> > layersBuffer;
 
 	bool overlayToggled;
+
+	std::unique_ptr<ControlUI> controlUI;
 
     // Controls
     Object *controllable;

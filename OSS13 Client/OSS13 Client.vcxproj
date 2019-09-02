@@ -132,6 +132,7 @@
     <ClCompile Include="Sources\Graphics\SpriteFactory.cpp" />
     <ClCompile Include="Sources\Graphics\Texture.cpp" />
     <ClCompile Include="Sources\Graphics\TextureHolder.cpp" />
+    <ClCompile Include="Sources\Graphics\TileGrid\ControlUI.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Object.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\Tile.cpp" />
     <ClCompile Include="Sources\Graphics\TileGrid\TileGrid.cpp" />
@@ -162,8 +163,8 @@
     <ClInclude Include="Sources\Graphics\SpriteInfo.h" />
     <ClInclude Include="Sources\Graphics\Texture.hpp" />
     <ClInclude Include="Sources\Graphics\TextureHolder.h" />
-    <ClInclude Include="Sources\Graphics\TileGrid.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Block.hpp" />
+    <ClInclude Include="Sources\Graphics\TileGrid\ControlUI.h" />
     <ClInclude Include="Sources\Graphics\TileGrid\Object.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\Tile.hpp" />
     <ClInclude Include="Sources\Graphics\TileGrid\TileGrid.hpp" />

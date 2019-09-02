@@ -2,14 +2,16 @@
 
 #include <memory>
 
-#include <Shared/Network/Protocol/ClientToServer/Commands.h>
+#include <Client.hpp>
+#include <Graphics/Window.hpp>
+#include <Graphics/TileGrid/TileGrid.hpp>
+#include <Graphics/TileGrid/Object.hpp>
+#include <Graphics/UI/UI.hpp>
+#include <Graphics/UI/Widget/ContextMenu.hpp>
+#include <Network.hpp>
 
-#include "Client.hpp"
-#include "Graphics/Window.hpp"
-#include "Graphics/TileGrid.hpp"
-#include "Graphics/UI/Widget/ContextMenu.hpp"
-#include "../UI.hpp"
-#include "Network.hpp"
+#include <Shared/Global.hpp>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 using namespace network::protocol;
 
@@ -68,7 +70,7 @@ void GameProcessUI::Receive(const std::string &message) {
 
 
 void GameProcessUI::Resize(const int width, const int height) {
-    tileGrid->SetSize(uf::vec2i(width, height));
+    tileGrid->AdjustSize(uf::vec2i(width, height));
     infoLabel->CountPosition(width, height);
 
     TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();

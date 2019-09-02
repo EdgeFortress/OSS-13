@@ -15,7 +15,7 @@ public:
     Sprite(Sprite &&) = default;
     Sprite &operator=(Sprite &&) = default;
 
-    void Draw(sf::RenderTarget *, uf::vec2i pos) const;
+    void Draw(sf::RenderTarget *, uf::vec2i pos, sf::RenderStates rs = sf::RenderStates::Default) const;
     // true if frame changed to the first
     bool Update(sf::Time timeElapsed);
     void Resize(int tileSize);

@@ -6,13 +6,13 @@
 
 #include <SFML/Network.hpp>
 
-#include "Graphics/UI/UI.hpp"
-#include "Graphics/UI/UIModule/AuthUI.hpp"
-#include "Graphics/UI/UIModule/GameProcessUI.hpp"
-
-#include "Client.hpp"
-#include "Graphics/Window.hpp"
-#include "Graphics/TileGrid.hpp"
+#include <Client.hpp>
+#include <Graphics/Window.hpp>
+#include <Graphics/TileGrid/TileGrid.hpp>
+#include <Graphics/TileGrid/Object.hpp>
+#include <Graphics/UI/UI.hpp>
+#include <Graphics/UI/UIModule/AuthUI.hpp>
+#include <Graphics/UI/UIModule/GameProcessUI.hpp>
 
 #include <Shared/ErrorHandling.h>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
@@ -21,6 +21,7 @@
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 using namespace std;
+using namespace std::string_literals;
 using namespace sf;
 using namespace network::protocol;
 
@@ -48,48 +49,52 @@ void Connection::Stop() {
 }
 
 void Connection::session() {
-    if (socket.connect(serverIp, serverPort, seconds(5)) != sf::Socket::Done)
-        status = Status::NOT_CONNECTED;
-    else
-        status = Status::CONNECTED;
+	if (socket.connect(serverIp, serverPort, seconds(5)) != sf::Socket::Done)
+		status = Status::NOT_CONNECTED;
+	else
+		status = Status::CONNECTED;
 
-    socket.setBlocking(false);
+	socket.setBlocking(false);
 
-    while (status == Status::CONNECTED) {
-        bool working = false;
-        if (!commandQueue.Empty()) {
-            sendCommands();
-            working = true;
-        }
-        sf::Packet packet;
-        if (socket.receive(packet) == sf::Socket::Done) {
-            parsePacket(packet);
-            working = true;
-        }
-        if (!working) sleep(seconds(0.01f));
-    }
-    if (!commandQueue.Empty())
-        sendCommands();
+	while (status == Status::CONNECTED) {
+		bool working = false;
+		if (!commandQueue.Empty()) {
+			sendCommands();
+			working = true;
+		}
+		sf::Packet packet;
+		if (socket.receive(packet) == sf::Socket::Done) {
+			try {
+				parsePacket(packet);
+			} catch (const std::exception &e) {
+				MANAGE_EXCEPTION(e);
+			}
+			working = true;
+		}
+		if (!working) sleep(seconds(0.01f));
+	}
+	if (!commandQueue.Empty())
+		sendCommands();
 }
 
 void Connection::sendCommands() {
-    while (!commandQueue.Empty()) {
-        sf::Packet packet;
+	while (!commandQueue.Empty()) {
+		sf::Packet packet;
 		uf::InputArchive ar(packet);
-        Command *temp = commandQueue.Pop();
-        ar << *temp;
-        if (temp) delete temp;
-        while (socket.send(packet) == sf::Socket::Partial);
-    }
+		Command *temp = commandQueue.Pop();
+		ar << *temp;
+		if (temp) delete temp;
+		while (socket.send(packet) == sf::Socket::Partial);
+	}
 }
 
 std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo &objectInfo) {
 	auto object = std::make_unique<Object>();
-	
+
 	for (auto &sprite : objectInfo.spriteIds) {
 		object->AddSprite(uint(sprite));
 	}
-	
+
 	object->id = objectInfo.id;
 	object->name = objectInfo.name;
 	object->layer = objectInfo.layer;
@@ -154,6 +159,13 @@ bool Connection::parsePacket(Packet &packet) {
 		return true;
 	}
 
+	if (auto *command = dynamic_cast<server::GameJoinSuccessCommand *>(p.get())) {
+		return true;
+	}
+	if (auto *command = dynamic_cast<server::GameJoinErrorCommand *>(p.get())) {
+		return true;
+	}
+
 	if (auto *command = dynamic_cast<server::GraphicsUpdateCommand *>(p.get())) {
 		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
         EXPECT(gameProcessUI);
@@ -202,6 +214,17 @@ bool Connection::parsePacket(Packet &packet) {
 		return true;
 	}
 
+	if (auto *command = dynamic_cast<server::ControlUIUpdateCommand *>(p.get())) {
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		EXPECT(gameProcessUI);
+		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
+		EXPECT(tileGrid);
+		tileGrid->LockDrawing();
+		tileGrid->UpdateControlUI(command->elements);
+		tileGrid->UnlockDrawing();
+		return true;
+	}
+
 	if (auto *command = dynamic_cast<server::OverlayUpdateCommand *>(p.get())) {
 		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 		EXPECT(gameProcessUI);
@@ -244,6 +267,8 @@ bool Connection::parsePacket(Packet &packet) {
 		gameProcessUI->Receive(command->message);
 		return true;
 	}
+
+	EXPECT_WITH_MSG(false, "Unknown command received! Serializable ID is "s + std::to_string(p->Id()));
 
 	return false;
 }

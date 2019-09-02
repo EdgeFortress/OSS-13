@@ -1,7 +1,9 @@
 #include "ControlUI.h"
 
+#include <Server.hpp>
 #include <Player.hpp>
 #include <World/Objects/Control.hpp>
+#include <Resources/ResourceManager.hpp>
 
 #include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
@@ -12,14 +14,18 @@ void ControlUIElement::SetPosition(uf::vec2i pos) {
 }
 
 void ControlUIElement::AddIcon(const std::string &icon) {
-	icons.push_back(icon);
+	auto iconId = GServer->RM()->GetIconInfo(icon).id;
+	spritesIds.push_back(iconId);
 	updated = true;
 }
 
 void ControlUIElement::ClearIcons() {
-	icons.clear();
+	spritesIds.clear();
 	updated = true;
 }
+
+void ControlUIElement::SetId(const std::string &id) { elementId = id; }
+const std::string &ControlUIElement::GetId() const { return elementId; }
 
 bool ControlUIElement::GetAndDropUpdatedState() {
 	bool updated = this->updated;
@@ -49,8 +55,8 @@ void ControlUI::Update(std::chrono::microseconds /*timeElapsed*/) {
 	control->GetPlayer()->AddCommandToClient(command.release());
 }
 
-void ControlUI::UpdateElement(const std::string &key, std::shared_ptr<ControlUIElement> element) {
-	elements[key] = std::move(element);
+void ControlUI::UpdateElement(std::shared_ptr<ControlUIElement> element) {
+	elements[element->GetId()] = std::move(element);
 	updated = true;
 }
 
@@ -58,3 +64,7 @@ void ControlUI::RemoveElement(const std::string &key) {
 	elements.erase(key);
 	updated = true;
 }
+
+uf::vec2i ControlUI::GetResolution() const { return { Global::control_ui::SIDE_SIZE, Global::control_ui::SIDE_SIZE }; }
+uf::vec2i ControlUI::GetCenter() const { return GetResolution() / 2; }
+uf::vec2i ControlUI::GetIconSize() const { return { Global::control_ui::ITEM_SIZE, Global::control_ui::ITEM_SIZE }; }

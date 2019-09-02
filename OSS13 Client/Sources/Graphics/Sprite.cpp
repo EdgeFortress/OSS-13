@@ -19,9 +19,9 @@ Sprite::Sprite() :
 	scale(1)
 { }
 
-void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos) const {
+void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos, sf::RenderStates rs) const {
     sfSprite.setPosition(pos);
-    target->draw(sfSprite);
+    target->draw(sfSprite, rs);
 }
 
 void Sprite::Resize(int tileSize) {

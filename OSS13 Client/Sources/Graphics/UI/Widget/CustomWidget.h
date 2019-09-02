@@ -27,10 +27,12 @@ public:
 	virtual void SetPosition(const uf::vec2i &);
 	virtual void SetPosition(const float x, const float y);
 	virtual void SetSize(const uf::vec2i &);
+	virtual void SetScale(const uf::vec2f &scale);
 
 	virtual uf::vec2i GetPosition() const final;
 	virtual uf::vec2i GetAbsPosition() const final;
 	virtual uf::vec2i GetSize() const final;
+	virtual uf::vec2f GetScale() const final;
 	virtual bool IsVisible() const final;
 
 	bool IsActive() const;

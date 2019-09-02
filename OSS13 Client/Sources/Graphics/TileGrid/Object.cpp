@@ -3,12 +3,12 @@
 #include "Shared/Math.hpp"
 #include "Shared/Physics/MovePhysics.hpp"
 
-#include "Client.hpp"
-#include "Graphics/Window.hpp"
-#include "Graphics/UI/UI.hpp"
-#include "Graphics/UI/UIModule/GameProcessUI.hpp"
-#include "Graphics/Sprite.hpp"
-#include "Graphics/TileGrid.hpp"
+#include <Client.hpp>
+#include <Graphics/Window.hpp>
+#include <Graphics/UI/UI.hpp>
+#include <Graphics/UI/UIModule/GameProcessUI.hpp>
+#include <Graphics/Sprite.hpp>
+#include <Graphics/TileGrid/TileGrid.hpp>
 
 Object::Object() :
     id(0), 

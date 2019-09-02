@@ -162,11 +162,15 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 
 	py::class_<ControlUIElement, std::shared_ptr<ControlUIElement>>(m, "ControlUIElement")
 		.def(py::init<>())
+		.def_property("id", &ControlUIElement::GetId, &ControlUIElement::SetId)
 		.def_property("position", &ControlUIElement::GetPosition, &ControlUIElement::SetPosition)
 		.def("AddIcon", &ControlUIElement::AddIcon)
 		.def("ClearIcons", &ControlUIElement::ClearIcons);
 
 	py::class_<ControlUI>(m, "ControlUI")
+		.def_property_readonly("resolution", &ControlUI::GetResolution)
+		.def_property_readonly("center", &ControlUI::GetCenter)
+		.def_property_readonly("iconSize", &ControlUI::GetIconSize)
 		.def("UpdateElement", &ControlUI::UpdateElement)
 		.def("RemoveElement", &ControlUI::RemoveElement);
 

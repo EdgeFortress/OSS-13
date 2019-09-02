@@ -20,7 +20,7 @@ struct ExpectationFailedException : public std::exception {
 	std::string msg;
 };
 
-#define _ASSERT_MSG(cond) LOGE << "Assertion " << #cond << " failed"
+#define _ASSERT_MSG(cond) LOGE << "Assertion \"" << #cond << "\" failed"
 
 // Assert for condition. When false, write error to log and exit.
 #define ASSERT(cond) if (!(cond)) { _ASSERT_MSG(cond); exit(1); }
@@ -28,7 +28,7 @@ struct ExpectationFailedException : public std::exception {
 // Assert for condition. When false, write error with specified message to log and exit.
 #define ASSERT_WITH_MSG(cond, msg) if (!(cond)) { _ASSERT_MSG(cond) << ". " << (msg); exit(1); } 
 
-#define _EXPECT_MSG(cond) LOGE << "Expectation " << #cond << " failed"
+#define _EXPECT_MSG(cond) LOGE << "Expectation \"" << #cond << "\" failed"
 
 // Expect for condition. When false, write error to log and throw exception.
 #define EXPECT(cond) if (!(cond)) { _EXPECT_MSG(cond); throw ExpectationFailedException(__FILE__, __func__, __LINE__); }
@@ -36,7 +36,7 @@ struct ExpectationFailedException : public std::exception {
 // Expect for condition. When false, write error with specified message to log and throw exception.
 #define EXPECT_WITH_MSG(cond, msg) if (!(cond)) { _EXPECT_MSG(cond) << ", " << (msg); throw ExpectationFailedException(__FILE__, __func__, __LINE__); }
 
-#define _CHECK_MSG(cond) LOGE << "Check " << #cond << " failed"
+#define _CHECK_MSG(cond) LOGE << "Check \"" << #cond << "\" failed"
 
 // Check for condition. When false, write error to log.
 #define CHECK(cond) if (!(cond)) { _CHECK_MSG(cond); }

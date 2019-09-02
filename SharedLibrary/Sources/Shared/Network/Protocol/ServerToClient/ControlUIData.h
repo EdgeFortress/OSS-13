@@ -8,14 +8,16 @@ namespace network {
 namespace protocol {
 
 DEFINE_SERIALIZABLE(ControlUIData, uf::ISerializable)
+	std::string elementId;
 	uf::vec2i position;
-	std::vector<std::string> icons;
+	std::vector<uint> spritesIds;
 
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
 
+		ar & elementId;
 		ar & position;
-		ar & icons;
+		ar & spritesIds;
 	}
 DEFINE_SERIALIZABLE_END
 

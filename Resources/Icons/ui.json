@@ -1,0 +1,27 @@
+{
+    "title": "ui",
+    "tileSize": 32,
+    "sprites": [
+        { "sprite": "lhand_inactive" },
+        { "sprite": "rhand_inactive" },
+        { "sprite": "lhand_active" },
+        { "sprite": "rhand_active" },
+        { "sprite": "equip" },
+        { "sprite": "swap1" },
+        { "sprite": "swap2" },
+        { "sprite": "uniform" },
+        { "sprite": "suit" },
+        { "sprite": "belt" },
+        { "sprite": "suit_belt" },
+        { "sprite": "pocket" },
+        { "sprite": "id_pocket" },
+        { "sprite": "mask" },
+        { "sprite": "radio" },
+        { "sprite": "backpack" },
+        { "sprite": "gloves" },
+        { "sprite": "boots" },
+        { "sprite": "eyes" },
+        { "sprite": "ear" },
+        { "sprite": "head" }
+    ]
+}
