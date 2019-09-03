@@ -11,7 +11,7 @@ void ConfigController::Load(const std::wstring &configPath) {
 	for (auto section = config.begin(); section != config.end(); ++section) {
 		LOGD << "\tSection: " << section.key();
 		for (auto option = section.value().begin(); option != section.value().end(); ++option) {
-			LOGD << "\t\tOption: " << option.key() << " = " << option.value();
+			LOGD << "\t\tOption: " << option.key() << " = " << static_cast<std::string>(option.value());
 		}
 	}
 }

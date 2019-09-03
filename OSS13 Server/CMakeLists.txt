@@ -23,4 +23,5 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 find_package(SFML REQUIRED system window graphics network) #audio
 
+target_compile_options(${EXECUTABLE_NAME} PRIVATE -fvisibility=hidden)
 target_link_libraries(${EXECUTABLE_NAME} sfml-system sfml-window sfml-graphics sfml-network)
