@@ -1,0 +1,36 @@
+language: cpp
+
+git:
+  depth: 10
+
+os: linux
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libfreetype6-dev
+      - libx11-dev
+      - libxrandr-dev
+      - libudev-dev
+      - libgl1-mesa-dev
+      - libflac-dev
+      - libvorbis-dev
+      - libopenal-dev
+      - libjpeg-dev
+      - zlib1g
+      - gcc-9
+      - g++-9
+env: CC=gcc-9 && CXX=g++-9
+install:
+  - ./CI/install_dependencies.sh
+script:
+  - ./CI/build.sh
+  - ./CI/run_tests.sh
+
+cache:
+  directories:
+    - /home/travis/vcpkg
+    - /home/travis/SFML
+
+
