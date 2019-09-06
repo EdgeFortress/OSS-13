@@ -164,6 +164,7 @@ PYBIND11_EMBEDDED_MODULE(Engine, m) {
 		.def(py::init<>())
 		.def_property("id", &ControlUIElement::GetId, &ControlUIElement::SetId)
 		.def_property("position", &ControlUIElement::GetPosition, &ControlUIElement::SetPosition)
+		.def("RegisterCallback", &ControlUI::RegistrateCallback)
 		.def("AddIcon", &ControlUIElement::AddIcon)
 		.def("ClearIcons", &ControlUIElement::ClearIcons);
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include <unordered_map>
 
 #include <Shared/Network/Protocol/ServerToClient/ControlUIData.h>
@@ -13,6 +14,9 @@ class Control;
 class ControlUIElement : protected network::protocol::ControlUIData
 {
 public:
+	void OnClick();
+	void RegistrateCallback(std::function<void()> callback);
+
 	uf::vec2i GetPosition() const;
 	void SetPosition(uf::vec2i pos);
 
@@ -26,6 +30,7 @@ public:
 
 protected:
 	bool updated{false};
+	std::function<void()> callback;
 };
 
 class ControlUI : public ControlUIElement
@@ -34,6 +39,8 @@ public:
 	ControlUI(Control *control);
 
 	void Update(std::chrono::microseconds timeElapsed);
+
+	void OnClick(const std::string &key);
 
 	void UpdateElement(std::shared_ptr<ControlUIElement> element);
 	void RemoveElement(const std::string &key);

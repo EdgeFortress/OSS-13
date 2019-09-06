@@ -7,6 +7,14 @@
 
 #include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
+void ControlUIElement::OnClick() {
+	callback();
+}
+
+void ControlUIElement::RegistrateCallback(std::function<void()> callback) {
+	this->callback = callback;
+}
+
 uf::vec2i ControlUIElement::GetPosition() const { return position; }
 void ControlUIElement::SetPosition(uf::vec2i pos) {
 	position = pos;
@@ -52,7 +60,15 @@ void ControlUI::Update(std::chrono::microseconds /*timeElapsed*/) {
 			command->elements.push_back(*element);
 	}
 
-	control->GetPlayer()->AddCommandToClient(command.release());
+	if (command->elements.size())
+		control->GetPlayer()->AddCommandToClient(command.release());
+}
+
+void ControlUI::OnClick(const std::string &key) {
+	auto clicked = elements.find(key);
+	if (clicked != elements.end()) {
+		clicked->second->OnClick();
+	}
 }
 
 void ControlUI::UpdateElement(std::shared_ptr<ControlUIElement> element) {

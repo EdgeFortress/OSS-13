@@ -32,7 +32,7 @@ void Control::ClickObjectCommand(uint id) {
 }
 
 void Control::ClickUICommand(const std::string &key) {
-	LOGI << player->GetCKey() + " clicks ControlUI element \"" << key << "\"";
+	ui->OnClick(key);
 }
 
 void Control::SetOwner(Object *owner) {
