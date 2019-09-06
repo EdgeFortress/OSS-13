@@ -21,7 +21,6 @@ using namespace network::protocol;
 
 TileGrid::TileGrid() :
 	tileSize(0), overlayToggled(false),
-	controlUI(std::make_unique<ControlUI>()),
 	controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
 	underCursorObject(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
@@ -44,7 +43,8 @@ TileGrid::TileGrid() :
 
 	movementPredictionDisabled = CC::Get()->RM.Config()->GetBool("Debug.MovementPredictionDisabled");
 
-	AddItem(controlUI.get(), {0, 0});
+	controlUI = new ControlUI();
+	AddItem(controlUI, {0, 0});
 }
 
 void TileGrid::drawContainer() const {

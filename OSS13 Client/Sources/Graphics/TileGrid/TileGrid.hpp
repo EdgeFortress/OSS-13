@@ -98,7 +98,7 @@ private:
 
 	bool overlayToggled;
 
-	std::unique_ptr<ControlUI> controlUI;
+	ControlUI *controlUI;
 
     // Controls
     Object *controllable;
