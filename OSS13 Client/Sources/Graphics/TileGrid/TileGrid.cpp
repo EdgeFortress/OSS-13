@@ -43,9 +43,11 @@ TileGrid::TileGrid() :
     layersBuffer.resize(101);
 
 	movementPredictionDisabled = CC::Get()->RM.Config()->GetBool("Debug.MovementPredictionDisabled");
+
+	AddItem(controlUI.get(), {0, 0});
 }
 
-void TileGrid::draw() const {
+void TileGrid::drawContainer() const {
     std::unique_lock<std::mutex> lock(mutex);
 
     underCursorObject = nullptr;
@@ -95,8 +97,6 @@ void TileGrid::draw() const {
 			}
 	}
 
-	controlUI->Draw(buffer);
-
 	buffer.display();
 }
 
@@ -120,81 +120,79 @@ void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
 	controlUI->SetPosition(padding);
 }
 
-bool TileGrid::HandleEvent(sf::Event event) {
-	switch (event.type) {
-	case sf::Event::MouseButtonPressed: {
-        if (underCursorObject) {
-            objectClicked = true;
-            return true;
-        }
-        return false;
-	}
-    case sf::Event::MouseMoved: {
-        cursorPosition = { event.mouseMove.x, event.mouseMove.y };
-        cursorPosition -= GetAbsPosition() + padding;
-        if (cursorPosition <= GetSize()) return true;
-        else {
-            cursorPosition = { -1, -1 };
-            return false;
-        }
-    }
-    case sf::Event::MouseLeft: {
-        cursorPosition = { -1, -1 };
-        return true;
-    }
-	case sf::Event::KeyPressed: {
-		if (event.key.control) {
-			switch (event.key.code) {
-				case sf::Keyboard::D:
-					dropButtonPressed = true;
-					return true;
-			}
-		}
-        switch (event.key.code) {
-            case sf::Keyboard::Up:
-            case sf::Keyboard::W:
-                if (event.key.shift) {
-					moveZCommand = 1;
-				} else {
-					moveCommand.y = -1;
-				}
-				return true;
-            case sf::Keyboard::Down:
-            case sf::Keyboard::S:
-                if (event.key.shift) {
-					moveZCommand = -1;
-				} else {
-					moveCommand.y = 1;
-				}
-				return true;
-            case sf::Keyboard::Right:
-            case sf::Keyboard::D:
-                moveCommand.x = 1;
-				return true;
-            case sf::Keyboard::Left:
-            case sf::Keyboard::A:
-                moveCommand.x = -1;
-				return true;
-			case sf::Keyboard::B:
-				buildButtonPressed = true;
-				return true;
-			case sf::Keyboard::G:
-				ghostButtonPressed = true;
-				return true;
-            default:
-                break;
-        }
-	}
-    case sf::Event::MouseWheelScrolled: {
-		int newCameraZ = cameraZ + int(event.mouseWheelScroll.delta) % 2;
-		if (GetTileRel(cameraRelPos+rpos(0,0,newCameraZ))) {
-			cameraZ = newCameraZ;
-		}
+bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (underCursorObject) {
+		objectClicked = true;
 		return true;
 	}
-    default:
-        break;
-    }
+	return false;
+}
+
+bool TileGrid::OnMouseMoved(uf::vec2i position) {
+	cursorPosition = position;
+	cursorPosition -= GetAbsPosition() + padding;
+	if (cursorPosition <= GetSize()) return true;
+	else {
+		cursorPosition = { -1, -1 };
+		return false;
+	}
+}
+
+bool TileGrid::OnMouseLeft() {
+	cursorPosition = { -1, -1 };
+	return true;
+}
+
+bool TileGrid::OnMouseWheelScrolled(float delta, uf::vec2i position) {
+	int newCameraZ = cameraZ + static_cast<int>(delta) % 2;
+	if (GetTileRel(cameraRelPos + rpos(0, 0, newCameraZ))) {
+		cameraZ = newCameraZ;
+	}
+	return true;
+}
+
+bool TileGrid::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
+	if (keyEvent.control) {
+		switch (keyEvent.code) {
+			case sf::Keyboard::D:
+				dropButtonPressed = true;
+				return true;
+		}
+	}
+	switch (keyEvent.code) {
+		case sf::Keyboard::Up:
+		case sf::Keyboard::W:
+			if (keyEvent.shift) {
+				moveZCommand = 1;
+			} else {
+				moveCommand.y = -1;
+			}
+			return true;
+		case sf::Keyboard::Down:
+		case sf::Keyboard::S:
+			if (keyEvent.shift) {
+				moveZCommand = -1;
+			} else {
+				moveCommand.y = 1;
+			}
+			return true;
+		case sf::Keyboard::Right:
+		case sf::Keyboard::D:
+			moveCommand.x = 1;
+			return true;
+		case sf::Keyboard::Left:
+		case sf::Keyboard::A:
+			moveCommand.x = -1;
+			return true;
+		case sf::Keyboard::B:
+			buildButtonPressed = true;
+			return true;
+		case sf::Keyboard::G:
+			ghostButtonPressed = true;
+			return true;
+		default:
+			break;
+	}
 	return false;
 }
 

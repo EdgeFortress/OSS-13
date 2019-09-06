@@ -8,18 +8,27 @@
 
 class Container : public CustomWidget {
 public:
-    explicit Container(const uf::vec2i &size = {});
+	explicit Container(const uf::vec2i &size = {});
 
-    void Update(sf::Time timeElapsed) override final;
-    bool HandleEvent(sf::Event event) override final;
+	void Update(sf::Time timeElapsed) override;
+	bool HandleEvent(sf::Event event) final;
 
-    void AddItem(CustomWidget *, const uf::vec2i &position);
-    void Clear();
+	bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) override;
+	bool OnMouseMoved(uf::vec2i position) override;
+	bool OnMouseLeft() override;
+	bool OnKeyPressed(sf::Event::KeyEvent keyEvent) override;
+	bool OnTextEntered(uint32_t unicodeChar) override;
 
-    bool SetActive(bool) override final;
+	void AddItem(CustomWidget *, const uf::vec2i &position);
+	void Clear();
+
+	bool SetActive(bool) override final;
 
 protected:
-    void draw() const override final;
+	virtual void drawContainer() const;
+
+private:
+	void draw() const override;
 
 private:
 	std::list<uptr<CustomWidget>> items;

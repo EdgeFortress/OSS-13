@@ -19,85 +19,97 @@ void Container::Update(sf::Time timeElapsed) {
 
 bool Container::HandleEvent(sf::Event event) {
 	if (!IsVisible()) return false;
-	switch (event.type) {
-	case sf::Event::MouseButtonPressed: {
-		const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
-			return false;
+	return CustomWidget::HandleEvent(event);
+}
 
-		for (auto iter = items.begin(); iter != items.end(); iter++) {
-			CustomWidget *widget = iter->get();
-			if (widget->HandleEvent(event)) {
-				if (widget->SetActive(active)) {
-					if (curInputWidgetIterator->get() == widget) return true;
-					curInputWidgetIterator->get()->SetActive(false);
-					curInputWidgetIterator = iter;
-					return true;
-				}
-			}
-		}
-		return true;
-	}
-	case sf::Event::MouseMoved: {
-		const uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
-		if (!(mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()))
-			return false;
-		for (auto &widget : items) {
-			if (widget->HandleEvent(event)) {
-				if (underCursorWidget && underCursorWidget != widget.get()) {
-					sf::Event event;
-					event.type = sf::Event::MouseLeft;
-					underCursorWidget->HandleEvent(event);
-				}
-				underCursorWidget = widget.get();
+bool Container::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (!(position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()))
+		return false;
+
+	for (auto iter = items.begin(); iter != items.end(); iter++) {
+		CustomWidget *widget = iter->get();
+		if (widget->OnMouseButtonPressed(button, position)) {
+			if (widget->SetActive(active)) {
+				if (curInputWidgetIterator->get() == widget) return true;
+				curInputWidgetIterator->get()->SetActive(false);
+				curInputWidgetIterator = iter;
 				return true;
 			}
 		}
-		if (underCursorWidget) {
-			sf::Event event;
-			event.type = sf::Event::MouseLeft;
-			underCursorWidget->HandleEvent(event);
-			underCursorWidget = nullptr;
-		}
-		return true;
-	}
-	case sf::Event::MouseLeft: {
-		if (underCursorWidget)
-			underCursorWidget->HandleEvent(event);
-		return true;
-	}
-	case sf::Event::KeyPressed: {
-		if (event.key.code == sf::Keyboard::Tab) {
-			if (curInputWidgetIterator == items.end()) return true;
-			curInputWidgetIterator->get()->SetActive(false);
-
-			// find next entry
-			auto iter = curInputWidgetIterator;
-			iter++;
-			while (!iter->get()->SetActive(true) && iter != curInputWidgetIterator) {
-				iter++;
-				if (iter == items.end())
-					iter = items.begin();
-			}
-			curInputWidgetIterator = iter;
-
-			return true;
-		}
-		if (curInputWidgetIterator != items.end())
-			curInputWidgetIterator->get()->HandleEvent(event);
-		return true;
-	}
-	default:
-		if (curInputWidgetIterator != items.end())
-			curInputWidgetIterator->get()->HandleEvent(event);
 	}
 	return true;
 }
 
+bool Container::OnMouseMoved(uf::vec2i position) {
+	if (!(position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()))
+		return false;
+
+	for (auto &widget : items) {
+		if (widget->OnMouseMoved(position)) {
+			if (underCursorWidget && underCursorWidget != widget.get()) {
+				sf::Event event;
+				event.type = sf::Event::MouseLeft;
+				underCursorWidget->HandleEvent(event);
+			}
+			underCursorWidget = widget.get();
+			return true;
+		}
+	}
+
+	if (underCursorWidget) {
+		sf::Event event;
+		event.type = sf::Event::MouseLeft;
+		underCursorWidget->HandleEvent(event);
+		underCursorWidget = nullptr;
+	}
+
+	return true;
+}
+
+bool Container::OnMouseLeft() {
+	if (underCursorWidget)
+		underCursorWidget->OnMouseLeft();
+
+	return true;
+}
+
+bool Container::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
+	if (keyEvent.code == sf::Keyboard::Tab) {
+		if (curInputWidgetIterator == items.end()) return true;
+		curInputWidgetIterator->get()->SetActive(false);
+
+		// find next entry
+		auto iter = curInputWidgetIterator;
+		iter++;
+		while (!iter->get()->SetActive(true) && iter != curInputWidgetIterator) {
+			iter++;
+			if (iter == items.end())
+				iter = items.begin();
+		}
+		curInputWidgetIterator = iter;
+
+		return true;
+	}
+	if (curInputWidgetIterator != items.end())
+		curInputWidgetIterator->get()->OnKeyPressed(keyEvent);
+	return true;
+}
+
+bool Container::OnTextEntered(uint32_t unicodeChar) {
+	if (curInputWidgetIterator != items.end())
+		curInputWidgetIterator->get()->OnTextEntered(unicodeChar);
+	return true;
+}
+
+void Container::drawContainer() const {
+	return;
+}
+
 void Container::draw() const {
 	buffer.clear(style.backgroundColor);
-    for (auto &item : items)
-        buffer.draw(*(item.get()));
+	drawContainer();
+	for (auto &item : items)
+		buffer.draw(*(item.get()));
 	buffer.display();
 }
 

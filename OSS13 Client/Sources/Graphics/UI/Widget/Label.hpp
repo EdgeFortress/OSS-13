@@ -8,7 +8,6 @@ public:
 	Label(const sf::String &);
 	
 	virtual void Update(sf::Time timeElapsed) override;
-	virtual bool HandleEvent(sf::Event event) override;
 
 	void SetString(const sf::String &string);
 

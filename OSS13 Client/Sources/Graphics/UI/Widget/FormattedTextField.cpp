@@ -132,30 +132,24 @@ void FormattedTextField::draw() const {
     buffer.display();
 }
 
-bool FormattedTextField::HandleEvent(sf::Event event) {
-    switch (event.type) {
-        case sf::Event::MouseButtonPressed: {
-            uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-            if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize())
-                return true;
-            break;
-        }
-        case sf::Event::KeyPressed: {
-            switch (event.key.code) {
-            case sf::Keyboard::Up:
-                scrollUp();
-                return true;
-            case sf::Keyboard::Down:
-                scrollDown();
-                return true;
-            default:
-                return false;
-            }
-        }
-        default:
-            return false;
-    }
-    return false;
+bool FormattedTextField::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize())
+		return true;
+	return false;
+}
+
+bool FormattedTextField::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
+	switch (keyEvent.code) {
+		case sf::Keyboard::Up:
+			scrollUp();
+			return true;
+		case sf::Keyboard::Down:
+			scrollDown();
+			return true;
+		default:
+			break;
+	}
+	return false;
 }
 
 void FormattedTextField::Update(sf::Time timeElapsed) {

@@ -42,9 +42,6 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Graphics\UI\Widget\ContextMenu.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\Graphics\UI\Widget\CustomWidget.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -129,9 +126,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Graphics\UI\Widget\ContextMenu.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Graphics\UI\Widget\CustomWidget.h">

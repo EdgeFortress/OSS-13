@@ -8,46 +8,49 @@
 
 class Entry : public CustomWidget {
 public:
-    explicit Entry(const uf::vec2i &size = {});
+	explicit Entry(const uf::vec2i &size = {});
 
-    void Update(sf::Time timeElapsed) override final;
-    bool HandleEvent(sf::Event event) override final;
+	void Update(sf::Time timeElapsed) override final;
 
-    void Clear();
-    void HideSymbols(wchar_t hider = '*');
-    void ShowSymbols();
-    void SetOnEnterFunc(std::function<void()>);
+	virtual bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) final;
+	virtual bool OnKeyPressed(sf::Event::KeyEvent keyEvent) final;
+	virtual bool OnTextEntered(uint32_t unicodeChar) final;
 
-    std::string GetText();
-    bool Empty() const;
+	void Clear();
+	void HideSymbols(wchar_t hider = '*');
+	void ShowSymbols();
+	void SetOnEnterFunc(std::function<void()>);
+
+	std::string GetText();
+	bool Empty() const;
 
 protected:
-    void draw() const override final;
+	void draw() const override final;
 
 private:
-    sf::Text text;
-    sf::RectangleShape cursor;
+	sf::Text text;
+	sf::RectangleShape cursor;
 
-    unsigned showPos;
-    int cursorPos;
-    sf::Time cursorTime;
+	unsigned showPos;
+	int cursorPos;
+	sf::Time cursorTime;
 
-    std::vector<float> getLetterSizes(wchar_t);
-    void moveCursorRight(wchar_t);
-    void moveCursorLeft(wchar_t);
+	std::vector<float> getLetterSizes(wchar_t);
+	void moveCursorRight(wchar_t);
+	void moveCursorLeft(wchar_t);
 
-    std::wstring entryString;
+	std::wstring entryString;
 
-    bool hidingSymbols;
+	bool hidingSymbols;
     
-    wchar_t hidingSymbol;
-    std::wstring hidingString;
+	wchar_t hidingSymbol;
+	std::wstring hidingString;
 
-    void setSymbol(wchar_t c);
-    void deleteSymbol();
+	void setSymbol(wchar_t c);
+	void deleteSymbol();
 
-    void moveLeft();
-    void moveRight();
+	void moveLeft();
+	void moveRight();
 
-    std::function<void()> onEnterFunc;
+	std::function<void()> onEnterFunc;
 };

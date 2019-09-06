@@ -5,7 +5,7 @@
 #include <mutex>
 #include <SFML/System/Time.hpp>
 
-#include <Graphics/UI/Widget/CustomWidget.h>
+#include <Graphics/UI/Widget/Container.hpp>
 #include "Tile.hpp"
 #include "ControlUI.h"
 
@@ -17,15 +17,20 @@ namespace sf {
     class Packet;
 }
 
-class TileGrid : public CustomWidget {
+class TileGrid : public Container {
 public:
 	TileGrid();
 	TileGrid(const TileGrid &) = delete;
 	TileGrid &operator=(const TileGrid &) = delete;
 	~TileGrid() = default;
 
-	bool HandleEvent(sf::Event event) override final;
 	void Update(sf::Time timeElapsed) override final;
+
+	bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) final;
+	bool OnMouseMoved(uf::vec2i position) final;
+	bool OnMouseLeft() final;
+	bool OnMouseWheelScrolled(float delta, uf::vec2i position) final;
+	bool OnKeyPressed(sf::Event::KeyEvent keyEvent) final;
 
 	void AdjustSize(const uf::vec2i &windowSize);
 
@@ -66,7 +71,7 @@ public:
 	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
 
 protected:
-    void draw() const override final;
+    void drawContainer() const override final;
 
 private:
     uf::vec2i numOfTiles;

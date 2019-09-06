@@ -7,10 +7,11 @@
 
 class ControlUIElement : public CustomWidget {
 public:
-	ControlUIElement();
+	ControlUIElement(const std::string &key = {});
 
 	void Update(sf::Time timeElapsed) final;
-	bool HandleEvent(sf::Event event) final;
+
+	bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) final;
 
 	void SetSprites(const std::vector<uint> &spritesIds);
 
@@ -18,6 +19,7 @@ protected:
 	void draw() const final;
 
 private:
+	std::string key;
 	std::vector<Sprite> sprites;
 };
 
@@ -26,7 +28,8 @@ public:
 	ControlUI();
 
 	void Update(sf::Time timeElapsed) final;
-	bool HandleEvent(sf::Event event) final;
+
+	bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) final;
 
 	void AdjustSize(uf::vec2i size);
 

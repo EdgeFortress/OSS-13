@@ -37,37 +37,31 @@ void Button::Update(sf::Time timeElapsed) {
 	}
 }
 
-bool Button::HandleEvent(sf::Event event) {
-    switch (event.type) {
-    case sf::Event::MouseButtonPressed: {
-        const uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-        if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-            onPressFunc();
-            return true;
-        }
-        break;
-    }
-    case sf::Event::MouseMoved: {
-        const uf::vec2i mousePosition = uf::vec2i(event.mouseMove.x, event.mouseMove.y);
-        if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-            if (!underCursor) {
-                underCursor = true;
-                underCursor_style.updated = true;
-            }
-            return true;
-        }
-        break;
-    }
-	case sf::Event::MouseLeft: {
-		if (underCursor) {
-			underCursor = false;
-			style.updated = true;
-		}
+bool Button::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+		onPressFunc();
+		return true;
 	}
-    default:
-        break;
-    }
-    return false;
+	return false;
+}
+
+bool Button::OnMouseMoved(uf::vec2i position) {
+	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+		if (!underCursor) {
+			underCursor = true;
+			underCursor_style.updated = true;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Button::OnMouseLeft() {
+	if (underCursor) {
+		underCursor = false;
+		style.updated = true;
+	}
+	return false;
 }
 
 void Button::SetString(const sf::String &string) {

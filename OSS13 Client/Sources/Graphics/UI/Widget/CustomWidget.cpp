@@ -11,16 +11,42 @@ CustomWidget::CustomWidget(uf::vec2i size) : parent(nullptr) {
 	hiding = false;
 }
 
-void CustomWidget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-	Draw(target);
-}
-
 void CustomWidget::Draw(sf::RenderTarget &target) const {
 	if (hiding) return;
 	draw();
 	bufferSprite.setTexture(buffer.getTexture(), false);
 	target.draw(bufferSprite);
 }
+
+bool CustomWidget::HandleEvent(sf::Event event) {
+	switch (event.type) {
+		case sf::Event::MouseButtonPressed:
+			return OnMouseButtonPressed(event.mouseButton.button, { event.mouseButton.x, event.mouseButton.y });
+		case sf::Event::MouseMoved:
+			return OnMouseMoved({ event.mouseMove.x, event.mouseMove.y });
+		case sf::Event::MouseLeft:
+			return OnMouseLeft();
+		case sf::Event::MouseWheelScrolled:
+			return OnMouseWheelScrolled(event.mouseWheelScroll.delta, { event.mouseWheelScroll.x,  event.mouseWheelScroll.y });
+		case sf::Event::KeyPressed:
+			return OnKeyPressed(event.key);
+		case sf::Event::KeyReleased:
+			return OnKeyReleased(event.key.code);
+		case sf::Event::TextEntered:
+			return OnTextEntered(event.text.unicode);
+		default:
+			break;
+	};
+	return false;
+}
+
+bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) { return false; };
+bool CustomWidget::OnMouseMoved(uf::vec2i position) { return false; };
+bool CustomWidget::OnMouseLeft() { return false; };
+bool CustomWidget::OnMouseWheelScrolled(float delta, uf::vec2i position) { return false; }
+bool CustomWidget::OnKeyPressed(sf::Event::KeyEvent keyEvent) { return false; }
+bool CustomWidget::OnKeyReleased(sf::Keyboard::Key button) { return false; }
+bool CustomWidget::OnTextEntered(uint32_t unicodeChar) { return false; }
 
 void CustomWidget::Hide() { hiding = true; }
 void CustomWidget::Show() { hiding = false; }
@@ -84,5 +110,8 @@ bool CustomWidget::IsActive() const { return active; }
 
 bool CustomWidget::IsVisible() const { return !hiding; }
 
+void CustomWidget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+	Draw(target);
+}
 
 void CustomWidget::setParent(Widget *widget) { parent = widget; }

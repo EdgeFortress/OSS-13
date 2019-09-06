@@ -144,7 +144,6 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Console.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\ContextMenu.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\CustomWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\DynamicWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Console.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\ContextMenu.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\CustomWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\DynamicWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />

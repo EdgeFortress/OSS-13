@@ -7,7 +7,6 @@
 #include <Graphics/TileGrid/TileGrid.hpp>
 #include <Graphics/TileGrid/Object.hpp>
 #include <Graphics/UI/UI.hpp>
-#include <Graphics/UI/Widget/ContextMenu.hpp>
 #include <Network.hpp>
 
 #include <Shared/Global.hpp>
@@ -40,16 +39,6 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     formattedTextField->GetStyle().textColor = sf::Color(193, 205, 205);
     formattedTextField->GetStyle().fontSize = 18;
     container->AddItem(formattedTextField, sf::Vector2f(0, 0));
-
-	//contextMenu = new ContextMenu();
-	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 1"));
-	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Test 2"));
-	//contextMenu->AddRow(ContextMenuRow(ContextMenuRow::Type::FUNCTION, L"Тест 3"));
-	//contextMenu->GetStyle().backgroundColor = sf::Color(50, 50, 50);
-	//contextMenu->GetStyle().textColor = sf::Color(220, 220, 220);
-	//contextMenu->GetStyle().fontSize = 11;
-	//contextMenu->GetUnderCursorStyle().backgroundColor = sf::Color(100, 100, 100);
-	//widgets.push_back(uptr<ContextMenu>(contextMenu));
 
 	curInputWidget = tileGrid;
 }
@@ -100,8 +89,6 @@ void GameProcessUI::Update(sf::Time timeElapsed) {
 }
 
 void GameProcessUI::HandleEvent(sf::Event event) {
-    //contextMenu->HandleEvent(event);
-
     switch (event.type) {
     case sf::Event::KeyPressed: {
         switch (event.key.code) {

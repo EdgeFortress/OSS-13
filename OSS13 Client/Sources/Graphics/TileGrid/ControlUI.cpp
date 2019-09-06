@@ -5,11 +5,15 @@
 
 #include <Shared/Global.hpp>
 
-ControlUIElement::ControlUIElement()
+ControlUIElement::ControlUIElement(const std::string &key) :
+	key(key)
 { }
 
 void ControlUIElement::Update(sf::Time timeElapsed) { }
-bool ControlUIElement::HandleEvent(sf::Event event) { return false; }
+
+bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	return false;
+}
 
 void ControlUIElement::SetSprites(const std::vector<uint> &spritesIds) {
 	for (auto id : spritesIds) {
@@ -34,9 +38,10 @@ void ControlUI::Update(sf::Time timeElapsed) {
 	for (auto &[key, element]: elements) element.Update(timeElapsed);
 }
 
-bool ControlUI::HandleEvent(sf::Event event) {
-	for (auto &[key, element] : elements) 
-		if (element.HandleEvent(event))
+bool ControlUI::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	position = uf::vec2f(position.x * GetScale().x, position.y * GetScale().y);
+	for (auto &[key, element] : elements)
+		if (element.OnMouseButtonPressed(button, position))
 			return true;
 	return false;
 }

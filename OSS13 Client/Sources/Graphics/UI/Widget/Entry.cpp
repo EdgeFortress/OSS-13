@@ -193,46 +193,42 @@ void Entry::ShowSymbols() {
     std::swap(hidingString, entryString);
 }
 
-bool Entry::HandleEvent(sf::Event event) {
-	switch (event.type) {
-	case sf::Event::MouseButtonPressed: {
-		uf::vec2i mousePosition = uf::vec2i(event.mouseButton.x, event.mouseButton.y);
-		if (mousePosition >= GetAbsPosition() && mousePosition < GetAbsPosition() + GetSize()) {
-			//SetActive(true);
-			return true;
-		}
-		return false;
+bool Entry::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+		//SetActive(true);
+		return true;
 	}
-	case sf::Event::KeyPressed: {
-		if (IsActive()) {
-			switch (event.key.code) {
-			case sf::Keyboard::BackSpace:
-				deleteSymbol();
-				break;
-			case sf::Keyboard::Left:
-				moveLeft();
-				break;
-			case sf::Keyboard::Right:
-				moveRight();
-				break;
-			case sf::Keyboard::Return:
-				onEnterFunc();
-				break;
-			default:
-				return false;
-			}
-			return true;
-		}
-        }
-	case sf::Event::TextEntered: {
-		if (IsActive()) {
-            wchar_t c = wchar_t(event.text.unicode);
-            if (c != '\r' && c != '\t' && c != '\b')
-				setSymbol(c);
-			return true;
-        }
-    }
+	return false;
 }
 
-    return false;
+bool Entry::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
+	if (IsActive()) {
+		switch (keyEvent.code) {
+			case sf::Keyboard::BackSpace:
+				deleteSymbol();
+				return true;
+			case sf::Keyboard::Left:
+				moveLeft();
+				return true;
+			case sf::Keyboard::Right:
+				moveRight();
+				return true;
+			case sf::Keyboard::Return:
+				onEnterFunc();
+				return true;
+			default:
+				break;
+		}
+	}
+	return false;
+}
+
+bool Entry::OnTextEntered(uint32_t unicodeChar) {
+	if (IsActive()) {
+		wchar_t c = wchar_t(unicodeChar);
+		if (c != '\r' && c != '\t' && c != '\b')
+			setSymbol(c);
+		return true;
+	}
+	return false;
 }

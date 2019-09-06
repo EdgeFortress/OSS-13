@@ -14,7 +14,15 @@ public:
 
 	virtual void Draw(sf::RenderTarget &target) const final;
 	virtual void Update(sf::Time timeElapsed) = 0;
-	virtual bool HandleEvent(sf::Event event) = 0;
+	virtual bool HandleEvent(sf::Event event) override;
+
+	virtual bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position);
+	virtual bool OnMouseMoved(uf::vec2i position);
+	virtual bool OnMouseLeft();
+	virtual bool OnMouseWheelScrolled(float delta, uf::vec2i position);
+	virtual bool OnKeyPressed(sf::Event::KeyEvent keyEvent);
+	virtual bool OnKeyReleased(sf::Keyboard::Key button);
+	virtual bool OnTextEntered(uint32_t unicodeChar);
 
 	virtual void Hide() final;
 	virtual void Show() final;
@@ -46,6 +54,8 @@ protected:
 	mutable sf::RenderTexture buffer;
 	// method for drawing to buffer
 	virtual void draw() const = 0;
+
+	bool handleEvent(sf::Event event);
 
 private:
 	uf::vec2i size;

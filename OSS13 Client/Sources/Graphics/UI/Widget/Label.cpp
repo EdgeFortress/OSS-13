@@ -22,8 +22,6 @@ void Label::Update(sf::Time timeElapsed) {
     }
 }
 
-bool Label::HandleEvent(sf::Event event) { return false; }
-
 void Label::SetString(const sf::String &string) {
     text.setString(string);
 }

@@ -9,7 +9,6 @@
 
 class UI;
 class TileGrid;
-class ContextMenu;
 
 class InfoLabel;
 
@@ -39,8 +38,6 @@ private:
     Container *container;
     Entry *entry;
     FormattedTextField *formattedTextField;
-
-    ContextMenu *contextMenu;
 
     void generateFunctionWindow();
 
