@@ -27,8 +27,12 @@ protected:
 	void draw() const final;
 
 private:
+	void onClick();
+
+private:
 	std::string key;
 	std::vector<Sprite> sprites;
+	bool isClicked{false};
 };
 
 class ControlUI : public CustomWidget {

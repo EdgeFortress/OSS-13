@@ -236,6 +236,8 @@ void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
 }
 
 void TileGrid::Update(sf::Time timeElapsed) {
+	Container::Update(timeElapsed);
+
     std::unique_lock<std::mutex> lock(mutex);
 
     if (actionSendPause != sf::Time::Zero) {
@@ -307,7 +309,6 @@ void TileGrid::Update(sf::Time timeElapsed) {
 	}
     
 	if (controllable) shift = controllable->GetShift();
-
 
 	if (stun > timeElapsed)
 		stun -= timeElapsed;

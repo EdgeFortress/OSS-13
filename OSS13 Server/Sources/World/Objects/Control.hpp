@@ -20,6 +20,7 @@ public:
     void MoveCommand(uf::vec2i order);
     void MoveZCommand(bool order);
     void ClickObjectCommand(uint id);
+	void ClickUICommand(const std::string &key);
 
     virtual void SetOwner(Object *owner) override;
 

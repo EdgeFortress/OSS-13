@@ -2,14 +2,24 @@
 
 #include <Client.hpp>
 #include <ResourceManager.hpp>
+#include <Network.hpp>
 
 #include <Shared/Global.hpp>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 ControlUIElement::ControlUIElement(const std::string &key) :
 	key(key)
 { }
 
-void ControlUIElement::Update(sf::Time timeElapsed) { }
+void ControlUIElement::Update(sf::Time /*timeElapsed*/) {
+	if (isClicked) {
+		auto *p = new network::protocol::client::ClickControlUICommand();
+		p->id = key;
+		Connection::commandQueue.Push(p);
+		LOGI << "ControlUI element \"" + key + "\" is pressed!";
+		isClicked = false;
+	}
+}
 
 bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
 	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
@@ -19,7 +29,7 @@ bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i 
 
 	for (auto &sprite: sprites) {
 		if (!sprite.PixelTransparent(position - GetPosition())) {
-			LOGI << "ControlUI element \"" + key + "\" is pressed!";
+			onClick();
 			return true;
 		}
 	}
@@ -40,6 +50,10 @@ void ControlUIElement::draw() const {
 	for (auto &sprite : sprites)
 		sprite.Draw(&buffer, {0, 0});
 	buffer.display();
+}
+
+void ControlUIElement::onClick() {
+	isClicked = true;
 }
 
 ControlUI::ControlUI() {

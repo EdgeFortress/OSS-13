@@ -11,6 +11,7 @@ struct PlayerCommand {
 		MOVE,
 		MOVEZ,
         CLICK_OBJECT,
+		CLICK_CONTROL_UI,
 		VERB
     };
 
@@ -39,6 +40,11 @@ struct MoveZPlayerCommand : public PlayerCommand {
 struct ClickObjectPlayerCommand : public PlayerCommand {
     uint id;
     ClickObjectPlayerCommand(uint id);
+};
+
+struct ClickControlUIPlayerCommand : public PlayerCommand {
+	std::string id;
+	ClickControlUIPlayerCommand(const std::string &);
 };
 
 struct VerbPlayerCommand : public PlayerCommand {

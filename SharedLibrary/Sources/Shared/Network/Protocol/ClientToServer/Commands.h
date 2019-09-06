@@ -70,6 +70,15 @@ DEFINE_SERIALIZABLE(ClickObjectCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
+DEFINE_SERIALIZABLE(ClickControlUICommand, Command)
+	std::string id; // PERF: can be optimized (int id)
+	
+	void Serialize(uf::Archive &ar) override {
+		Command::Serialize(ar);
+		ar & id;
+	}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(SendChatMessageCommand, Command)
 	std::string message;
 

@@ -50,6 +50,10 @@ void Player::ClickObject(uint id) {
     actions.Push(new ClickObjectPlayerCommand(id));
 }
 
+void Player::ClickControlUI(const std::string &id) {
+	actions.Push(new ClickControlUIPlayerCommand(id));
+}
+
 void Player::CallVerb(const std::string &verb) {
 	actions.Push(new VerbPlayerCommand(verb));
 }
@@ -110,6 +114,13 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
                     }
                     break;
                 }
+				case PlayerCommand::Code::CLICK_CONTROL_UI: {
+					if (control) {
+						auto clickControlUIPlayerCommand = dynamic_cast<ClickControlUIPlayerCommand *>(temp);
+						control->ClickUICommand(clickControlUIPlayerCommand->id);
+					}
+					break;
+				}
 				case PlayerCommand::Code::VERB: {
 					auto verbPlayerCommand = dynamic_cast<VerbPlayerCommand *>(temp);
 					auto &verb = verbPlayerCommand->verb;

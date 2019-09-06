@@ -151,6 +151,12 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
+	if (auto *command = dynamic_cast<client::ClickControlUICommand *>(p.get())) {
+		if (connection->player)
+			connection->player->ClickControlUI(command->id);
+		return true;
+	}
+
 	if (auto *command = dynamic_cast<client::SendChatMessageCommand *>(p.get())) {
 		if (connection->player)
 			connection->player->ChatMessage(command->message);

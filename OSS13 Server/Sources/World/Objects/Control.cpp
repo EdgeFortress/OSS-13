@@ -3,6 +3,7 @@
 #include <IGame.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
+#include <Player.hpp>
 
 #include <Shared/Math.hpp>
 
@@ -28,6 +29,10 @@ void Control::MoveZCommand(bool order) {
 
 void Control::ClickObjectCommand(uint id) {
     clickedObjectID = id;
+}
+
+void Control::ClickUICommand(const std::string &key) {
+	LOGI << player->GetCKey() + " clicks ControlUI element \"" << key << "\"";
 }
 
 void Control::SetOwner(Object *owner) {

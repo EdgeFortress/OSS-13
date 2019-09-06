@@ -21,6 +21,10 @@ ClickObjectPlayerCommand::ClickObjectPlayerCommand(uint id) :
     PlayerCommand(Code::CLICK_OBJECT),
     id(id) { }
 
+ClickControlUIPlayerCommand::ClickControlUIPlayerCommand(const std::string &id) :
+	PlayerCommand(Code::CLICK_CONTROL_UI),
+	id(id) { }
+
 VerbPlayerCommand::VerbPlayerCommand(const std::string &verb) :
 	PlayerCommand(Code::VERB),
 	verb(verb)
