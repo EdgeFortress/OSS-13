@@ -17,8 +17,11 @@ protected:
 	virtual void SetPosition(const uf::vec2i &) override;
 	virtual void SetPosition(const float x, const float y) override;
 	virtual void SetSize(const uf::vec2i &) override;
+	virtual Widget *GetParent() const override;
 	virtual uf::vec2i GetPosition() const override;
-	virtual uf::vec2i GetAbsPosition() const override;
+	virtual uf::vec2i GetAbsolutePosition() const override;
 	virtual uf::vec2i GetSize() const override;
+	virtual uf::vec2i GetAbsoluteSize() const override;
+	virtual uf::vec2f GetScale() const override;
 	virtual bool IsVisible() const override;
 };

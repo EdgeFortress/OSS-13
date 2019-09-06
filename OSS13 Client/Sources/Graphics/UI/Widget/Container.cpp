@@ -23,25 +23,30 @@ bool Container::HandleEvent(sf::Event event) {
 }
 
 bool Container::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
-	if (!(position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()))
+	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
+
+	if (!(position >= GetPosition() && position < GetPosition() + GetSize()))
 		return false;
 
 	for (auto iter = items.begin(); iter != items.end(); iter++) {
 		CustomWidget *widget = iter->get();
 		if (widget->OnMouseButtonPressed(button, position)) {
 			if (widget->SetActive(active)) {
-				if (curInputWidgetIterator->get() == widget) return true;
+				if (curInputWidgetIterator->get() == widget) 
+					return true;
 				curInputWidgetIterator->get()->SetActive(false);
 				curInputWidgetIterator = iter;
-				return true;
 			}
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 bool Container::OnMouseMoved(uf::vec2i position) {
-	if (!(position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()))
+	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
+
+	if (!(position >= GetPosition() && position < GetPosition() + GetSize()))
 		return false;
 
 	for (auto &widget : items) {

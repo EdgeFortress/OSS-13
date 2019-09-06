@@ -72,7 +72,7 @@ void GameProcessUI::Resize(const int width, const int height) {
     container->SetPosition({ width - container->GetSize().x, height - entry->GetSize().y - formattedTextField->GetSize().y });
 
     functionWindow->SetPosition(tileGrid->GetTileSize() * float(Global::FOV), 0);
-    functionWindow->SetSize({width - functionWindow->GetAbsPosition().x, container->GetPosition().y});
+    functionWindow->SetSize({width - functionWindow->GetAbsolutePosition().x, container->GetPosition().y});
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {

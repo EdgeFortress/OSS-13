@@ -121,6 +121,9 @@ void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
 }
 
 bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	if (Container::OnMouseButtonPressed(button, position))
+		return true;
+
 	if (underCursorObject) {
 		objectClicked = true;
 		return true;
@@ -130,7 +133,7 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 
 bool TileGrid::OnMouseMoved(uf::vec2i position) {
 	cursorPosition = position;
-	cursorPosition -= GetAbsPosition() + padding;
+	cursorPosition -= GetAbsolutePosition() + padding;
 	if (cursorPosition <= GetSize()) return true;
 	else {
 		cursorPosition = { -1, -1 };

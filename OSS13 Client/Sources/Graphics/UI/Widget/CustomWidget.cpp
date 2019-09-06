@@ -95,14 +95,29 @@ Style &CustomWidget::GetStyle() {
 	return style;
 }
 
+Widget *CustomWidget::GetParent() const {
+	return parent;
+}
+
 uf::vec2i CustomWidget::GetPosition() const {
 	return uf::vec2i(getPosition());
 }
-uf::vec2i CustomWidget::GetAbsPosition() const {
-	return parent ? uf::vec2i(getPosition()) + parent->GetAbsPosition() : uf::vec2i(getPosition());
+
+uf::vec2i CustomWidget::GetAbsolutePosition() const {
+	return parent ? uf::vec2i(getPosition()) + parent->GetAbsolutePosition() : uf::vec2i(getPosition());
 }
 
 uf::vec2i CustomWidget::GetSize() const { return size; }
+
+uf::vec2i CustomWidget::GetAbsoluteSize() const { 
+	const Widget *widget = this;
+	uf::vec2i size = GetSize();
+	while (widget) {
+		size = uf::vec2f(size.x * parent->GetScale().x, size.y * parent->GetScale().y);
+		widget = widget->GetParent();
+	}
+	return size;
+}
 
 uf::vec2f CustomWidget::GetScale() const { return getScale(); }
 

@@ -38,7 +38,7 @@ void Button::Update(sf::Time timeElapsed) {
 }
 
 bool Button::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
-	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()) {
 		onPressFunc();
 		return true;
 	}
@@ -46,7 +46,7 @@ bool Button::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) 
 }
 
 bool Button::OnMouseMoved(uf::vec2i position) {
-	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()) {
 		if (!underCursor) {
 			underCursor = true;
 			underCursor_style.updated = true;

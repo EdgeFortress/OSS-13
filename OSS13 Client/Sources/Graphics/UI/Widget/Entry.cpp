@@ -194,7 +194,7 @@ void Entry::ShowSymbols() {
 }
 
 bool Entry::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
-	if (position >= GetAbsPosition() && position < GetAbsPosition() + GetSize()) {
+	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()) {
 		//SetActive(true);
 		return true;
 	}

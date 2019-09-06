@@ -12,6 +12,18 @@ ControlUIElement::ControlUIElement(const std::string &key) :
 void ControlUIElement::Update(sf::Time timeElapsed) { }
 
 bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
+
+	if (!(position >= GetPosition() && position < GetPosition() + GetSize()))
+		return false;
+
+	for (auto &sprite: sprites) {
+		if (!sprite.PixelTransparent(position - GetPosition())) {
+			LOGI << "ControlUI element \"" + key + "\" is pressed!";
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -35,13 +47,14 @@ ControlUI::ControlUI() {
 }
 
 void ControlUI::Update(sf::Time timeElapsed) { 
-	for (auto &[key, element]: elements) element.Update(timeElapsed);
+	for (auto &[key, element]: elements) 
+		element->Update(timeElapsed);
 }
 
 bool ControlUI::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
-	position = uf::vec2f(position.x * GetScale().x, position.y * GetScale().y);
+	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
 	for (auto &[key, element] : elements)
-		if (element.OnMouseButtonPressed(button, position))
+		if (element->OnMouseButtonPressed(button, position))
 			return true;
 	return false;
 }
@@ -51,17 +64,22 @@ void ControlUI::AdjustSize(uf::vec2i size) {
 }
 
 void ControlUI::UpdateElement(const network::protocol::ControlUIData &data) {
-	auto &element = elements[data.elementId];
-	element.SetPosition(data.position);
-	element.SetSize(uf::vec2i(Global::control_ui::ITEM_SIZE, Global::control_ui::ITEM_SIZE));
-	element.SetSprites(data.spritesIds);
+	auto iter = elements.find(data.elementId);
+	if (iter == elements.end()) {
+		iter = elements.insert(iter, { data.elementId, std::make_unique<ControlUIElement>(data.elementId) });
+	}
+	auto &[id, element] = *iter;
+
+	element->SetPosition(data.position);
+	element->SetSize(uf::vec2i(Global::control_ui::ITEM_SIZE, Global::control_ui::ITEM_SIZE));
+	element->SetSprites(data.spritesIds);
 }
 
 void ControlUI::draw() const {
 	buffer.clear(sf::Color::Transparent);
 
 	for (auto &[key, element] : elements) {
-		buffer.draw(element);
+		buffer.draw(*element);
 	}
 	buffer.display();
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <unordered_map>
+
 #include <Graphics/Sprite.hpp>
 #include <Graphics/UI/Widget/CustomWidget.h>
 
@@ -7,7 +10,12 @@
 
 class ControlUIElement : public CustomWidget {
 public:
-	ControlUIElement(const std::string &key = {});
+	explicit ControlUIElement(const std::string &key = {});
+
+	ControlUIElement(const ControlUIElement &) = default;
+	ControlUIElement &operator=(const ControlUIElement &) = default;
+	ControlUIElement(ControlUIElement &&) = default;
+	ControlUIElement &operator=(ControlUIElement &&) = default;
 
 	void Update(sf::Time timeElapsed) final;
 
@@ -39,6 +47,6 @@ protected:
 	void draw() const final;
 
 private:
-	std::unordered_map<std::string, ControlUIElement> elements;
+	std::unordered_map<std::string, uptr<ControlUIElement>> elements;
 	double scale;
 };

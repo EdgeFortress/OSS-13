@@ -9,6 +9,12 @@ class CustomWidget : public Widget, private sf::Transformable, public sf::Drawab
 public:
 	explicit CustomWidget(uf::vec2i size = {});
 
+	CustomWidget(const CustomWidget &) = default;
+	CustomWidget(CustomWidget &&) = default;
+	CustomWidget &operator=(const CustomWidget &) = default;
+	CustomWidget &operator=(CustomWidget &&) = default;
+	virtual ~CustomWidget() = default;
+
 	// draw method for Drawable inheritance
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
@@ -37,9 +43,11 @@ public:
 	virtual void SetSize(const uf::vec2i &);
 	virtual void SetScale(const uf::vec2f &scale);
 
+	virtual Widget *GetParent() const final;
 	virtual uf::vec2i GetPosition() const final;
-	virtual uf::vec2i GetAbsPosition() const final;
+	virtual uf::vec2i GetAbsolutePosition() const final;
 	virtual uf::vec2i GetSize() const final;
+	virtual uf::vec2i GetAbsoluteSize() const final;
 	virtual uf::vec2f GetScale() const final;
 	virtual bool IsVisible() const final;
 
@@ -54,8 +62,6 @@ protected:
 	mutable sf::RenderTexture buffer;
 	// method for drawing to buffer
 	virtual void draw() const = 0;
-
-	bool handleEvent(sf::Event event);
 
 private:
 	uf::vec2i size;
