@@ -3,15 +3,18 @@ from Shared import ItemSpriteState
 from Object import Object
 from Objects.Item import Item
 from Objects.Items.Clothing import Clothing, MobSlot
+from Objects.Creatures.IHasOrgans import IHasOrgans
 
-class Creature(Object):
+class Creature(Object, IHasOrgans):
 	def __init__(self):
 		Object.__init__(self)
+		IHasOrgans.__init__(self)
+
 		self.layer = 75
 		self.name = "Creature"
 
 		self.__seeInvisibleAbility = False
-		self.__handItem = None
+
 		self.__clothes = {}
 
 		self.AddComponent("Control")
@@ -22,12 +25,14 @@ class Creature(Object):
 
 	@property
 	def seeInvisibleAbility(self):
-		return __seeInvisibleAbility
+		return self.__seeInvisibleAbility
 
 	@seeInvisibleAbility.setter
 	def seeInvisibleAbility(self, value):
+		if not isinstance(value, int):
+			raise TypeError("seeInvisibleAbility must be int!")
 		if self.control is not None:
-			__seeInvisibleAbility = value
+			self.__seeInvisibleAbility = value
 			self.control.seeInvisibleAbility = value
 
 	def DefineUI(self, ui):
@@ -69,14 +74,15 @@ class Creature(Object):
 		if not isinstance(object, Object):
 			return False
 
-		if self.__handItem is not None:
-			if object.InteractedBy(self.__handItem):
-				return True
+		if self.activeHand:
+			if not self.activeHand.isEmpty:
+				if object.InteractedBy(self.activeHand.holdedItem):
+					return True
 
-			if self.__handItem.InteractWith(object):
-				return True
+				if self.activeHand.holdedItem.InteractWith(object):
+					return True
 
-			return True
+				return True
 
 		if isinstance(object, Item):
 			if self.Take(object):
@@ -86,12 +92,15 @@ class Creature(Object):
 		return False
 
 	def Take(self, object) -> bool:
-		if self.__handItem:
+		if not self.activeHand:
+			return False
+		if not self.activeHand.isEmpty:
 			return False
 		if not self.IsCloseTo(object):
 			return False
+
 		self.AddObject(object)
-		self.__handItem = object
+		self.activeHand.holdedItem = object
 		return True
 
 	def PutOn(self, clothing) -> bool:
@@ -113,16 +122,12 @@ class Creature(Object):
 		if not isinstance(mobSlot, MobSlot):
 			return None
 
-		if mobSlot == MobSlot.LHAND:
-			return self.__handItem
-		elif mobSlot == MobSlot.RHAND:
-			return self.__handItem
-
 		return self.__clothes.get(mobSlot)
 
 	def RemoveObject(self, object) -> bool:
-		if object is self.__handItem:
-			self.__handItem = None
+		for hand in self.hands:
+			if object is hand.holdedItem:
+				hand.holdedItem = None
 
 		if isinstance(object, Clothing):
 			clothingOnMob = self.__clothes.get(object.slot)
@@ -132,9 +137,9 @@ class Creature(Object):
 		return super().RemoveObject(object)
 
 	def Drop(self):
-		if self.__handItem:
-			self.__handItem.tile = self.tile
-			self.__handItem = None
+		if not self.activeHand.isEmpty:
+			self.activeHand.holdedItem.tile = self.tile
+			self.activeHand.holdedItem = None
 
 	def Stun(self):
 		print(self.name + " stunned!")
@@ -162,5 +167,3 @@ class Creature(Object):
 		self._pushStateToIcons(MobSlot.UNIFORM)
 		self._pushStateToIcons(MobSlot.LHAND)
 		self._pushStateToIcons(MobSlot.RHAND)
-
-		print("Update Icons")

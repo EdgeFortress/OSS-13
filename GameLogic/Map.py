@@ -12,3 +12,8 @@ def FillMap(map):
 						airlock.Lock()
 				else:
 					CreateObject("Objects.Turfs.Wall", map.GetTile(Vec3i(i, j, 0)))
+	CreateObject("Objects.Items.Taser", map.GetTile(Vec3i(47, 53, 0)))
+	CreateObject("Objects.Items.Taser", map.GetTile(Vec3i(53, 47, 0)))
+
+
+

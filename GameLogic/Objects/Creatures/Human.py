@@ -2,6 +2,9 @@ import types
 
 from Engine import CreateObject, ControlUIElement, Vec2i
 from Objects.Creature import Creature
+from Objects.Item import Item
+from Objects.Items.Clothing import MobSlot
+from Objects.Items.Organs.Hand import Hand
 
 class Human(Creature):
 	def __init__(self):
@@ -11,9 +14,12 @@ class Human(Creature):
 		self.density = True
 		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
 
-	def __uiFieldClicked(self, field):
-		print(field.id + " clicked!")
+	# IHasOrgans methods
+	def CreateOrgans(self):
+		self.organs.leftHand = self.AddOrgan(Hand())
+		self.organs.rightHand = self.AddOrgan(Hand())
 
+	# Creature methods
 	def DefineUI(self, ui):
 		self.__uiFields = types.SimpleNamespace()
 
@@ -72,3 +78,42 @@ class Human(Creature):
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
 		self.__uiFields.pocket2 = element
+	
+	def RemoveObject(self, object) -> bool:
+		for hand in self.hands:
+			if object is hand.holdedItem:
+				if hand is self.organs.leftHand:
+					self.__uiFields.lhand.PopIcon()
+				else:
+					self.__uiFields.rhand.PopIcon()
+
+		return super().RemoveObject(object)
+
+	def Take(self, object) -> bool:
+		if not super().Take(object):
+			return False
+
+		if self.activeHand is self.organs.leftHand:
+			self.__uiFields.lhand.AddIcon(object.sprite)
+		else:
+			self.__uiFields.rhand.AddIcon(object.sprite)
+
+		return True
+
+	def GetSlotItem(self, mobSlot) -> Item:
+		if not isinstance(mobSlot, MobSlot):
+			raise TypeError("Argument organ must be of type MobSlot!")
+
+		if mobSlot == MobSlot.LHAND:
+			return self.organs.leftHand.holdedItem
+		elif mobSlot == MobSlot.RHAND:
+			return self.organs.rightHand.holdedItem
+
+		return super().GetSlotItem(mobSlot)
+
+	# Human methods
+	def __uiFieldClicked(self, field):
+		if field is self.__uiFields.lhand:
+			self.activeHand = self.organs.leftHand
+		elif field is self.__uiFields.rhand:
+			self.activeHand = self.organs.rightHand

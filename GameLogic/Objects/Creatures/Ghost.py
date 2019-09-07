@@ -19,6 +19,10 @@ class Ghost(Creature):
 	def hostControl(self, value):
 		self._hostControl = value
 
+	# IHasOrgans methods
+	def CreateOrgans(self):
+		pass
+
 
 def Ghostize(player):
 	mob = player.control.GetOwner()

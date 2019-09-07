@@ -29,11 +29,20 @@
     <Compile Include="Objects\Creatures\Ghost.py" />
     <Compile Include="Objects\Creatures\Human.py" />
     <Compile Include="EngineHook.py" />
+    <Compile Include="Objects\Creatures\IHasOrgans.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\Creatures\__init__.py" />
     <Compile Include="Objects\Items\Clothes\Uniform.py" />
     <Compile Include="Objects\Item.py" />
     <Compile Include="Objects\Items\Clothes\__init__.py" />
     <Compile Include="Objects\Items\Clothing.py" />
+    <Compile Include="Objects\Items\Organ.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Items\Organs\Hand.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\Items\Taser.py" />
     <Compile Include="Object.py" />
     <Compile Include="Objects\Items\__init__.py" />
@@ -68,6 +77,7 @@
     <Folder Include="Objects\Items\" />
     <Folder Include="Objects\Items\Clothes\" />
     <Folder Include="Objects\" />
+    <Folder Include="Objects\Items\Organs\" />
     <Folder Include="Objects\Turfs\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
