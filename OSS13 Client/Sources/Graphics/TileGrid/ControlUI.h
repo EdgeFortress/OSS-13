@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <unordered_map>
 
 #include <Graphics/Sprite.hpp>
@@ -52,5 +53,6 @@ protected:
 
 private:
 	std::unordered_map<std::string, uptr<ControlUIElement>> elements;
+	mutable std::mutex elementsGuard;
 	double scale;
 };

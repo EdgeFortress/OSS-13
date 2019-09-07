@@ -60,12 +60,16 @@ ControlUI::ControlUI() {
 	SetSize({Global::control_ui::SIDE_SIZE, Global::control_ui::SIDE_SIZE });
 }
 
-void ControlUI::Update(sf::Time timeElapsed) { 
+void ControlUI::Update(sf::Time timeElapsed) {
+	std::unique_lock<std::mutex> lock(elementsGuard);
+
 	for (auto &[key, element]: elements) 
 		element->Update(timeElapsed);
 }
 
 bool ControlUI::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+	std::unique_lock<std::mutex> lock(elementsGuard);
+
 	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
 	for (auto &[key, element] : elements)
 		if (element->OnMouseButtonPressed(button, position))
@@ -78,6 +82,8 @@ void ControlUI::AdjustSize(uf::vec2i size) {
 }
 
 void ControlUI::UpdateElement(const network::protocol::ControlUIData &data) {
+	std::unique_lock<std::mutex> lock(elementsGuard);
+
 	auto iter = elements.find(data.elementId);
 	if (iter == elements.end()) {
 		iter = elements.insert(iter, { data.elementId, std::make_unique<ControlUIElement>(data.elementId) });
@@ -90,6 +96,8 @@ void ControlUI::UpdateElement(const network::protocol::ControlUIData &data) {
 }
 
 void ControlUI::draw() const {
+	std::unique_lock<std::mutex> lock(elementsGuard);
+
 	buffer.clear(sf::Color::Transparent);
 
 	for (auto &[key, element] : elements) {

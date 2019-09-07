@@ -18,22 +18,36 @@ void ControlUIElement::RegistrateCallback(std::function<void()> callback) {
 uf::vec2i ControlUIElement::GetPosition() const { return position; }
 void ControlUIElement::SetPosition(uf::vec2i pos) {
 	position = pos;
-	updated = true;
+	NeedUpdate();
 }
 
 void ControlUIElement::AddIcon(const std::string &icon) {
 	auto iconId = GServer->RM()->GetIconInfo(icon).id;
 	spritesIds.push_back(iconId);
-	updated = true;
+	NeedUpdate();
+}
+
+void ControlUIElement::PopIcon() {
+	spritesIds.pop_back();
+	NeedUpdate();
 }
 
 void ControlUIElement::ClearIcons() {
 	spritesIds.clear();
-	updated = true;
+	NeedUpdate();
 }
 
 void ControlUIElement::SetId(const std::string &id) { elementId = id; }
 const std::string &ControlUIElement::GetId() const { return elementId; }
+
+void ControlUIElement::SetControlUI(ControlUI *parent) { this->parent = parent; };
+ControlUI *ControlUIElement::GetControlUI() const { return parent; }
+
+void ControlUIElement::NeedUpdate() {
+	if (parent)
+		parent->NeedUpdate();
+	updated = true;
+}
 
 bool ControlUIElement::GetAndDropUpdatedState() {
 	bool updated = this->updated;
@@ -72,12 +86,17 @@ void ControlUI::OnClick(const std::string &key) {
 }
 
 void ControlUI::UpdateElement(std::shared_ptr<ControlUIElement> element) {
+	element->SetControlUI(this);
 	elements[element->GetId()] = std::move(element);
 	updated = true;
 }
 
 void ControlUI::RemoveElement(const std::string &key) {
 	elements.erase(key);
+	updated = true;
+}
+
+void ControlUI::NeedUpdate() {
 	updated = true;
 }
 

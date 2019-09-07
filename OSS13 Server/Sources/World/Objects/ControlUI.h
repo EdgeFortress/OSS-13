@@ -10,6 +10,7 @@
 #include <Shared/Geometry/Vec2.hpp>
 
 class Control;
+class ControlUI;
 
 class ControlUIElement : protected network::protocol::ControlUIData
 {
@@ -21,14 +22,20 @@ public:
 	void SetPosition(uf::vec2i pos);
 
 	void AddIcon(const std::string &icon);
+	void PopIcon();
 	void ClearIcons();
 
 	void SetId(const std::string &id);
 	const std::string &GetId() const;
 
+	void SetControlUI(ControlUI *parent);
+	ControlUI *GetControlUI() const;
+
+	void NeedUpdate();
 	bool GetAndDropUpdatedState();
 
 protected:
+	ControlUI *parent{nullptr};
 	bool updated{false};
 	std::function<void()> callback;
 };
@@ -44,6 +51,8 @@ public:
 
 	void UpdateElement(std::shared_ptr<ControlUIElement> element);
 	void RemoveElement(const std::string &key);
+
+	void NeedUpdate();
 
 	uf::vec2i GetResolution() const;
 	uf::vec2i GetCenter() const;
