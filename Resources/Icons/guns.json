@@ -2,6 +2,7 @@
     "title": "guns",
     "tileSize": 32,
     "lhandState": true,
+	"rhandState": true,
     "sprites": [
         {
             "sprite": "taser",

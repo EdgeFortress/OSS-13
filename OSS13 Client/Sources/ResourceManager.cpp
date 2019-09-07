@@ -45,8 +45,8 @@ void ResourceManager::generateTexturesAndSprites(const std::wstring &configpath)
 		mobStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".mob.png", tileSize);
 	if (config.find("lhandState") != config.end())
 		lhandStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".lhand.png", tileSize);
-	//if (config.find("rhandState") != config.end())
-	//	rhandStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".rhand.png", tileSize);
+	if (config.find("rhandState") != config.end())
+		rhandStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".rhand.png", tileSize);
 
 	generateSprites(texture, mobStateTexture, lhandStateTexture, rhandStateTexture, config);
 }
