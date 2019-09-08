@@ -1,0 +1,55 @@
+image: Visual Studio 2017
+
+clone_folder: c:\projects\oss13
+clone_depth: 10
+
+version: '0.0.{build}'
+
+configuration: Release
+
+environment:
+    APPVEYOR_SAVE_CACHE_ON_ERROR: true
+    TOOLCHAIN: msvc15
+
+branches:
+  only:
+    - never-build-branch-automatically-dont-use-this-name
+
+platform:
+    - x64
+    - x86
+
+matrix:
+    fast_finish: true
+
+install:
+    - git submodule update --init --recursive
+        
+    - cd C:\Tools\vcpkg
+    - git pull
+    - .\bootstrap-vcpkg.bat
+    - vcpkg integrate install
+    - cd %APPVEYOR_BUILD_FOLDER%
+
+    - vcpkg install "python3:%platform%-windows-static"
+    - vcpkg install "sfml:%platform%-windows-static"
+    - vcpkg install "gtest:%platform%-windows-static"
+
+cache: c:\tools\vcpkg\installed\
+
+after_build:
+    - set BIN_FOLDER_SUFFIX=%platform%
+    - if "%BIN_FOLDER_SUFFIX%"=="x86" (set BIN_FOLDER_SUFFIX=Win32)
+
+    - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
+
+artifacts:
+    - path: "OSS13-$(platform)-%appveyor_build_version%.zip"
+
+deploy:
+    release: OSS13-v$(appveyor_build_version)
+    provider: GitHub
+    auth_token:
+        secure: ZcnounehZDOonSsgvbGJvqxU+3N+s8nY6TvkQldbw7OWOjWujaExqvYoHsqsapgf
+    force_update: true
+    artifacts: /.*\.zip

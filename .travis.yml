@@ -23,10 +23,10 @@ addons:
       - g++-9
 env: CC=gcc-9 && CXX=g++-9
 install:
-  - ./CI/install_dependencies.sh
+  - ./CI/travis/install_dependencies.sh
 script:
-  - ./CI/build.sh
-  - ./CI/run_tests.sh
+  - ./CI/travis/build.sh
+  - ./CI/travis/run_tests.sh
 
 cache:
   directories:
