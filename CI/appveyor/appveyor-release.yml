@@ -31,17 +31,20 @@ install:
     - vcpkg integrate install
     - cd %APPVEYOR_BUILD_FOLDER%
 
+    - move /Y CI\appveyor\vcpkg-patch\*.* C:\Tools\vcpkg\triplets\
+
+    - vcpkg install "python3:%platform%-windows"
     - vcpkg install "python3:%platform%-windows-static"
     - vcpkg install "sfml:%platform%-windows-static"
     - vcpkg install "gtest:%platform%-windows-static"
 
-cache: c:\tools\vcpkg\installed\
+cache: c:\tools\vcpkg\
 
 after_build:
     - set BIN_FOLDER_SUFFIX=%platform%
     - if "%BIN_FOLDER_SUFFIX%"=="x86" (set BIN_FOLDER_SUFFIX=Win32)
 
-    - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
+    - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" "C:\Tools\vcpkg\installed\%platform%-windows\bin\python37.dll" Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
 
 artifacts:
     - path: "OSS13-$(platform)-%appveyor_build_version%.zip"
@@ -52,4 +55,5 @@ deploy:
     auth_token:
         secure: ZcnounehZDOonSsgvbGJvqxU+3N+s8nY6TvkQldbw7OWOjWujaExqvYoHsqsapgf
     force_update: true
+    prerelease: true
     artifacts: /.*\.zip
