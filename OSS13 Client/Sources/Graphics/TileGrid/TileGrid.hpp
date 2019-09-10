@@ -56,7 +56,7 @@ public:
 
 		void SetCameraPosition(apos newPos);
 		void SetBlock(apos pos, std::shared_ptr<Tile>);
-		void UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements);
+		void UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements, bool clear);
 		void SetControllable(uint id, float speed);
 		void UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo);
 		void ResetOverlay();

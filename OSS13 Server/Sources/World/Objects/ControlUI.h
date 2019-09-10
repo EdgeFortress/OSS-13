@@ -53,6 +53,7 @@ public:
 	void RemoveElement(const std::string &key);
 
 	void NeedUpdate();
+	void NeedFullRefresh();
 
 	uf::vec2i GetResolution() const;
 	uf::vec2i GetCenter() const;
@@ -60,5 +61,6 @@ public:
 
 private:
 	Control *control;
+	bool synched{false};
 	std::unordered_map<std::string, std::shared_ptr<ControlUIElement>> elements;
 };

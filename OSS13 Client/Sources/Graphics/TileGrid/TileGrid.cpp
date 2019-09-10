@@ -476,9 +476,12 @@ void TileGrid::SetBlock(apos pos, std::shared_ptr<Tile> tile) {
     tile->relPos = pos - firstTile;
 }
 
-void TileGrid::UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements) {
-	for (auto &element: elements)
+void TileGrid::UpdateControlUI(const std::vector<network::protocol::ControlUIData> &elements, bool clear) {
+	if (clear)
+		controlUI->Clear();
+	for (auto &element: elements) {
 		controlUI->UpdateElement(element);
+	}
 }
 
 void TileGrid::SetControllable(uint id, float speed) {

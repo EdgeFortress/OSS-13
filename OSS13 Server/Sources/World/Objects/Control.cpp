@@ -16,7 +16,8 @@ Control::Control() :
 { }
 
 void Control::Update(std::chrono::microseconds timeElapsed) {
-	ui->Update(timeElapsed);
+	if (player)
+		ui->Update(timeElapsed);
 }
 
 void Control::MoveCommand(uf::vec2i order) {

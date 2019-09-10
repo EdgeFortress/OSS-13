@@ -162,6 +162,7 @@ void Player::SetControl(Control *control) {
 	if (this->control) this->control->player = nullptr;
     this->control = control;
 	control->player = this;
+	control->GetUI()->NeedFullRefresh();
     SetCamera(new Camera(control->GetOwner()->GetTile()));
     camera->SetPlayer(this);
 	camera->TrackObject(control->GetOwner());

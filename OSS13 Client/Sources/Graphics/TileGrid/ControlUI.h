@@ -47,6 +47,7 @@ public:
 	void AdjustSize(uf::vec2i size);
 
 	void UpdateElement(const network::protocol::ControlUIData &data);
+	void Clear();
 
 protected:
 	void draw() const final;

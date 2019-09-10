@@ -69,10 +69,12 @@ DEFINE_SERIALIZABLE(GraphicsUpdateCommand, Command)
 DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(ControlUIUpdateCommand, Command)
+	bool clear{false};
 	std::vector<network::protocol::ControlUIData> elements;
 
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
+		ar & clear;
 		ar & elements;
 	}
 DEFINE_SERIALIZABLE_END

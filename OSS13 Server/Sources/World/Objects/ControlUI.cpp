@@ -59,6 +59,7 @@ ControlUI::ControlUI(Control *control) :
 	control(control) 
 {
 	EXPECT(control);
+	NeedFullRefresh();
 }
 
 void ControlUI::Update(std::chrono::microseconds /*timeElapsed*/) {
@@ -68,14 +69,17 @@ void ControlUI::Update(std::chrono::microseconds /*timeElapsed*/) {
 
 	auto command = std::make_unique<network::protocol::server::ControlUIUpdateCommand>();
 
+	if (!synched)
+		command->clear = true;
+
 	for (auto &[key, element] : elements) {
 		bool updated = element->GetAndDropUpdatedState();
-		if (updated)
+		if (!synched || updated)
 			command->elements.push_back(*element);
 	}
 
-	if (command->elements.size())
-		control->GetPlayer()->AddCommandToClient(command.release());
+	control->GetPlayer()->AddCommandToClient(command.release());
+	synched = true;
 }
 
 void ControlUI::OnClick(const std::string &key) {
@@ -98,6 +102,11 @@ void ControlUI::RemoveElement(const std::string &key) {
 
 void ControlUI::NeedUpdate() {
 	updated = true;
+}
+
+void ControlUI::NeedFullRefresh() {
+	NeedUpdate();
+	synched = false;
 }
 
 uf::vec2i ControlUI::GetResolution() const { return { Global::control_ui::SIDE_SIZE, Global::control_ui::SIDE_SIZE }; }

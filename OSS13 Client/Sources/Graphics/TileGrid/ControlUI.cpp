@@ -95,6 +95,11 @@ void ControlUI::UpdateElement(const network::protocol::ControlUIData &data) {
 	element->SetSprites(data.spritesIds);
 }
 
+void ControlUI::Clear() {
+	std::unique_lock<std::mutex> lock(elementsGuard);
+	elements.clear();
+}
+
 void ControlUI::draw() const {
 	std::unique_lock<std::mutex> lock(elementsGuard);
 

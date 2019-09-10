@@ -220,7 +220,7 @@ bool Connection::parsePacket(Packet &packet) {
 		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
 		EXPECT(tileGrid);
 		tileGrid->LockDrawing();
-		tileGrid->UpdateControlUI(command->elements);
+		tileGrid->UpdateControlUI(command->elements, command->clear);
 		tileGrid->UnlockDrawing();
 		return true;
 	}
