@@ -19,19 +19,24 @@ In order to compile OSS-13 on Windows the simplest way is to use Visual Studio 2
 
 **Step 1.** Install dependencies.
 
-For now the only dependencies you need to install manually are SFML and GTest. The most convenient way to do it is using VCPKG:
+For now the only dependencies you need to install manually are SFML, Python 3 and GTest. The most convenient way to do it is using VCPKG:
 
 1. Install [vcpkg](https://github.com/Microsoft/vcpkg) according their readme. Don't forget to integrate it!
-2. Install [SFML](https://www.sfml-dev.org/) and [GTest](https://github.com/google/googletest) with following instructions:
+2. Install [SFML](https://www.sfml-dev.org/), Python 3 and [GTest](https://github.com/google/googletest) with following instructions:
 
 ```
 vcpkg install sfml:x64-windows-static
 vcpkg install sfml:x86-windows-static
+vcpkg install python3:x64-windows-static
+vcpkg install python3:x86-windows-static
 vcpkg install gtest:x64-windows-static
 vcpkg install gtest:x86-windows-static
 ```
 
 **Optional:** You can choose desired configuration (x64 or x86; in most cases x64 should be enough) and install only suitable versions. Also you don't need to install GTest if you are not going to run unit tests.
+
+In order to run built server, also you need install Python 3 (x64 or x86) manually via [official site](https://www.python.org/downloads/).
+You can add Pythons with different configurations to PATH in solution debug options (OSS13 Server/Properties/Debugging/Environment). Or just add python with one of configurations to system PATH.
 
 **Step 2.** Configure Visual Studio 2017 (not tested with VS2019, but should work too)
 
@@ -43,8 +48,6 @@ Desktop development with C++
     - VC++ 2017 latest tools (v141) (you should use it with VS2019 too)
     - Windows 10 SDK
 Python development
-    - Python 3 64-bit (3.6.6)
-    - Python 3 32-bit (3.6.6) (optional)
     - Python native development tools (for C++/Python mixed mode debugging)
 Individual components
     - GitHub Extension for Visual Studio (optional)
