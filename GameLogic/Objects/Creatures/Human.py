@@ -13,6 +13,7 @@ class Human(Creature):
 		self.sprite = "human"
 		self.density = True
 		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
+		self.__updateActiveHandIcon()
 
 	# IHasOrgans methods
 	def CreateOrgans(self):
@@ -115,5 +116,23 @@ class Human(Creature):
 	def __uiFieldClicked(self, field):
 		if field is self.__uiFields.lhand:
 			self.activeHand = self.organs.leftHand
+			self.__updateActiveHandIcon()
 		elif field is self.__uiFields.rhand:
 			self.activeHand = self.organs.rightHand
+			self.__updateActiveHandIcon()
+
+	def __updateActiveHandIcon(self):
+		self.__uiFields.lhand.ClearIcons()
+		self.__uiFields.rhand.ClearIcons()
+
+		if self.activeHand is self.organs.leftHand:
+			self.__uiFields.lhand.AddIcon("lhand_active")
+			self.__uiFields.rhand.AddIcon("rhand_inactive")
+		else:
+			self.__uiFields.lhand.AddIcon("lhand_inactive")
+			self.__uiFields.rhand.AddIcon("rhand_active")
+
+		if self.organs.leftHand.holdedItem:
+			self.__uiFields.lhand.AddIcon(self.organs.leftHand.holdedItem.sprite)
+		if self.organs.rightHand.holdedItem:
+			self.__uiFields.rhand.AddIcon(self.organs.rightHand.holdedItem.sprite)
