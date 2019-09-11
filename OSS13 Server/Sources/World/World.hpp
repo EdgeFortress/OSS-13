@@ -10,24 +10,24 @@ class Creature;
 
 class World : public ObjectHolder {
 public:
-    friend Object;
+	friend Object;
 
-    World();
+	World();
 
-    void Update(std::chrono::microseconds timeElapsed);
+	void Update(std::chrono::microseconds timeElapsed);
 
-    void CreateTestItems();
+	void CreateTestItems();
 	Object *CreateNewPlayerCreature();
 
-    Object *GetObject(uint id) const;
+	Object *GetObject(uint id) const;
 	Map *GetMap() const;
 
 private:
-    uptr<Map> map;
+	uptr<Map> map;
 
 	Object *testMob{nullptr};
-    Tile *testMob_lastPosition;
-    int test_dx;
-    int test_dy;
-    int mobsVelocity;
+	Tile *testMob_lastPosition;
+	int test_dx;
+	int test_dy;
+	int mobsVelocity;
 };

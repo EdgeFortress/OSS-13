@@ -1,4 +1,5 @@
-from Engine import Map, CreateObject, Vec3i
+from Engine_World import Map, CreateObject
+from Engine_Geometry import Vec3i
 from Objects.Turfs.Airlock import Airlock
 
 def FillMap(map):

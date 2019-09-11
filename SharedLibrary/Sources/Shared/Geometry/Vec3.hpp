@@ -71,8 +71,8 @@ namespace uf {
 #include "Vec3.inl"
 
 namespace uf {
-	typedef vec3<double> vec3d;
-	typedef vec3<float>  vec3f;
-	typedef vec3<int>    vec3i;
-	typedef vec3<uint>   vec3u;
+	typedef vec3<double>     vec3d;
+	typedef vec3<float>      vec3f;
+	typedef vec3<int>        vec3i;
+	typedef vec3<uint32_t>   vec3u;
 }

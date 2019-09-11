@@ -144,6 +144,9 @@
     <ClCompile Include="Sources\Player.cpp" />
     <ClCompile Include="Sources\PlayerCommand.cpp" />
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
+    <ClCompile Include="Sources\ScriptEngine\Module\GeometryModule.cpp" />
+    <ClCompile Include="Sources\ScriptEngine\Module\ServerModule.cpp" />
+    <ClCompile Include="Sources\ScriptEngine\Module\WorldModule.cpp" />
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\VerbsHolder.cpp" />

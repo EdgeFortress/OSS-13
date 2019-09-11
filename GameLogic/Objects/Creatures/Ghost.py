@@ -1,5 +1,6 @@
 from Objects.Creature import Creature
-from Engine import CreateObject, Vec2i
+from Engine_World import CreateObject
+from Engine_Geometry import Vec2i
 
 class Ghost(Creature):
 	def __init__(self):

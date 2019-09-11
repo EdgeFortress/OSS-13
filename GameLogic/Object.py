@@ -1,8 +1,8 @@
 from datetime import timedelta
 
-import Engine
+from Engine_World import Object as EngineObject
 
-class Object(Engine.Object):
+class Object(EngineObject):
 	def __init__(self):
 		super().__init__()
 

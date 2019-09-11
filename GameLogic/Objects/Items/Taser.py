@@ -1,6 +1,6 @@
 from Objects.Item import Item
 from Objects.Projectile import Projectile
-from Engine import CreateObject
+from Engine_World import CreateObject
 
 class Taser(Item):
 	def __init__(self):

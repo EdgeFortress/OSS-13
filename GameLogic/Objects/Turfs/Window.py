@@ -1,4 +1,5 @@
-from Engine import Direction
+from Engine_Geometry import Direction
+
 from Objects.Turf import Turf
 
 class Window(Turf):
