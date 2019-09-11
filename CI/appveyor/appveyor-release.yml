@@ -44,7 +44,7 @@ after_build:
     - set BIN_FOLDER_SUFFIX=%platform%
     - if "%BIN_FOLDER_SUFFIX%"=="x86" (set BIN_FOLDER_SUFFIX=Win32)
 
-    - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" "C:\Tools\vcpkg\installed\%platform%-windows\bin\python37.dll" Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
+    - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" "C:\Tools\vcpkg\installed\%platform%-windows\bin\python37.dll" Documentation Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
 
 artifacts:
     - path: "OSS13-$(platform)-%appveyor_build_version%.zip"
