@@ -4,6 +4,9 @@ This project is an attempt to create engine for multiplayer game about Space Sta
 
 In the future this project will be used as a basis for [Space Station 13](https://spacestation13.com/) game remake.
 
+* **Windows build:** [![Build status](https://ci.appveyor.com/api/projects/status/mrqydhalvotd0rsl/branch/master?svg=true)](https://ci.appveyor.com/project/Insineer/oss-13-7sux2/branch/master)
+* **Linux build:** [![Build Status](https://travis-ci.org/EdgeFortress/OSS-13.svg?branch=master)](https://travis-ci.org/EdgeFortress/OSS-13)
+
 ## Compile
 
 You can build OSS-13 for almost any modern OS, including Windows 7 (and newer), Linux and MacOS. Here you can find build instructions for Windows 10 and Linux (Ubuntu, Debian, Arch, etc.). We don't test compilation on MacOS but it should work too.
