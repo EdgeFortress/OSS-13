@@ -34,7 +34,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property_readonly("z", &Tile::Z)
 		.def_property_readonly("pos", &Tile::GetPos)
 		.def_property_readonly("map", &Tile::GetMap)
-		.def("IsDense", py::overload_cast<>(&Tile::IsDense, py::const_))
+		.def("IsDense", &Tile::IsDense)
 		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 

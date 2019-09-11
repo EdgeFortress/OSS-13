@@ -62,12 +62,14 @@ void Object::Update(std::chrono::microseconds timeElapsed) {
 
 	if (iconsOutdated) {
 		updateIcons();
-		auto diff = std::make_shared<network::protocol::UpdateIconsDiff>();
-		diff->objId = ID();
-		for (auto &iconInfo : icons)
-			diff->iconsIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
-		GetTile()->AddDiff(diff, this);
-		iconsOutdated = false;
+		if (GetTile()) {
+			auto diff = std::make_shared<network::protocol::UpdateIconsDiff>();
+			diff->objId = ID();
+			for (auto &iconInfo : icons)
+				diff->iconsIds.push_back(iconInfo.id + static_cast<uint32_t>(iconInfo.state));
+			GetTile()->AddDiff(diff, this);
+			iconsOutdated = false;
+		}
 	}
 
 	animationTimer.Update(timeElapsed);
@@ -97,15 +99,15 @@ void Object::Move(uf::vec2i order) {
 		if (GetDensity()) {
 			auto moveDirection = uf::VectToDirection(moveIntent);
 
-			if (tile->IsDense({moveDirection})) { // exit from current tile
+			if (tile->IsDense(DirectionSet({moveDirection}))) { // exit from current tile
 				moveIntent = GetMoveIntent();
 			} else {
-				if (!newTileDiag || newTileDiag->IsDense({uf::InvertDirection(moveDirection), uf::Direction::CENTER})) {
+				if (!newTileDiag || newTileDiag->IsDense((DirectionSet({uf::InvertDirection(moveDirection), uf::Direction::CENTER})))) {
 					return;
 				}
 				else {
-					if (!newTileX || newTileX != tile && newTileX->IsDense({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })) return;
-					if (!newTileY || newTileY != tile && newTileY->IsDense({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })) return;
+					if (!newTileX || newTileX != tile && newTileX->IsDense((DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })))) return;
+					if (!newTileY || newTileY != tile && newTileY->IsDense((DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })))) return;
 				}
 			}
 		}
@@ -204,8 +206,8 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> c
 	return true;
 }
 
-bool Object::GetDensity() const { return solidity.IsExistsOne({Direction::CENTER}); };
-void Object::SetDensity(bool density) { density ? solidity.Add({Direction::CENTER}) : solidity.Remove({Direction::CENTER}); }
+bool Object::GetDensity() const { return density; };
+void Object::SetDensity(bool density) { this->density = density; }
 
 void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
 const uf::DirectionSet &Object::GetSolidity() const { return solidity; }
@@ -316,6 +318,7 @@ network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	objectInfo.name = name;
 	objectInfo.layer = layer;
 	objectInfo.direction = direction;
+	objectInfo.density = density;
 	objectInfo.solidity = solidity;
 	objectInfo.opacity = opacity;
 	objectInfo.moveSpeed = moveSpeed;

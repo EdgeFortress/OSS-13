@@ -11,3 +11,7 @@ class Object(EngineObject):
 
 	def InteractedBy(self, object):
 		return False
+
+	def BumpedTo(self, object):
+		print(self.name + " bumped to " + object.name)
+		return False

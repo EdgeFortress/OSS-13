@@ -11,6 +11,7 @@ class Creature(Object, IHasOrgans):
 
 		self.layer = 75
 		self.name = "Creature"
+		self.density = True
 
 		self.__seeInvisibleAbility = False
 
@@ -19,8 +20,6 @@ class Creature(Object, IHasOrgans):
 		self.AddComponent("Control")
 		self.control = self.GetComponent("Control")
 		self.DefineUI(self.control.ui)
-
-		self.AddVerb("drop", lambda player: self.Drop())
 
 	@property
 	def seeInvisibleAbility(self):

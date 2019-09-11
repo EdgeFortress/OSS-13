@@ -40,7 +40,7 @@ public:
 	Object *GetObject(uint id);
     TileGrid *GetTileGrid();
 	bool IsBlocked() const;
-	bool IsBlocked(const std::initializer_list<uf::Direction> &directions) const;
+	bool IsBlocked(uf::DirectionSet directions) const;
 
 	friend sf::Packet &operator>>(sf::Packet &packet, Tile &tile);
 	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);

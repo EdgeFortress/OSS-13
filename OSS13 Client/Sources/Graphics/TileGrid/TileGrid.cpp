@@ -220,14 +220,14 @@ void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
 	if (controllable->IsDense()) {
 		auto moveDirection = uf::VectToDirection(moveIntent);
 
-		if (lastTile->IsBlocked({ moveDirection })) { // exit from current tile
+		if (lastTile->IsBlocked(uf::DirectionSet({ moveDirection }))) { // exit from current tile
 			moveIntent = controllable->GetMoveIntent();
 		} else {
-			if (!newTileDiag || newTileDiag->IsBlocked({ uf::InvertDirection(moveDirection), uf::Direction::CENTER })) {
+			if (!newTileDiag || newTileDiag->IsBlocked(uf::DirectionSet({ uf::InvertDirection(moveDirection), uf::Direction::CENTER }))) {
 				return;
 			} else {
-				if (!newTileX || newTileX != lastTile && newTileX->IsBlocked({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })) return;
-				if (!newTileY || newTileY != lastTile && newTileY->IsBlocked({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })) return;
+				if (!newTileX || newTileX != lastTile && newTileX->IsBlocked(uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER }))) return;
+				if (!newTileY || newTileY != lastTile && newTileY->IsBlocked(uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER }))) return;
 			}
 		}
 	}

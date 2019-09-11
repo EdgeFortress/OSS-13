@@ -107,20 +107,24 @@ bool Tile::MoveTo(Object *obj) {
 		return false;
 	}
 
-	if (obj->GetDensity())
-		for (auto &object : content)
-			if (object)
-				if (object->GetDensity()) {
-					return false;
-				}
-
 	Tile *lastTile = obj->GetTile();
 	rpos delta = GetPos() - lastTile->GetPos();
+	uf::Direction direction = uf::VectToDirection(delta);
+
+	if (obj->GetDensity()) {
+		auto bumpedTo = lastTile->GetDenseObject(DirectionSet({ direction }));
+		if (!bumpedTo)
+			bumpedTo = GetDenseObject(DirectionSet({uf::InvertDirection(direction), uf::Direction::CENTER}));
+		if (bumpedTo) {
+			obj->BumpedTo(bumpedTo);
+			return false;
+		}
+	}
+
 	if (abs(delta.x) > 1 || abs(delta.y) > 1)
 		LOGW << "Warning! Moving more than a one tile. (Tile::MoveTo)";
 	if (delta.z)
 		LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
-	const uf::Direction direction = uf::VectToDirection(delta);
 
 	auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>(); // TODO: MoveAway???
 	relocateAwayDiff->objId = obj->ID();
@@ -196,10 +200,10 @@ const std::list<Object *> &Tile::Content() const {
     return content;
 }
 
-Object *Tile::GetDenseObject() const
+Object *Tile::GetDenseObject(DirectionSet directions) const
 {
     for (auto &obj : content)
-        if (obj->GetDensity()) return obj;
+        if (obj->GetSolidity().IsExistsOne(directions)) return obj;
     return nullptr;
 }
 
@@ -209,13 +213,7 @@ uf::vec3i Tile::GetPos() const {
 
 Map *Tile::GetMap() const { return map; }
 
-bool Tile::IsDense() const {
-    for (auto &obj : content)
-        if (obj->GetDensity()) return true;
-    return false;
-}
-
-bool Tile::IsDense(const std::initializer_list<uf::Direction> &directions) const {
+bool Tile::IsDense(uf::DirectionSet directions) const {
 	for (auto &obj : content)
 		if (obj->GetSolidity().IsExistsOne(directions)) return true;
 	return false;

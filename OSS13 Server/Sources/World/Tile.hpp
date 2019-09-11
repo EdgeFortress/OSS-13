@@ -37,12 +37,11 @@ public:
     void PlaceTo(Object *);
 
     const std::list<Object *> &Content() const;
-    Object *GetDenseObject() const;
+    Object *GetDenseObject(uf::DirectionSet directions) const;
 
 	uf::vec3i GetPos() const;
     Map *GetMap() const;
-    bool IsDense() const;
-	bool IsDense(const std::initializer_list<uf::Direction> &directions) const;
+	bool IsDense(uf::DirectionSet directions) const;
     bool IsSpace() const;
 	Locale *GetLocale() const;
 

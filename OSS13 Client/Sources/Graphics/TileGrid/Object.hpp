@@ -71,6 +71,7 @@ private:
     uf::Direction direction;
     uint layer;
 
+	bool density;
 	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 

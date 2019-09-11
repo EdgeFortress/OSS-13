@@ -30,6 +30,7 @@ public:
     virtual void Update(std::chrono::microseconds timeElapsed);
 
 	virtual bool InteractedBy(Object *) = 0;
+	virtual bool BumpedTo(Object *) = 0;
 
 	virtual void Move(uf::vec2i order);
 	virtual void MoveZ(int order) {};
@@ -135,6 +136,7 @@ protected:
     uint layer;
     uf::Direction direction;
 
+	bool density{false}; // object can't pass through solid objects
 	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 	uf::DirectionSetFractional airtightness;

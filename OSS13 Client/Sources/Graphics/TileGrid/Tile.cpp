@@ -104,9 +104,8 @@ bool Tile::IsBlocked() const {
 	return false;
 }
 
-bool Tile::IsBlocked(const std::initializer_list<uf::Direction> &directions) const {
+bool Tile::IsBlocked(uf::DirectionSet directions) const {
 	for (auto &obj : content)
 		if (obj->GetSolidity().IsExistsOne(directions)) return true;
 	return false;
 }
-

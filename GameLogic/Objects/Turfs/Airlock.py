@@ -1,3 +1,4 @@
+from Engine_Geometry import Direction
 from Objects.Turf import Turf
 
 class Airlock(Turf):
@@ -5,8 +6,9 @@ class Airlock(Turf):
 		super().__init__()
 		self.name = "Airlock"
 		self.sprite = "airlock"
-		self.density = True
+		self.__closedSolidity = [Direction.CENTER]
 
+		self.solidity.Add(self.__closedSolidity)
 		self.opened = False
 		self.locked = False
 		
@@ -27,7 +29,7 @@ class Airlock(Turf):
 				return
 			self.sprite = "airlock"
 			self.opened = False
-			self.density = True
+			self.solidity.Add(self.__closedSolidity)
 		else:
 			if not self.PlayAnimation("airlock_opening", lambda: self.__animationOpeningCallback()):
 				return
@@ -41,7 +43,7 @@ class Airlock(Turf):
 
 	def __animationOpeningCallback(self):
 		self.opened = True
-		self.density = False
+		self.solidity.Reset()
 
 	def __autocloseCallback(self):
 		if self.opened:

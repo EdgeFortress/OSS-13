@@ -99,6 +99,7 @@ std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo
 	object->name = objectInfo.name;
 	object->layer = objectInfo.layer;
 	object->direction = objectInfo.direction;
+	object->density = objectInfo.density;
 	object->solidity = objectInfo.solidity;
 	object->opacity = objectInfo.opacity;
 	object->moveSpeed = objectInfo.moveSpeed;

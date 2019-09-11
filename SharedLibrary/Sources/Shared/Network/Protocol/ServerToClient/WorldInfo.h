@@ -15,6 +15,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 	std::vector<uint32_t> spriteIds;
 	uint32_t layer;
 	uf::Direction direction;
+	bool density;
 	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 
@@ -28,6 +29,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 		ar & spriteIds;
 		ar & layer;
 		ar & direction;
+		ar & density;
 		ar & solidity;
 		ar & opacity;
 		ar & moveSpeed;

@@ -22,6 +22,10 @@ public:
 		PYBIND11_OVERLOAD_PURE_NAME(bool, Object, "InteractedBy", InteractedBy, obj);
 	}
 
+	bool BumpedTo(Object *obj) override {
+		PYBIND11_OVERLOAD_PURE_NAME(bool, Object, "BumpedTo", BumpedTo, obj);
+	}
+
 	bool RemoveObject(Object *obj) override {
 		PYBIND11_OVERLOAD_NAME(bool, Object, "RemoveObject", RemoveObject, obj);
 	}

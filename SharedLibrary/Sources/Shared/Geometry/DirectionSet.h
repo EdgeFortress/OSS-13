@@ -13,7 +13,7 @@ namespace uf {
 class DirectionSet {
 public:
 	DirectionSet() = default;
-	explicit DirectionSet(std::list<Direction> directions);
+	DirectionSet(std::list<Direction> directions);
 
 	DirectionSet(const DirectionSet &) = default;
 	DirectionSet(DirectionSet &&) = default;

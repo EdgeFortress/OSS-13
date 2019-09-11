@@ -12,9 +12,9 @@ class Human(Creature):
 		super().__init__()
 		self.name = "Python Human"
 		self.sprite = "human"
-		self.density = True
 		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
 		self.__updateActiveHandIcon()
+		self.AddVerb("drop", lambda player: self.Drop())
 
 	# IHasOrgans methods
 	def CreateOrgans(self):

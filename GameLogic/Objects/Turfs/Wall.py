@@ -1,3 +1,4 @@
+from Engine_Geometry import Direction
 from Objects.Turf import Turf
 
 class Wall(Turf):
@@ -6,4 +7,4 @@ class Wall(Turf):
 		self.isWall = True
 		self.name = "Wall"
 		self.sprite = "wall"
-		self.density = True
+		self.solidity.Add([Direction.CENTER])
