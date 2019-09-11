@@ -38,8 +38,6 @@ install:
     - vcpkg install "sfml:%platform%-windows-static"
     - vcpkg install "gtest:%platform%-windows-static"
 
-cache: c:\tools\vcpkg\
-
 after_build:
     - set BIN_FOLDER_SUFFIX=%platform%
     - if "%BIN_FOLDER_SUFFIX%"=="x86" (set BIN_FOLDER_SUFFIX=Win32)
