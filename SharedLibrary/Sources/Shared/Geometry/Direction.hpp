@@ -8,6 +8,7 @@ template<typename T>
 struct vec3;
 
 typedef vec2<int> vec2i;
+typedef vec2<float> vec2f;
 typedef vec3<int> rpos;
 
 enum class Direction : char {
@@ -23,7 +24,7 @@ enum class Direction : char {
 	CENTER
 };
 
-Direction VectToDirection(vec2i);
+Direction VectToDirection(vec2f);
 Direction VectToDirection(rpos);
 vec2i DirectionToVect(Direction);
 

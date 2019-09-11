@@ -20,7 +20,10 @@ void RegistratePlaneVector(py::module m, const char *name) {
 		.def(py::init<T>())
 		.def_readwrite("x", &uf::vec2<T>::x)
 		.def_readwrite("y", &uf::vec2<T>::y)
+		.def("Length", &uf::vec2<T>::length)
 		.def("Normalize", &uf::vec2<T>::normalize)
+		.def("GetAngle", &uf::vec2<T>::GetAngle)
+		.def("GetDirection", [](const uf::vec2<T> &v) { return VectToDirection(v); })
 		.def(py::self + py::self)
 		.def(py::self - py::self)
 		.def(py::self * int())
@@ -36,11 +39,15 @@ void RegistrateSpaceVector(py::module m, const char *name) {
 	py::class_<uf::vec3<T>>(m, name)
 		.def(py::init<>())
 		.def(py::init<T, T, T>())
+		.def(py::init<uf::vec2<T>, T>())
 		.def(py::init<T>())
 		.def_readwrite("x", &uf::vec3<T>::x)
 		.def_readwrite("y", &uf::vec3<T>::y)
 		.def_readwrite("z", &uf::vec3<T>::z)
+		.def_property_readonly("xy", &uf::vec3<T>::xy)
+		.def("Length", &uf::vec3<T>::length)
 		.def("Normalize", &uf::vec3<T>::normalize)
+		.def("GetDirection", [](const uf::vec3<T> &v) { return VectToDirection(v); })
 		.def(py::self + py::self)
 		.def(py::self - py::self)
 		.def(py::self * int())
@@ -72,6 +79,10 @@ PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
 		.value("NORTH_EAST", uf::Direction::NORTH_EAST)
 		.value("SOUTH_EAST", uf::Direction::SOUTH_EAST)
 		.value("CENTER", uf::Direction::CENTER);
+
+	m.def("DirectionToVect", &uf::DirectionToVect);
+	m.def("InvertDirection", &uf::InvertDirection);
+	m.def("SplitDirection", &uf::SplitDirection);
 
 	py::class_<uf::DirectionSet>(m, "DirectionSet")
 		.def(py::init<>())

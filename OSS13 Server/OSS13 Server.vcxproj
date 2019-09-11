@@ -85,7 +85,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -98,7 +98,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,7 +112,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -126,7 +126,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgRoot)/include/python3.7;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

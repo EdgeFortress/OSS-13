@@ -4,7 +4,8 @@
 
 namespace uf {
 
-Direction VectToDirection(vec2i vector) {
+template<class T>
+Direction VectToDirection(vec2<T> vector) {
 	if (vector.x > 0) {
 		if (vector.y > 0) return Direction::SOUTH_EAST;
 		if (vector.y == 0) return Direction::EAST;
@@ -22,9 +23,10 @@ Direction VectToDirection(vec2i vector) {
 	}
 	return Direction::NONE;
 }
-Direction VectToDirection(rpos vector) {
-	return VectToDirection(vector.xy());
-}
+
+Direction VectToDirection(vec2i vector) { return VectToDirection<int>(vector); }
+Direction VectToDirection(vec2f vector) { return VectToDirection<float>(vector); }
+Direction VectToDirection(rpos vector) { return VectToDirection(vector.xy()); }
 
 vec2i DirectionToVect(Direction direction) {
 	switch (direction) {

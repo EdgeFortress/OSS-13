@@ -38,9 +38,9 @@ namespace uf {
             if (y > 0) return M_PI / 2;
             else return M_PI * 3 / 2;
         }
-        float angle = 0;
-        if (x > 0) angle = atan(y / x);
-        if (x < 0) angle = M_PI - atan(y / -x);
+        double angle = 0;
+        if (x > 0) angle = atan(y / static_cast<double>(x));
+        if (x < 0) angle = M_PI - atan(y / -static_cast<double>(x));
         return angle;
     }
 
