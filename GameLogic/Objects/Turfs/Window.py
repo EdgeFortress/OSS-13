@@ -1,4 +1,5 @@
 from Engine_Geometry import Direction
+from Engine.World import Object
 
 from Objects.Turf import Turf
 

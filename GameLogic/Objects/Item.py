@@ -1,4 +1,4 @@
-from Object import Object
+from Engine.World import Object
 
 class Item(Object):
 	def __init__(self):

@@ -1,5 +1,5 @@
-from Engine_Server import Server, ResourceManager, ItemSpriteState
-from Object import Object
+from Engine.Server import gRM, ItemSpriteState
+from Engine.World import Object
 from Objects.Item import Item
 from Objects.Items.Clothing import Clothing, MobSlot
 from Objects.Creatures.IHasOrgans import IHasOrgans
@@ -154,8 +154,7 @@ class Creature(Object, IHasOrgans):
 		elif slot == MobSlot.RHAND:
 			state = ItemSpriteState.IN_HAND_RIGHT
 
-		rm = Server.RM
-		icon = rm.GetIcon(item.sprite, state)
+		icon = gRM.GetIcon(item.sprite, state)
 		if icon:
 			super()._pushToIcons(icon)
 

@@ -1,6 +1,6 @@
 from Engine_Geometry import DirectionSet, Direction
+from Engine.World import Object
 
-from Object import Object
 from Objects.Creature import Creature
 
 class Projectile(Object):

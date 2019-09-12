@@ -1,4 +1,4 @@
-from Engine_World import Map, CreateObject
+from Engine.World import Map, CreateObject, Object
 from Engine_Geometry import Vec3i
 from Objects.Turfs.Airlock import Airlock
 

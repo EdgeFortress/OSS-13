@@ -54,7 +54,7 @@ void ScriptEngine::FillMap(Map *map) {
 
 void ScriptEngine::OnPlayerJoined(Player *player) {
 	try {
-		py::module::import("EngineHook").attr("OnPlayerJoined")(player);
+		py::module::import("Engine.HooksRawArgs").attr("rawOnPlayerJoined")(player);
 	} catch (const std::exception &e) {
 		MANAGE_EXCEPTION(e);
 	}

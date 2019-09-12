@@ -20,15 +20,15 @@ namespace py = pybind11;
 namespace se = script_engine;
 
 PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
-	py::class_<World>(m, "World")
+	py::class_<World>(m, "eWorld")
 		.def("GetObjectById", &World::GetObject)
 		.def("GetMap", &World::GetMap);
 
-	py::class_<Map>(m, "Map")
+	py::class_<Map>(m, "eMap")
 		.def_property_readonly("size", &Map::GetSize)
 		.def("GetTile", &Map::GetTile, py::return_value_policy::reference);
 
-	py::class_<Tile>(m, "Tile")
+	py::class_<Tile>(m, "eTile")
 		.def_property_readonly("x", &Tile::X)
 		.def_property_readonly("y", &Tile::Y)
 		.def_property_readonly("z", &Tile::Z)
@@ -38,9 +38,9 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 
-	m.def("CreateObject", &CreateObject);
+	m.def("eCreateObject", &CreateObject);
 
-	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "Object")
+	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "eObject")
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
@@ -73,15 +73,15 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("_updateIcons", &Object::updateIcons)
 		.def("_pushToIcons", &Object::pushToIcons);
 
-	py::class_<VerbsHolder>(m, "VerbHolder")
+	py::class_<VerbsHolder>(m, "eVerbsHolder")
 		.def("AddVerb", &VerbsHolder::AddVerb);
 
-	py::class_<Component, se::PyComponent>(m, "Component")
+	py::class_<Component, se::PyComponent>(m, "eComponent")
 		.def(py::init<std::string &&>())
 		.def("Update", &Component::Update)
 		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // TODO: remove policy, when all objects will be implemented in scripts
 
-	py::class_<ControlUIElement, std::shared_ptr<ControlUIElement>>(m, "ControlUIElement")
+	py::class_<ControlUIElement, std::shared_ptr<ControlUIElement>>(m, "eControlUIElement")
 		.def(py::init<>())
 		.def_property("id", &ControlUIElement::GetId, &ControlUIElement::SetId)
 		.def_property("position", &ControlUIElement::GetPosition, &ControlUIElement::SetPosition)
@@ -90,14 +90,14 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("PopIcon", &ControlUIElement::PopIcon)
 		.def("ClearIcons", &ControlUIElement::ClearIcons);
 
-	py::class_<ControlUI>(m, "ControlUI")
+	py::class_<ControlUI>(m, "eControlUI")
 		.def_property_readonly("resolution", &ControlUI::GetResolution)
 		.def_property_readonly("center", &ControlUI::GetCenter)
 		.def_property_readonly("iconSize", &ControlUI::GetIconSize)
 		.def("UpdateElement", &ControlUI::UpdateElement)
 		.def("RemoveElement", &ControlUI::RemoveElement);
 
-	py::class_<Control, Component>(m, "Control")
+	py::class_<Control, Component>(m, "eControl")
 		.def_property_readonly("ui", &Control::GetUI)
 		.def_property("seeInvisibleAbility", &Control::GetSeeInvisibleAbility, &Control::SetSeeInvisibleAbility)
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)

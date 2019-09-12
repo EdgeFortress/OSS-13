@@ -1,6 +1,6 @@
 import types
 
-from Engine_World import CreateObject, ControlUIElement
+from Engine.World import CreateObject, ControlUIElement
 from Engine_Geometry import Vec2i
 from Objects.Creature import Creature
 from Objects.Item import Item

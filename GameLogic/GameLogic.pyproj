@@ -22,13 +22,27 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\HooksRawArgs.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Engine\Hooks.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Engine\Server.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Engine\World.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Engine\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Map.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Creature.py" />
     <Compile Include="Objects\Creatures\Ghost.py" />
     <Compile Include="Objects\Creatures\Human.py" />
-    <Compile Include="EngineHook.py" />
     <Compile Include="Objects\Creatures\IHasOrgans.py">
       <SubType>Code</SubType>
     </Compile>
@@ -44,7 +58,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Items\Taser.py" />
-    <Compile Include="Object.py" />
     <Compile Include="Objects\Items\__init__.py" />
     <Compile Include="Objects\Projectile.py">
       <SubType>Code</SubType>
@@ -68,11 +81,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\__init__.py" />
-    <Compile Include="Utils.py">
+    <Compile Include="Engine\Utils.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Engine\" />
     <Folder Include="Objects\Creatures\" />
     <Folder Include="Objects\Items\" />
     <Folder Include="Objects\Items\Clothes\" />

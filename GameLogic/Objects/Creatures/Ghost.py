@@ -1,5 +1,5 @@
 from Objects.Creature import Creature
-from Engine_World import CreateObject
+from Engine.World import CreateObject, Object
 from Engine_Geometry import Vec2i
 
 class Ghost(Creature):
