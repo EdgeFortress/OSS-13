@@ -19,7 +19,7 @@ class Creature(Object, IHasOrgans):
 
 		self.AddComponent("Control")
 		self.control = self.GetComponent("Control")
-		self.DefineUI(self.control.ui)
+		self._defineUI(self.control.ui)
 
 	@property
 	def seeInvisibleAbility(self):
@@ -33,7 +33,7 @@ class Creature(Object, IHasOrgans):
 			self.__seeInvisibleAbility = value
 			self.control.seeInvisibleAbility = value
 
-	def DefineUI(self, ui):
+	def _defineUI(self, ui):
 		pass
 
 	def Update(self, timeElapsed):

@@ -54,13 +54,13 @@ class Tile(eTile):
 		return Map(self._impl.map)
 
 	def IsDense(self, directions: DirectionSet) -> bool:
-		return self._impl.IsDense(directions)
+		return self._impl.IsDense(directions._impl)
 
 	def IsSpace(self) -> bool:
 		return self._impl.IsSpace()
 
 	def GetDenseObject(self, directions: DirectionSet) -> Object:
-		return self._impl.GetDenseObject(directions)
+		return self._impl.GetDenseObject(directions._impl)
 
 
 class Object(eObject):
@@ -201,7 +201,7 @@ class Object(eObject):
 		super()._pushToIcons(icon)
 
 
-def CreateObject(type: str, tile: Tile) -> Object:
+def CreateObject(type: str, tile: Tile = None) -> Object:
 	if isinstance(tile, Tile):
 		# called from scripts
 		return eCreateObject(type, tile._impl)
@@ -282,10 +282,10 @@ class ControlUIElement(eControlUIElement):
 		super(ControlUIElement, self.__class__).id.fset(self, value)
 
 	@property
-	def position(self) -> Vector:
+	def position(self) -> Vector2D:
 		return Vector2D._FromEngineVec(super().position)
 	@position.setter
-	def position(self, value: Vector):
+	def position(self, value: Vector2D):
 		super(ControlUIElement, self.__class__).position.fset(self, eVec2i(value.x, value.y))
 
 	def RegisterCallback(self, action: Callable[[], None]):

@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from Engine_Geometry import *
 
+from math import atan2, cos, sin
 from typing import List
 
-
-class Vector2D(object):
-	"""Vector2D Class"""
+class Vector2D:
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
@@ -34,8 +33,8 @@ class Vector2D(object):
 
 	def Rotate(self, angleToRotate: float) -> Vector2D:
 		"""Rotates this vector by an input angle in radians"""
-		mag = self.return_magnitude()
-		ang = self.return_angle()
+		mag = self.Magnitude()
+		ang = self.Angle()
 		x = mag * cos(ang + angleToRotate)
 		y = mag * sin(ang + angleToRotate)
 		return Vector2D(x, y)
@@ -90,8 +89,7 @@ class Vector2D(object):
 		return cls(engineVec.x, engineVec.y)
 
 
-class Vector(object):
-	"""Vector Class"""
+class Vector:
 	def __init__(self, x=0, y=0, z=0):
 		self.x = x
 		self.y = y
@@ -178,7 +176,7 @@ class Direction(eDirection):
 
 
 def DirectionToVect(dir: Direction) -> Vector2D:
-	return Vector2D.__FromEngineVect(eDirectionToVect(dir))
+	return Vector2D._FromEngineVect(eDirectionToVect(dir))
 
 
 def InvertDirection(dir: Direction) -> Direction:
@@ -195,11 +193,11 @@ class DirectionSet(eDirectionSet):
 	def Remove(self, directions: List[Direction]):
 		self._impl.Remove(directions)
 
-	def IsExistOne(self, directions: List[Direction]) -> bool:
-		return self._impl.IsExistOne(directions)
+	def DoesExistOne(self, directions: List[Direction]) -> bool:
+		return self._impl.DoesExistOne(directions)
 
-	def AreExistAll(self, directions: List[Direction]) -> bool:
-		return self._impl.IsExistOne(directions)
+	def DoExistAll(self, directions: List[Direction]) -> bool:
+		return self._impl.DoExistAll(directions)
 
 	def Reset(self):
 		self._impl.Reset()

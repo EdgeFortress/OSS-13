@@ -22,8 +22,8 @@ class Human(Creature):
 		self.organs.rightHand = self.AddOrgan(Hand())
 
 	# Creature methods
-	def DefineUI(self, ui):
-		self.__uiFields = types.SimpleNamespace()
+	def _defineUI(self, ui):
+		self._uiFields = types.SimpleNamespace()
 
 		element = ControlUIElement()
 		element.id = "lhand"
@@ -31,7 +31,7 @@ class Human(Creature):
 		element.AddIcon("lhand_inactive")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.lhand = element
+		self._uiFields.lhand = element
 
 		element = ControlUIElement()
 		element.id = "rhand"
@@ -39,7 +39,7 @@ class Human(Creature):
 		element.AddIcon("rhand_inactive")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.rhand = element
+		self._uiFields.rhand = element
 
 		element = ControlUIElement()
 		element.id = "equip"
@@ -47,7 +47,7 @@ class Human(Creature):
 		element.AddIcon("equip")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.equip = element
+		self._uiFields.equip = element
 
 		element = ControlUIElement()
 		element.id = "swap1"
@@ -55,7 +55,7 @@ class Human(Creature):
 		element.AddIcon("swap1")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.swap1 = element
+		self._uiFields.swap1 = element
 
 		element = ControlUIElement()
 		element.id = "swap2"
@@ -63,7 +63,7 @@ class Human(Creature):
 		element.AddIcon("swap2")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.swap2 = element
+		self._uiFields.swap2 = element
 
 		element = ControlUIElement()
 		element.id = "pocket1"
@@ -71,7 +71,7 @@ class Human(Creature):
 		element.AddIcon("pocket")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.pocket1 = element
+		self._uiFields.pocket1 = element
 
 		element = ControlUIElement()
 		element.id = "pocket2"
@@ -79,15 +79,15 @@ class Human(Creature):
 		element.AddIcon("pocket")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
-		self.__uiFields.pocket2 = element
+		self._uiFields.pocket2 = element
 	
 	def RemoveObject(self, object) -> bool:
 		for hand in self.hands:
 			if object is hand.holdedItem:
 				if hand is self.organs.leftHand:
-					self.__uiFields.lhand.PopIcon()
+					self._uiFields.lhand.PopIcon()
 				else:
-					self.__uiFields.rhand.PopIcon()
+					self._uiFields.rhand.PopIcon()
 
 		return super().RemoveObject(object)
 
@@ -96,9 +96,9 @@ class Human(Creature):
 			return False
 
 		if self.activeHand is self.organs.leftHand:
-			self.__uiFields.lhand.AddIcon(object.sprite)
+			self._uiFields.lhand.AddIcon(object.sprite)
 		else:
-			self.__uiFields.rhand.AddIcon(object.sprite)
+			self._uiFields.rhand.AddIcon(object.sprite)
 
 		return True
 
@@ -115,25 +115,25 @@ class Human(Creature):
 
 	# Human methods
 	def __uiFieldClicked(self, field):
-		if field is self.__uiFields.lhand:
+		if field is self._uiFields.lhand:
 			self.activeHand = self.organs.leftHand
 			self.__updateActiveHandIcon()
-		elif field is self.__uiFields.rhand:
+		elif field is self._uiFields.rhand:
 			self.activeHand = self.organs.rightHand
 			self.__updateActiveHandIcon()
 
 	def __updateActiveHandIcon(self):
-		self.__uiFields.lhand.ClearIcons()
-		self.__uiFields.rhand.ClearIcons()
+		self._uiFields.lhand.ClearIcons()
+		self._uiFields.rhand.ClearIcons()
 
 		if self.activeHand is self.organs.leftHand:
-			self.__uiFields.lhand.AddIcon("lhand_active")
-			self.__uiFields.rhand.AddIcon("rhand_inactive")
+			self._uiFields.lhand.AddIcon("lhand_active")
+			self._uiFields.rhand.AddIcon("rhand_inactive")
 		else:
-			self.__uiFields.lhand.AddIcon("lhand_inactive")
-			self.__uiFields.rhand.AddIcon("rhand_active")
+			self._uiFields.lhand.AddIcon("lhand_inactive")
+			self._uiFields.rhand.AddIcon("rhand_active")
 
 		if self.organs.leftHand.holdedItem:
-			self.__uiFields.lhand.AddIcon(self.organs.leftHand.holdedItem.sprite)
+			self._uiFields.lhand.AddIcon(self.organs.leftHand.holdedItem.sprite)
 		if self.organs.rightHand.holdedItem:
-			self.__uiFields.rhand.AddIcon(self.organs.rightHand.holdedItem.sprite)
+			self._uiFields.rhand.AddIcon(self.organs.rightHand.holdedItem.sprite)
