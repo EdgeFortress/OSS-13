@@ -31,4 +31,4 @@ install:
     - vcpkg install sfml:x64-windows-static
     - vcpkg install gtest:x64-windows-static
 
-cache: c:\tools\vcpkg\
+cache: c:\tools\vcpkg\installed
