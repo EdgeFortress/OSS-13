@@ -46,7 +46,7 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 
 void ScriptEngine::FillMap(Map *map) {
 	try {
-		py::module::import("Map").attr("FillMap")(map);
+		py::module::import("Engine.HooksRawArgs").attr("rawFillMap")(map);
 	} catch (const std::exception &e) {
 		MANAGE_EXCEPTION(e);
 	}

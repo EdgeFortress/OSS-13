@@ -73,11 +73,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("_updateIcons", &Object::updateIcons)
 		.def("_pushToIcons", &Object::pushToIcons);
 
-	py::class_<VerbsHolder>(m, "eVerbsHolder")
-		.def("AddVerb", &VerbsHolder::AddVerb);
-
 	py::class_<Component, se::PyComponent>(m, "eComponent")
-		.def(py::init<std::string &&>())
 		.def("Update", &Component::Update)
 		.def("GetOwner", &Component::GetOwner, "", py::return_value_policy::reference); // TODO: remove policy, when all objects will be implemented in scripts
 

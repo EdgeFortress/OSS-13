@@ -1,4 +1,4 @@
-from Engine_Geometry import Direction
+from Engine.Geometry import Direction
 from Objects.Turf import Turf
 
 class Wall(Turf):

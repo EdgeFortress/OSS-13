@@ -22,6 +22,9 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Geometry.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Engine\HooksRawArgs.py">
       <SubType>Code</SubType>
     </Compile>
@@ -37,7 +40,7 @@
     <Compile Include="Engine\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Map.py">
+    <Compile Include="Engine\Map.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Creature.py" />

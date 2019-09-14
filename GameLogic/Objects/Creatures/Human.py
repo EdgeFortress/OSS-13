@@ -1,7 +1,7 @@
 import types
 
 from Engine.World import CreateObject, ControlUIElement
-from Engine_Geometry import Vec2i
+from Engine.Geometry import Vector2D
 from Objects.Creature import Creature
 from Objects.Item import Item
 from Objects.Items.Clothing import MobSlot
@@ -27,7 +27,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "lhand"
-		element.position = Vec2i(ui.center.x, ui.resolution.y - ui.iconSize.y)
+		element.position = Vector2D(ui.center.x, ui.resolution.y - ui.iconSize.y)
 		element.AddIcon("lhand_inactive")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -35,7 +35,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "rhand"
-		element.position = Vec2i(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y)
+		element.position = Vector2D(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y)
 		element.AddIcon("rhand_inactive")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -43,7 +43,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "equip"
-		element.position = Vec2i(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y * 2)
+		element.position = Vector2D(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y * 2)
 		element.AddIcon("equip")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -51,7 +51,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "swap1"
-		element.position = Vec2i(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y * 2)
+		element.position = Vector2D(ui.center.x - ui.iconSize.x, ui.resolution.y - ui.iconSize.y * 2)
 		element.AddIcon("swap1")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -59,7 +59,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "swap2"
-		element.position = Vec2i(ui.center.x, ui.resolution.y - ui.iconSize.y * 2)
+		element.position = Vector2D(ui.center.x, ui.resolution.y - ui.iconSize.y * 2)
 		element.AddIcon("swap2")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -67,7 +67,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "pocket1"
-		element.position = Vec2i(ui.center.x + ui.iconSize.x, ui.resolution.y - ui.iconSize.y)
+		element.position = Vector2D(ui.center.x + ui.iconSize.x, ui.resolution.y - ui.iconSize.y)
 		element.AddIcon("pocket")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)
@@ -75,7 +75,7 @@ class Human(Creature):
 
 		element = ControlUIElement()
 		element.id = "pocket2"
-		element.position = Vec2i(ui.center.x + ui.iconSize.x * 2, ui.resolution.y - ui.iconSize.y)
+		element.position = Vector2D(ui.center.x + ui.iconSize.x * 2, ui.resolution.y - ui.iconSize.y)
 		element.AddIcon("pocket")
 		element.RegisterCallback(lambda element=element: self.__uiFieldClicked(element))
 		ui.UpdateElement(element)

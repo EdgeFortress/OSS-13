@@ -1,43 +1,52 @@
+from __future__ import annotations
+
 from Engine_Server import *
 from Engine.World import World, Control
 
 from enum import Enum
+from typing import Callable
 
 class Game(eGame):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	@property
 	def world() -> World:
 		return World(eGGame.world)
 
+class VerbsHolder(eVerbsHolder):
+	def __init__(self, impl):
+		self._impl = impl
 
-class Player(ePlayer):
-	def __new__(cls, parent):
-		return parent
+	def AddVerb(self, name: str, action: Callable[[], None]):
+		self._impl.AddVerb(name, action)
+
+class Player(ePlayer, VerbsHolder):
+	def __init__(self, impl):
+		VerbsHolder.__init__(self, impl)
 
 	@property
 	def ckey(self) -> str:
-		return super().ckey
+		return self._impl.ckey
 
 	@property
 	def control(self) -> Control:
-		return Control(super().control)
+		return Control(self._impl.control)
 
 	@control.setter
 	def control(self, value):
-		super(Player, self.__class__).control.fset(self, value)
+		self._impl.control.fset(value)
 
 	def IsConnected(self) -> bool:
-		return super().IsConnected()
+		return self._impl.IsConnected()
 
 
 class ResourceManager(eResourceManager):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
-	def GetIcon(title, state) -> eIcon:
-		eGServer.RM.GetIcon(title, state)
+	def GetIcon(self, title: str, state: ItemSpriteState) -> eIcon:
+		return self._impl.GetIcon(title, state)
 
 
 gServer = eGServer

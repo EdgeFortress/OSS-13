@@ -1,4 +1,4 @@
-from Engine_Geometry import DirectionSet, Direction
+from Engine.Geometry import DirectionSet, Direction
 from Engine.World import Object
 
 from Objects.Creature import Creature

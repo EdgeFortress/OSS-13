@@ -25,6 +25,9 @@ PYBIND11_EMBEDDED_MODULE(Engine_Server, m) {
 		.def_property_readonly("world", &Game::GetWorld)
 		.def("AddDelayedActivity", &Game::AddDelayedActivity);
 	m.attr("eGGame") = GGame;
+
+	py::class_<VerbsHolder>(m, "eVerbsHolder")
+		.def("AddVerb", &VerbsHolder::AddVerb);
 		
 	py::class_<Player, VerbsHolder>(m, "ePlayer")
 		.def_property_readonly("ckey", &Player::GetCKey)

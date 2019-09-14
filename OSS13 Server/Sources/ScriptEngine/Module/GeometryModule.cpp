@@ -59,16 +59,16 @@ void RegistrateSpaceVector(py::module m, const char *name) {
 }
 
 PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
-	RegistratePlaneVector<int32_t>(m, "Vec2i");
-	RegistratePlaneVector<double>(m, "Vec2f");
-	RegistrateSpaceVector<int32_t>(m, "Vec3i");
-	RegistrateSpaceVector<double>(m, "Vec3f");
+	RegistratePlaneVector<int32_t>(m, "eVec2i");
+	RegistratePlaneVector<double>(m, "eVec2f");
+	RegistrateSpaceVector<int32_t>(m, "eVec3i");
+	RegistrateSpaceVector<double>(m, "eVec3f");
 
 	// compatibility, don't use it
-	RegistratePlaneVector<uint32_t>(m, "Vec2i_unsigned");
-	RegistratePlaneVector<float>(m, "Vec2f_32");
+	RegistratePlaneVector<uint32_t>(m, "eVec2i_unsigned");
+	RegistratePlaneVector<float>(m, "eVec2f_32");
 
-	py::enum_<uf::Direction>(m, "Direction")
+	py::enum_<uf::Direction>(m, "eDirection")
 		.value("NONE", uf::Direction::NONE)
 		.value("SOUTH", uf::Direction::SOUTH)
 		.value("WEST", uf::Direction::WEST)
@@ -80,18 +80,17 @@ PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
 		.value("SOUTH_EAST", uf::Direction::SOUTH_EAST)
 		.value("CENTER", uf::Direction::CENTER);
 
-	m.def("DirectionToVect", &uf::DirectionToVect);
-	m.def("InvertDirection", &uf::InvertDirection);
-	m.def("SplitDirection", &uf::SplitDirection);
+	m.def("eDirectionToVect", &uf::DirectionToVect);
+	m.def("eInvertDirection", &uf::InvertDirection);
 
-	py::class_<uf::DirectionSet>(m, "DirectionSet")
+	py::class_<uf::DirectionSet>(m, "eDirectionSet")
 		.def(py::init<>())
 		.def("Add", (void (uf::DirectionSet::*)(const std::list<uf::Direction> &)) &uf::DirectionSet::Add)
 		.def("Remove", (void (uf::DirectionSet::*)(const std::list<uf::Direction> &)) &uf::DirectionSet::Remove)
-		.def("IsExistsOne", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::IsExistsOne)
-		.def("AreExistAll", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::AreExistAll)
+		.def("DoesExistOne", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::IsExistsOne)
+		.def("DoExistAll", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::AreExistAll)
 		.def("Reset", &uf::DirectionSet::Reset);
 
-	py::class_<uf::DirectionSetFractional>(m, "DirectionSetFractional")
+	py::class_<uf::DirectionSetFractional>(m, "eDirectionSetFractional")
 		.def("Add", &uf::DirectionSetFractional::Add);
 }

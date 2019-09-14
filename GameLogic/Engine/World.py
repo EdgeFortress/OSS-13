@@ -3,62 +3,64 @@ from __future__ import annotations
 from Engine_World import *
 from Engine_Geometry import *
 
+from Engine.Geometry import Vector, Vector2D, DirectionSet
+
 from datetime import timedelta
 from typing import Callable
 
 class World(eWorld):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	def GetObjectById(self, id: int) -> Object:
-		return super().GetObjectById(id)
+		return self._impl.GetObjectById(id)
 
 	def GetMap(self) -> Map:
-		return super().GetMap()
+		return self._impl.GetMap()
 
 
 class Map(eMap):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	@property
-	def size(self) -> Vec3i:
-		return super().size()
+	def size(self) -> Vector:
+		return Vector._FromEngineVec(self._impl.size())
 
-	def GetTile(pos: Vec3i) -> Tile:
-		return Tile(super().GetTile(pos))
+	def GetTile(self, pos: Vector) -> Tile:
+		return Tile(self._impl.GetTile(eVec3i(pos.x, pos.y, pos.z)))
 
 
 class Tile(eTile):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	@property
 	def x(self) -> int:
-		return super().x
+		return self._impl.x
 	@property
 	def y(self) -> int:
-		return super().y
+		return self._impl.y
 	@property
 	def z(self) -> int:
-		return super().z
+		return self._impl.z
 
 	@property
-	def pos(self) -> Vec3i:
-		return super().pos
+	def pos(self) -> Vector:
+		return Vector._FromEngineVec(self._impl.pos)
 
 	@property
 	def map(self) -> Map:
-		return Map(super().map)
+		return Map(self._impl.map)
 
 	def IsDense(self, directions: DirectionSet) -> bool:
-		return super().IsDense(directions)
+		return self._impl.IsDense(directions)
 
 	def IsSpace(self) -> bool:
-		return super().IsSpace()
+		return self._impl.IsSpace()
 
 	def GetDenseObject(self, directions: DirectionSet) -> Object:
-		return Object(super().GetDenseObject(directions))
+		return self._impl.GetDenseObject(directions)
 
 
 class Object(eObject):
@@ -95,10 +97,10 @@ class Object(eObject):
 
 	@property
 	def solidity(self) -> DirectionSet:
-		return super().solidity
+		return DirectionSet(super().solidity)
 	@solidity.setter
 	def solidity(self, value: DirectionSet):
-		super(Object, self.__class__).solidity.fset(self, value)
+		super(Object, self.__class__).solidity.fset(self, value._impl)
 
 	@property
 	def invisibility(self) -> int:
@@ -112,21 +114,21 @@ class Object(eObject):
 		return Tile(super().tile)
 	@tile.setter
 	def tile(self, value: Tile):
-		super(Object, self.__class__).tile.fset(self, value)
+		super(Object, self.__class__).tile.fset(self, value._impl)
 
 	@property
-	def position(self) -> Vec2i:
-		return super().position
+	def position(self) -> Vector2D:
+		return Vector2D._FromEngineVec(super().position)
 	@position.setter
-	def position(self, value: Vec2i):
-		super(Object, self.__class__).position.fset(self, value)
+	def position(self, value: Vector2D):
+		super(Object, self.__class__).position.fset(self, eVec2i(value.x, value.y))
 
 	@property
-	def speed(self) -> Vec2f:
-		return super().speed
+	def speed(self) -> Vector2D:
+		return Vector2D._FromEngineVec(super().speed)
 	@speed.setter
-	def speed(self, value: Vec2f):
-		super(Object, self.__class__).speed.fset(self, value)
+	def speed(self, value: Vector2D):
+		super(Object, self.__class__).speed.fset(self, eVec2f_32(value.x, value.y))
 
 	@property
 	def moveSpeed(self) -> float:
@@ -162,8 +164,8 @@ class Object(eObject):
 	def IsCloseTo(self, obj: Object) -> bool:
 		return super().IsCloseTo(obj)
 
-	def Move(self, dir: Vec2i):
-		super().Move(dir)
+	def Move(self, dir: Vector2D):
+		super().Move(eVec2i(dir.x, dir.y))
 
 	def MoveZ(self, dir: int):
 		super().MoveZ(dir)
@@ -172,7 +174,10 @@ class Object(eObject):
 		super().AddComponent(type)
 
 	def GetComponent(self, type: str) -> Component:
-		return Component(super().GetComponent(type))
+		cmp = super().GetComponent(type)
+		if isinstance(cmp, eControl):
+			return Control(cmp)
+		return Component(cmp)
 
 	def AddObject(self, obj: Object):
 		super().AddObject(obj)
@@ -197,63 +202,72 @@ class Object(eObject):
 
 
 def CreateObject(type: str, tile: Tile) -> Object:
-	return eCreateObject(type, tile)
+	if isinstance(tile, Tile):
+		# called from scripts
+		return eCreateObject(type, tile._impl)
+	else:
+		# called from engine
+		return eCreateObject(type, tile)
 
 
 class Component(eComponent):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	def Update(self, timeElapsed: timedelta):
-		super().Update(timedelta)
+		self._impl.Update(timedelta)
 
 	def GetOwner() -> Object:
-		return Object(super().GetOwner())
+		return self._impl.GetOwner()
 
 
 class Control(eControl, Component):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
+
+	@property
+	def ui(self) -> ControlUI:
+		return ControlUI(self._impl.ui)
 
 	@property
 	def seeInvisibleAbility(self) -> int:
-		return super().seeInvisibleAbility
+		return self._impl.seeInvisibleAbility
 	@seeInvisibleAbility.setter
 	def seeInvisibleAbility(self, value: int):
-		super(Control, self.__class__).seeInvisibleAbility.fset(self, value)
+		self._impl.seeInvisibleAbility = value
 
-	def GetAndDropMoveOrder() -> Vec2i:
-		return super().GetAndDropMoveOrder()
+	def GetAndDropMoveOrder(self) -> Vector2D:
+		return Vector2D._FromEngineVec(self._impl.GetAndDropMoveOrder())
 
-	def GetAndDropMoveZOrder() -> int:
-		return super().GetAndDropMoveZOrder()
+	def GetAndDropMoveZOrder(self) -> int:
+		return self._impl.GetAndDropMoveZOrder()
 
-	def GetAndDropClickedObject() -> Object:
-		return Object(super().GetAndDropClickedObject())
+	def GetAndDropClickedObject(self) -> Object:
+		return self._impl.GetAndDropClickedObject()
 
 
 class ControlUI(eControlUI):
-	def __new__(cls, parent):
-		return parent
+	def __init__(self, impl):
+		self._impl = impl
 
 	@property
-	def resolution(self) -> Vec2i:
-		return super().resolution
+	def resolution(self) -> Vector2D:
+		return Vector2D._FromEngineVec(self._impl.resolution)
 
 	@property
-	def center(self) -> Vec2i:
-		return super().center
+	def center(self) -> Vector2D:
+		return Vector2D._FromEngineVec(self._impl.center)
 
 	@property
-	def iconSize(self) -> Vec2i:
-		return super().iconSize
+	def iconSize(self) -> Vector2D:
+		return Vector2D._FromEngineVec(self._impl.iconSize)
 
 
 	def UpdateElement(self, element: ControlUIElement):
-		super().UpdateElement(element)
+		self._impl.UpdateElement(element)
 
 	def RemoveElement(self, elementId: str):
-		super().RemoveElement(elementId)
+		self._impl.RemoveElement(elementId)
 
 
 class ControlUIElement(eControlUIElement):
@@ -268,11 +282,11 @@ class ControlUIElement(eControlUIElement):
 		super(ControlUIElement, self.__class__).id.fset(self, value)
 
 	@property
-	def position(self) -> Vec2i:
-		return super().position
+	def position(self) -> Vector:
+		return Vector2D._FromEngineVec(super().position)
 	@position.setter
-	def position(self, value: Vec2i):
-		super(ControlUIElement, self.__class__).position.fset(self, value)
+	def position(self, value: Vector):
+		super(ControlUIElement, self.__class__).position.fset(self, eVec2i(value.x, value.y))
 
 	def RegisterCallback(self, action: Callable[[], None]):
 		super().RegisterCallback(action)
@@ -285,11 +299,3 @@ class ControlUIElement(eControlUIElement):
 
 	def ClearIcons(self):
 		super().ClearIcons()
-
-
-class VerbsHolder(eVerbsHolder):
-	def __new__(cls, parent):
-		return parent
-
-	def AddVerb(self, name: str, action: Callable[[], None]):
-		super().AddVerb(name, action)
