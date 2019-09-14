@@ -9,17 +9,52 @@ from datetime import timedelta
 from typing import Callable
 
 class World(eWorld):
+	"""
+	World class
+
+	Methods
+	-------
+	GetObjectById(id: int) -> Object
+		Returns object with given ID, if exists.
+
+		Note: each object in world has unique persistent id.
+		But be careful: when object is destroyed, its id can be reassigned.
+
+	GetMap() -> Map
+		Returns world's map
+
+		Note: For now world has only one map. This will be changed in next builds.
+
+	"""
 	def __init__(self, impl):
 		self._impl = impl
 
 	def GetObjectById(self, id: int) -> Object:
+		"""Returns object with given ID, if exists"""
 		return self._impl.GetObjectById(id)
 
 	def GetMap(self) -> Map:
+		"""Returns world's map"""
 		return self._impl.GetMap()
 
 
 class Map(eMap):
+	"""
+	Map is 3D cuboid of tiles.
+
+	Properties
+	----------
+	size: Vector
+		3-dimensional size of map
+		Read-only
+
+	Methods
+	-------
+	GetTile(pos: Vector) -> Tile
+		Returns tile with given position
+		None if pos is not included to [{0, 0, 0}, size)
+
+	"""
 	def __init__(self, impl):
 		self._impl = impl
 
@@ -32,6 +67,32 @@ class Map(eMap):
 
 
 class Tile(eTile):
+	"""
+	One tile of map
+
+	Properties
+	----------
+	x, y, z: int
+		Read-only
+
+	pos: Vector
+		Read-only
+
+	map: Map
+		Read-only
+
+	Methods
+	-------
+	IsDense(directions: DirectionSet) -> bool
+		True if one of tile's objects "solidity" blocks at least one of directions
+
+	IsSpace() -> bool
+		True if tile hasn't floor and wall
+
+	GetDenseObject(directions: DirectionSet) -> Object
+		Returns first tile's object with "solidity" which blocks one of given directions
+
+	"""
 	def __init__(self, impl):
 		self._impl = impl
 
@@ -64,6 +125,162 @@ class Tile(eTile):
 
 
 class Object(eObject):
+	"""
+	Any game object
+
+
+	Properties
+	----------
+	name: str
+		visible object's name; used only for displaying
+
+	sprite: str
+		object's sprite's ID
+
+	layer: int
+		drawing layer belongs [0, 100]. Greater value, later drawn
+
+	density: bool
+		when False, object ignores other objects solidity
+
+	solidity: DirectionSet
+		solid directions of object
+
+		- if one of 4 main "directed" directions is set (NORTH, SOUTH, WEST, EAST),
+			then no one dense object can walk in to tile from this direction (or out from this tile)
+		- if CENTER is set,
+			then no one dense object can walk in this tile from any direction
+		- any composite direction is breaks down to main directions
+
+	invisibility: int
+		invisibility flags of object (each bit is different type of invisibility)
+
+	tile: Tile
+		tile where object is placed. Can be None, if object is placed nowhere.
+
+	position: Vector
+		coordinates of object's tile. Vector2D(-1, -1) if tile is None.
+
+	speed: Vector2D
+		physical speed of object
+
+	moveSpeed: float
+		moving speed. If object can move, it will move with this speed
+
+	isWall: bool
+		True if object is wall. Used for atmosphere subsystem
+
+		Note: don't use it! Will be remove in next builds.
+
+	isFloor: bool
+		True if object is floor. Used for atmosphere subsystem
+
+		Note: don't use it! Will be remove in next builds.
+
+
+	Methods
+	-------
+	Update(timeElapsed: timedelta)
+		is called by Engine each tick
+
+		Note: don't call it from scripts!
+			should be overwritten if specific Update logic is needed
+
+		Parametres
+		----------
+		timeElapsed: timedelta
+			time was consumed by last tick
+
+	InteractedBy(obj: Object) -> bool
+		is called by Engine on interactions.
+		Means that current Object is tried to be interacted by someone with obj Object
+
+		Note: don't call it from scripts!
+			should be overwritten if specific OnInteraction logic is needed
+
+		Returns
+		-------
+		Should return True, if interaction is successful. False if interaction is impossible.
+
+	BumpedTo(obj: Object) -> bool
+		is called by Engine when object is bumps to obj Object
+		Object can be bumped to something only when moving with physical speed.
+		When moving, additional checks don't allow bumping.
+
+		Note: don't call it from scripts!
+			should be overwritten if specific OnBump logic is needed
+
+		Returns
+		-------
+		Should return True, if processed. False if bump is impossible.
+
+	IsCloseTo(obj: Object) -> bool
+		returns True if distance between object and obj < 2 (same tile, or neighbour, even diagonally)
+
+	Move(dir: Vector2D):
+		set order to move somewhere with moving speed
+
+		Note: don't invoke bumps. If moving is imposible due obstacle, order will be ignored
+
+		Parametres
+		----------
+		dir: Vector2D
+			direction to move. Each coordinate should belong {-1, 0, 1}
+
+	MoveZ(self, dir: int):
+		set order to move by Z-level
+
+		Parametres
+		----------
+		dir: int
+			z-level direction to move, should be 1 or -1
+
+	AddComponent(self, type: str):
+		create and add "type" component to object
+
+		Note: for now obly "Control" component is available
+
+	GetComponent(self, type: str) -> Component:
+		get component by it's type
+		None if object doesn't contain such component
+
+	AddObject(self, obj: Object):
+		add obj to object's content
+
+		Note: obj.tile will be set to object's tile
+
+	RemoveObject(self, obj: Object) -> bool:
+		remove obj from object's content
+		Returns False if object doesn't contain obj
+
+	SetSpriteState(state: ItemSpriteState):
+		set object's sprite state
+
+	PlayAnimation(id: str, callback: Callable[[], None] = None) -> bool:
+		play animation with given id and call callback when finished
+
+		Note: "animation" is animated sprite. Thus "id" is sprite id.
+
+	Delete(self):
+		delete object
+
+	_updateIcons(self):
+		is called by Engine when icons update is needed
+
+		Note: don't call it from scripts!
+			you can overwrite it to add some icons with _pushToIcons method
+
+	 _pushToIcons(self, icon: eIcon):
+		add icon to be drawn as object part/overlay
+
+		Note: use it only in _updateIcons definition
+
+		Parametres
+		----------
+		icon: eIcon
+			engine type of Icon. Can be received from ResourceManager
+
+	"""
 	def __init__(self):
 		super().__init__()
 
@@ -202,6 +419,29 @@ class Object(eObject):
 
 
 def CreateObject(type: str, tile: Tile = None) -> Object:
+	"""Create object by it's type
+
+	Parametres
+	----------
+	type: str
+		object's python module path.
+
+		Note: Object type should be named same with object file name. This limitation will be remove in next builds.
+
+	tile: Tile
+		tile, where object should be created. Can be None, if you don't need to place it yet.
+
+	Returns
+	-------
+	Object
+		spawned object
+
+	Example
+	-------
+		ghost = CreateObject("Objects.Creatures.Ghost")
+
+	"""
+
 	if isinstance(tile, Tile):
 		# called from scripts
 		return eCreateObject(type, tile._impl)
@@ -211,6 +451,28 @@ def CreateObject(type: str, tile: Tile = None) -> Object:
 
 
 class Component(eComponent):
+	"""
+	object's logic component
+
+	Methods
+	-------
+	Update(timeElapsed: timedelta)
+		is called by Engine each tick
+
+		Note: don't call it from scripts!
+			should be overwritten if specific Update logic is needed
+
+		Parametres
+		----------
+		timeElapsed: timedelta
+			time was consumed by last tick
+
+	GetOwner() -> Object
+		returns component's owner object.
+		Couldn't be None
+
+	"""
+
 	def __init__(self, impl):
 		self._impl = impl
 
@@ -222,6 +484,36 @@ class Component(eComponent):
 
 
 class Control(eControl, Component):
+	"""
+	Object controlling logic component
+
+	Used to provide control interface for Player and AI
+
+	Attributes
+	---------
+	ui: ControlUI
+		UI used for controlling object
+		Read-only
+
+	seeInvisibleAbility: int
+		invisibility flags which are visible for Player (each bit makes visible specific invisibility type)
+
+	Methods
+	-------
+	GetAndDropMoveOrder() -> Vector2D
+		returns last move order received
+		Internal order buffer will be dropped
+
+	GetAndDropMoveZOrder -> int
+		returns last Z-move order received
+		Internal order buffer will be dropped
+
+	GetAndDropClickedObject() -> Object
+		returns last clicked object
+		Internal order buffer will be dropped
+
+	"""
+
 	def __init__(self, impl):
 		self._impl = impl
 
@@ -247,6 +539,45 @@ class Control(eControl, Component):
 
 
 class ControlUI(eControlUI):
+	"""
+	UI used to object controlling
+
+	You can see this UI drawned over TileGrid usually.
+	It consists of elements which are drawn with common sprites.
+	For each element callback can be registered to be called when element is clicked.
+
+	Note: ControlUI resolution is virtual and independent of real player screen sizes.
+		UI will be automatically scaled on client side.
+
+	Attributes
+	----------
+	resolution: Vector2D
+		drawable field resolution (Vector2D(15 * 32, 15 * 32) for now)
+		Read-only
+
+	center: Vector2D
+		drawable field center
+		Read-only
+
+	iconSize: Vector2D
+		one element size (Vector2D(32, 32) for now)
+		Read-only
+
+		Note: values are given only as an example, don't rely on them
+
+	Methods
+	-------
+
+	UpdateElement(element: ControlUIElement)
+		update element
+
+		You can add created element with this method, or update previous with same id
+
+	RemoveElement(elementId: str)
+		remove element by it's id
+
+	"""
+
 	def __init__(self, impl):
 		self._impl = impl
 
@@ -271,6 +602,34 @@ class ControlUI(eControlUI):
 
 
 class ControlUIElement(eControlUIElement):
+	"""
+	One ControlUI's element. Will be drawn on client and can be clicked.
+
+	Attributes
+	----------
+	id: str
+		element's id. Elements with same id are merged.
+
+	position: Vector2D
+		on-screen position. Count it relatively ControlUI.resolution
+
+	Methods
+	-------
+
+	RegistrateCallback(action: Callable[[], None])
+		registrate action to be called on click
+
+	AddIcon(name: str)
+		add icon to be drawn on top of previous icons
+
+	PopIcon()
+		remove last added icon
+
+	ClearIcons()
+		remove all icons
+
+	"""
+
 	def __init__(self):
 		super().__init__()
 

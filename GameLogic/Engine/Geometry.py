@@ -6,6 +6,32 @@ from math import atan2, cos, sin
 from typing import List
 
 class Vector2D:
+	"""
+	Vector2D Class
+
+	Attributes
+	----------
+	x, y: float
+		vector coordinates
+
+	Methods
+	-------
+	Magnitude() -> float
+		count vector's length
+
+	Normalize() -> Vector2D
+		get unit vector with same direction
+
+	Direction() -> Direction
+		get Direction where vector is directed (1 direction of 8 options)
+
+	Angle() -> float
+		get vector's angle from the x-axis
+
+	Rotate(angleToRotate: float) -> Vector2D
+		create vector rotated by given angle relatively initial
+
+	"""
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
@@ -28,7 +54,7 @@ class Vector2D:
 		return eVec2f(self.x, self.y).GetDirection()
 
 	def Angle(self) -> float:
-		"""Returns the angle of this vector from the x axis"""
+		"""Returns the angle of this vector from the x-axis"""
 		return atan2(self.y, self.x)
 
 	def Rotate(self, angleToRotate: float) -> Vector2D:
@@ -90,6 +116,23 @@ class Vector2D:
 
 
 class Vector:
+	"""
+	Vector Class
+
+	Attributes
+	----------
+	x, y, z: float
+		vector coordinates
+
+	Methods
+	-------
+	Magnitude() -> float
+		count vector's length
+
+	Normalize() -> Vector
+		get unit vector with same direction
+
+	"""
 	def __init__(self, x=0, y=0, z=0):
 		self.x = x
 		self.y = y
@@ -163,6 +206,10 @@ class Vector:
 
 
 class Direction(eDirection):
+	"""
+	Direction enumeration
+	8 existing world directions, Center and None
+	"""
 	NONE		= eDirection.NONE
 	SOUTH		= eDirection.SOUTH
 	WEST		= eDirection.WEST
@@ -176,14 +223,72 @@ class Direction(eDirection):
 
 
 def DirectionToVect(dir: Direction) -> Vector2D:
+	"""Cast Direction to Vector2D
+
+	Attributes
+	----------
+	dir: Direction
+		Direction to be casted to Vector2D
+
+	Returns
+	-------
+	Vector2D
+		resulted vector
+		all coordinates equal one of {-1, 0, 1}
+
+	Example:
+	-------
+	DirectionToVect(Direction.NORTH_EAST) -> Vector2D(1, 1)
+
+	"""
 	return Vector2D._FromEngineVect(eDirectionToVect(dir))
 
 
 def InvertDirection(dir: Direction) -> Direction:
+	"""Invert Direction
+
+	Parameters
+	----------
+	dir: Direction
+		Direction to be inverted
+
+	Returns
+	-------
+	Direction
+		opposite direction (mirrored)
+
+	Example:
+	-------
+	InvertDirection(Direction.NORTH_EAST) -> Directon.SOUTH_WEST
+
+	"""
 	return eInvertDirection(dir)
 
 
 class DirectionSet(eDirectionSet):
+	"""
+	A class used to represent a set of directions. You can add directions and check which are already added.
+	Any composite direction will be broken to its components.
+
+	Methods
+	-------
+	Add(List[Direction])
+		Add directions from list to set. With composite direction both components will be added.
+
+	Remove(List[Direction])
+		Remove list of directions from set. For composite direction, it's components will be removed.
+
+	DoesExistOne(List[Direction]) -> bool
+		Check if one of directions is exist in set.
+
+	DoExistAll(List[Direction]) -> bool
+		Check if all of directions are exist in set.
+
+	Reset()
+		Remove all directions from set.
+
+	"""
+
 	def __init__(self, impl = eDirectionSet()):
 		self._impl = impl
 
