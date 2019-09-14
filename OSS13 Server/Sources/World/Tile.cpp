@@ -203,7 +203,7 @@ const std::list<Object *> &Tile::Content() const {
 Object *Tile::GetDenseObject(DirectionSet directions) const
 {
     for (auto &obj : content)
-        if (obj->GetSolidity().IsExistsOne(directions)) return obj;
+        if (obj->GetSolidity().DoesExistOne(directions)) return obj;
     return nullptr;
 }
 
@@ -215,7 +215,7 @@ Map *Tile::GetMap() const { return map; }
 
 bool Tile::IsDense(uf::DirectionSet directions) const {
 	for (auto &obj : content)
-		if (obj->GetSolidity().IsExistsOne(directions)) return true;
+		if (obj->GetSolidity().DoesExistOne(directions)) return true;
 	return false;
 }
 

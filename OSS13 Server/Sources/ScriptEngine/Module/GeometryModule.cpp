@@ -87,8 +87,8 @@ PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
 		.def(py::init<>())
 		.def("Add", (void (uf::DirectionSet::*)(const std::list<uf::Direction> &)) &uf::DirectionSet::Add)
 		.def("Remove", (void (uf::DirectionSet::*)(const std::list<uf::Direction> &)) &uf::DirectionSet::Remove)
-		.def("DoesExistOne", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::IsExistsOne)
-		.def("DoExistAll", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::AreExistAll)
+		.def("DoesExistOne", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::DoesExistOne)
+		.def("DoExistAll", (bool (uf::DirectionSet::*)(const std::list<uf::Direction> &) const) &uf::DirectionSet::DoExistAll)
 		.def("Reset", &uf::DirectionSet::Reset);
 
 	py::class_<uf::DirectionSetFractional>(m, "eDirectionSetFractional")

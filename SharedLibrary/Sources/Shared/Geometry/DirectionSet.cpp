@@ -39,20 +39,20 @@ void DirectionSet::Remove(const std::list<Direction> &directions) {
 	Remove(DirectionSet(directions));
 }
 
-bool DirectionSet::IsExistsOne(DirectionSet directions) const {
+bool DirectionSet::DoesExistOne(DirectionSet directions) const {
 	return (buffer & directions.buffer).any();
 }
 
-bool DirectionSet::IsExistsOne(const std::list<Direction> &directions) const {
-	return IsExistsOne(DirectionSet(directions));
+bool DirectionSet::DoesExistOne(const std::list<Direction> &directions) const {
+	return DoesExistOne(DirectionSet(directions));
 }
 
-bool DirectionSet::AreExistAll(DirectionSet directions) const {
+bool DirectionSet::DoExistAll(DirectionSet directions) const {
 	return (buffer & directions.buffer) == directions.buffer;
 }
 
-bool DirectionSet::AreExistAll(const std::list<Direction> &directions) const {
-	return AreExistAll(DirectionSet(directions));
+bool DirectionSet::DoExistAll(const std::list<Direction> &directions) const {
+	return DoExistAll(DirectionSet(directions));
 }
 
 void DirectionSet::Reset() {

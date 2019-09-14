@@ -26,11 +26,11 @@ public:
 	void Remove(DirectionSet directions);
 	void Remove(const std::list<Direction> &directions);
 
-	bool IsExistsOne(DirectionSet directions) const;
-	bool IsExistsOne(const std::list<Direction> &directions) const;
+	bool DoesExistOne(DirectionSet directions) const;
+	bool DoesExistOne(const std::list<Direction> &directions) const;
 
-	bool AreExistAll(DirectionSet directions) const;
-	bool AreExistAll(const std::list<Direction> &directions) const;
+	bool DoExistAll(DirectionSet directions) const;
+	bool DoExistAll(const std::list<Direction> &directions) const;
 
 	void Reset();
 

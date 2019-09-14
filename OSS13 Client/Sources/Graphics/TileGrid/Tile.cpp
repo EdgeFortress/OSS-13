@@ -106,6 +106,6 @@ bool Tile::IsBlocked() const {
 
 bool Tile::IsBlocked(uf::DirectionSet directions) const {
 	for (auto &obj : content)
-		if (obj->GetSolidity().IsExistsOne(directions)) return true;
+		if (obj->GetSolidity().DoesExistOne(directions)) return true;
 	return false;
 }
