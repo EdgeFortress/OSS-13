@@ -220,3 +220,6 @@ imgui.ini
 .idea/
 cmake-build-debug/
 .vscode/
+OSS13 Client.exe
+OSS13 Server.exe
+python*.dll
