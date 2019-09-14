@@ -116,10 +116,18 @@ class ResourceManager(eResourceManager):
 
 class ItemSpriteState(eItemSpriteState):
 	""" Enumeration of icon states"""
-	DEFAULT			= eItemSpriteState.DEFAULT 			"""default icon"""
-	ON_MOB			= eItemSpriteState.ON_MOB			"""is being weared by creature"""
-	IN_HAND_LEFT	= eItemSpriteState.IN_HAND_LEFT		"""is being holded in left hand"""
-	IN_HAND_RIGHT	= eItemSpriteState.IN_HAND_RIGHT	"""is being holded in right hand"""
+
+	# default icon
+	DEFAULT			= eItemSpriteState.DEFAULT
+
+	# is being weared by creature
+	ON_MOB			= eItemSpriteState.ON_MOB
+
+	# is being holded in left hand
+	IN_HAND_LEFT	= eItemSpriteState.IN_HAND_LEFT
+
+	# is being holded in right hand
+	IN_HAND_RIGHT	= eItemSpriteState.IN_HAND_RIGHT
 
 
 gServer = eGServer
