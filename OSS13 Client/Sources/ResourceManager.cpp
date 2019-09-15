@@ -18,7 +18,7 @@ void ResourceManager::Initialize() {
 	// Load icons list
 	auto config_files = FindFilesRecursive(IMAGE_CONFIGS_PATH, IMAGE_CONFIG_MASK);
 	for (const auto &config_file_path : config_files) {
-		generateTexturesAndSprites(config_file_path);
+		generateTexturesAndSprites(config_file_path.wstring());
 	}
 }
 
