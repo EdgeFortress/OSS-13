@@ -29,8 +29,8 @@ private:
 		nlohmann::json &config);
 
 private:
-	const wchar_t *IMAGE_CONFIGS_PATH = L"Resources/Icons";
-	const wchar_t *IMAGE_CONFIG_MASK = L"*.json";
+	const char *IMAGE_CONFIGS_PATH = "Resources/Icons";
+	const char *IMAGE_CONFIG_MASK = "*.json";
 	const wchar_t *CONFIG_FILE = L"Resources/ClientConfig.json";
 
 	ConfigController configController;

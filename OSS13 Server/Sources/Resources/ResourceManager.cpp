@@ -29,9 +29,10 @@ void ResourceManager::loadIcons() {
 	uint32_t lastIconNum = 0;
 
 	// Load icons list
-	auto config_files = FindFilesRecursive(L"Resources/Icons", L"*.json");
+	auto config_files = FindFilesRecursive("Resources/Icons", "*.json");
 	for (auto &config_file_path : config_files) {
-		std::ifstream config_istr(std::string(config_file_path.begin(), config_file_path.end()));
+		std::string configFilePathStr = config_file_path.string();
+		std::ifstream config_istr(configFilePathStr);
 		json config;
 		config_istr >> config;
 		for (auto icon_config : config["sprites"]) {
