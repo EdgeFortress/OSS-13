@@ -7,7 +7,7 @@ In the future this project will be used as a basis for [Space Station 13](https:
 * **Windows build:** [![Build status](https://ci.appveyor.com/api/projects/status/mrqydhalvotd0rsl/branch/master?svg=true)](https://ci.appveyor.com/project/Insineer/oss-13-7sux2/branch/master)
 * **Linux build:** [![Build Status](https://travis-ci.org/EdgeFortress/OSS-13.svg?branch=master)](https://travis-ci.org/EdgeFortress/OSS-13)
 
-![Discord](https://img.shields.io/discord/577960604204138506)
+[![Discord](https://img.shields.io/discord/577960604204138506)](https://discord.gg/aGKbRAj)
 
 ## Compile
 
