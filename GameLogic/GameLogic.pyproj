@@ -22,10 +22,13 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Detail\Environment.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Engine\Geometry.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Engine\HooksRawArgs.py">
+    <Compile Include="Engine\Detail\HooksRawArgs.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Engine\Hooks.py">
@@ -90,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />
+    <Folder Include="Engine\Detail\" />
     <Folder Include="Objects\Creatures\" />
     <Folder Include="Objects\Items\" />
     <Folder Include="Objects\Items\Clothes\" />

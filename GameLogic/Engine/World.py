@@ -128,6 +128,22 @@ class Object(eObject):
 	"""
 	Any game object
 
+	Static properties
+	-----------------
+
+	Note: default properties are static (prefix "def"). This means, that you can see them in 
+		Spawn window and other places where we use not objects instances themself, but types
+
+	defName: str
+		default type's object's name
+
+	defSprite: str
+		default type's object's sprite
+
+	defDescription: str
+		default type's object's description
+		Note: doesn't display anywhere for now
+
 
 	Properties
 	----------
@@ -281,8 +297,16 @@ class Object(eObject):
 			engine type of Icon. Can be received from ResourceManager
 
 	"""
+
+	defName = "Unknown"
+	defSprite = ""
+	defDescription = "Unknown object"
+
 	def __init__(self):
 		super().__init__()
+		self.name = self.defName
+		self.sprite = self.defSprite
+		self.description = self.defDescription
 
 	@property
 	def name(self) -> str:

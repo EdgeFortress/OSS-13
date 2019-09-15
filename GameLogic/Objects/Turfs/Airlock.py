@@ -2,10 +2,11 @@ from Engine.Geometry import Direction
 from Objects.Turf import Turf
 
 class Airlock(Turf):
+	defName = "Airlock"
+	defSprite = "airlock"
+
 	def __init__(self):
 		super().__init__()
-		self.name = "Airlock"
-		self.sprite = "airlock"
 		self.__closedSolidity = [Direction.CENTER]
 
 		self.solidity.Add(self.__closedSolidity)

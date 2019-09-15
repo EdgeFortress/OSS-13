@@ -8,10 +8,11 @@ from Objects.Items.Clothing import MobSlot
 from Objects.Items.Organs.Hand import Hand
 
 class Human(Creature):
+	defName = "Human"
+	defSprite = "human"
+
 	def __init__(self):
 		super().__init__()
-		self.name = "Python Human"
-		self.sprite = "human"
 		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
 		self.__updateActiveHandIcon()
 		self.AddVerb("drop", lambda player: self.Drop())

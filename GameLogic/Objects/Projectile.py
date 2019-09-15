@@ -4,11 +4,13 @@ from Engine.World import Object
 from Objects.Creature import Creature
 
 class Projectile(Object):
+	defName = "Stun Orb"
+	defSprite = "stunorb"
+	defDesc = "Taser's projectile. Watch out!"
+
 	def __init__(self):
 		super().__init__()
-		self.name = "Stun Orb"
 		self.layer = 100
-		self.sprite = "stunorb"
 		self.density = True
 		self.startTile = None
 		self.__absoluteSpeed = 7.0

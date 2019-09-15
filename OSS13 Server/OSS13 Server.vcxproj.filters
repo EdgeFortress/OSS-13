@@ -102,6 +102,9 @@
     <ClCompile Include="Sources\ScriptEngine\Module\ServerModule.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\ScriptEngine\ObjectType.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp">
@@ -222,6 +225,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\ControlUI.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\ScriptEngine\ObjectType.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

@@ -147,6 +147,7 @@
     <ClCompile Include="Sources\ScriptEngine\Module\GeometryModule.cpp" />
     <ClCompile Include="Sources\ScriptEngine\Module\ServerModule.cpp" />
     <ClCompile Include="Sources\ScriptEngine\Module\WorldModule.cpp" />
+    <ClCompile Include="Sources\ScriptEngine\ObjectType.cpp" />
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\VerbsHolder.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Sources\PlayerCommand.hpp" />
     <ClInclude Include="Sources\Resources\IconInfo.h" />
     <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
+    <ClInclude Include="Sources\ScriptEngine\ObjectType.h" />
     <ClInclude Include="Sources\ScriptEngine\ScriptEngine.h" />
     <ClInclude Include="Sources\ScriptEngine\Trampoline\PyComponent.h" />
     <ClInclude Include="Sources\ScriptEngine\Trampoline\PyObject.h" />
