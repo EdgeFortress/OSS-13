@@ -3,7 +3,6 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-#include <Shared/Array.hpp>
 #include <Shared/Global.hpp>
 #include <Shared/IFaces/IConfig.h>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
@@ -35,7 +34,8 @@ TileGrid::TileGrid() :
     visibleTilesHeight = Global::Z_FOV | 1;
 
     // Allocate memory for blocks
-    blocks.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+    blocks.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
+    blocks.SetMovedCallback(std::bind(&TileGrid::updatePos, this, std::placeholders::_1, std::placeholders::_2));
 
 	canBeActive = true;
 
@@ -108,7 +108,7 @@ void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
     padding.y = (int(windowSize.y) - tileSize * numOfTiles.y) / 2;
 
     for (auto &object : objects) object.second->Resize(tileSize);
-	for (auto &block : blocks) {
+	for (auto &block : blocks.Get()) {
 		if (block) block->Resize(tileSize);
 	}
 
@@ -325,7 +325,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
         }
     }
 
-	for (auto &block : blocks) {
+	for (auto &block : blocks.Get()) {
 		if (block) block->Update(timeElapsed);
 	}
     
@@ -460,26 +460,8 @@ void TileGrid::Stunned(uint id, sf::Time duration) {
 
 void TileGrid::ShiftBlocks(apos newFirst) {
     const rpos delta = newFirst - firstTile;
-    
-    std::vector< sptr<Tile> > newBlocks(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
 
-    for (int x = 0; x < visibleTilesSide; x++) {
-        for (int y = 0; y < visibleTilesSide; y++) {
-			for (int z = 0; z < visibleTilesHeight; z++) {
-				if (x - delta.x >= 0 && x - delta.x < visibleTilesSide &&
-					y - delta.y >= 0 && y - delta.y < visibleTilesSide &&
-					z - delta.z >= 0 && z - delta.z < visibleTilesHeight) {
-					const uint i = flat_index(apos(x, y, z) - delta);
-					newBlocks[i] = blocks[flat_index(apos(x,y,z))];
-					if (newBlocks[i]) {
-						newBlocks[i]->relPos = apos(x, y, z) - delta;
-					}
-				}
-            }
-        }
-    }
-
-    blocks = std::move(newBlocks);
+    blocks.Transform({.originDelta=delta});
 
     firstTile = newFirst;
 }
@@ -493,7 +475,7 @@ void TileGrid::SetCameraPosition(apos pos) {
 }
 
 void TileGrid::SetBlock(apos pos, std::shared_ptr<Tile> tile) {
-    blocks[flat_index(pos - firstTile)] = tile;
+    blocks.At(pos - firstTile) = tile;
     tile->relPos = pos - firstTile;
 }
 
@@ -518,7 +500,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo) {
 	overlayToggled = true;
 	auto tileOverlayInfo = overlayInfo.begin();
-	for (auto &tile : blocks) {
+	for (auto &tile : blocks.Get()) {
 		EXPECT(tileOverlayInfo != overlayInfo.end());
 		if (tile) {
 			tile->SetOverlay(tileOverlayInfo->text);
@@ -529,7 +511,7 @@ void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overla
 
 void TileGrid::ResetOverlay() {
 	overlayToggled = false;
-	for (auto &tile : blocks) {
+	for (auto &tile : blocks.Get()) {
 		if (tile)
 			tile->SetOverlay("");
 	}
@@ -537,7 +519,7 @@ void TileGrid::ResetOverlay() {
 
 Tile *TileGrid::GetTileRel(apos pos) const {
     if (pos < apos(visibleTilesSide,visibleTilesSide,visibleTilesHeight)) {
-		return blocks[flat_index(pos)].get();
+		return blocks.At(pos).get();
     }
     return nullptr;
 }
@@ -551,6 +533,9 @@ Object *TileGrid::GetObjectUnderCursor() const { return underCursorObject; }
 //const int TileGrid::GetPaddingX() const { return padding.x; }
 //const int TileGrid::GetPaddingY() const { return padding.y; }
 
-uint TileGrid::flat_index(const apos c) const {
-	return uf::flat_index(c, visibleTilesSide, visibleTilesSide);
+void TileGrid::updatePos(uf::vec3i pos, uf::vec3i newpos) {
+	if(!blocks.At(pos)) {
+		return;
+	}
+	blocks.At(pos)->relPos = newpos;
 }

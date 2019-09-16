@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include <Shared/Types.hpp>
+#include <Shared/Grid.hpp>
 
 #include "ICameraOverlay.h"
 
@@ -61,8 +62,8 @@ private:
 	int firstBlockX;
 	int firstBlockY;
 	int firstBlockZ;
-	std::vector<Tile *> visibleBlocks;
-	std::vector<bool> blocksSync;
+	uf::Grid<Tile *> visibleBlocks;
+	uf::Grid<bool> blocksSync;
 	std::unordered_set<uint> visibleObjects;
 
 	bool suspense;
@@ -80,8 +81,9 @@ private:
 	Tile *contextMenuTile;
 	std::vector<ContextMenuNodeCache> contextMenuCache;
 
+	void fillEmptyVisibleBlocks();
 	void fullRecountVisibleBlocks(const Tile * const tile);
 	void refreshVisibleBlocks(const Tile * const tile);
 
-	int flat_index (uf::vec3i c) const;
+	void unsee(uf::vec3i pos);
 };

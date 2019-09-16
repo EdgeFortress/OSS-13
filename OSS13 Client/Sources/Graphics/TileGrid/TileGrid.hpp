@@ -12,6 +12,8 @@
 #include <Shared/Types.hpp>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
+#include <Shared/Grid.hpp>
+
 namespace sf { 
     class Event;
     class Packet;
@@ -90,7 +92,7 @@ private:
     int visibleTilesSide;
     int visibleTilesHeight;
 
-    std::vector< sptr<Tile> > blocks;
+    uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
 
     mutable std::mutex mutex;
@@ -119,7 +121,7 @@ private:
     bool buildButtonPressed;
     bool ghostButtonPressed;
 
-    uint flat_index(const apos c) const;
-
 	bool movementPredictionDisabled{false};
+
+	void updatePos(uf::vec3i pos, uf::vec3i newpos);
 };

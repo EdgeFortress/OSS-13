@@ -5,16 +5,15 @@
 #include "Tile.hpp"
 #include "Atmos/Atmos.hpp"
 #include "Shared/Global.hpp"
-#include "Shared/Array.hpp"
 
-Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
-	size(sizeX, sizeY, sizeZ)
+Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ)
 {
-	tiles.reserve(sizeX*sizeY*sizeZ);
+	tiles.SetSize(sizeX, sizeY, sizeZ);
 	for (uint z = 0; z < sizeZ; z++) {
 		for (uint y = 0; y < sizeY; y++) {
 			for (uint x = 0; x < sizeX; x++) {
-				tiles.push_back(std::make_unique<Tile>(this, apos(x,y,z)));
+				uptr<Tile> &cell = tiles.At(apos(x, y, z));
+				cell = std::make_unique<Tile>(this, apos(x, y, z));
 			}
 		}
 	}
@@ -24,28 +23,24 @@ Map::Map(const uint sizeX, const uint sizeY, const uint sizeZ) :
 }
 
 void Map::ClearDiffs() {
-	for (auto &tile : tiles)
+	for (auto &tile : tiles.Get())
 		tile->ClearDiffs();
 	network::protocol::Diff::ResetDiffCounter();
 }
 
 void Map::Update(std::chrono::microseconds timeElapsed) {
-    for (auto &tile : tiles)
+    for (auto &tile : tiles.Get())
 		tile->Update(timeElapsed);
     atmos->Update(timeElapsed);
 }
 
-apos Map::GetSize() const { return size; }
+apos Map::GetSize() const { return tiles.GetSize(); }
 Atmos* Map::GetAtmos() const { return atmos.get(); };
 
 Tile *Map::GetTile(vec3i pos) const {
-    if (pos >= vec3i(0) && pos < size)
-        return tiles[flat_index(pos)].get();
+    if (pos >= vec3i(0) && pos < GetSize())
+        return tiles.At(pos).get();
     return nullptr;
 }
 
-uint Map::flat_index(const apos c) const {
-	return uf::flat_index(c, size.x, size.y);
-}
-
-const vector< uptr<Tile>>& Map::GetTiles() const { return tiles; }
+const vector< uptr<Tile>>& Map::GetTiles() const { return tiles.Get(); }
