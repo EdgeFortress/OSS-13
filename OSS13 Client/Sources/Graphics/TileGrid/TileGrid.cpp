@@ -30,8 +30,10 @@ TileGrid::TileGrid() :
     // num * size - (2 * pad + fov) >= size
     // num >= (size + 2 * pad + fov) / size
     // We need minimal num, so add 1 if not divided
-    visibleTilesSide = Global::FOV + 2 * Global::MIN_PADDING;
-    visibleTilesHeight = Global::Z_FOV | 1;
+    fov = Global::FOV;
+    fovZ = Global::Z_FOV;
+    visibleTilesSide = (fov*2+1) + 2 * Global::MIN_PADDING;
+    visibleTilesHeight = (fovZ*2+1);
 
     // Allocate memory for blocks
     blocks.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
@@ -52,7 +54,7 @@ void TileGrid::drawContainer() const {
 
     underCursorObject = nullptr;
 	buffer.clear();
-	const int border = Global::FOV / 2 + Global::MIN_PADDING;
+	const int border = fov + Global::MIN_PADDING;
 
     // Firstly, fill layers buffer by objects
     uf::vec2i tilePos; // tiles positions relative to camera
@@ -60,7 +62,7 @@ void TileGrid::drawContainer() const {
         for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
             Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
             if (tile) {
-                tile->Draw(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+                tile->Draw(&buffer, padding + (tilePos + uf::vec2i(fov) - shift) * tileSize);
                 for (auto &obj : tile->content) {
                     uint layer = obj->GetLayer();
                     if (layer) layersBuffer[obj->GetLayer()].push_back(obj); // if layer is 0, then object will not be drawn
@@ -75,7 +77,7 @@ void TileGrid::drawContainer() const {
             if ((tile->GetRelPos() - cameraRelPos).z != cameraZ) {
 				continue;
 			}
-            uf::vec2i pixel = (uf::vec2i(Global::FOV / 2) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
+            uf::vec2i pixel = (uf::vec2i(fov) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
             object->Draw(&buffer, pixel + padding);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
 				underCursorTile = tile;
@@ -93,7 +95,7 @@ void TileGrid::drawContainer() const {
 			for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
 				Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
 				if (tile) {
-					tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(Global::FOV / 2) - shift) * tileSize);
+					tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(fov) - shift) * tileSize);
 				}
 			}
 	}
@@ -102,8 +104,8 @@ void TileGrid::drawContainer() const {
 }
 
 void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
-    tileSize = int(windowSize.y) / Global::FOV;
-    numOfTiles = { Global::FOV, Global::FOV };
+    tileSize = int(windowSize.y) / (fov*2+1);
+    numOfTiles = { (fov*2+1), (fov*2+1) };
     padding.x = 0;
     padding.y = (int(windowSize.y) - tileSize * numOfTiles.y) / 2;
 
@@ -112,7 +114,7 @@ void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
 		if (block) block->Resize(tileSize);
 	}
 
-	auto actualSize = uf::vec2i(tileSize) * Global::FOV;
+	auto actualSize = uf::vec2i(tileSize) * (fov*2+1);
 
 	CustomWidget::SetSize(actualSize);
 	CustomWidget::SetPosition(padding);
@@ -496,6 +498,25 @@ void TileGrid::SetControllable(uint id, float speed) {
     }
 	LOGE << "New controllable wasn't founded" << std::endl;
 }
+
+void TileGrid::SetFOV(int fov, int fovZ) {
+	int newSide = fov * 2 + 1 + 2 * Global::MIN_PADDING;
+	int newHeight = fovZ * 2 + 1;
+	int diff = (visibleTilesSide - newSide) / 2;
+	int diff_z = (visibleTilesHeight - newHeight) / 2;
+	blocks.Transform({.originDelta={diff, diff, diff_z}, .sizeDelta={newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight}});
+	visibleTilesSide = newSide;
+	visibleTilesHeight = newHeight;
+	firstTile += uf::vec3i(diff, diff, diff_z);
+	cameraRelPos = cameraPos - firstTile;
+	this->fov = fov;
+	this->fovZ = fovZ;
+	auto window = CC::Get()->GetWindow();
+	window->GetUI()->GetCurrentUIModule()->Resize(window->GetWidth(), window->GetHeight());
+}
+
+int TileGrid::GetFOV() {return fov;}
+int TileGrid::GetFOVZ() {return fovZ;}
 
 void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo) {
 	overlayToggled = true;

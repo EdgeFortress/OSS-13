@@ -63,6 +63,9 @@ public:
 		void UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo);
 		void ResetOverlay();
 
+	void SetFOV(int fov, int fovZ);
+	int GetFOV();
+	int GetFOVZ();
     ////
 
     Tile *GetTileRel(apos) const;
@@ -84,6 +87,9 @@ private:
     apos cameraRelPos;
     uf::vec2f shift;
     int cameraZ = 0;
+
+	int fov;
+	int fovZ;
 
     // TileGrid padding
     uf::vec2i padding;

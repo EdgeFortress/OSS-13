@@ -35,6 +35,10 @@ public:
     void SetPlayer(Player * const player);
 	void TrackObject(Object *obj);
     void SetPosition(const Tile * const tile);
+	void SetFOV(int fov);
+	void SetFOVZ(int fovZ);
+	int GetFOV();
+	int GetFOVZ();
     void Suspend();
 	void SetInvisibleVisibility(uint visibility) { seeInvisibleAbility = visibility; }
 	void SetOverlay(uptr<ICameraOverlay> &&cameraOverlay);
@@ -66,8 +70,15 @@ private:
 	uf::Grid<bool> blocksSync;
 	std::unordered_set<uint> visibleObjects;
 
+	int fov;
+	int fovZ;
+
+	int fovBuffer;
+	int fovZBuffer;
+
 	bool suspense;
 	bool changeFocus;
+	bool changeFov;
 
 	uptr<ICameraOverlay> overlay;
 
@@ -85,5 +96,6 @@ private:
 	void fullRecountVisibleBlocks(const Tile * const tile);
 	void refreshVisibleBlocks(const Tile * const tile);
 
+	void updateFOV();
 	void unsee(uf::vec3i pos);
 };
