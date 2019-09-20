@@ -39,7 +39,7 @@ class VerbsHolder(eVerbsHolder):
 
 	Methods
 	-------
-	AddVerb(name: str, action: Callable[[], None])
+	AddVerb(name: str, action: Callable[[Player], None])
 		add new verb
 
 		Parametres
@@ -52,8 +52,9 @@ class VerbsHolder(eVerbsHolder):
 	def __init__(self, impl):
 		self._impl = impl
 
-	def AddVerb(self, name: str, action: Callable[[], None]):
-		self._impl.AddVerb(name, action)
+	def AddVerb(self, name: str, action: Callable[[Player], None]):
+		wrapper = lambda player: action(Player(player)) 
+		self._impl.AddVerb(name, wrapper)
 
 class Player(ePlayer, VerbsHolder):
 	"""
@@ -87,8 +88,8 @@ class Player(ePlayer, VerbsHolder):
 	def control(self) -> Control:
 		return Control(self._impl.control)
 	@control.setter
-	def control(self, value):
-		self._impl.control.fset(value)
+	def control(self, value: Control):
+		self._impl.control = value._impl
 
 	def IsConnected(self) -> bool:
 		return self._impl.IsConnected()

@@ -418,7 +418,7 @@ class Object(eObject):
 		cmp = super().GetComponent(type)
 		if isinstance(cmp, eControl):
 			return Control(cmp)
-		return Component(cmp)
+		raise TypeError("Bad component type!")
 
 	def AddObject(self, obj: Object):
 		super().AddObject(obj)
@@ -503,7 +503,7 @@ class Component(eComponent):
 	def Update(self, timeElapsed: timedelta):
 		self._impl.Update(timedelta)
 
-	def GetOwner() -> Object:
+	def GetOwner(self) -> Object:
 		return self._impl.GetOwner()
 
 
