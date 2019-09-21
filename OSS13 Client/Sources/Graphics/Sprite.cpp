@@ -76,3 +76,7 @@ void Sprite::updateSpriteVariables() {
     sfSprite.setTexture(*texture->GetSFMLTexture());
     sfSprite.setTextureRect(rect);
 }
+
+const sf::Sprite &Sprite::GetSfmlSprite() const {
+	return sfSprite;
+}

@@ -255,6 +255,20 @@ bool Connection::parsePacket(Packet &packet) {
 		return true;
 	}
 
+	if (auto *command = dynamic_cast<server::OpenSpawnWindowCommand *>(p.get())) {
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		EXPECT(gameProcessUI);
+		gameProcessUI->OpenSpawnWindow();
+		return true;
+	}
+
+	if (auto *command = dynamic_cast<server::UpdateSpawnWindowCommand *>(p.get())) {
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		EXPECT(gameProcessUI);
+		gameProcessUI->UpdateSpawnWindow(std::forward<std::vector<network::protocol::ObjectType>>(command->types));
+		return true;
+	}
+
 	if (auto *command = dynamic_cast<server::UpdateWindowCommand *>(p.get())) {
 		UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
 		EXPECT(uiModule);

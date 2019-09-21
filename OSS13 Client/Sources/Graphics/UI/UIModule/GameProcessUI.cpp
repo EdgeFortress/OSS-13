@@ -7,6 +7,7 @@
 #include <Graphics/TileGrid/TileGrid.hpp>
 #include <Graphics/TileGrid/Object.hpp>
 #include <Graphics/UI/UI.hpp>
+#include <Graphics/UI/Widget/SpawnWindow.h>
 #include <Network.hpp>
 
 #include <Shared/Global.hpp>
@@ -113,6 +114,19 @@ void GameProcessUI::HandleEvent(sf::Event event) {
     }
 
     UIModule::HandleEvent(event);
+}
+
+void GameProcessUI::OpenSpawnWindow() {
+	for (auto &widget : widgets)
+		if (dynamic_cast<SpawnWindow *>(widget.get()))
+			return;
+	widgets.push_back(std::make_unique<SpawnWindow>());
+}
+
+void GameProcessUI::UpdateSpawnWindow(std::vector<network::protocol::ObjectType> &&types) {
+	for (auto &widget : widgets)
+		if (auto *spawnWidget = dynamic_cast<SpawnWindow *>(widget.get()))
+			spawnWidget->UpdateTypes(std::forward<std::vector<network::protocol::ObjectType>>(types));
 }
 
 InfoLabel *GameProcessUI::GetInfoLabel() const { return infoLabel.get(); }

@@ -150,6 +150,7 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\FormattedTextField.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\ImGuiWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\SpawnWindow.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Graphics\Window.cpp" />
     <ClCompile Include="Sources\Network.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\ImGuiWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\LogRecordsHolder.h" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\SpawnWindow.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Graphics\Window.hpp" />
     <ClInclude Include="Sources\Network.hpp" />

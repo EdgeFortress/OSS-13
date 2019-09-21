@@ -27,6 +27,7 @@ public:
     bool IsValid() const;
     bool IsAnimated() const;
     bool PixelTransparent(uf::vec2u pixel) const;
+	const sf::Sprite &GetSfmlSprite() const;
 
 private:
     mutable sf::Sprite sfSprite;

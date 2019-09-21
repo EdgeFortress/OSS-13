@@ -7,6 +7,8 @@
 #include "Graphics/UI/Widget/FormattedTextField.hpp"
 #include "UIModule.hpp"
 
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+
 class UI;
 class TileGrid;
 
@@ -26,6 +28,9 @@ public:
     void Draw(sf::RenderWindow* renderWindow) override;
     void Update(sf::Time timeElapsed) override final;
     void HandleEvent(sf::Event event) override;
+
+	void OpenSpawnWindow();
+	void UpdateSpawnWindow(std::vector<network::protocol::ObjectType> &&types);
 
     InfoLabel *GetInfoLabel() const;
     TileGrid *GetTileGrid() const;
