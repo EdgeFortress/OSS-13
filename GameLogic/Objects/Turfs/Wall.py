@@ -2,6 +2,7 @@ from Engine.Geometry import Direction
 from Objects.Turf import Turf
 
 class Wall(Turf):
+	canBeSpawned = True
 	defName = "Wall"
 	defSprite = "wall"
 

@@ -131,6 +131,9 @@ class Object(eObject):
 	Static properties
 	-----------------
 
+	canBeSpawned: bool
+		determine whether object can be spawned
+
 	Note: default properties are static (prefix "def"). This means, that you can see them in 
 		Spawn window and other places where we use not objects instances themself, but types
 
@@ -298,9 +301,10 @@ class Object(eObject):
 
 	"""
 
+	canBeSpawned = False
 	defName = "Unknown"
 	defSprite = ""
-	defDescription = "Unknown object"
+	defDescription = ""
 
 	def __init__(self):
 		super().__init__()

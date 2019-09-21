@@ -2,6 +2,7 @@ from Engine.Geometry import Direction
 from Objects.Turf import Turf
 
 class Airlock(Turf):
+	canBeSpawned = True
 	defName = "Airlock"
 	defSprite = "airlock"
 

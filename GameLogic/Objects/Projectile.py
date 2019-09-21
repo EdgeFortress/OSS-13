@@ -6,7 +6,7 @@ from Objects.Creature import Creature
 class Projectile(Object):
 	defName = "Stun Orb"
 	defSprite = "stunorb"
-	defDesc = "Taser's projectile. Watch out!"
+	defDescription = "Taser's projectile. Watch out!"
 
 	def __init__(self):
 		super().__init__()

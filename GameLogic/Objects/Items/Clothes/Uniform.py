@@ -1,7 +1,8 @@
 from Objects.Items.Clothing import Clothing, MobSlot
 
 class Uniform(Clothing):
-	defName = "uniform"
+	canBeSpawned = True
+	defName = "Uniform"
 	defSprite = "grey"
 
 	def __init__(self):

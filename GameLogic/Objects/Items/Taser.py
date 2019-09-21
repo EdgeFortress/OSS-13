@@ -3,7 +3,8 @@ from Objects.Projectile import Projectile
 from Engine.World import CreateObject, Object
 
 class Taser(Item):
-	defName = ""
+	canBeSpawned = True
+	defName = "Taser"
 	defSprite = "taser"
 
 	def InteractWith(self, object):

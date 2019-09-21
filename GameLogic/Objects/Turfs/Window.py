@@ -4,9 +4,11 @@ from Engine.World import Object
 from Objects.Turf import Turf
 
 class Window(Turf):
+	canBeSpawned = True
+	defName = "Window"
+	defSprite = "window"
+
 	def __init__(self):
 		super().__init__()
-		self.name = "Window"
-		self.sprite = "window"
 		self.layer = 80
 		self.solidity.Add([Direction.SOUTH])
