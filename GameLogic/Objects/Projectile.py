@@ -4,6 +4,7 @@ from Engine.World import Object
 from Objects.Creature import Creature
 
 class Projectile(Object):
+	canBeSpawned = False
 	defName = "Stun Orb"
 	defSprite = "stunorb"
 	defDescription = "Taser's projectile. Watch out!"

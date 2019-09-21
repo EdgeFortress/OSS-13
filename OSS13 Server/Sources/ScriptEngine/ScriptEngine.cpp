@@ -81,7 +81,7 @@ ScriptEngine::~ScriptEngine() {
 
 Object *ScriptEngine::CreateObjectByKey(const std::string& typeKey) {
 	try {
-		return objectTypes[typeKey]->GetHandle()().cast<Object *>();
+		return CreateObject(*objectTypes[typeKey]);
 	} catch (const std::exception &e) {
 		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (TypeKey: \"" + typeKey + "\")\n");
 		return nullptr;
@@ -90,7 +90,7 @@ Object *ScriptEngine::CreateObjectByKey(const std::string& typeKey) {
 
 Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type) {
 	try {
-		return GetObjectType(m, type).GetHandle()().cast<Object *>();
+		return CreateObject(GetObjectType(m, type));
 	} catch (const std::exception &e) {
 		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (Module: \""s + m + "\", \"" + type + "\")\n");
 		return nullptr;
@@ -162,4 +162,12 @@ ObjectType &ScriptEngine::GetObjectType(const std::string& module, const std::st
 		std::string type = module.substr(module.find_last_of('.') + 1);
 		return *objectTypes[module + "." + type];
 	}
+}
+
+Object *ScriptEngine::CreateObject(ObjectType &type) {
+	if (!type.CanBeCreatedByEngine()) {
+		LOGE << type.GetTypeKey() << " type can't be created! Check whether name is None.";
+		return nullptr;
+	}
+	return type.GetHandle()().cast<Object *>();
 }

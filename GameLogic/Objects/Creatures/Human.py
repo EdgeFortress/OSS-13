@@ -8,7 +8,6 @@ from Objects.Items.Clothing import MobSlot
 from Objects.Items.Organs.Hand import Hand
 
 class Human(Creature):
-	canBeSpawned = True
 	defName = "Human"
 	defSprite = "human"
 

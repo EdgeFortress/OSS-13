@@ -13,7 +13,7 @@ DEFINE_SERIALIZABLE(ObjectType, uf::ISerializable)
 	std::string typeKey;
 	std::string typeName;
 	std::string name;
-	uint32_t sprite;
+	uint32_t sprite{0};
 	std::string description;
 
 	void Serialize(uf::Archive &ar) override {

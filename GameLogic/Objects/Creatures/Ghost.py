@@ -3,7 +3,6 @@ from Engine.World import CreateObject, Object
 from Engine.Geometry import Vector2D
 
 class Ghost(Creature):
-	canBeSpawned = True
 	defName = "Ghost"
 	defSprite = "ghost"
 

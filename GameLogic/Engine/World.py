@@ -132,13 +132,15 @@ class Object(eObject):
 	-----------------
 
 	canBeSpawned: bool
-		determine whether object can be spawned
+		determine whether object can be spawned via Spawn Menu. Doesn't affect whether object can be created with CreateObject
+		Object with defName == None can't be spawned even if canBeSpawned set to True
 
 	Note: default properties are static (prefix "def"). This means, that you can see them in 
 		Spawn window and other places where we use not objects instances themself, but types
 
 	defName: str
 		default type's object's name
+		Type can't be created if defName == None
 
 	defSprite: str
 		default type's object's sprite
@@ -301,16 +303,16 @@ class Object(eObject):
 
 	"""
 
-	canBeSpawned = False
-	defName = "Unknown"
-	defSprite = ""
-	defDescription = ""
+	canBeSpawned = True
+	defName = None
+	defSprite = None
+	defDescription = None
 
 	def __init__(self):
 		super().__init__()
-		self.name = self.defName
-		self.sprite = self.defSprite
-		self.description = self.defDescription
+		self.name = str(self.defName)
+		self.sprite = str(self.defSprite)
+		self.description = str(self.defDescription)
 
 	@property
 	def name(self) -> str:

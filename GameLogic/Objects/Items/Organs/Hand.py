@@ -2,8 +2,6 @@ from Objects.Item import Item
 from Objects.Items.Organ import Organ
 
 class Hand(Organ):
-	defName = "Hand"
-
 	def __init__(self):
 		super().__init__()
 		self.__item = None

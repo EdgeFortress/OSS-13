@@ -25,5 +25,8 @@ public:
 	ObjectType &GetObjectType(const std::string& module, const std::string& type);
 
 private:
+	Object *CreateObject(ObjectType &type);
+
+private:
 	std::map<ObjectTypeId, std::unique_ptr<ObjectType>> objectTypes;
 };

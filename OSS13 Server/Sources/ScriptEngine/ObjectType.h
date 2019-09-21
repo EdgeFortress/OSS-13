@@ -11,6 +11,7 @@ class ObjectType : public network::protocol::ObjectType {
 public:
 	explicit ObjectType(py::handle cls);
 
+	bool CanBeCreatedByEngine() const;
 	bool CanBeSpawned() const;
 	const std::string &GetName() const;
 	const std::string &GetTypeKey() const;
@@ -18,7 +19,8 @@ public:
 	py::handle GetModule();
 
 private:
-	bool canBeSpawned;
+	bool canBeCreatedByEngine{true};
+	bool canBeSpawned{false};
 	py::handle cls;
 	py::handle module;
 };

@@ -4,7 +4,6 @@ from Engine.World import Object
 from Objects.Turf import Turf
 
 class Window(Turf):
-	canBeSpawned = True
 	defName = "Window"
 	defSprite = "window"
 

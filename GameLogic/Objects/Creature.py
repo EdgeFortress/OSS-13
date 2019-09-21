@@ -5,8 +5,6 @@ from Objects.Items.Clothing import Clothing, MobSlot
 from Objects.Creatures.IHasOrgans import IHasOrgans
 
 class Creature(Object, IHasOrgans):
-	defName = "Creature"
-
 	def __init__(self):
 		Object.__init__(self)
 		IHasOrgans.__init__(self)
