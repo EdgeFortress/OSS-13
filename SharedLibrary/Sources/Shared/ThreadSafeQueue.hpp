@@ -11,16 +11,23 @@ namespace uf {
 		std::queue<T> queue;
 		std::mutex mutex;
 	public:
-		void Push(T t);
+		void Push(const T &t);
+		void Push(T &&t);
 		T Pop();
 		bool Empty();
 		uint32_t GetSize();
 	};
 
 	template<class T>
-	void ThreadSafeQueue<T>::Push(T t) {
+	void ThreadSafeQueue<T>::Push(const T &t) {
 		std::scoped_lock lock(mutex);
 		queue.push(t);
+	}
+
+	template<class T>
+	void ThreadSafeQueue<T>::Push(T &&t) {
+		std::scoped_lock lock(mutex);
+		queue.emplace(std::forward<T>(t));
 	}
 
 	template<class T>
@@ -28,7 +35,7 @@ namespace uf {
 		std::scoped_lock lock(mutex);
 		if (queue.empty())
 			return nullptr;
-		T t = queue.front();
+		T t = std::forward<T>(queue.front());
 		queue.pop();
 		return t;
 	}
