@@ -4,8 +4,22 @@
     "mobState": true,
     "sprites": [
         {
-            "sprite": "grey",
-            "frames": 1
+            "sprite": "grey"
+        },
+        {
+        	"sprite": "captain"
+        },
+        {
+        	"sprite": "atmospherics"
+        },
+        {
+        	"sprite": "security"
+        },
+        {
+        	"sprite": "medic"
+        },
+        {
+        	"sprite": "clown"
         }
     ]
 }
