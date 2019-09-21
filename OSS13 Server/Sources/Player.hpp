@@ -41,6 +41,8 @@ public:
 
 	void UIInput(uptr<network::protocol::UIData> &&data);
 	void UITrigger(const std::string &window, const std::string &trigger);
+	void SpawnWindowSearchCommand(const std::string &searchBuffer);
+	void SpawnWindowSpawnCommand(const std::string &typeKey);
 	void CallVerb(const std::string &verb);
     ///
 
@@ -53,6 +55,7 @@ public:
 		window->Initialize();
 		uiSinks[window->Id()] = std::move(window);
 	}
+	void OpenSpawnWindow();
 
 	const std::string &GetCKey() const { return ckey; }
 
@@ -67,6 +70,8 @@ public:
 
     void AddCommandToClient(network::protocol::Command *);
 
+	void AddSyncCommandFromClient(uptr<network::protocol::Command> &&command);
+
 private:
 	void updateUISinks(std::chrono::microseconds timeElapsed);
 
@@ -78,6 +83,7 @@ private:
 
 	wptr<Connection> connection;
 	uf::ThreadSafeQueue<PlayerCommand *> actions;
+	uf::ThreadSafeQueue<uptr<network::protocol::Command>> syncCommands;
 
 	bool atmosOverlayToggled;
 

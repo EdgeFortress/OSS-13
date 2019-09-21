@@ -1,5 +1,6 @@
 #include "ScriptEngine.h"
 
+#include <cctype>
 #include <algorithm>
 #include <filesystem>
 
@@ -78,6 +79,15 @@ ScriptEngine::~ScriptEngine() {
 	py::finalize_interpreter();
 }
 
+Object *ScriptEngine::CreateObjectByKey(const std::string& typeKey) {
+	try {
+		return objectTypes[typeKey]->GetHandle()().cast<Object *>();
+	} catch (const std::exception &e) {
+		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (TypeKey: \"" + typeKey + "\")\n");
+		return nullptr;
+	}
+}
+
 Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type) {
 	try {
 		return GetObjectType(m, type).GetHandle()().cast<Object *>();
@@ -85,6 +95,46 @@ Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type
 		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (Module: \""s + m + "\", \"" + type + "\")\n");
 		return nullptr;
 	}
+}
+
+std::vector<network::protocol::ObjectType *> GetSelectedTypesInfo(
+	const std::map<ObjectTypeId, std::unique_ptr<ObjectType>> &objectTypes, 
+	const std::function<bool(const ObjectType &type)> &selector) 
+{
+	std::vector<network::protocol::ObjectType *> result;
+
+	for (auto &[key, type] : objectTypes) {
+		if (selector(*type) && type->CanBeSpawned())
+			result.push_back(type.get());
+	}
+
+	return result;
+}
+
+bool isStringIncludeCaseInsensitive(const std::string &string, const std::string &pattern)
+{
+	auto it = std::search(
+		string.begin(), string.end(),
+		pattern.begin(), pattern.end(),
+		[](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }
+	);
+	return (it != string.end());
+}
+
+std::vector<network::protocol::ObjectType *> ScriptEngine::GetTypesInfo(const std::string &searchString) {
+	std::function<bool(const ObjectType &type)> selector;
+
+	if (searchString.empty()) {
+		selector = [&searchString](const ObjectType &type) { return true; };
+	} else {
+		selector = [&searchString](const ObjectType &type) {
+			if (isStringIncludeCaseInsensitive(type.GetTypeKey(), searchString))
+				return true;
+			return false;
+		};
+	}
+
+	return GetSelectedTypesInfo(objectTypes, selector);
 }
 
 void ScriptEngine::FillMap(Map *map) {

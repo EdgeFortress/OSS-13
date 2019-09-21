@@ -5,6 +5,7 @@
 #include <plog/Log.h>
 
 #include <IGame.h>
+#include <IScriptEngine.h>
 #include <Chat.h>
 #include <Network/Connection.hpp>
 #include <World/World.hpp>
@@ -14,6 +15,7 @@
 #include <ClientUI/WelcomeWindowSink.h>
 
 #include <Shared/ErrorHandling.h>
+#include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 class Server;
 
@@ -21,6 +23,7 @@ using namespace std::string_literals;
 
 Player::Player(std::string ckey) : ckey(ckey) {
 	control = nullptr;
+	AddVerb("spawn", &Player::OpenSpawnWindow);
 }
 
 void Player::SetConnection(sptr<Connection> &connection) {
@@ -70,6 +73,24 @@ void Player::UITrigger(const std::string &window, const std::string &trigger) {
 		iter->second->OnTrigger(trigger);
 }
 
+void Player::SpawnWindowSearchCommand(const std::string &searchBuffer) {
+	auto types = GGame->GetScriptEngine()->GetTypesInfo(searchBuffer);
+	auto command = std::make_unique<network::protocol::server::UpdateSpawnWindowCommand>();
+
+	for (auto type: types)
+		command->types.push_back(*type);
+
+	AddCommandToClient(command.release());
+}
+
+void Player::SpawnWindowSpawnCommand(const std::string &typeKey) {
+	if (control) {
+		auto *obj = GGame->GetScriptEngine()->CreateObjectByKey(typeKey);
+		if (obj)
+			obj->SetTile(control->GetOwner()->GetTile());
+	}
+}
+
 void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
 	for (auto iter = uiSinks.begin(); iter != uiSinks.end();) {
 		auto *sink = iter->second.get();
@@ -82,6 +103,25 @@ void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
 }
 
 void Player::Update(std::chrono::microseconds timeElapsed) {
+	while (!syncCommands.Empty()) {
+		auto generalCommand = syncCommands.Pop();
+
+		using namespace network::protocol;
+
+		if (auto *command = dynamic_cast<client::SpawnWindowSearchCommand *>(generalCommand.get())) {
+			SpawnWindowSearchCommand(command->searchBuffer);
+			continue;
+		}
+
+		if (auto *command = dynamic_cast<client::SpawnWindowSpawnCommand *>(generalCommand.get())) {
+			SpawnWindowSpawnCommand(command->typeKey);
+			continue;
+		}
+
+		LOGE << "Unknown command (ser id is 0x" << std::hex << generalCommand->Id() << ") was not processed as synced! "
+			<< "Player: " << ckey;
+	}
+
     while (!actions.Empty()) {
         PlayerCommand *temp = actions.Pop();
         if (temp) {
@@ -154,6 +194,10 @@ void Player::SendGraphicsUpdates(std::chrono::microseconds timeElapsed) {
 		camera->UpdateView(timeElapsed);
 }
 
+void Player::OpenSpawnWindow() {
+	AddCommandToClient(new network::protocol::server::OpenSpawnWindowCommand());
+}
+
 void Player::Suspend() {
 	camera->Suspend();
 }
@@ -182,4 +226,8 @@ bool Player::IsConnected() { return !connection.expired(); }
 void Player::AddCommandToClient(network::protocol::Command *command) {
 	if (sptr<Connection> connect = connection.lock())
 		connect->commandsToClient.Push(command);
+}
+
+void Player::AddSyncCommandFromClient(uptr<network::protocol::Command> &&command) {
+	syncCommands.Push(std::forward<uptr<network::protocol::Command>>(command));
 }

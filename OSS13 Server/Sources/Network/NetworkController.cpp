@@ -90,9 +90,17 @@ void NetworkController::working() {
 
 bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connection) {
 	uf::OutputArchive ar(packet);
-	auto p = ar.UnpackSerializable();
+	auto serializable = ar.UnpackSerializable();
+	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 
-	if (auto *command = dynamic_cast<client::AuthorizationCommand *>(p.get())) {
+	if (!generalCommand) {
+		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->Id() << ") is received from "
+			<< (connection->player ? connection->player->GetCKey() : "unknown client")
+			<< "!";
+		return false;
+	}
+
+	if (auto *command = dynamic_cast<client::AuthorizationCommand *>(generalCommand.get())) {
 		bool secondConnection = false;
 		for (auto &connection : connections) {
 			if (connection->player && connection->player->GetCKey() == command->login) {
@@ -114,7 +122,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::RegistrationCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::RegistrationCommand *>(generalCommand.get())) {
 		if (GServer->Registration(command->login, command->password))
 			connection->commandsToClient.Push(new network::protocol::server::RegistrationSuccessCommand());
 		else
@@ -122,7 +130,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::JoinGameCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::JoinGameCommand *>(generalCommand.get())) {
 		if (connection->player) {
 			if (GServer->JoinGame(connection->player)) {
 				connection->commandsToClient.Push(new network::protocol::server::GameJoinSuccessCommand());
@@ -133,68 +141,64 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::MoveCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::MoveCommand *>(generalCommand.get())) {
 		if (connection->player)
 			connection->player->Move(uf::Direction(command->direction));
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::MoveZCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::MoveZCommand *>(generalCommand.get())) {
 		if (connection->player)
 			connection->player->MoveZ(command->up);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::ClickObjectCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::ClickObjectCommand *>(generalCommand.get())) {
 		if (connection->player)
 			connection->player->ClickObject(command->id);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::ClickControlUICommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::ClickControlUICommand *>(generalCommand.get())) {
 		if (connection->player)
 			connection->player->ClickControlUI(command->id);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::SendChatMessageCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::SendChatMessageCommand *>(generalCommand.get())) {
 		if (connection->player)
 			connection->player->ChatMessage(command->message);
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::DisconnectionCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::DisconnectionCommand *>(generalCommand.get())) {
 		if (connection->player)
 			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
 		return false;
 	}
 
-	if (auto *command = dynamic_cast<client::UIInputCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::UIInputCommand *>(generalCommand.get())) {
 		if (connection->player) {
 			connection->player->UIInput(std::move(command->data));
 		}
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::UITriggerCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::UITriggerCommand *>(generalCommand.get())) {
 		if (connection->player) {
 			connection->player->UITrigger(command->window, command->trigger);
 		}
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::CallVerbCommand *>(p.get())) {
+	if (auto *command = dynamic_cast<client::CallVerbCommand *>(generalCommand.get())) {
 		if (connection->player) {
 			connection->player->CallVerb(command->verb);
 		}
 		return true;
 	}
 
-	if (connection->player)
-		LOGE << "Unknown Command is received from " << connection->player->GetCKey();
-	else
-		LOGE << "Unknown Command is received from unregistered client"; 
-
+	connection->player->AddSyncCommandFromClient(std::forward<uptr<network::protocol::Command>>(generalCommand));
 	return true;
 }
 

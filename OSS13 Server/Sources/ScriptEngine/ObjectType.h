@@ -3,20 +3,22 @@
 #include <Python.h>
 #include <pybind11/embed.h>
 
+#include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+
 namespace py = pybind11;
 
-class ObjectType {
+class ObjectType : public network::protocol::ObjectType {
 public:
 	explicit ObjectType(py::handle cls);
 
-	const std::string &GetName();
-	const std::string &GetTypeKey();
+	bool CanBeSpawned() const;
+	const std::string &GetName() const;
+	const std::string &GetTypeKey() const;
 	py::handle GetHandle();
 	py::handle GetModule();
 
 private:
-	std::string name;
-	std::string typeKey;
+	bool canBeSpawned;
 	py::handle cls;
 	py::handle module;
 };
