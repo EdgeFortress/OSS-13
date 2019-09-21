@@ -110,6 +110,24 @@ DEFINE_SERIALIZABLE(UITriggerCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
+DEFINE_SERIALIZABLE(SpawnWindowSearchCommand, Command)
+	std::string searchBuffer;
+
+	void Serialize(uf::Archive &ar) override {
+		Command::Serialize(ar);
+		ar & searchBuffer;
+	}
+DEFINE_SERIALIZABLE_END
+
+DEFINE_SERIALIZABLE(SpawnWindowSpawnCommand, Command)
+	std::string typeKey;
+
+	void Serialize(uf::Archive &ar) override {
+		Command::Serialize(ar);
+		ar & typeKey;
+	}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(CallVerbCommand, Command)
 	std::string verb;
 

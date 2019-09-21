@@ -34,6 +34,8 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(SendChatMessageCommand)
 		DECLARE_SER(UIInputCommand)
 		DECLARE_SER(UITriggerCommand)
+		DECLARE_SER(SpawnWindowSearchCommand)
+		DECLARE_SER(SpawnWindowSpawnCommand)
 		DECLARE_SER(CallVerbCommand)
 		DECLARE_SER(DisconnectionCommand)
 	}
@@ -51,6 +53,8 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(OverlayUpdateCommand)
 		DECLARE_SER(OverlayResetCommand)
 		DECLARE_SER(OpenWindowCommand)
+		DECLARE_SER(OpenSpawnWindowCommand)
+		DECLARE_SER(UpdateSpawnWindowCommand)
 		DECLARE_SER(UpdateWindowCommand)
 		DECLARE_SER(AddChatMessageCommand)
 	}

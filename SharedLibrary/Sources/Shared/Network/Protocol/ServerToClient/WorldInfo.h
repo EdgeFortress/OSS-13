@@ -9,6 +9,23 @@
 namespace network {
 namespace protocol {
 
+DEFINE_SERIALIZABLE(ObjectType, uf::ISerializable)
+	std::string typeKey;
+	std::string typeName;
+	std::string name;
+	uint32_t sprite;
+	std::string description;
+
+	void Serialize(uf::Archive &ar) override {
+		uf::ISerializable::Serialize(ar);
+		ar & typeKey;
+		ar & typeName;
+		ar & name;
+		ar & sprite;
+		ar & description;
+	}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 	uint32_t id;
 	std::string name;

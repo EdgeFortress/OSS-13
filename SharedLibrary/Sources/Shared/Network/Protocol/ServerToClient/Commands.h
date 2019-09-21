@@ -110,6 +110,17 @@ DEFINE_SERIALIZABLE(UpdateWindowCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
+DEFINE_PURE_SERIALIZABLE(OpenSpawnWindowCommand, Command)
+
+DEFINE_SERIALIZABLE(UpdateSpawnWindowCommand, Command)
+	std::vector<network::protocol::ObjectType> types;
+
+	void Serialize(uf::Archive &ar) override {
+		uf::ISerializable::Serialize(ar);
+		ar & types;
+	}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(AddChatMessageCommand, Command)
 	std::string message;
 
