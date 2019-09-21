@@ -16,8 +16,8 @@ public:
 	template<typename T, typename... TArgs>
 	T *CreateObject(apos tile, TArgs&&... Args);
 
-	Object *CreateScriptObject(const std::string &module, Tile *tile = nullptr);
-	Object *CreateScriptObject(const std::string &module, apos coords);
+	Object *CreateScriptObject(const std::string &typeKey, Tile *tile = nullptr);
+	Object *CreateScriptObject(const std::string &typeKey, apos coords);
 
 	void AddObject(std::shared_ptr<Object> obj);
 

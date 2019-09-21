@@ -15,8 +15,7 @@ public:
 	ScriptEngine();
 	~ScriptEngine();
 
-	Object *CreateObjectByKey(const std::string& typeKey) final;
-	Object *CreateObject(const std::string& module, const std::string& type) final;
+	Object *CreateObject(const std::string& typeKey) final;
 	std::vector<network::protocol::ObjectType *> GetTypesInfo(const std::string &searchString) final;
 
 	void FillMap(Map *map) final;

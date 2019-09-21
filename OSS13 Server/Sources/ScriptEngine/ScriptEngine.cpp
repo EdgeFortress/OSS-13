@@ -79,20 +79,11 @@ ScriptEngine::~ScriptEngine() {
 	py::finalize_interpreter();
 }
 
-Object *ScriptEngine::CreateObjectByKey(const std::string& typeKey) {
+Object *ScriptEngine::CreateObject(const std::string& typeKey) {
 	try {
-		return CreateObject(*objectTypes[typeKey]);
+		return CreateObject(*objectTypes.at(typeKey));
 	} catch (const std::exception &e) {
 		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (TypeKey: \"" + typeKey + "\")\n");
-		return nullptr;
-	}
-}
-
-Object *ScriptEngine::CreateObject(const std::string& m, const std::string& type) {
-	try {
-		return CreateObject(GetObjectType(m, type));
-	} catch (const std::exception &e) {
-		MANAGE_EXCEPTION_WITH_MSG(e, "Failed to create script object (Module: \""s + m + "\", \"" + type + "\")\n");
 		return nullptr;
 	}
 }

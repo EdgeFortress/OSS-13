@@ -85,7 +85,7 @@ void Player::SpawnWindowSearchCommand(const std::string &searchBuffer) {
 
 void Player::SpawnWindowSpawnCommand(const std::string &typeKey) {
 	if (control) {
-		auto *obj = GGame->GetScriptEngine()->CreateObjectByKey(typeKey);
+		auto *obj = GGame->GetScriptEngine()->CreateObject(typeKey);
 		if (obj)
 			obj->SetTile(control->GetOwner()->GetTile());
 	}

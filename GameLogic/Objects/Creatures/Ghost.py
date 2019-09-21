@@ -31,7 +31,7 @@ def Ghostize(player):
 
 	if not isinstance(mob, Ghost):
 		tile = player.control.GetOwner().tile
-		ghost = CreateObject("Objects.Creatures.Ghost", tile)
+		ghost = CreateObject("Objects.Creatures.Ghost.Ghost", tile)
 		ghost.hostControl = player.control
 		player.control = ghost.GetComponent("Control")
 	else:

@@ -13,7 +13,7 @@ class Human(Creature):
 
 	def __init__(self):
 		super().__init__()
-		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform", None))
+		self.PutOn(CreateObject("Objects.Items.Clothes.Uniform.Uniform"))
 		self.__updateActiveHandIcon()
 		self.AddVerb("drop", lambda player: self.Drop())
 

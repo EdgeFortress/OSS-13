@@ -448,15 +448,16 @@ class Object(eObject):
 		super()._pushToIcons(icon)
 
 
-def CreateObject(type: str, tile: Tile = None) -> Object:
+def CreateObject(typeKey: str, tile: Tile = None) -> Object:
 	"""Create object by it's type
 
 	Parametres
 	----------
-	type: str
-		object's python module path.
+	typeKey: str
+		object's type key, which consists of module path and object name.
 
-		Note: Object type should be named same with object file name. This limitation will be remove in next builds.
+		Example: in order to create grey uniform with type's name "Grey", defined in module "Objects.Items.Clothes.Uniform",
+			typeKey should be "Objects.Items.Clothes.Uniform.Grey"
 
 	tile: Tile
 		tile, where object should be created. Can be None, if you don't need to place it yet.
@@ -474,10 +475,10 @@ def CreateObject(type: str, tile: Tile = None) -> Object:
 
 	if isinstance(tile, Tile):
 		# called from scripts
-		return eCreateObject(type, tile._impl)
+		return eCreateObject(typeKey, tile._impl)
 	else:
 		# called from engine
-		return eCreateObject(type, tile)
+		return eCreateObject(typeKey, tile)
 
 
 class Component(eComponent):

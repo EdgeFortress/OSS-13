@@ -56,10 +56,10 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 }
 
 void World::CreateTestItems() {
-	CreateScriptObject("Objects.Items.Taser", {50, 51, 0});
-	CreateScriptObject("Objects.Turfs.Window", {50, 52, 0});
+	CreateScriptObject("Objects.Items.Taser.Taser", {50, 51, 0});
+	CreateScriptObject("Objects.Turfs.Window.Window", {50, 52, 0});
 
-	testMob = CreateScriptObject("Objects.Creatures.Ghost", { 49, 49, 0 });
+	testMob = CreateScriptObject("Objects.Creatures.Ghost.Ghost", { 49, 49, 0 });
 	testMob_lastPosition = nullptr;
 
 	test_dx = 1;
@@ -67,7 +67,7 @@ void World::CreateTestItems() {
 }
 
 Object *World::CreateNewPlayerCreature() {
-	auto human = CreateScriptObject("Objects.Creatures.Human", { 50, 50, 0 });
+	auto human = CreateScriptObject("Objects.Creatures.Human.Human", { 50, 50, 0 });
 
 	return human;
 }
