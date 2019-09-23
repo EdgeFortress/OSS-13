@@ -41,8 +41,6 @@ public:
 
 	void UIInput(uptr<network::protocol::UIData> &&data);
 	void UITrigger(const std::string &window, const std::string &trigger);
-	void SpawnWindowSearchCommand(const std::string &searchBuffer);
-	void SpawnWindowSpawnCommand(const std::string &typeKey);
 	void CallVerb(const std::string &verb);
     ///
 
@@ -74,6 +72,9 @@ public:
 
 private:
 	void updateUISinks(std::chrono::microseconds timeElapsed);
+
+	void spawnWindowSearchCommand(const std::string &searchBuffer);
+	void spawnWindowSpawnCommand(const std::string &typeKey);
 
 private:
 	std::string ckey;

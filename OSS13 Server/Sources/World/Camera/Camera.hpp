@@ -16,12 +16,20 @@ namespace sf {
     class Packet;
 }
 
+struct ContextMenuNodeCache {
+	Object *obj;
+	std::vector<std::string> verbs;
+};
+
 class Camera {
 public:
     explicit Camera(const Tile * const tile = nullptr);
 
 	void Update(std::chrono::microseconds timeElapsed);
     void UpdateView(std::chrono::microseconds timeElapsed);
+
+	void AskUpdateContextMenu(uf::vec3i tile);
+	void ClickContextMenu(uint8_t node, uint8_t verb);
 
     void SetPlayer(Player * const player);
 	void TrackObject(Object *obj);
@@ -37,6 +45,7 @@ public:
 
 private:
 	void updateOverlay(std::chrono::microseconds timeElapsed);
+	void updateContextMenu();
 
 private:
 	Player *player{nullptr};
@@ -65,6 +74,11 @@ private:
 	bool blockShifted;
 	bool unsuspensed;
 	bool cameraMoved;
+
+	bool askedUpdateContextMenu{false};
+	uf::vec3i contextMenuTileCoords;
+	Tile *contextMenuTile;
+	std::vector<ContextMenuNodeCache> contextMenuCache;
 
 	void fullRecountVisibleBlocks(const Tile * const tile);
 	void refreshVisibleBlocks(const Tile * const tile);

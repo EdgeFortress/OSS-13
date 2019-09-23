@@ -73,24 +73,6 @@ void Player::UITrigger(const std::string &window, const std::string &trigger) {
 		iter->second->OnTrigger(trigger);
 }
 
-void Player::SpawnWindowSearchCommand(const std::string &searchBuffer) {
-	auto types = GGame->GetScriptEngine()->GetTypesInfo(searchBuffer);
-	auto command = std::make_unique<network::protocol::server::UpdateSpawnWindowCommand>();
-
-	for (auto type: types)
-		command->types.push_back(*type);
-
-	AddCommandToClient(command.release());
-}
-
-void Player::SpawnWindowSpawnCommand(const std::string &typeKey) {
-	if (control) {
-		auto *obj = GGame->GetScriptEngine()->CreateObject(typeKey);
-		if (obj)
-			obj->SetTile(control->GetOwner()->GetTile());
-	}
-}
-
 void Player::updateUISinks(std::chrono::microseconds timeElapsed) {
 	for (auto iter = uiSinks.begin(); iter != uiSinks.end();) {
 		auto *sink = iter->second.get();
@@ -109,17 +91,19 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
 		using namespace network::protocol;
 
 		if (auto *command = dynamic_cast<client::SpawnWindowSearchCommand *>(generalCommand.get())) {
-			SpawnWindowSearchCommand(command->searchBuffer);
-			continue;
+			spawnWindowSearchCommand(command->searchBuffer);
+		} else if (auto *command = dynamic_cast<client::SpawnWindowSpawnCommand *>(generalCommand.get())) {
+			spawnWindowSpawnCommand(command->typeKey);
+		} else if (auto *command = dynamic_cast<client::ContextMenuUpdateCommand *>(generalCommand.get())) {
+			EXPECT(camera);
+			camera->AskUpdateContextMenu(command->tileCoords);
+		} else if (auto *command = dynamic_cast<client::ContextMenuClickCommand *>(generalCommand.get())) {
+			EXPECT(camera);
+			camera->ClickContextMenu(command->node, command->verb);
+		} else {
+			LOGE << "Unknown command (ser id is 0x" << std::hex << generalCommand->Id() << ") was not processed as synced! "
+				<< "Player: " << ckey;
 		}
-
-		if (auto *command = dynamic_cast<client::SpawnWindowSpawnCommand *>(generalCommand.get())) {
-			SpawnWindowSpawnCommand(command->typeKey);
-			continue;
-		}
-
-		LOGE << "Unknown command (ser id is 0x" << std::hex << generalCommand->Id() << ") was not processed as synced! "
-			<< "Player: " << ckey;
 	}
 
     while (!actions.Empty()) {
@@ -230,4 +214,22 @@ void Player::AddCommandToClient(network::protocol::Command *command) {
 
 void Player::AddSyncCommandFromClient(uptr<network::protocol::Command> &&command) {
 	syncCommands.Push(std::forward<uptr<network::protocol::Command>>(command));
+}
+
+void Player::spawnWindowSearchCommand(const std::string &searchBuffer) {
+	auto types = GGame->GetScriptEngine()->GetTypesInfo(searchBuffer);
+	auto command = std::make_unique<network::protocol::server::UpdateSpawnWindowCommand>();
+
+	for (auto type : types)
+		command->types.push_back(*type);
+
+	AddCommandToClient(command.release());
+}
+
+void Player::spawnWindowSpawnCommand(const std::string &typeKey) {
+	if (control) {
+		auto *obj = GGame->GetScriptEngine()->CreateObject(typeKey);
+		if (obj)
+			obj->SetTile(control->GetOwner()->GetTile());
+	}
 }

@@ -30,6 +30,7 @@ Camera::Camera(const Tile * const tile) :
 }
 
 void Camera::Update(std::chrono::microseconds timeElapsed) {
+	updateContextMenu();
 	if (trackingObject)
 		if (tile != trackingObject->GetTile())
 			SetPosition(trackingObject->GetTile());
@@ -50,6 +51,41 @@ void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 
 		player->AddCommandToClient(command.release());
 	}
+}
+
+void fillNode(Object *obj, network::protocol::ContextMenuNode &node, std::vector<ContextMenuNodeCache> &cache) {
+	node.title = obj->GetName();
+	std::vector<std::string> sendedVerbs;
+	for (auto &[key, verb] : obj->GetVerbs()) {
+		node.verbs.push_back(key);
+		sendedVerbs.push_back(key);
+	}
+	cache.push_back({ obj, std::move(sendedVerbs) });
+}
+
+void addTileObjectsToContextMenu(Tile *tile, network::protocol::server::UpdateContextMenuCommand &command, std::vector<ContextMenuNodeCache> &cache) {
+	cache.clear();
+
+	for (auto &obj : tile->Content()) {
+		auto node = std::make_unique<network::protocol::ContextMenuNode>();
+		fillNode(obj, *node, cache);
+		command.data.nodes.push_back(std::move(node));
+	}
+}
+
+void Camera::updateContextMenu() {
+	if (!askedUpdateContextMenu)
+		return;
+	askedUpdateContextMenu = false;
+	
+	EXPECT(contextMenuTileCoords >= uf::vec3i(0) && contextMenuTileCoords < uf::vec3i(visibleTilesSide, visibleTilesSide, visibleTilesHeight));
+	contextMenuTile = visibleBlocks[flat_index(contextMenuTileCoords)];
+
+	auto command = std::make_unique<network::protocol::server::UpdateContextMenuCommand>();
+	addTileObjectsToContextMenu(contextMenuTile, *command, contextMenuCache);
+
+	EXPECT(player);
+	player->AddCommandToClient(command.release());
 }
 
 void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
@@ -176,11 +212,20 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	}
 
 	command->options = server::GraphicsUpdateCommand::Option(updateOptions);
-    
+
 	if (updateOptions)
 		player->AddCommandToClient(command.release());
 
 	updateOverlay(timeElapsed);
+}
+
+void Camera::AskUpdateContextMenu(uf::vec3i tile) {
+	askedUpdateContextMenu = true;
+	contextMenuTileCoords = tile;
+}
+
+void Camera::ClickContextMenu(uint8_t node, uint8_t verb) {
+	contextMenuCache[node].obj->CallVerb(player, contextMenuCache[node].verbs[verb]);
 }
 
 void Camera::SetPlayer(Player * const player) { this->player = player; changeFocus = true; }
