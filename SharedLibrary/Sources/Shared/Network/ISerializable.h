@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <Shared/CRC32.h>
+#include <Shared/IFaces/ICopyable.h>
 
 #define _DEFINE_SERID(id)                  \
 	uint32_t Id() override {               \
@@ -18,7 +19,7 @@ namespace uf {
 
 class Archive;
 
-class ISerializable {
+class ISerializable : public ICopyable {
 public:
 	virtual uint32_t Id() = 0;
 	virtual void Serialize(Archive &archive);

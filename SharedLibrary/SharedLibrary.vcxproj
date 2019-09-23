@@ -62,6 +62,7 @@
     <ClInclude Include="Sources\Shared\Geometry\Vec3.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
     <ClInclude Include="Sources\Shared\IFaces\IConfig.h" />
+    <ClInclude Include="Sources\Shared\IFaces\ICopyable.h" />
     <ClInclude Include="Sources\Shared\IFaces\IFace.h" />
     <ClInclude Include="Sources\Shared\IFaces\IHasRepeatableID.h" />
     <ClInclude Include="Sources\Shared\IFaces\INonCopyable.h" />
