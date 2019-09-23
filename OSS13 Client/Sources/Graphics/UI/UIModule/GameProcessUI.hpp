@@ -3,9 +3,10 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-#include "Graphics/UI/Widget/Container.hpp"
-#include "Graphics/UI/Widget/FormattedTextField.hpp"
-#include "UIModule.hpp"
+#include <Graphics/UI/UIModule/UIModule.hpp>
+#include <Graphics/UI/Widget/Container.hpp>
+#include <Graphics/UI/Widget/FormattedTextField.hpp>
+#include <Graphics/UI/Widget/GameProcess/TileContextMenu.h>
 
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
@@ -29,6 +30,9 @@ public:
     void Update(sf::Time timeElapsed) override final;
     void HandleEvent(sf::Event event) override;
 
+	void OpenContextMenu();
+	void UpdateContextMenu(network::protocol::ContextMenuData &&data);
+
 	void OpenSpawnWindow();
 	void UpdateSpawnWindow(std::vector<network::protocol::ObjectType> &&types);
 
@@ -38,11 +42,12 @@ public:
 private:
     uptr<InfoLabel> infoLabel;
 
-    Container *functionWindow;
-	TileGrid *tileGrid;
-    Container *container;
-    Entry *entry;
-    FormattedTextField *formattedTextField;
+	Container *functionWindow{nullptr};
+	TileGrid *tileGrid{nullptr};
+	TileContextMenu *tileContextMenu{nullptr};
+	Container *container{nullptr};
+	Entry *entry{nullptr};
+	FormattedTextField *formattedTextField{nullptr};
 
     void generateFunctionWindow();
 

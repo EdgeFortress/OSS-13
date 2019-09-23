@@ -111,8 +111,10 @@ private:
 
     uf::vec2i cursorPosition;
     mutable Object *underCursorObject;
+	mutable Tile *underCursorTile;
 
 	bool objectClicked;
+	bool rmbClicked{false};
 	bool dropButtonPressed;
     bool buildButtonPressed;
     bool ghostButtonPressed;

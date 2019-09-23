@@ -78,6 +78,7 @@ void TileGrid::drawContainer() const {
             uf::vec2i pixel = (uf::vec2i(Global::FOV / 2) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
             object->Draw(&buffer, pixel + padding);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
+				underCursorTile = tile;
                 if (!object->PixelTransparent(cursorPosition - pixel))
                     underCursorObject = object;
             }
@@ -124,9 +125,21 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 	if (Container::OnMouseButtonPressed(button, position))
 		return true;
 
-	if (underCursorObject) {
-		objectClicked = true;
-		return true;
+	switch (button) {
+		case sf::Mouse::Left: {
+			if (underCursorObject) {
+				objectClicked = true;
+				return true;
+			}
+			break;
+		}
+		case sf::Mouse::Right: {
+			if (underCursorTile) {
+				rmbClicked = true;
+				return true;
+			}
+			break;
+		}
 	}
 	return false;
 }
@@ -269,6 +282,14 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			auto *p = new client::ClickObjectCommand();
 			p->id = underCursorObject->GetID();
 			Connection::commandQueue.Push(p);
+		}
+
+		if (rmbClicked) {
+			rmbClicked = false;
+			dynamic_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->OpenContextMenu();
+			auto command = std::make_unique<network::protocol::client::ContextMenuUpdateCommand>();
+			command->tileCoords = underCursorTile->GetRelPos();
+			Connection::commandQueue.Push(command.release());
 		}
 
 		if (stun == sf::Time::Zero && dropButtonPressed) {

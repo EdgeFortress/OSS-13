@@ -269,6 +269,13 @@ bool Connection::parsePacket(Packet &packet) {
 		return true;
 	}
 
+	if (auto *command = dynamic_cast<server::UpdateContextMenuCommand *>(p.get())) {
+		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
+		EXPECT(gameProcessUI);
+		gameProcessUI->UpdateContextMenu(std::forward<network::protocol::ContextMenuData>(command->data));
+		return true;
+	}
+
 	if (auto *command = dynamic_cast<server::UpdateWindowCommand *>(p.get())) {
 		UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
 		EXPECT(uiModule);

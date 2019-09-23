@@ -96,7 +96,10 @@
     <ClCompile Include="Sources\Graphics\TileGrid\ControlUI.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Graphics\UI\Widget\SpawnWindow.cpp">
+    <ClCompile Include="Sources\Graphics\UI\Widget\GameProcess\SpawnWindow.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Graphics\UI\Widget\GameProcess\TileContextMenu.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -194,7 +197,10 @@
     <ClInclude Include="Sources\Graphics\TileGrid\ControlUI.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Graphics\UI\Widget\SpawnWindow.h">
+    <ClInclude Include="Sources\Graphics\UI\Widget\GameProcess\SpawnWindow.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Graphics\UI\Widget\GameProcess\TileContextMenu.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

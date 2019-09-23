@@ -7,7 +7,7 @@
 #include <Graphics/TileGrid/TileGrid.hpp>
 #include <Graphics/TileGrid/Object.hpp>
 #include <Graphics/UI/UI.hpp>
-#include <Graphics/UI/Widget/SpawnWindow.h>
+#include <Graphics/UI/Widget/GameProcess/SpawnWindow.h>
 #include <Network.hpp>
 
 #include <Shared/Global.hpp>
@@ -40,6 +40,10 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
     formattedTextField->GetStyle().textColor = sf::Color(193, 205, 205);
     formattedTextField->GetStyle().fontSize = 18;
     container->AddItem(formattedTextField, sf::Vector2f(0, 0));
+
+	auto tileContextMenu = std::make_unique<TileContextMenu>();
+	this->tileContextMenu = tileContextMenu.get();
+	widgets.push_back(std::move(tileContextMenu));
 
 	curInputWidget = tileGrid;
 }
@@ -114,6 +118,14 @@ void GameProcessUI::HandleEvent(sf::Event event) {
     }
 
     UIModule::HandleEvent(event);
+}
+
+void GameProcessUI::OpenContextMenu() {
+	tileContextMenu->Open();
+}
+
+void GameProcessUI::UpdateContextMenu(network::protocol::ContextMenuData &&data) {
+	tileContextMenu->SetContent(std::move(data));
 }
 
 void GameProcessUI::OpenSpawnWindow() {
