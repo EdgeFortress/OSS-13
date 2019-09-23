@@ -128,6 +128,26 @@ DEFINE_SERIALIZABLE(SpawnWindowSpawnCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
+DEFINE_SERIALIZABLE(ContextMenuUpdateCommand, Command)
+	uf::vec3i tileCoords;
+
+	void Serialize(uf::Archive &ar) override {
+		Command::Serialize(ar);
+		ar & tileCoords;
+	}
+DEFINE_SERIALIZABLE_END
+
+DEFINE_SERIALIZABLE(ContextMenuClickCommand, Command)
+	uint8_t node;
+	uint8_t verb;
+
+	void Serialize(uf::Archive &ar) override {
+		Command::Serialize(ar);
+		ar & node;
+		ar & verb;
+	}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(CallVerbCommand, Command)
 	std::string verb;
 

@@ -36,6 +36,8 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(UITriggerCommand)
 		DECLARE_SER(SpawnWindowSearchCommand)
 		DECLARE_SER(SpawnWindowSpawnCommand)
+		DECLARE_SER(ContextMenuUpdateCommand)
+		DECLARE_SER(ContextMenuClickCommand)
 		DECLARE_SER(CallVerbCommand)
 		DECLARE_SER(DisconnectionCommand)
 	}
@@ -56,6 +58,7 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(OpenSpawnWindowCommand)
 		DECLARE_SER(UpdateSpawnWindowCommand)
 		DECLARE_SER(UpdateWindowCommand)
+		DECLARE_SER(UpdateContextMenuCommand)
 		DECLARE_SER(AddChatMessageCommand)
 	}
 
@@ -63,6 +66,8 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(RadioButtonUIData)
 		DECLARE_SER(OverlayInfo)
 		DECLARE_SER(WindowData)
+		DECLARE_SER(ContextMenuData)
+		DECLARE_SER(ContextMenuNode)
 	}
 
 	switch (id) {

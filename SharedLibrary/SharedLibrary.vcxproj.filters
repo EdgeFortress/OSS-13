@@ -244,6 +244,9 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\ControlUIData.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\ContextMenuData.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
     <ClInclude Include="Sources\Shared\IFaces\ICopyable.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>

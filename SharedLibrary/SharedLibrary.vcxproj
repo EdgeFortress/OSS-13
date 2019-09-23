@@ -74,6 +74,7 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\ClientToServer\Commands.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\Commands.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\ContextMenuData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\ControlUIData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\Diff.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\OverlayInfo.h" />
