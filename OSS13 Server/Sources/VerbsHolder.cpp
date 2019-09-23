@@ -6,7 +6,6 @@ using namespace std::string_literals;
 
 void VerbsHolder::AddVerb(const std::string &name, Verb action) {
 	verbs[name] = action;
-	LOGI << "Verb added: " << name;
 }
 
 void VerbsHolder::CallVerb(Player *player, const std::string &name) const {

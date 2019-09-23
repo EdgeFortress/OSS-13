@@ -3,7 +3,8 @@ from __future__ import annotations
 from Engine_World import *
 from Engine_Geometry import *
 
-from Engine.Geometry import Vector, Vector2D, DirectionSet
+import Engine.Server
+from Engine.Geometry import Vector, Vector2D, DirectionSet, NextDirection
 
 from datetime import timedelta
 from typing import Callable
@@ -124,7 +125,37 @@ class Tile(eTile):
 		return self._impl.GetDenseObject(directions._impl)
 
 
-class Object(eObject):
+class VerbsHolder(eVerbsHolder):
+	"""
+	Inheritance from this class allow to define special actions without
+	arguments which can be called with command from console
+
+	VerbsHolder is registrated with unique name, so player can call it's verbs.
+
+	For example, class Player registrated with name "Player".
+	So player's verb "Drop" can be called with next command: "Player.Drop"
+
+	Methods
+	-------
+	AddVerb(name: str, action: Callable[[Player], None])
+		add new verb
+
+		Parametres
+		----------
+		name: str
+			verb's key. Use name to call verb from console
+
+	"""
+
+	def __init__(self, impl):
+		self._impl = impl
+
+	def AddVerb(self, name: str, action: Callable[[Engine.Server.Player], None]):
+		wrapper = lambda player: action(Engine.Server.Player(player))
+		eVerbsHolder.AddVerb(self._impl, name, wrapper)
+
+
+class Object(eObject, VerbsHolder):
 	"""
 	Any game object
 
@@ -308,11 +339,18 @@ class Object(eObject):
 	defSprite = None
 	defDescription = None
 
+	defRotatable = False
+
 	def __init__(self):
-		super().__init__()
+		eObject.__init__(self)
+		VerbsHolder.__init__(self, self)
 		self.name = str(self.defName)
 		self.sprite = str(self.defSprite)
 		self.description = str(self.defDescription)
+
+		self.__rotatable = self.defRotatable
+		
+		self._registrateVerbs()
 
 	@property
 	def name(self) -> str:
@@ -385,6 +423,13 @@ class Object(eObject):
 		super(Object, self.__class__).moveSpeed.fset(self, value)
 
 	@property
+	def rotatable(self) -> bool:
+		return self.__rotatable
+	@rotatable.setter
+	def rotatable(self, value: bool):
+		self.__rotatable = value
+
+	@property
 	def isFloor(self) -> bool:
 		return super().isFloor
 	@isFloor.setter
@@ -446,6 +491,17 @@ class Object(eObject):
 
 	def _pushToIcons(self, icon):
 		super()._pushToIcons(icon)
+
+	def _registrateVerbs(self):
+		self.AddVerb("Delete", lambda player: self.__deleteVerb())
+		if self.rotatable:
+			self.AddVerb("Rotate", lambda player: self.__rotateVerb())
+
+	def __deleteVerb(self):
+		self.Delete()
+
+	def __rotateVerb(self):
+		print(self.name + " rotate")
 
 
 def CreateObject(typeKey: str, tile: Tile = None) -> Object:

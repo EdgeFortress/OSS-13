@@ -1,4 +1,5 @@
 from Engine.Hooks import *
+from Engine.Server import Player
 from Engine.Map import FillMap
 from Engine.World import Map
 

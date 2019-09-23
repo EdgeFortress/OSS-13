@@ -6,6 +6,7 @@ from Objects.Turf import Turf
 class Window(Turf):
 	defName = "Window"
 	defSprite = "window"
+	defRotatable = True
 
 	def __init__(self):
 		super().__init__()

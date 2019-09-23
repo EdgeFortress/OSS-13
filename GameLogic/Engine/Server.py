@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from Engine_Server import *
-from Engine.World import World, Control
+
+import Engine.World
 
 from enum import Enum
 from typing import Callable
@@ -24,39 +25,10 @@ class Game(eGame):
 		self._impl = impl
 
 	@property
-	def world() -> World:
-		return World(eGGame.world)
+	def world() -> Engine.World.World:
+		return Engine.World.World(eGGame.world)
 
-class VerbsHolder(eVerbsHolder):
-	"""
-	Inheritance from this class allow to define special actions without
-	arguments which can be called with command from console
-
-	VerbsHolder is registrated with unique name, so player can call it's verbs.
-
-	For example, class Player registrated with name "Player".
-	So player's verb "Drop" can be called with next command: "Player.Drop"
-
-	Methods
-	-------
-	AddVerb(name: str, action: Callable[[Player], None])
-		add new verb
-
-		Parametres
-		----------
-		name: str
-			verb's key. Use name to call verb from console
-
-	"""
-
-	def __init__(self, impl):
-		self._impl = impl
-
-	def AddVerb(self, name: str, action: Callable[[Player], None]):
-		wrapper = lambda player: action(Player(player)) 
-		self._impl.AddVerb(name, wrapper)
-
-class Player(ePlayer, VerbsHolder):
+class Player(ePlayer, Engine.World.VerbsHolder):
 	"""
 	Player class is persistent until restart. When player re-logins, existed Player instance is used.
 
@@ -78,17 +50,17 @@ class Player(ePlayer, VerbsHolder):
 	"""
 
 	def __init__(self, impl):
-		VerbsHolder.__init__(self, impl)
+		Engine.World.VerbsHolder.__init__(self, impl)
 
 	@property
 	def ckey(self) -> str:
 		return self._impl.ckey
 
 	@property
-	def control(self) -> Control:
-		return Control(self._impl.control)
+	def control(self) -> Engine.World.Control:
+		return Engine.World.Control(self._impl.control)
 	@control.setter
-	def control(self, value: Control):
+	def control(self, value: Engine.World.Control):
 		self._impl.control = value._impl
 
 	def IsConnected(self) -> bool:

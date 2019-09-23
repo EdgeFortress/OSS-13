@@ -38,9 +38,12 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 
+	py::class_<VerbsHolder> verbsHolder(m, "eVerbsHolder");
+	verbsHolder.def("AddVerb", &VerbsHolder::AddVerb);
+
 	m.def("eCreateObject", &CreateObject);
 
-	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "eObject")
+	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "eObject", verbsHolder)
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
@@ -56,7 +59,6 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
 		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
 		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
-		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)
 		.def("IsCloseTo", &Object::IsCloseTo)
