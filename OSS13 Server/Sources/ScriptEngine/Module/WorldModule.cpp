@@ -48,6 +48,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
 		.def_property("layer", &Object::GetLayer, &Object::SetLayer)
+		.def_property("direction", &Object::GetDirection, &Object::SetDirection)
 		.def_property("density", &Object::GetDensity, &Object::SetDensity)
 		.def_property("solidity", &Object::GetSolidity, &Object::SetSolidity)
 		.def_property("opacity", &Object::GetOpacity, &Object::SetOpacity)

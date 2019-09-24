@@ -204,7 +204,6 @@ class Vector:
 	def __FromEngineVec(cls, engineVec):
 		return cls(engineVec.x, engineVec.y, engineVec.z)
 
-
 class Direction(eDirection):
 	"""
 	Direction enumeration
@@ -216,7 +215,7 @@ class Direction(eDirection):
 	NORTH		= eDirection.NORTH
 	EAST		= eDirection.EAST
 	SOUTH_WEST	= eDirection.SOUTH_WEST
-	NORTH_EAST	= eDirection.NORTH_EAST
+	NORTH_WEST	= eDirection.NORTH_WEST
 	NORTH_EAST	= eDirection.NORTH_EAST
 	SOUTH_EAST	= eDirection.SOUTH_EAST
 	CENTER		= eDirection.CENTER
@@ -263,6 +262,22 @@ def InvertDirection(dir: Direction) -> Direction:
 
 	"""
 	return eInvertDirection(dir)
+
+
+def NextDirection(dir: Direction) -> Direction:
+	"""Get next Direction clock-wise. Works only with plain directions."""
+
+	if dir == Direction.NONE:
+		return Direction.WEST
+	elif dir == Direction.SOUTH:
+		return Direction.WEST
+	elif dir == Direction.WEST:
+		return Direction.NORTH
+	elif dir == Direction.NORTH:
+		return Direction.EAST
+	elif dir == Direction.EAST:
+		return Direction.SOUTH
+	raise TypeError("Bad direction type!")
 
 
 class DirectionSet(eDirectionSet):

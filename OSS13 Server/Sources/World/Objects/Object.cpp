@@ -186,6 +186,19 @@ void Object::SetSprite(const std::string &sprite) {
 uint Object::GetLayer() const { return layer; }
 void Object::SetLayer(uint layer) { this->layer = layer; }
 
+void Object::SetDirection(uf::Direction direction) {
+	if (direction > uf::Direction::EAST)
+		direction = uf::Direction(char(direction) % 4);
+	this->direction = direction;
+	if (tile) {
+		auto changeDirectionDiff = std::make_shared<network::protocol::ChangeDirectionDiff>();
+		changeDirectionDiff->objId = ID();
+		changeDirectionDiff->direction = direction;
+		tile->AddDiff(std::move(changeDirectionDiff), this);
+	}
+}
+uf::Direction Object::GetDirection() { return direction; }
+
 void Object::SetSpriteState(Global::ItemSpriteState newState) {
 	spriteState = newState;
 }
@@ -288,18 +301,6 @@ void Object::SetMoveIntent(uf::vec2i moveIntent) {
 
 uf::vec2i Object::GetMoveIntent() const {
     return moveIntent;
-}
-
-void Object::SetDirection(uf::Direction direction) {
-    if (direction > uf::Direction::EAST)
-        direction = uf::Direction(char(direction) % 4);
-    this->direction = direction;
-	if (tile) {
-		auto changeDirectionDiff = std::make_shared<network::protocol::ChangeDirectionDiff>();
-		changeDirectionDiff->objId = ID();
-		changeDirectionDiff->direction = direction;
-		tile->AddDiff(std::move(changeDirectionDiff), this);
-	}
 }
 
 //void Object::AddShift(uf::vec2f shift) {

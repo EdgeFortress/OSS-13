@@ -11,7 +11,7 @@ typedef vec2<int> vec2i;
 typedef vec2<float> vec2f;
 typedef vec3<int> rpos;
 
-enum class Direction : char {
+enum class Direction : int {
 	NONE = -1,
 	SOUTH,
 	WEST,

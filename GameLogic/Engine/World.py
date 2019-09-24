@@ -4,7 +4,7 @@ from Engine_World import *
 from Engine_Geometry import *
 
 import Engine.Server
-from Engine.Geometry import Vector, Vector2D, DirectionSet, NextDirection
+from Engine.Geometry import Vector, Vector2D, Direction, DirectionSet, NextDirection
 
 from datetime import timedelta
 from typing import Callable
@@ -374,6 +374,13 @@ class Object(eObject, VerbsHolder):
 		super(Object, self.__class__).layer.fset(self, value)
 
 	@property
+	def direction(self) -> Direction:
+		return super().direction
+	@direction.setter
+	def direction(self, value: Direction):
+		super(Object, self.__class__).direction.fset(self, value)
+
+	@property
 	def density(self) -> bool:
 		return super().density
 	@density.setter
@@ -501,6 +508,7 @@ class Object(eObject, VerbsHolder):
 		self.Delete()
 
 	def __rotateVerb(self):
+		self.direction = NextDirection(self.direction)
 		print(self.name + " rotate")
 
 

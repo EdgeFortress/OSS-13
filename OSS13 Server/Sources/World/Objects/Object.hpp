@@ -57,6 +57,9 @@ public:
 	uint GetLayer() const;
 	void SetLayer(uint);
 
+	void SetDirection(uf::Direction dir);
+	uf::Direction GetDirection();
+
 	void SetSpriteState(Global::ItemSpriteState);
 	// False if another animation is playing already. Callback will be called after animation
 	bool PlayAnimation(const std::string &sprite, std::function<void()> callback = {});
@@ -101,8 +104,6 @@ public:
 	//
 	// For control purposes
 	//
-		void SetDirection(uf::Direction);
-
         void SetMoveIntent(uf::vec2i);
         uf::vec2i GetMoveIntent() const;
 	//
