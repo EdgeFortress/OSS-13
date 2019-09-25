@@ -211,6 +211,9 @@ bool Connection::parsePacket(Packet &packet) {
 		if (command->options & server::GraphicsUpdateCommand::Option::NEW_CONTROLLABLE) {
 			tileGrid->SetControllable(command->controllableId, command->controllableSpeed);
 		}
+		if (command->options & server::GraphicsUpdateCommand::Option::NEW_FOV) {
+			tileGrid->SetFOV(command->fov, command->fovZ);
+		}
 		tileGrid->UnlockDrawing();
 		return true;
 	}

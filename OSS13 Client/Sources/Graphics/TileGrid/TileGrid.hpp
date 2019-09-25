@@ -12,6 +12,8 @@
 #include <Shared/Types.hpp>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
 
+#include <Shared/Grid.hpp>
+
 namespace sf { 
     class Event;
     class Packet;
@@ -61,6 +63,9 @@ public:
 		void UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo);
 		void ResetOverlay();
 
+	void SetFOV(int fov, int fovZ);
+	int GetFOV();
+	int GetFOVZ();
     ////
 
     Tile *GetTileRel(apos) const;
@@ -83,6 +88,9 @@ private:
     uf::vec2f shift;
     int cameraZ = 0;
 
+	int fov{0};
+	int fovZ{0};
+
     // TileGrid padding
     uf::vec2i padding;
 
@@ -90,7 +98,7 @@ private:
     int visibleTilesSide;
     int visibleTilesHeight;
 
-    std::vector< sptr<Tile> > blocks;
+    uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
 
     mutable std::mutex mutex;
@@ -119,7 +127,7 @@ private:
     bool buildButtonPressed;
     bool ghostButtonPressed;
 
-    uint flat_index(const apos c) const;
-
 	bool movementPredictionDisabled{false};
+
+	void updatePos(uf::vec3u pos, uf::vec3u newpos);
 };

@@ -5,6 +5,7 @@
 #include "Shared/Types.hpp"
 #include "Tile.hpp"
 #include "Atmos/Atmos.hpp"
+#include "Shared/Grid.hpp"
 
 using std::vector;
 using namespace uf;
@@ -22,10 +23,7 @@ public:
     const vector<uptr<Tile>> &GetTiles() const;
 
 private:
-    apos size;
-
     uptr<Atmos> atmos;
 
-    vector<uptr<Tile>> tiles;
-	uint flat_index(const apos c) const;
+    Grid<uptr<Tile>> tiles;
 };

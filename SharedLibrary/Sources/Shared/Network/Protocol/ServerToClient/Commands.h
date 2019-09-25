@@ -34,7 +34,8 @@ DEFINE_SERIALIZABLE(GraphicsUpdateCommand, Command)
 		TILES_SHIFT = 1,
 		CAMERA_MOVE = 1 << 1,
 		DIFFERENCES = 1 << 2,
-		NEW_CONTROLLABLE = 1 << 3
+		NEW_CONTROLLABLE = 1 << 3,
+		NEW_FOV = 1 << 4
 	};
 
 	sf::Int8 options;
@@ -46,6 +47,9 @@ DEFINE_SERIALIZABLE(GraphicsUpdateCommand, Command)
 	uf::vec3i firstTile;
 	int controllableId;
 	float controllableSpeed;
+
+	int fov;
+	int fovZ;
 
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
@@ -65,6 +69,10 @@ DEFINE_SERIALIZABLE(GraphicsUpdateCommand, Command)
 		if (options & NEW_CONTROLLABLE) {
 			ar & controllableId;
 			ar & controllableSpeed;
+		}
+		if (options & NEW_FOV) {
+			ar & fov;
+			ar & fovZ;
 		}
 	}
 DEFINE_SERIALIZABLE_END

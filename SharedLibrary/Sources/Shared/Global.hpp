@@ -4,9 +4,9 @@ namespace Global {
 
 const int PORT = 55700;
 
-const int FOV = 15; // Field Of View
+const int FOV = 7; // Field Of View
 const int MIN_PADDING = 3;
-const int Z_FOV = 3;
+const int Z_FOV = 1;
 
 namespace control_ui {
 

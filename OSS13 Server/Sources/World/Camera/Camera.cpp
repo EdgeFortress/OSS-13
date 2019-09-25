@@ -9,7 +9,6 @@
 #include <World/Objects/Control.hpp>
 #include <World/Atmos/AtmosCameraOverlay.h>
 
-#include <Shared/Array.hpp>
 #include <Shared/Network/Protocol/ServerToClient/Commands.h>
 
 #include <Shared/ErrorHandling.h>
@@ -19,15 +18,31 @@ Camera::Camera(const Tile * const tile) :
     changeFocus(false),
     unsuspensed(false), cameraMoved(false)
 {
-    visibleTilesSide = Global::FOV + 2 * Global::MIN_PADDING;
-    visibleTilesHeight = Global::Z_FOV | 1;
+	fov = Global::FOV;
+	fovZ = Global::Z_FOV;
+    visibleTilesSide = fov * 2 + 1 + 2 * Global::MIN_PADDING;
+    visibleTilesHeight = fovZ * 2 + 1;
 
-    visibleBlocks.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+    visibleBlocks.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
+    visibleBlocks.SetRemovedCallback(std::bind(&Camera::unsee, this, std::placeholders::_1));
 
-    blocksSync.resize(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+    blocksSync.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
 
     SetPosition(tile);
 }
+
+void Camera::SetFOV(int _fov) {
+	fovBuffer = _fov;
+	changeFov = true;
+}
+
+void Camera::SetFOVZ(int _fovZ) {
+	fovZBuffer = _fovZ;
+	changeFov = true;
+}
+
+int Camera::GetFOV() {return fov;}
+int Camera::GetFOVZ() {return fovZ;}
 
 void Camera::Update(std::chrono::microseconds timeElapsed) {
 	updateContextMenu();
@@ -43,7 +58,7 @@ void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 		auto command = std::make_unique<network::protocol::server::OverlayUpdateCommand>();
 
 		command->overlayInfo.reserve(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
-		for (auto &tile: visibleBlocks) {
+		for (auto &tile: visibleBlocks.Get()) {
 			if (tile) {
 				command->overlayInfo.push_back(overlay->GetOverlayInfo(*tile));
 			}
@@ -79,7 +94,7 @@ void Camera::updateContextMenu() {
 	askedUpdateContextMenu = false;
 	
 	EXPECT(contextMenuTileCoords >= uf::vec3i(0) && contextMenuTileCoords < uf::vec3i(visibleTilesSide, visibleTilesSide, visibleTilesHeight));
-	contextMenuTile = visibleBlocks[flat_index(contextMenuTileCoords)];
+	contextMenuTile = visibleBlocks.At(contextMenuTileCoords);
 
 	auto command = std::make_unique<network::protocol::server::UpdateContextMenuCommand>();
 	addTileObjectsToContextMenu(contextMenuTile, *command, contextMenuCache);
@@ -96,6 +111,14 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 
     int updateOptions = server::GraphicsUpdateCommand::Option::EMPTY;
     auto command = std::make_unique<server::GraphicsUpdateCommand>();
+
+	if (changeFov) {
+		updateFOV();
+		updateOptions |= server::GraphicsUpdateCommand::Option::NEW_FOV;
+		command->fov = fov;
+		command->fovZ = fovZ;
+		changeFov = false;
+	}
 
     if (unsuspensed || cameraMoved) {
         if (unsuspensed) {
@@ -114,9 +137,9 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 	std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObjects;
 
 	for (int i = 0; i < visibleTilesSide * visibleTilesSide * visibleTilesHeight; i++) {
-		Tile *tile = visibleBlocks[i];
+		Tile *tile = visibleBlocks.Get()[i];
 		if (tile) {
-			if (blocksSync[i]) {
+			if (blocksSync.Get()[i]) {
 				// Collect differences
 				differencesWithObjects.insert(differencesWithObjects.end(), tile->GetDifferencesWithObject().begin(), tile->GetDifferencesWithObject().end());
 			} else {
@@ -127,7 +150,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 					}
 					visibleObjects.insert(object->ID());
 				}
-				blocksSync[i] = true;
+				blocksSync.Get()[i] = true;
 			}
 		}
 	}
@@ -270,22 +293,33 @@ void Camera::fullRecountVisibleBlocks(const Tile * const tile) {
     }
 
     // Count coords of first visible tile, and block
-    firstBlockX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
-    firstBlockY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
-    firstBlockZ = tile->GetPos().z - Global::Z_FOV / 2;
+    firstBlockX = tile->GetPos().x - fov - Global::MIN_PADDING;
+    firstBlockY = tile->GetPos().y - fov - Global::MIN_PADDING;
+    firstBlockZ = tile->GetPos().z - fovZ;
 
     // Filling our result vector by block pointers
     for (int z = 0; z < visibleTilesHeight; z++) {
 		for (int y = 0; y < visibleTilesSide; y++) {
 			for (int x = 0; x < visibleTilesSide; x++) {
-				visibleBlocks[flat_index({x,y,z})] = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
+				visibleBlocks.At(x,y,z) = tile->GetMap()->GetTile({firstBlockX+x, firstBlockY+y, firstBlockZ+z});
 			}
 		}
 	}
 
     blockShifted = true;
 
-    fill(blocksSync.begin(), blocksSync.end(), false);
+    fill(blocksSync.Get().begin(), blocksSync.Get().end(), false);
+}
+
+void Camera::fillEmptyVisibleBlocks() {
+	for (int z = 0; z < visibleTilesHeight; z++)
+	for (int y = 0; y < visibleTilesSide; y++)
+	for (int x = 0; x < visibleTilesSide; x++) {
+		if(visibleBlocks.At(x,y,z) != nullptr) {
+			continue;
+		}
+		visibleBlocks.At(x,y,z) = tile->GetMap()->GetTile({firstBlockX + x, firstBlockY + y, firstBlockZ + z});
+	}
 }
 
 // Commit shift to Visible Blocks vector, saving seen blocks with their sync param
@@ -304,48 +338,65 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
     const int firstVisibleTileZ = firstBlockZ;
 
     // Check the necessity of blocks shift
-    if (int(tile->GetPos().x - firstVisibleTileX) < Global::MIN_PADDING + Global::FOV / 2 ||
-        int(tile->GetPos().y - firstVisibleTileY) < Global::MIN_PADDING + Global::FOV / 2 ||
-        int(tile->GetPos().z - firstVisibleTileZ) < Global::Z_FOV / 2 ||
-        firstVisibleTileX + visibleTilesSide - tile->GetPos().x <= Global::MIN_PADDING + Global::FOV / 2 ||
-        firstVisibleTileY + visibleTilesSide - tile->GetPos().y <= Global::MIN_PADDING + Global::FOV / 2 ||
-        firstVisibleTileZ + visibleTilesHeight - tile->GetPos().z <= Global::Z_FOV / 2)
+    if (int(tile->GetPos().x - firstVisibleTileX) < Global::MIN_PADDING + fov ||
+        int(tile->GetPos().y - firstVisibleTileY) < Global::MIN_PADDING + fov ||
+        int(tile->GetPos().z - firstVisibleTileZ) < fovZ ||
+        firstVisibleTileX + visibleTilesSide - tile->GetPos().x <= Global::MIN_PADDING + fov ||
+        firstVisibleTileY + visibleTilesSide - tile->GetPos().y <= Global::MIN_PADDING + fov ||
+        firstVisibleTileZ + visibleTilesHeight - tile->GetPos().z <= fovZ)
     {
-        const int firstNewBlockX = tile->GetPos().x - Global::FOV / 2 - Global::MIN_PADDING;
-        const int firstNewBlockY = tile->GetPos().y - Global::FOV / 2 - Global::MIN_PADDING;
-        const int firstNewBlockZ = tile->GetPos().z - Global::Z_FOV / 2;
+        const int firstNewBlockX = tile->GetPos().x - fov - Global::MIN_PADDING;
+        const int firstNewBlockY = tile->GetPos().y - fov - Global::MIN_PADDING;
+        const int firstNewBlockZ = tile->GetPos().z - fovZ;
 
         const int block_dx = firstNewBlockX - firstBlockX;
         const int block_dy = firstNewBlockY - firstBlockY;
         const int block_dz = firstNewBlockZ - firstBlockZ;
 
-        std::vector<bool> saved(visibleTilesSide*visibleTilesSide*visibleTilesHeight);
+		GridTransformation transformation;
+		transformation.originDelta = {block_dx, block_dy, block_dz};
 
-        for (int y = 0; y < visibleTilesSide; y++)
-            for (int x = 0; x < visibleTilesSide; x++)
-				for (int z = 0; z < visibleTilesHeight; z++) {
-					if (blocksSync[flat_index({x,y,z})]) {
-						if (x - block_dx >= 0 && x - block_dx < visibleTilesSide &&
-							y - block_dy >= 0 && y - block_dy < visibleTilesSide &&
-							z - block_dz >= 0 && z - block_dz < visibleTilesHeight)
-						{
-							saved[flat_index({x-block_dx,y-block_dy,z-block_dz})] = true;
-						} else {
-							Tile *block = visibleBlocks[flat_index({x,y,z})];
-							if (block) {
-								for (auto &object: block->Content()) {
-									visibleObjects.erase(object->ID());
-								}
-							}
-						}
-					}
-				}
+		visibleBlocks.Transform(transformation);
+		blocksSync.Transform(transformation);
 
-        fullRecountVisibleBlocks(tile);
-        blocksSync = saved; 
+		fillEmptyVisibleBlocks();
+
+		blockShifted = true;
+		firstBlockX = firstNewBlockX;
+		firstBlockY = firstNewBlockY;
+		firstBlockZ = firstNewBlockZ;
     }
 }
 
-int Camera::flat_index(uf::vec3i c) const {
-	return uf::flat_index(c, visibleTilesSide, visibleTilesSide);
+
+void Camera::updateFOV() {
+	int newSide = fovBuffer * 2 + 1 + 2 * Global::MIN_PADDING;
+	int newHeight = fovZBuffer * 2 + 1;
+	int diff = (visibleTilesSide - newSide) / 2;
+	int diff_z = (visibleTilesHeight - newHeight) / 2;
+
+	GridTransformation transformation;
+	transformation.originDelta = {diff, diff, diff_z};
+	transformation.sizeDelta = {newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight};
+
+	visibleBlocks.Transform(transformation);
+	blocksSync.Transform(transformation);
+
+	firstBlockX += diff;
+	firstBlockY += diff;
+	firstBlockZ += diff_z;
+	visibleTilesSide = newSide;
+	visibleTilesHeight = newHeight;
+	changeFov = false;
+	fov = fovBuffer;
+	fovZ = fovZBuffer;
+}
+
+void Camera::unsee(uf::vec3u pos) {
+	Tile *block = visibleBlocks.At(pos);
+	if (block) {
+		for (auto &object: block->Content()) {
+			visibleObjects.erase(object->ID());
+		}
+	}
 }
