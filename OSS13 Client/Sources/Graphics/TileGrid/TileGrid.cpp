@@ -461,11 +461,10 @@ void TileGrid::Stunned(uint id, sf::Time duration) {
 }
 
 void TileGrid::ShiftBlocks(apos newFirst) {
-    const rpos delta = newFirst - firstTile;
-
-    blocks.Transform({.originDelta=delta});
-
-    firstTile = newFirst;
+	uf::GridTransformation transformation;
+	transformation.originDelta = newFirst - firstTile;
+	blocks.Transform(transformation);
+	firstTile = newFirst;
 }
 
 void TileGrid::SetCameraPosition(apos pos) {
@@ -504,13 +503,20 @@ void TileGrid::SetFOV(int fov, int fovZ) {
 	int newHeight = fovZ * 2 + 1;
 	int diff = (visibleTilesSide - newSide) / 2;
 	int diff_z = (visibleTilesHeight - newHeight) / 2;
-	blocks.Transform({.originDelta={diff, diff, diff_z}, .sizeDelta={newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight}});
+
+	uf::GridTransformation transformation;
+	transformation.originDelta = {diff, diff, diff_z};
+	transformation.sizeDelta = {newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight};
+
+	blocks.Transform(transformation);
+
 	visibleTilesSide = newSide;
 	visibleTilesHeight = newHeight;
 	firstTile += uf::vec3i(diff, diff, diff_z);
 	cameraRelPos = cameraPos - firstTile;
 	this->fov = fov;
 	this->fovZ = fovZ;
+
 	auto window = CC::Get()->GetWindow();
 	window->GetUI()->GetCurrentUIModule()->Resize(window->GetWidth(), window->GetHeight());
 }
@@ -554,7 +560,7 @@ Object *TileGrid::GetObjectUnderCursor() const { return underCursorObject; }
 //const int TileGrid::GetPaddingX() const { return padding.x; }
 //const int TileGrid::GetPaddingY() const { return padding.y; }
 
-void TileGrid::updatePos(uf::vec3i pos, uf::vec3i newpos) {
+void TileGrid::updatePos(uf::vec3u pos, uf::vec3u newpos) {
 	if(!blocks.At(pos)) {
 		return;
 	}

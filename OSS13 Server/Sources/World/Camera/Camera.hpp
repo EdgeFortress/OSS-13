@@ -70,15 +70,15 @@ private:
 	uf::Grid<bool> blocksSync;
 	std::unordered_set<uint> visibleObjects;
 
-	int fov;
-	int fovZ;
+	int fov{0};
+	int fovZ{0};
 
-	int fovBuffer;
-	int fovZBuffer;
+	int fovBuffer{0};
+	int fovZBuffer{0};
 
 	bool suspense;
 	bool changeFocus;
-	bool changeFov;
+	bool changeFov{false};
 
 	uptr<ICameraOverlay> overlay;
 
@@ -97,5 +97,5 @@ private:
 	void refreshVisibleBlocks(const Tile * const tile);
 
 	void updateFOV();
-	void unsee(uf::vec3i pos);
+	void unsee(uf::vec3u pos);
 };

@@ -353,9 +353,12 @@ void Camera::refreshVisibleBlocks(const Tile * const tile) {
         const int block_dy = firstNewBlockY - firstBlockY;
         const int block_dz = firstNewBlockZ - firstBlockZ;
 
-		GridTransformation shift{.originDelta={block_dx, block_dy, block_dz}};
-		visibleBlocks.Transform(shift);
-		blocksSync.Transform(shift);
+		GridTransformation transformation;
+		transformation.originDelta = {block_dx, block_dy, block_dz};
+
+		visibleBlocks.Transform(transformation);
+		blocksSync.Transform(transformation);
+
 		fillEmptyVisibleBlocks();
 
 		blockShifted = true;
@@ -371,9 +374,14 @@ void Camera::updateFOV() {
 	int newHeight = fovZBuffer * 2 + 1;
 	int diff = (visibleTilesSide - newSide) / 2;
 	int diff_z = (visibleTilesHeight - newHeight) / 2;
-	GridTransformation transformation{.originDelta={diff, diff, diff_z}, .sizeDelta={newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight}};
+
+	GridTransformation transformation;
+	transformation.originDelta = {diff, diff, diff_z};
+	transformation.sizeDelta = {newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight};
+
 	visibleBlocks.Transform(transformation);
 	blocksSync.Transform(transformation);
+
 	firstBlockX += diff;
 	firstBlockY += diff;
 	firstBlockZ += diff_z;
@@ -384,7 +392,7 @@ void Camera::updateFOV() {
 	fovZ = fovZBuffer;
 }
 
-void Camera::unsee(uf::vec3i pos) {
+void Camera::unsee(uf::vec3u pos) {
 	Tile *block = visibleBlocks.At(pos);
 	if (block) {
 		for (auto &object: block->Content()) {

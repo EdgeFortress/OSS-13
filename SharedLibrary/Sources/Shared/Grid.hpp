@@ -21,8 +21,8 @@ public:
 	vec3u GetSize() const;
 	std::vector<T>& Get();
 	const std::vector<T>& Get() const;
-	void SetMovedCallback(std::function<void(vec3i, vec3i)> movedCallback);
-	void SetRemovedCallback(std::function<void(vec3i)> removedCallback);
+	void SetMovedCallback(std::function<void(vec3u, vec3u)> movedCallback);
+	void SetRemovedCallback(std::function<void(vec3u)> removedCallback);
 	void Transform(const GridTransformation transformation);
 	typename std::vector<T>::reference At(vec3u pos);
 	typename std::vector<T>::reference At(uint x, uint y, uint z);
@@ -32,11 +32,10 @@ private:
 	static uint flatIndex (const vec3u xyz, uint w, uint h);
 	vec3u dataSize;
 	std::vector<T> data;
-	std::function<void(vec3i, vec3i)> movedCallback = [](vec3i, vec3i){};
-	std::function<void(vec3i)> removedCallback = [](vec3i){};
+	std::function<void(vec3u, vec3u)> movedCallback = [](vec3u, vec3u){};
+	std::function<void(vec3u)> removedCallback = [](vec3u){};
 };
-
-#include "Grid.inl"
 
 } //namespace uf
 
+#include "Grid.inl"

@@ -28,7 +28,6 @@
     <ClCompile Include="..\External\sfml-imgui\imgui_draw.cpp" />
     <ClCompile Include="..\External\sfml-imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\External\sfml-imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Sources\Shared\Array.cpp" />
     <ClCompile Include="Sources\Shared\ConfigController.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp" />
     <ClCompile Include="Sources\Shared\Geometry\DirectionSet.cpp" />
@@ -61,6 +60,7 @@
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\Vec3.hpp" />
     <ClInclude Include="Sources\Shared\Global.hpp" />
+    <ClInclude Include="Sources\Shared\Grid.hpp" />
     <ClInclude Include="Sources\Shared\IFaces\IConfig.h" />
     <ClInclude Include="Sources\Shared\IFaces\ICopyable.h" />
     <ClInclude Include="Sources\Shared\IFaces\IFace.h" />

@@ -88,8 +88,8 @@ private:
     uf::vec2f shift;
     int cameraZ = 0;
 
-	int fov;
-	int fovZ;
+	int fov{0};
+	int fovZ{0};
 
     // TileGrid padding
     uf::vec2i padding;
@@ -129,5 +129,5 @@ private:
 
 	bool movementPredictionDisabled{false};
 
-	void updatePos(uf::vec3i pos, uf::vec3i newpos);
+	void updatePos(uf::vec3u pos, uf::vec3u newpos);
 };
