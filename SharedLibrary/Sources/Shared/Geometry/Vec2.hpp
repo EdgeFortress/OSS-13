@@ -56,6 +56,9 @@ namespace uf {
 	template<typename T>
 	vec2<double> normalize(const vec2<T> &vec);
 
+	template<typename T>
+    auto operator-(const vec2<T>& vec);
+
     template <typename LeftT, typename RightT>
     auto operator+(const vec2<LeftT>& left, const vec2<RightT>& right);
     template <typename LeftT, typename RightT>
