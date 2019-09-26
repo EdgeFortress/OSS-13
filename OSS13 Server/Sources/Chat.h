@@ -32,6 +32,6 @@ public:
 		while (++i < int(messages.size()))
 			newMessages.push_back(messages[i].text), messages[i].sended = true;
 
-		return std::move(newMessages);
+		return newMessages;
 	}
 };

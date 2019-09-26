@@ -34,7 +34,7 @@ void AuthUI::Resize(int width, int height) {
 void AuthUI::Draw(sf::RenderWindow *renderWindow) {
     ui->DrawMenuBackground(renderWindow);
     UIModule::Draw(renderWindow);
-};
+}
 
 void AuthUI::Update(sf::Time timeElapsed) {
     if (comState != AuthUI::ComState::NOTHING) {

@@ -40,9 +40,9 @@ bool CustomWidget::HandleEvent(sf::Event event) {
 	return false;
 }
 
-bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) { return false; };
-bool CustomWidget::OnMouseMoved(uf::vec2i position) { return false; };
-bool CustomWidget::OnMouseLeft() { return false; };
+bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) { return false; }
+bool CustomWidget::OnMouseMoved(uf::vec2i position) { return false; }
+bool CustomWidget::OnMouseLeft() { return false; }
 bool CustomWidget::OnMouseWheelScrolled(float delta, uf::vec2i position) { return false; }
 bool CustomWidget::OnKeyPressed(sf::Event::KeyEvent keyEvent) { return false; }
 bool CustomWidget::OnKeyReleased(sf::Keyboard::Key button) { return false; }

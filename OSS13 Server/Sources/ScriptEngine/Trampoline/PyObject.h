@@ -79,4 +79,4 @@ public:
 	T* get() const { return _impl.get(); }
 };
 
-PYBIND11_DECLARE_HOLDER_TYPE(T, PyObjectPtr<T>);
+PYBIND11_DECLARE_HOLDER_TYPE(T, PyObjectPtr<T>)

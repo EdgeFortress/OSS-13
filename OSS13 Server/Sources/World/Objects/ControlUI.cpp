@@ -40,7 +40,7 @@ void ControlUIElement::ClearIcons() {
 void ControlUIElement::SetId(const std::string &id) { elementId = id; }
 const std::string &ControlUIElement::GetId() const { return elementId; }
 
-void ControlUIElement::SetControlUI(ControlUI *parent) { this->parent = parent; };
+void ControlUIElement::SetControlUI(ControlUI *parent) { this->parent = parent; }
 ControlUI *ControlUIElement::GetControlUI() const { return parent; }
 
 void ControlUIElement::NeedUpdate() {

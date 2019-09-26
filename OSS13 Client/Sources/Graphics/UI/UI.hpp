@@ -35,7 +35,7 @@ public:
     void DrawMenuBackground(sf::RenderWindow *render_window);
 
 	template<class ModuleType>
-	void ChangeModule() { newUIModule = new ModuleType(this); };
+	void ChangeModule() { newUIModule = new ModuleType(this); }
 
     void Lock();
     void Unlock();

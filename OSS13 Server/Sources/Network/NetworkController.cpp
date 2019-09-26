@@ -63,7 +63,6 @@ void NetworkController::working() {
                                 selector.remove(*socket);
                                 iter = connections.erase(iter);
                                 continue;
-                                break;
                         }
 
                     }

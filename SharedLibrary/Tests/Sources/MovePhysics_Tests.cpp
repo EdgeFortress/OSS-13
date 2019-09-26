@@ -31,9 +31,10 @@ TEST(test, Intent_CorrectDeltaWhenMoved) {
 	uf::vec2f speed = {0, 0};
 
 	EXPECT_TRUE(uf::vec2f(1, 0) == uf::phys::countDeltaShift(elapsed, shift, moveSpeed, moveIntentX, speed));
+	EXPECT_TRUE(uf::vec2f(0, 1) == uf::phys::countDeltaShift(elapsed, shift, moveSpeed, moveIntentY, speed));
 }
 
-TEST(test, Intent_CuttedDeltaWhenMovedMoreThenIntent) {
+TEST(test, Intent_CuttedDeltaWhenMovedMoreThanIntent) {
 	sf::Time elapsed = sf::seconds(1);
 	uf::vec2f shift = {0, 0};
 	float moveSpeed = 2;
@@ -42,6 +43,7 @@ TEST(test, Intent_CuttedDeltaWhenMovedMoreThenIntent) {
 	uf::vec2f speed = {0, 0};
 
 	EXPECT_TRUE(uf::vec2f(1, 0) == uf::phys::countDeltaShift(elapsed, shift, moveSpeed, moveIntentX, speed));
+	EXPECT_TRUE(uf::vec2f(0, 1) == uf::phys::countDeltaShift(elapsed, shift, moveSpeed, moveIntentY, speed));
 }
 
 TEST(test, Intent_DontMoveWhenShiftEqualIntent) {
