@@ -175,7 +175,7 @@ void Object::Delete() {
 uint Object::ID() const { return id; }
 
 const std::string &Object::GetName() const { return name; }
-void Object::SetName(const std::string& name) { this->name = name; };
+void Object::SetName(const std::string& name) { this->name = name; }
 
 const std::string &Object::GetSprite() const { return sprite; }
 void Object::SetSprite(const std::string &sprite) {
@@ -219,14 +219,14 @@ bool Object::PlayAnimation(const std::string &animation, std::function<void()> c
 	return true;
 }
 
-bool Object::GetDensity() const { return density; };
+bool Object::GetDensity() const { return density; }
 void Object::SetDensity(bool density) { this->density = density; }
 
 void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
 const uf::DirectionSet &Object::GetSolidity() const { return solidity; }
 
 void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
-const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; };
+const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; }
 
 void Object::SetAirtightness(uf::DirectionSetFractional fractionalDirections) {airtightness = fractionalDirections; }
 const uf::DirectionSetFractional &Object::GetAirtightness() const { return airtightness; }
@@ -269,7 +269,7 @@ uf::vec2f Object::GetSpeed() const { return speed; }
 
 Object *Object::GetHolder() const { return holder; }
 
-bool Object::IsMovable() const { return movable; };
+bool Object::IsMovable() const { return movable; }
 bool Object::IsCloseTo(Object *other) const {
     auto pos = GetTile()->GetPos();
     auto otherPos = other->GetTile()->GetPos();

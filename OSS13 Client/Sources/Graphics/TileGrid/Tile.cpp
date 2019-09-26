@@ -13,7 +13,7 @@ Tile::Tile(TileGrid *tileGrid) :
 { 
 	overlay.setFont(CC::Get()->GetUI()->GetFont());
 	overlay.setCharacterSize(10);
-};
+}
 
 Tile::~Tile() {
 	for (auto &object : content) {
@@ -50,7 +50,7 @@ void Tile::AddObject(Object *obj, int num) {
 
 	if (num < static_cast<int>(content.size()) && num >= 0) {
 		auto iter = content.begin();
-		for (int i = 0; i < num && iter != content.end(); iter++, i++);
+		for (int i = 0; i < num && iter != content.end(); iter++, i++)
 		    content.insert(iter, obj);
 	} else {
 		content.push_back(obj);

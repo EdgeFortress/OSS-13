@@ -55,6 +55,8 @@ void UIModule::HandleEvent(sf::Event event) {
 			if (io.WantCaptureKeyboard)
 				imguiCapture = true;
 			break;
+		default:
+			break;
 	}
 
 	ImGui::SFML::ProcessEvent(event);

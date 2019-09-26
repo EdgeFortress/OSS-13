@@ -70,7 +70,7 @@ FileInfo ParseFilePath(const std::wstring &filePath) {
 	}
 	result.extension = std::wstring(dot, filePath.end());
 
-	return std::move(result);
+	return result;
 }
 
 std::list<std::filesystem::path> FindFilesRecursive(const std::filesystem::path &root, const std::string &wildcard) {

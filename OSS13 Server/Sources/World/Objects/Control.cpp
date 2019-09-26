@@ -44,14 +44,14 @@ void Control::SetOwner(Object *owner) {
 }
 
 uint Control::GetSeeInvisibleAbility() const { return camera_seeInvisibleAbility; }
-void Control::SetSeeInvisibleAbility(uint flags) { camera_seeInvisibleAbility = flags; };
+void Control::SetSeeInvisibleAbility(uint flags) { camera_seeInvisibleAbility = flags; }
 
 float Control::GetSpeed() const { return speed; }
 Player *Control::GetPlayer() const { return player; }
 ControlUI *Control::GetUI() const { return ui.get(); }
 
-uf::vec2i Control::GetAndDropMoveOrder() { auto tmp = moveOrder; moveOrder = {}; return tmp; };
-int Control::GetAndDropMoveZOrder() { auto tmp = moveZOrder; moveZOrder = {}; return tmp; };
+uf::vec2i Control::GetAndDropMoveOrder() { auto tmp = moveOrder; moveOrder = {}; return tmp; }
+int Control::GetAndDropMoveZOrder() { auto tmp = moveZOrder; moveZOrder = {}; return tmp; }
 
 Object *Control::GetAndDropClickedObject() {
 	Object *obj = nullptr;

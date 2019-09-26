@@ -28,7 +28,7 @@ std::vector<float> Entry::getLetterSizes(wchar_t c) {
     std::vector<float> letter_sizes;
     letter_sizes.push_back(style.font->getGlyph(c, style.fontSize, false).advance);
     letter_sizes.push_back(style.font->getGlyph(c, style.fontSize, true).advance);
-    return std::move(letter_sizes);
+    return letter_sizes;
 }
 
 void Entry::moveCursorLeft(wchar_t c) {

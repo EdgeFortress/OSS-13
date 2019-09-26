@@ -11,7 +11,7 @@ Sprite SpriteFactory::CreateSprite(uint32_t id) {
 	auto state = static_cast<Global::ItemSpriteState>(id & uint32_t(Global::ItemSpriteState::MASK));
 	id -= uint32_t(state);
 	
-	if (id >= 0 && id < recipes.size()) {
+	if (id < recipes.size()) {
 		Sprite sprite;
 
 		sprite.key = recipes[id].title;

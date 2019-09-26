@@ -54,7 +54,7 @@ void UI::DrawMenuBackground(sf::RenderWindow *render_window) {
 
 void UI::Lock() {
     mutex.lock();
-};
+}
 
 void UI::Unlock() {
     mutex.unlock();

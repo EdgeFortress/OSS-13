@@ -195,7 +195,7 @@ void Player::SetControl(Control *control) {
     camera->SetPlayer(this);
 	camera->TrackObject(control->GetOwner());
 	camera->SetInvisibleVisibility(control->GetSeeInvisibleAbility());
-};
+}
 
 void Player::SetCamera(Camera *camera) { this->camera.reset(camera); }
 

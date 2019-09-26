@@ -46,8 +46,9 @@ vec2i DirectionToVect(Direction direction) {
 			return {1, -1};
 		case Direction::SOUTH_EAST:
 			return {1, 1};
+		default:
+			return {0, 0};
 	}
-	return {0, 0};
 }
 
 Direction InvertDirection(Direction direction) {
@@ -68,8 +69,9 @@ Direction InvertDirection(Direction direction) {
 			return Direction::SOUTH_WEST;
 		case Direction::SOUTH_EAST:
 			return Direction::NORTH_WEST;
+		default:
+			return direction;
 	}
-	return direction;
 }
 
 bool SplitDirection(const Direction &input, Direction &first, Direction &second) {
@@ -90,8 +92,9 @@ bool SplitDirection(const Direction &input, Direction &first, Direction &second)
 			first = Direction::SOUTH;
 			second = Direction::EAST;
 			return true;
+		default:
+			return false;
 	}
-	return false;
 }
 
 }

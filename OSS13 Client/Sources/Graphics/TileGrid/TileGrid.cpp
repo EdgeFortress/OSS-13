@@ -142,6 +142,8 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 			}
 			break;
 		}
+		default:
+			break;
 	}
 	return false;
 }
@@ -175,6 +177,8 @@ bool TileGrid::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
 			case sf::Keyboard::D:
 				dropButtonPressed = true;
 				return true;
+			default:
+				break;
 		}
 	}
 	switch (keyEvent.code) {

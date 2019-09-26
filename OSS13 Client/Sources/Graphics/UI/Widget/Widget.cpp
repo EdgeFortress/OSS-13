@@ -2,7 +2,7 @@
 
 Widget::Widget(uf::vec2i size) : 
 	isClosed(false) 
-{ };
+{ }
 
 void Widget::Close() {
 	isClosed = true;
