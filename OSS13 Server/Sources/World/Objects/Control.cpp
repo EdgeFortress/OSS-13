@@ -11,8 +11,7 @@
 
 Control::Control() : 
 	Component("Control"),
-	ui(std::make_unique<ControlUI>(this)),
-	speed(4)
+	ui(std::make_unique<ControlUI>(this))
 { }
 
 void Control::Update(std::chrono::microseconds timeElapsed) {
@@ -25,7 +24,7 @@ void Control::MoveCommand(uf::vec2i order) {
 }
 
 void Control::MoveZCommand(bool order) {
-	moveZOrder = order?1:-1;
+	moveZOrder = order ? 1 : -1;
 }
 
 void Control::ClickObjectCommand(uint id) {
@@ -37,10 +36,10 @@ void Control::ClickUICommand(const std::string &key) {
 }
 
 void Control::SetOwner(Object *owner) {
-    Component::SetOwner(owner);
-    if (this->owner) {
-        this->owner->SetMoveSpeed(speed);
-    }
+	Component::SetOwner(owner);
+	if (this->owner) {
+		this->owner->SetMoveSpeed(speed);
+	}
 }
 
 uint Control::GetSeeInvisibleAbility() const { return camera_seeInvisibleAbility; }

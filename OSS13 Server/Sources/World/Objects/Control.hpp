@@ -11,18 +11,18 @@ class Player;
 
 class Control : public Component {
 public:
-    friend Player;
+	friend Player;
 
-    explicit Control();
+	explicit Control();
 
-    void Update(std::chrono::microseconds timeElapsed) override;
+	void Update(std::chrono::microseconds timeElapsed) override;
 
-    void MoveCommand(uf::vec2i order);
-    void MoveZCommand(bool order);
-    void ClickObjectCommand(uint id);
+	void MoveCommand(uf::vec2i order);
+	void MoveZCommand(bool order);
+	void ClickObjectCommand(uint id);
 	void ClickUICommand(const std::string &key);
 
-    virtual void SetOwner(Object *owner) override;
+	virtual void SetOwner(Object *owner) override;
 
 	uint GetSeeInvisibleAbility() const;
 	void SetSeeInvisibleAbility(uint flags);
@@ -36,13 +36,13 @@ public:
 	Object *GetAndDropClickedObject();
 
 private:
-	float speed;
-	uint camera_seeInvisibleAbility{0}; // crutch. TODO: divide camera and control logics
+	float speed{4};
+	uint camera_seeInvisibleAbility{}; // crutch. TODO: divide camera and control logics
 
-    // receive from player
+	// received from player
 	uf::vec2i moveOrder; 
-	int moveZOrder;
-	uint clickedObjectID{0};
+	int moveZOrder{};
+	uint clickedObjectID{};
 
 	Player *player{nullptr};
 	std::unique_ptr<ControlUI> ui;
