@@ -54,6 +54,9 @@ namespace uf {
 	template<typename T>
 	vec3<double> normalize(const vec3<T> &vec);
 
+	template<typename T>
+    auto operator-(const vec3<T>& vec);
+
     template <typename LeftT, typename RightT>
     auto operator+(const vec3<LeftT>& left, const vec3<RightT>& right);
     template <typename LeftT, typename RightT>

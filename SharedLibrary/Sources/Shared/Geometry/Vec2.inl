@@ -125,6 +125,14 @@ namespace uf {
     vec2<double> normalize(const vec2<T>& vec) {
         return vec / length(vec);
     }
+    
+    template <typename T>
+    auto operator-(const vec2<T>& vec) {
+        if constexpr (std::is_unsigned<T>::value)
+            return uf::vec2<std::make_signed<T>>(vec) * -1;
+        else
+            return vec * -1;
+    }
 
     template <typename LeftT, typename RightT>
     auto operator+(const vec2<LeftT>& left, const vec2<RightT>& right) {
