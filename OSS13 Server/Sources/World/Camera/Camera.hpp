@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <unordered_set>
 
 #include <Shared/Types.hpp>
@@ -14,7 +13,7 @@ class Player;
 struct Diff;
 
 namespace sf {
-    class Packet;
+	class Packet;
 }
 
 struct ContextMenuNodeCache {
@@ -24,78 +23,76 @@ struct ContextMenuNodeCache {
 
 class Camera {
 public:
-    explicit Camera(const Tile * const tile = nullptr);
+	explicit Camera(const Tile * const tile = nullptr);
 
 	void Update(std::chrono::microseconds timeElapsed);
-    void UpdateView(std::chrono::microseconds timeElapsed);
+	void UpdateView(std::chrono::microseconds timeElapsed);
 
 	void AskUpdateContextMenu(uf::vec3i tile);
 	void ClickContextMenu(uint8_t node, uint8_t verb);
 
-    void SetPlayer(Player * const player);
+	void SetPlayer(Player * const player);
 	void TrackObject(Object *obj);
-    void SetPosition(const Tile * const tile);
+
+	void SetPosition(const Tile * const tile);
+	const Tile * const GetPosition() const { return tile; }
+
+	void Suspend();
+	bool IsSuspense() const { return suspense; }
+
 	void SetFOV(int fov);
 	void SetFOVZ(int fovZ);
 	int GetFOV();
 	int GetFOVZ();
-    void Suspend();
+
 	void SetInvisibleVisibility(uint visibility) { seeInvisibleAbility = visibility; }
+	uint GetInvisibleVisibility() const { return seeInvisibleAbility; }
+
 	void SetOverlay(uptr<ICameraOverlay> &&cameraOverlay);
 	void ResetOverlay();
-
-    bool IsSuspense() const { return suspense; }
-	const Tile * const GetPosition() const { return tile; }
-	uint GetInvisibleVisibility() const { return seeInvisibleAbility; }
 
 private:
 	void updateOverlay(std::chrono::microseconds timeElapsed);
 	void updateContextMenu();
 
-private:
-	Player *player{nullptr};
-	Object *trackingObject{nullptr};
+	void fillEmptyVisibleBlocks();
+	void fullRecountVisibleBlocks();
+	void refreshVisibleBlocks();
+	void updateFOV();
 
-	uint seeInvisibleAbility{0};
+	void unseeTile(uf::vec3u pos);
+
+	Player *player{};
+	Object *trackingObject{};
+
+	uint seeInvisibleAbility{};
 
 	// View information
-	const Tile *tile;
-	const Tile *lasttile;
-	int visibleTilesSide;
-	int visibleTilesHeight;
-	int firstBlockX;
-	int firstBlockY;
-	int firstBlockZ;
-	uf::Grid<Tile *> visibleBlocks;
-	uf::Grid<bool> blocksSync;
+	const Tile *tile{};
+	const Tile *lastTile{};
+	uf::Grid<std::pair<Tile *, bool>> visibleTiles;
 	std::unordered_set<uint> visibleObjects;
 
-	int fov{0};
-	int fovZ{0};
+	int fov{};
+	int fovZ{};
 
-	int fovBuffer{0};
-	int fovZBuffer{0};
-
-	bool suspense;
-	bool changeFocus;
-	bool changeFov{false};
+	bool suspense{};
 
 	uptr<ICameraOverlay> overlay;
 
 	// Update options
-	bool blockShifted;
-	bool unsuspensed;
-	bool cameraMoved;
+	bool changeFocus{};
+	bool changeFov{};
+	bool unsuspended{};
+	bool cameraMoved{};
 
-	bool askedUpdateContextMenu{false};
+	bool askedUpdateContextMenu{};
 	uf::vec3i contextMenuTileCoords;
 	Tile *contextMenuTile;
 	std::vector<ContextMenuNodeCache> contextMenuCache;
 
-	void fillEmptyVisibleBlocks();
-	void fullRecountVisibleBlocks(const Tile * const tile);
-	void refreshVisibleBlocks(const Tile * const tile);
-
-	void updateFOV();
-	void unsee(uf::vec3u pos);
+	int getVisibleAreaSide();
+	int getVisibleAreaHeight();
+	uf::vec3i getVisibleAreaDimensions();
+	uf::vec3i getFirstTilePos();
 };
