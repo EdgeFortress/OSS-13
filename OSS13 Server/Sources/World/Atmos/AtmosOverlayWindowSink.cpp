@@ -3,7 +3,7 @@
 #include <Shared/Network/Protocol/InputData.h>
 #include <Shared/ErrorHandling.h>
 
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <World/Camera/Camera.hpp>
 
 #include "AtmosCameraOverlay.h"

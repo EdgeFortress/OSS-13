@@ -8,7 +8,7 @@
 #include <pybind11/stl.h>
 #include <plog/Log.h>
 
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <World/Map.hpp>
 #include <World/Objects/Object.hpp>
 

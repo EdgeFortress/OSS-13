@@ -4,7 +4,7 @@
 #include "Tile.hpp"
 #include "Objects.hpp"
 #include "Objects/Control.hpp"
-#include "Player.hpp"
+#include "Player/Player.h"
 
 #include <Shared/ErrorHandling.h>
 

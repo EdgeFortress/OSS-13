@@ -1,7 +1,7 @@
 #include "ControlUI.h"
 
 #include <Server.hpp>
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <World/Objects/Control.hpp>
 #include <Resources/ResourceManager.hpp>
 

@@ -12,7 +12,7 @@
 
 #include <Network/NetworkController.hpp>
 #include <Network/Connection.hpp>
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <Database/UsersDB.hpp>
 #include <World/World.hpp>
 #include <World/Map.hpp>

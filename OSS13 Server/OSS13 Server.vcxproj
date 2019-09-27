@@ -142,7 +142,7 @@
     <ClCompile Include="Sources\Game.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
     <ClCompile Include="Sources\Player.cpp" />
-    <ClCompile Include="Sources\PlayerCommand.cpp" />
+    <ClCompile Include="Sources\Player\PlayerCommandsProcessor.cpp" />
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
     <ClCompile Include="Sources\ScriptEngine\Module\GeometryModule.cpp" />
     <ClCompile Include="Sources\ScriptEngine\Module\ServerModule.cpp" />
@@ -181,7 +181,7 @@
     <ClInclude Include="Sources\Network\Connection.hpp" />
     <ClInclude Include="Sources\Network\NetworkController.hpp" />
     <ClInclude Include="Sources\Player.hpp" />
-    <ClInclude Include="Sources\PlayerCommand.hpp" />
+    <ClInclude Include="Sources\Player\PlayerCommandsProcessor.h" />
     <ClInclude Include="Sources\Resources\IconInfo.h" />
     <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
     <ClInclude Include="Sources\ScriptEngine\ObjectType.h" />

@@ -3,7 +3,7 @@
 #include <plog/Log.h>
 
 #include <IServer.h>
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <World/World.hpp>
 #include <World/Tile.hpp>
 

@@ -4,7 +4,7 @@
 #include <Shared/ErrorHandling.h>
 
 #include <IGame.h>
-#include <Player.hpp>
+#include <Player/Player.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects/Control.hpp>
