@@ -102,7 +102,7 @@
     <ClCompile Include="Sources\Player\PlayerCommandsProcessor.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Player.cpp">
+    <ClCompile Include="Sources\Player\Player.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,7 +227,7 @@
     <ClInclude Include="Sources\Player\PlayerCommandsProcessor.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Player.hpp">
+    <ClInclude Include="Sources\Player\Player.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

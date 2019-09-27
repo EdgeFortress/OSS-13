@@ -141,7 +141,7 @@
     <ClCompile Include="Sources\DelayedActivitiesManager.cpp" />
     <ClCompile Include="Sources\Game.cpp" />
     <ClCompile Include="Sources\Network\NetworkController.cpp" />
-    <ClCompile Include="Sources\Player.cpp" />
+    <ClCompile Include="Sources\Player\Player.cpp" />
     <ClCompile Include="Sources\Player\PlayerCommandsProcessor.cpp" />
     <ClCompile Include="Sources\Resources\ResourceManager.cpp" />
     <ClCompile Include="Sources\ScriptEngine\Module\GeometryModule.cpp" />
@@ -180,7 +180,7 @@
     <ClInclude Include="Sources\Global.hpp" />
     <ClInclude Include="Sources\Network\Connection.hpp" />
     <ClInclude Include="Sources\Network\NetworkController.hpp" />
-    <ClInclude Include="Sources\Player.hpp" />
+    <ClInclude Include="Sources\Player\Player.h" />
     <ClInclude Include="Sources\Player\PlayerCommandsProcessor.h" />
     <ClInclude Include="Sources\Resources\IconInfo.h" />
     <ClInclude Include="Sources\Resources\ResourceManager.hpp" />
