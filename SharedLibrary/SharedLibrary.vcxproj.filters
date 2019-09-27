@@ -256,5 +256,8 @@
     <ClInclude Include="Sources\Shared\Grid.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Protocol\CommandsProcessor.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -72,6 +72,7 @@
     <ClInclude Include="Sources\Shared\Network\ArchiveConverters.h" />
     <ClInclude Include="Sources\Shared\Network\ISerializable.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ClientToServer\Commands.h" />
+    <ClInclude Include="Sources\Shared\Network\Protocol\CommandsProcessor.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\InputData.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\Commands.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\ContextMenuData.h" />

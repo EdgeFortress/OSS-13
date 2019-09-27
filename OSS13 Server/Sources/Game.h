@@ -8,8 +8,8 @@
 #include <Shared/Types.hpp>
 
 #include <IGame.h>
-#include <Player.hpp>
 #include <Chat.h>
+#include <Player/Player.h>
 
 #include "DelayedActivitiesManager.h"
 

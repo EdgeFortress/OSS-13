@@ -92,7 +92,6 @@ bool Game::AddPlayer(sptr<Player> &player) {
 		}
 	}
 	players.push_back(player);
-	player->JoinToGame();
 
 	return true;
 }

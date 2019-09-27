@@ -3,7 +3,7 @@
 #include <IGame.h>
 #include <World/World.hpp>
 #include <World/Map.hpp>
-#include <Player.hpp>
+#include <Player/Player.h>
 
 #include <Shared/Math.hpp>
 

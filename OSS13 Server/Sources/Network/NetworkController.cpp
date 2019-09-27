@@ -12,7 +12,7 @@
 #include <Shared/ErrorHandling.h>
 
 #include <IServer.h>
-#include <Player.hpp>
+#include <Player/Player.h>
 
 #include "Connection.hpp"
 
@@ -140,63 +140,13 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::MoveCommand *>(generalCommand.get())) {
-		if (connection->player)
-			connection->player->Move(uf::Direction(command->direction));
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::MoveZCommand *>(generalCommand.get())) {
-		if (connection->player)
-			connection->player->MoveZ(command->up);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::ClickObjectCommand *>(generalCommand.get())) {
-		if (connection->player)
-			connection->player->ClickObject(command->id);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::ClickControlUICommand *>(generalCommand.get())) {
-		if (connection->player)
-			connection->player->ClickControlUI(command->id);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::SendChatMessageCommand *>(generalCommand.get())) {
-		if (connection->player)
-			connection->player->ChatMessage(command->message);
-		return true;
-	}
-
 	if (auto *command = dynamic_cast<client::DisconnectionCommand *>(generalCommand.get())) {
 		if (connection->player)
 			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
 		return false;
 	}
 
-	if (auto *command = dynamic_cast<client::UIInputCommand *>(generalCommand.get())) {
-		if (connection->player) {
-			connection->player->UIInput(std::move(command->data));
-		}
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::UITriggerCommand *>(generalCommand.get())) {
-		if (connection->player) {
-			connection->player->UITrigger(command->window, command->trigger);
-		}
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<client::CallVerbCommand *>(generalCommand.get())) {
-		if (connection->player) {
-			connection->player->CallVerb(command->verb);
-		}
-		return true;
-	}
-
+	EXPECT(connection->player);
 	connection->player->AddSyncCommandFromClient(std::forward<uptr<network::protocol::Command>>(generalCommand));
 	return true;
 }
