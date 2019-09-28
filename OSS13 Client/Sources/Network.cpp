@@ -20,36 +20,36 @@
 #include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
-using namespace std;
 using namespace std::string_literals;
-using namespace sf;
 using namespace network::protocol;
 
-bool Connection::Start(string ip, int port) {
-    status = Status::WAITING;
+bool Connection::Start(const std::string &ip, int port) {
+	status = Status::WAITING;
 
-    serverIp = ip;
-    serverPort = port;
-    Connection::thread.reset(new std::thread(&session));
+	serverIp = ip;
+	serverPort = port;
+	Connection::thread = std::make_unique<std::thread>(&session);
 
-    while (GetStatus() == Status::WAITING) {
-        sleep(seconds(0.01f));
-    }
-    if (GetStatus() == Status::CONNECTED)
-        return true;
-    if (GetStatus() == Status::NOT_CONNECTED)
-        return false;
-    return false;
+	while (GetStatus() == Status::WAITING) {
+		sf::sleep(sf::seconds(0.01f));
+	}
+	if (GetStatus() == Status::CONNECTED)
+		return true;
+	if (GetStatus() == Status::NOT_CONNECTED)
+		return false;
+	return false;
 }
 
 void Connection::Stop() {
-    Connection::commandQueue.Push(new client::DisconnectionCommand());
-    status = Status::NOT_CONNECTED;
-    thread->join();
+	Connection::commandQueue.Push(new client::DisconnectionCommand());
+	status = Status::NOT_CONNECTED;
+	thread->join();
 }
 
+Connection::Status Connection::GetStatus() { return status; }
+
 void Connection::session() {
-	if (socket.connect(serverIp, serverPort, seconds(5)) != sf::Socket::Done)
+	if (socket.connect(serverIp, serverPort, sf::seconds(5)) != sf::Socket::Done)
 		status = Status::NOT_CONNECTED;
 	else
 		status = Status::CONNECTED;
@@ -71,7 +71,7 @@ void Connection::session() {
 			}
 			working = true;
 		}
-		if (!working) sleep(seconds(0.01f));
+		if (!working) sf::sleep(sf::seconds(0.01f));
 	}
 	if (!commandQueue.Empty())
 		sendCommands();
@@ -128,7 +128,7 @@ std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::prot
 	return tile;
 }
 
-bool Connection::parsePacket(Packet &packet) {
+bool Connection::parsePacket(sf::Packet &packet) {
 	uf::OutputArchive ar(packet);
 	auto p = ar.UnpackSerializable();
 
