@@ -7,7 +7,7 @@
 #include <imgui_extended.h>
 
 #include <Client.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 #include <Graphics/Sprite.hpp>
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>

@@ -1,4 +1,4 @@
-#include "Network.hpp"
+#include "Connection.h"
 
 #include <thread>
 #include <string>

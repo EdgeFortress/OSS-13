@@ -2,7 +2,7 @@
 
 #include <Client.hpp>
 #include <ResourceManager.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>

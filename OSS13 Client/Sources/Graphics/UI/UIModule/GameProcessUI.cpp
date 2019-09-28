@@ -8,7 +8,7 @@
 #include <Graphics/TileGrid/Object.hpp>
 #include <Graphics/UI/UI.hpp>
 #include <Graphics/UI/Widget/GameProcess/SpawnWindow.h>
-#include <Network.hpp>
+#include <Network/Connection.h>
 
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>

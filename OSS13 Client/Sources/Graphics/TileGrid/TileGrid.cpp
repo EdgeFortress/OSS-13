@@ -9,7 +9,7 @@
 
 #include <Client.hpp>
 #include <ResourceManager.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 #include <Graphics/Window.hpp>
 #include <Graphics/UI/UI.hpp>
 
