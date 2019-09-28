@@ -9,7 +9,7 @@
 #include <Shared/Geometry/Vec2.hpp>
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
-#include <Network.hpp>
+#include <Network/Connection.h>
 
 using json = nlohmann::json;
 using namespace network::protocol;

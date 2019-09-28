@@ -1,7 +1,5 @@
 #pragma once
 
-#include <mutex>
-
 #include <Graphics/UI/Widget/ImGuiWidget.h>
 
 #include <Shared/Network/Protocol/ServerToClient/ContextMenuData.h>
@@ -18,8 +16,6 @@ private:
 	void drawContent();
 
 private:
-	std::mutex guard;
-
 	bool askedOpen{false};
 	bool dataUpdated{false};
 	std::unique_ptr<network::protocol::ContextMenuData> data;

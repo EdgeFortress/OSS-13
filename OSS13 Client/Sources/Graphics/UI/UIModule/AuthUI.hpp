@@ -1,7 +1,5 @@
 #pragma once
 
-#include <mutex>
-
 #include "Graphics/UI/UIModule/UIModule.hpp"
 #include "Graphics/UI/Widget/Container.hpp"
 #include "Graphics/UI/Widget/Entry.hpp"

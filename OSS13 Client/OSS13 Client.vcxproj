@@ -154,7 +154,8 @@
     <ClCompile Include="Sources\Graphics\UI\Widget\GameProcess\SpawnWindow.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Widget.cpp" />
     <ClCompile Include="Sources\Graphics\Window.cpp" />
-    <ClCompile Include="Sources\Network.cpp" />
+    <ClCompile Include="Sources\Network\Connection.cpp" />
+    <ClCompile Include="Sources\Network\SyncCommandsProcessor.cpp" />
     <ClCompile Include="Sources\ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +190,8 @@
     <ClInclude Include="Sources\Graphics\UI\Widget\GameProcess\SpawnWindow.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Widget.hpp" />
     <ClInclude Include="Sources\Graphics\Window.hpp" />
-    <ClInclude Include="Sources\Network.hpp" />
+    <ClInclude Include="Sources\Network\Connection.h" />
+    <ClInclude Include="Sources\Network\SyncCommandsProcessor.h" />
     <ClInclude Include="Sources\ResourceManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

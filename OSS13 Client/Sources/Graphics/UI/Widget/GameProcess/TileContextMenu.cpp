@@ -3,13 +3,11 @@
 #include <imgui.h>
 
 #include <Client.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 void TileContextMenu::Update(sf::Time timeElapsed) {
-	std::unique_lock<std::mutex> lock(guard);
-
 	openPopupIfNeeded();
 	drawContent();
 }
@@ -19,8 +17,6 @@ void TileContextMenu::Open() {
 }
 
 void TileContextMenu::SetContent(network::protocol::ContextMenuData &&data) {
-	std::unique_lock<std::mutex> lock(guard);
-
 	this->data = std::make_unique<network::protocol::ContextMenuData>(std::move(data));
 	dataUpdated = true;
 }

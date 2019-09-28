@@ -7,15 +7,13 @@
 #include <imgui_extended.h>
 
 #include <Client.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 #include <Graphics/Sprite.hpp>
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 
 void SpawnWindow::Update(sf::Time timeElapsed) {
-	std::unique_lock<std::mutex> lock(guard);
-
 	ImGui::SetNextWindowPos(ImVec2(60, 60), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Once);
 
@@ -31,8 +29,6 @@ void SpawnWindow::Update(sf::Time timeElapsed) {
 }
 
 void SpawnWindow::UpdateTypes(std::vector<network::protocol::ObjectType> &&types) {
-	std::unique_lock<std::mutex> lock(guard);
-
 	this->types = std::forward<std::vector<network::protocol::ObjectType>>(types);
 	noQueriesYet = false;
 }

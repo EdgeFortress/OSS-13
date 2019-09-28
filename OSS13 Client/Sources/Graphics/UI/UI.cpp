@@ -52,14 +52,6 @@ void UI::DrawMenuBackground(sf::RenderWindow *render_window) {
     render_window->draw(background_sprite);
 }
 
-void UI::Lock() {
-    mutex.lock();
-}
-
-void UI::Unlock() {
-    mutex.unlock();
-}
-
 const sf::Font &UI::GetFont() const { return font; }
 UIModule *UI::GetCurrentUIModule() { return curUIModule.get(); }
 

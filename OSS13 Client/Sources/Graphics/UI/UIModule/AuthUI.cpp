@@ -5,14 +5,13 @@
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
-#include "Graphics/UI/UI.hpp"
-#include "Client.hpp"
-#include "Graphics/Window.hpp"
-#include "Network.hpp"
-
-#include "Graphics/UI/Widget/Label.hpp"
-#include "Graphics/UI/Widget/Button.hpp"
-#include "Graphics/UI/Widget/Entry.hpp"
+#include <Client.hpp>
+#include <Graphics/Window.hpp>
+#include <Graphics/UI/UI.hpp>
+#include <Graphics/UI/Widget/Label.hpp>
+#include <Graphics/UI/Widget/Button.hpp>
+#include <Graphics/UI/Widget/Entry.hpp>
+#include <Network/Connection.h>
 
 using namespace network::protocol;
 
@@ -66,9 +65,7 @@ void AuthUI::Update(sf::Time timeElapsed) {
 }
 
 void AuthUI::SetServerAnswer(bool result) {
-    ui->Lock();
     serverAnswer = ServerAnswer(result);
-    ui->Unlock();
 }
 
 void AuthUI::generateLoginWindow() {
@@ -193,9 +190,7 @@ void AuthUI::registration() {
 }
 
 AuthUI::ServerAnswer AuthUI::getAnswer() {
-	ui->Lock();
 	ServerAnswer temp = serverAnswer;
 	serverAnswer.isAnswer = false;
-	ui->Unlock();
 	return temp;
 }

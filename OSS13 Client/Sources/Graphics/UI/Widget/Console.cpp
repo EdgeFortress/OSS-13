@@ -9,7 +9,7 @@
 #include <imgui_stdlib.h>
 
 #include <Client.hpp>
-#include <Network.hpp>
+#include <Network/Connection.h>
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
