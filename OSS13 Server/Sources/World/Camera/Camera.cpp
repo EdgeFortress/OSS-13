@@ -37,7 +37,7 @@ void Camera::updateOverlay(std::chrono::microseconds timeElapsed) {
 		auto command = std::make_unique<network::protocol::server::OverlayUpdateCommand>();
 
 		command->overlayInfo.reserve(getVisibleAreaSide() * getVisibleAreaSide() * getVisibleAreaHeight());
-		for (auto &[tile, _]: visibleTiles.Get()) {
+		for (auto &[tile, _]: visibleTiles.Items()) {
 			if (tile) {
 				command->overlayInfo.push_back(overlay->GetOverlayInfo(*tile));
 			}
@@ -118,7 +118,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 
 	std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObjects;
 
-	for (auto &[tile,sync]: visibleTiles.Get()) {
+	for (auto &[tile,sync]: visibleTiles.Items()) {
 		if (tile) {
 			if (sync) {
 				// Collect differences
@@ -298,22 +298,18 @@ uf::vec3i Camera::getFirstTilePos() {
 }
 
 void Camera::fullRecountVisibleBlocks() {
-	for (int z = 0; z < getVisibleAreaHeight(); z++)
-	for (int y = 0; y < getVisibleAreaSide(); y++)
-	for (int x = 0; x < getVisibleAreaSide(); x++) {
-		visibleTiles.At(x,y,z) = {tile->GetMap()->GetTile(getFirstTilePos()+vec3i(x,y,z)), false};
+	for (auto &&[pair, pos] : visibleTiles) {
+		pair = {tile->GetMap()->GetTile(getFirstTilePos() + pos), false};
 	}
 	visibleObjects.clear();
 }
 
 void Camera::fillEmptyVisibleBlocks() {
-	for (int z = 0; z < getVisibleAreaHeight(); z++)
-	for (int y = 0; y < getVisibleAreaSide(); y++)
-	for (int x = 0; x < getVisibleAreaSide(); x++) {
-		if(visibleTiles.At(x,y,z).first != nullptr) {
+	for (auto &&[pair, pos] : visibleTiles) {
+		if(pair.first != nullptr) {
 			continue;
 		}
-		visibleTiles.At(x,y,z).first = tile->GetMap()->GetTile(getFirstTilePos() + vec3i(x,y,z));
+		pair.first = tile->GetMap()->GetTile(getFirstTilePos() + pos);
 	}
 }
 

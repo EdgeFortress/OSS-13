@@ -20,7 +20,6 @@ public:
     apos GetSize() const;
     Atmos *GetAtmos() const;
     Tile *GetTile(vec3i) const;
-    const vector<uptr<Tile>> &GetTiles() const;
 
 private:
     uptr<Atmos> atmos;

@@ -318,7 +318,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
         }
     }
 
-	for (auto &block : blocks.Get()) {
+	for (auto &block : blocks.Items()) {
 		if (block) block->Update(timeElapsed);
 	}
     
@@ -510,7 +510,7 @@ int TileGrid::GetFOVZ() {return fovZ;}
 void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overlayInfo) {
 	overlayToggled = true;
 	auto tileOverlayInfo = overlayInfo.begin();
-	for (auto &tile : blocks.Get()) {
+	for (auto &tile : blocks.Items()) {
 		EXPECT(tileOverlayInfo != overlayInfo.end());
 		if (tile) {
 			tile->SetOverlay(tileOverlayInfo->text);
@@ -521,7 +521,7 @@ void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overla
 
 void TileGrid::ResetOverlay() {
 	overlayToggled = false;
-	for (auto &tile : blocks.Get()) {
+	for (auto &tile : blocks.Items()) {
 		if (tile)
 			tile->SetOverlay("");
 	}
