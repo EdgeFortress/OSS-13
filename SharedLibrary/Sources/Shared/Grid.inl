@@ -1,5 +1,31 @@
-
 namespace uf {
+
+// Grid::iterator
+
+template<typename T>
+typename Grid<T>::iterator& Grid<T>::iterator::operator++() {
+	vec3u dataSize = grid.GetSize();
+	if(++dataPos.x == dataSize.x) {
+		if(++dataPos.y == dataSize.y) {
+			++dataPos.z;
+			dataPos.y = 0;
+		}
+		dataPos.x = 0;
+	}
+	return *this;
+}
+
+template<typename T>
+std::pair<typename Grid<T>::reference, vec3u> Grid<T>::iterator::operator*() {
+	return {grid.At(dataPos), dataPos};
+}
+
+template<typename T>
+bool Grid<T>::iterator::operator!=(const iterator& it) const {
+	return it.dataPos != dataPos;
+}
+
+// Grid
 
 template<typename T>
 void Grid<T>::SetSize(vec3u size) {
@@ -18,33 +44,53 @@ vec3u Grid<T>::GetSize() const {
 }
 
 template<typename T>
-std::vector<T>& Grid<T>::Get() {
-	return data;
+typename Grid<T>::iterator Grid<T>::begin() {
+	return iterator(*this);
 }
 
 template<typename T>
-const std::vector<T>& Grid<T>::Get() const {
-	return data;
+typename Grid<T>::iterator Grid<T>::end() {
+	return iterator(*this, vec3u(0, 0, dataSize.z));
 }
 
 template<typename T>
-typename std::vector<T>::reference Grid<T>::At(vec3u pos) {
+const Range<typename Grid<T>::flat_iterator> Grid<T>::Items() {
+	return MakeRange<std::vector<T>>(data);
+}
+
+template<typename T>
+const Range<typename Grid<T>::const_flat_iterator> Grid<T>::Items() const {
+	return MakeRange<const std::vector<T>>(data);
+}
+
+template<typename T>
+typename Grid<T>::reference Grid<T>::At(vec3u pos) {
 	return data[flatIndex(pos, dataSize.x, dataSize.y)];
 }
 
 template<typename T>
-typename std::vector<T>::reference Grid<T>::At(uint x, uint y, uint z) {
+typename Grid<T>::reference Grid<T>::At(uint x, uint y, uint z) {
 	return At({x,y,z});
 }
 
 template<typename T>
-typename std::vector<T>::const_reference Grid<T>::At(vec3u pos) const {
+typename Grid<T>::const_reference Grid<T>::At(vec3u pos) const {
 	return data[flatIndex(pos, dataSize.x, dataSize.y)];
 }
 
 template<typename T>
-typename std::vector<T>::const_reference Grid<T>::At(uint x, uint y, uint z) const {
+typename Grid<T>::const_reference Grid<T>::At(uint x, uint y, uint z) const {
 	return At({x,y,z});
+}
+
+template<typename T>
+void Grid<T>::SetMovedCallback(std::function<void(vec3u, vec3u)> _movedCallback) {
+	movedCallback = _movedCallback;
+}
+
+template<typename T>
+void Grid<T>::SetRemovedCallback(std::function<void(vec3u)> _removedCallback) {
+	removedCallback = _removedCallback;
 }
 
 template<typename T>
@@ -65,16 +111,6 @@ void Grid<T>::Transform(const GridTransformation transformation) {
 	}
 	dataSize = new_size;
 	data = std::move(new_data);
-}
-
-template<typename T>
-void Grid<T>::SetMovedCallback(std::function<void(vec3u, vec3u)> _movedCallback) {
-	movedCallback = _movedCallback;
-}
-
-template<typename T>
-void Grid<T>::SetRemovedCallback(std::function<void(vec3u)> _removedCallback) {
-	removedCallback = _removedCallback;
 }
 
 template<typename T>
