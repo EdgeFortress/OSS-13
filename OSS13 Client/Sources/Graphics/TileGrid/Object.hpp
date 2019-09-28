@@ -24,10 +24,8 @@ namespace sf {
 
 class Object {
 public:
-	Object();
 	explicit Object(const network::protocol::ObjectInfo &objectInfo);
 
-    Object(const Object &) = default;
     Object &operator=(Object &) = default;
     ~Object();
 
@@ -71,7 +69,7 @@ private:
 	uf::Direction direction{uf::Direction::NONE};
 	uint layer{};
 
-	bool density;
+	bool density{};
 	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 
@@ -82,5 +80,5 @@ private:
     uf::vec2i moveIntentApproved;
     uf::vec2f speed;
 
-	Tile *tile{nullptr};
+	Tile *tile{};
 };

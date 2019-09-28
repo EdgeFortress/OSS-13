@@ -10,9 +10,6 @@
 #include <Graphics/Sprite.hpp>
 #include <Graphics/TileGrid/TileGrid.hpp>
 
-Object::Object()
-{ }
-
 Object::Object(const network::protocol::ObjectInfo &objectInfo) {
 	for (auto &sprite : objectInfo.spriteIds) {
 		AddSprite(uint(sprite));

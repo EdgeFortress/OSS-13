@@ -27,7 +27,6 @@ Tile::Tile(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo) :
 		if (iter == objects.end()) {
 			objects[objInfo.id] = std::make_unique<Object>(objInfo);
 		}
-		objects[objInfo.id]->SetID(objInfo.id);
 
 		AddObject(objects[objInfo.id].get());
 	}
