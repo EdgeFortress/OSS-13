@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -39,7 +38,6 @@ private:
 
 	// TODO: what is it? mutable is needed here?
 	mutable std::vector<Inscription> text;
-	mutable std::mutex mtx;
 
 	void scrollUp();
 	void scrollDown();

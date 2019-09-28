@@ -65,9 +65,7 @@ void AuthUI::Update(sf::Time timeElapsed) {
 }
 
 void AuthUI::SetServerAnswer(bool result) {
-    ui->Lock();
     serverAnswer = ServerAnswer(result);
-    ui->Unlock();
 }
 
 void AuthUI::generateLoginWindow() {
@@ -192,9 +190,7 @@ void AuthUI::registration() {
 }
 
 AuthUI::ServerAnswer AuthUI::getAnswer() {
-	ui->Lock();
 	ServerAnswer temp = serverAnswer;
 	serverAnswer.isAnswer = false;
-	ui->Unlock();
 	return temp;
 }

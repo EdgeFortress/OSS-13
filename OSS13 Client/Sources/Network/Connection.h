@@ -6,6 +6,7 @@
 
 #include <Shared/ThreadSafeQueue.hpp>
 #include <Shared/Network/Protocol/Command.h>
+#include <Shared/Network/Protocol/CommandsProcessor.h>
 
 class Connection {
 public:
@@ -21,6 +22,8 @@ public:
 	static bool Start(const std::string &ip, int port);
 	static void Stop();
 
+	static void ProcessSyncCommands();
+
 	static Status GetStatus();
 
 private:
@@ -33,7 +36,9 @@ private:
 
 	static sf::IpAddress serverIp;
 	static int serverPort;
-	static uptr<std::thread> thread;
 
+	static uptr<std::thread> thread;
 	static sf::TcpSocket socket;
+
+	static uptr<network::CommandsProcessor> syncCommandsProcessor;
 };

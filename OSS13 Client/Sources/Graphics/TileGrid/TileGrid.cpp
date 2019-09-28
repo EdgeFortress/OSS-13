@@ -50,8 +50,6 @@ TileGrid::TileGrid() :
 }
 
 void TileGrid::drawContainer() const {
-    std::unique_lock<std::mutex> lock(mutex);
-
     underCursorObject = nullptr;
 	buffer.clear();
 	const int border = fov + Global::MIN_PADDING;
@@ -257,8 +255,6 @@ void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
 void TileGrid::Update(sf::Time timeElapsed) {
 	Container::Update(timeElapsed);
 
-    std::unique_lock<std::mutex> lock(mutex);
-
     if (actionSendPause != sf::Time::Zero) {
         actionSendPause -= timeElapsed;
         if (actionSendPause < sf::Time::Zero) actionSendPause = sf::Time::Zero;
@@ -341,14 +337,6 @@ void TileGrid::Update(sf::Time timeElapsed) {
 		stun -= timeElapsed;
 	else
 		stun = sf::Time::Zero;
-}
-
-void TileGrid::LockDrawing() {
-    mutex.lock();
-}
-
-void TileGrid::UnlockDrawing() {
-    mutex.unlock();
 }
 
 void TileGrid::AddObject(Object *object) {
@@ -563,6 +551,8 @@ int TileGrid::GetTileSize() const { return tileSize; }
 Object *TileGrid::GetObjectUnderCursor() const { return underCursorObject; }
 //const int TileGrid::GetPaddingX() const { return padding.x; }
 //const int TileGrid::GetPaddingY() const { return padding.y; }
+
+std::unordered_map< uint, uptr<Object> > &TileGrid::GetObjects() { return objects; }
 
 void TileGrid::updatePos(uf::vec3u pos, uf::vec3u newpos) {
 	if(!blocks.At(pos)) {

@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <unordered_map>
-#include <mutex>
 #include <SFML/System/Time.hpp>
 
 #include <Graphics/UI/Widget/Container.hpp>
@@ -38,11 +37,6 @@ public:
 
     //// FOR NETWORK
 
-		// Lock for network updating
-		void LockDrawing();
-		// Unlock for network updating
-		void UnlockDrawing();
-
 		// Differences commiting
 		void AddObject(Object *object);
 		void RemoveObject(uint id);
@@ -73,7 +67,7 @@ public:
 	int GetTileSize() const;
     Object *GetObjectUnderCursor() const;
 
-	friend std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
+	std::unordered_map< uint, uptr<Object> > &GetObjects(); // TODO: remove this
 
 protected:
     void drawContainer() const override final;
@@ -101,7 +95,6 @@ private:
     uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
 
-    mutable std::mutex mutex;
     mutable std::vector< std::vector<Object *> > layersBuffer;
 
 	bool overlayToggled;

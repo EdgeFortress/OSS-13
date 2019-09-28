@@ -35,9 +35,7 @@ void FormattedTextField::AddInscription(const std::string &inscription) {
     wstring::iterator end = sf::Utf<8>::toWide(inscription.begin(), inscription.end(), result.begin());
     result.erase(end, result.end());
 
-    mtx.lock();
     text.push_back(Inscription(result));
-    mtx.unlock();
 }
 
 void FormattedTextField::parse(Inscription &inscription, sf::Text &tempText) {
@@ -107,7 +105,6 @@ void FormattedTextField::draw() const {
     int cur_scroll = scrolled;
 
     float size = 0;
-    mtx.lock();
     for (int i = int(text.size() - 1); i >= 0; i--) {
         for (int j = int(text[i].text.size() - 1); j >= 0; j--) {
             if (!cur_scroll) {
@@ -127,7 +124,6 @@ void FormattedTextField::draw() const {
         if (size > GetSize().y)
             break;
     }
-    mtx.unlock();
 
     buffer.display();
 }
@@ -162,13 +158,11 @@ void FormattedTextField::Update(sf::Time timeElapsed) {
     if (!iter)
         return;
 
-    mtx.lock();
     while (text[--iter].text.empty()) {
         parse(text[iter], tempText);
         if (!iter)
             break;
     }
-    mtx.unlock();
 
     while (text.size() > 100)
         text.erase(text.begin());

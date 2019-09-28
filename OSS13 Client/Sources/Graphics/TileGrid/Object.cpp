@@ -10,14 +10,24 @@
 #include <Graphics/Sprite.hpp>
 #include <Graphics/TileGrid/TileGrid.hpp>
 
-Object::Object() :
-    id(0), 
-    animationProcess(false),
-    direction(uf::Direction::NONE), 
-    layer(0), 
-    moveSpeed(0),
-    tile(nullptr)
+Object::Object()
 { }
+
+Object::Object(const network::protocol::ObjectInfo &objectInfo) {
+	for (auto &sprite : objectInfo.spriteIds) {
+		AddSprite(uint(sprite));
+	}
+
+	id = objectInfo.id;
+	name = objectInfo.name;
+	layer = objectInfo.layer;
+	direction = objectInfo.direction;
+	density = objectInfo.density;
+	solidity = objectInfo.solidity;
+	opacity = objectInfo.opacity;
+	moveSpeed = objectInfo.moveSpeed;
+	speed = objectInfo.speed;
+}
 
 Object::~Object() {
     if (tile) {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mutex>
 #include <SFML/Graphics.hpp>
 
 #include "Shared/Types.hpp"
@@ -16,8 +15,6 @@ private:
 
 	uptr<UIModule> curUIModule;
 	UIModule *newUIModule;
-
-    mutable std::mutex mutex;
 
 	uptr<Widget> console;
 
@@ -36,9 +33,6 @@ public:
 
 	template<class ModuleType>
 	void ChangeModule() { newUIModule = new ModuleType(this); }
-
-    void Lock();
-    void Unlock();
 
 	const sf::Font &GetFont() const;
 	UIModule *GetCurrentUIModule();

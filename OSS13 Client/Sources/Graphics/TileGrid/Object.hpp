@@ -25,6 +25,8 @@ namespace sf {
 class Object {
 public:
 	Object();
+	explicit Object(const network::protocol::ObjectInfo &objectInfo);
+
     Object(const Object &) = default;
     Object &operator=(Object &) = default;
     ~Object();
@@ -58,18 +60,16 @@ public:
 	bool IsDense() const;
 	uf::DirectionSet GetSolidity() const;
 
-	friend sf::Packet &operator>>(sf::Packet &packet, Object &object);
-	friend std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo &objectInfo);
 	friend Tile;
 
 private:
-    uint id;
+	uint id{};
     std::string name;
 	std::vector<::Sprite> sprites;
     ::Sprite animation;
-    bool animationProcess;
-    uf::Direction direction;
-    uint layer;
+	bool animationProcess{};
+	uf::Direction direction{uf::Direction::NONE};
+	uint layer{};
 
 	bool density;
 	uf::DirectionSet solidity;
@@ -77,7 +77,7 @@ private:
 
     uf::vec2f shift;
     
-    float moveSpeed;
+	float moveSpeed{};
     uf::vec2i moveIntent;
     uf::vec2i moveIntentApproved;
     uf::vec2f speed;

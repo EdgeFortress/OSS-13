@@ -20,6 +20,8 @@
 #include <Shared/Network/Protocol/ServerToClient/WindowData.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
+#include "SyncCommandsProcessor.h"
+
 using namespace std::string_literals;
 using namespace network::protocol;
 
@@ -29,6 +31,7 @@ bool Connection::Start(const std::string &ip, int port) {
 	serverIp = ip;
 	serverPort = port;
 	Connection::thread = std::make_unique<std::thread>(&session);
+	Connection::syncCommandsProcessor = std::make_unique<network::SyncCommandsProcessor>();
 
 	while (GetStatus() == Status::WAITING) {
 		sf::sleep(sf::seconds(0.01f));
@@ -44,6 +47,10 @@ void Connection::Stop() {
 	Connection::commandQueue.Push(new client::DisconnectionCommand());
 	status = Status::NOT_CONNECTED;
 	thread->join();
+}
+
+void Connection::ProcessSyncCommands() {
+	syncCommandsProcessor->ProcessCommands();
 }
 
 Connection::Status Connection::GetStatus() { return status; }
@@ -88,214 +95,25 @@ void Connection::sendCommands() {
 	}
 }
 
-std::unique_ptr<Object> CreateObjectWithInfo(const network::protocol::ObjectInfo &objectInfo) {
-	auto object = std::make_unique<Object>();
-
-	for (auto &sprite : objectInfo.spriteIds) {
-		object->AddSprite(uint(sprite));
-	}
-
-	object->id = objectInfo.id;
-	object->name = objectInfo.name;
-	object->layer = objectInfo.layer;
-	object->direction = objectInfo.direction;
-	object->density = objectInfo.density;
-	object->solidity = objectInfo.solidity;
-	object->opacity = objectInfo.opacity;
-	object->moveSpeed = objectInfo.moveSpeed;
-	object->speed = objectInfo.speed;
-
-	return object;
-}
-
-std::unique_ptr<Tile> CreateTileWithInfo(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo) {
-	auto tile = std::make_unique<Tile>(tileGrid);
-
-	tile->sprite = CC::Get()->RM.CreateSprite(uint(tileInfo.sprite));
-
-	for (auto &objInfo : tileInfo.content) {
-		auto &objects = tile->GetTileGrid()->objects;
-
-		auto iter = objects.find(objInfo.id);
-		if (iter == objects.end()) {
-			objects[objInfo.id] = CreateObjectWithInfo(objInfo);
-		}
-		objects[objInfo.id]->SetID(objInfo.id);
-
-		tile->AddObject(objects[objInfo.id].get());
-	}
-	tile->Resize(tile->GetTileGrid()->GetTileSize());
-	return tile;
-}
-
 bool Connection::parsePacket(sf::Packet &packet) {
 	uf::OutputArchive ar(packet);
-	auto p = ar.UnpackSerializable();
+	auto serializable = ar.UnpackSerializable();
+	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 
-	if (auto *command = dynamic_cast<server::AuthorizationSuccessCommand *>(p.get())) {
-		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(authUI);
-		authUI->SetServerAnswer(true);
+	if (!generalCommand) {
+		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->Id() << ") is received!";
+		return false;
+	}
+
+	if (auto *command = dynamic_cast<server::GameJoinSuccessCommand *>(generalCommand.get())) {
+		return true;
+	}
+	if (auto *command = dynamic_cast<server::GameJoinErrorCommand *>(generalCommand.get())) {
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<server::AuthorizationFailedCommand *>(p.get())) {
-		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(authUI);
-		authUI->SetServerAnswer(false);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::RegistrationSuccessCommand *>(p.get())) {
-		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(authUI);
-		authUI->SetServerAnswer(true);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::RegistrationFailedCommand *>(p.get())) {
-		AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(authUI);
-		authUI->SetServerAnswer(false);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::GameJoinSuccessCommand *>(p.get())) {
-		return true;
-	}
-	if (auto *command = dynamic_cast<server::GameJoinErrorCommand *>(p.get())) {
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::GraphicsUpdateCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-        EXPECT(gameProcessUI);
-        TileGrid *tileGrid = gameProcessUI->GetTileGrid();
-		EXPECT(tileGrid);
-        tileGrid->LockDrawing();
-        if (command->options & server::GraphicsUpdateCommand::Option::TILES_SHIFT) {
-            tileGrid->ShiftBlocks(command->firstTile);
-
-			for (auto &tileInfo : command->tilesInfo) {
-				tileGrid->SetBlock(tileInfo.coords, CreateTileWithInfo(tileGrid, tileInfo));
-			}
-        }
-		if (command->options & server::GraphicsUpdateCommand::Option::CAMERA_MOVE) {
-            tileGrid->SetCameraPosition(command->camera);
-        }
-        if (command->options & server::GraphicsUpdateCommand::Option::DIFFERENCES) {
-			for (auto &generalDiff : command->diffs) {
-				if (auto *diff = dynamic_cast<network::protocol::AddDiff *>(generalDiff.get())) {
-					auto obj = CreateObjectWithInfo(diff->objectInfo);
-					tileGrid->AddObject(obj.release());
-					tileGrid->RelocateObject(diff->objId, diff->coords, diff->layer);
-				} else if (auto *diff = dynamic_cast<network::protocol::RemoveDiff *>(generalDiff.get())) {
-					tileGrid->RemoveObject(diff->objId);
-				} else if (auto *diff = dynamic_cast<network::protocol::RelocateDiff *>(generalDiff.get())) {
-					tileGrid->RelocateObject(diff->objId, diff->newCoords, diff->layer);
-				} else if (auto *diff = dynamic_cast<network::protocol::MoveIntentDiff *>(generalDiff.get())) {
-					tileGrid->SetMoveIntentObject(diff->objId, diff->direction);
-				} else if (auto *diff = dynamic_cast<network::protocol::MoveDiff *>(generalDiff.get())) {
-					tileGrid->MoveObject(diff->objId, diff->direction, diff->speed);
-				} else if (auto *diff = dynamic_cast<network::protocol::UpdateIconsDiff *>(generalDiff.get())) {
-					tileGrid->UpdateObjectIcons(diff->objId, diff->iconsIds);
-				} else if (auto *diff = dynamic_cast<network::protocol::PlayAnimationDiff *>(generalDiff.get())) {
-					tileGrid->PlayAnimation(diff->objId, diff->animationId);
-				} else if (auto *diff = dynamic_cast<network::protocol::ChangeDirectionDiff *>(generalDiff.get())) {
-					tileGrid->ChangeObjectDirection(diff->objId, diff->direction);
-				} else if (auto *diff = dynamic_cast<network::protocol::StunnedDiff *>(generalDiff.get())) {
-					tileGrid->Stunned(diff->objId, sf::microseconds(diff->duration.count()));
-				};
-			}
-		}
-		if (command->options & server::GraphicsUpdateCommand::Option::NEW_CONTROLLABLE) {
-			tileGrid->SetControllable(command->controllableId, command->controllableSpeed);
-		}
-		if (command->options & server::GraphicsUpdateCommand::Option::NEW_FOV) {
-			tileGrid->SetFOV(command->fov, command->fovZ);
-		}
-		tileGrid->UnlockDrawing();
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::ControlUIUpdateCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
-		EXPECT(tileGrid);
-		tileGrid->LockDrawing();
-		tileGrid->UpdateControlUI(command->elements, command->clear);
-		tileGrid->UnlockDrawing();
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::OverlayUpdateCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
-		EXPECT(tileGrid);
-		tileGrid->LockDrawing();
-		tileGrid->UpdateOverlay(command->overlayInfo);
-		tileGrid->UnlockDrawing();
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::OverlayResetCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		TileGrid *tileGrid = gameProcessUI->GetTileGrid();
-		EXPECT(tileGrid);
-		tileGrid->LockDrawing();
-		tileGrid->ResetOverlay();
-		tileGrid->UnlockDrawing();
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::OpenWindowCommand *>(p.get())) {
-		UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
-		EXPECT(uiModule);
-		uiModule->OpenWindow(command->id.c_str(), command->data);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::OpenSpawnWindowCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		gameProcessUI->OpenSpawnWindow();
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::UpdateSpawnWindowCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		gameProcessUI->UpdateSpawnWindow(std::forward<std::vector<network::protocol::ObjectType>>(command->types));
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::UpdateContextMenuCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		gameProcessUI->UpdateContextMenu(std::forward<network::protocol::ContextMenuData>(command->data));
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::UpdateWindowCommand *>(p.get())) {
-		UIModule *uiModule = CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule();
-		EXPECT(uiModule);
-		uiModule->UpdateWindow(command->data->window, *command->data);
-		return true;
-	}
-
-	if (auto *command = dynamic_cast<server::AddChatMessageCommand *>(p.get())) {
-		GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
-		EXPECT(gameProcessUI);
-		gameProcessUI->Receive(command->message);
-		return true;
-	}
-
-	EXPECT_WITH_MSG(false, "Unknown command received! Serializable ID is "s + std::to_string(p->Id()));
-
-	return false;
+	syncCommandsProcessor->AddCommand(std::move(generalCommand));
+	return true;
 }
 
 sf::IpAddress Connection::serverIp;
@@ -304,3 +122,4 @@ Connection::Status Connection::status = Connection::Status::INACTIVE;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
 uf::ThreadSafeQueue<Command *> Connection::commandQueue;
+uptr<network::CommandsProcessor> Connection::syncCommandsProcessor;

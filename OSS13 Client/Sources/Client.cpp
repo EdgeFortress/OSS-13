@@ -30,6 +30,7 @@ void ClientController::Run() {
     window->Initialize();
 
     while (window->isOpen()) {
+		Connection::ProcessSyncCommands();
         window->Update();
     }
     Connection::Stop();
