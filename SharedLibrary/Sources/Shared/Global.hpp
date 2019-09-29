@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace Global {
 
 const int PORT = 55700;
