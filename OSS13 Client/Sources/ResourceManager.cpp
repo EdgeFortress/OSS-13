@@ -96,8 +96,16 @@ void ResourceManager::generateSprites(
 
 		// Directed
 		iter = sprite_config.find("directed");
-		if (iter != sprite_config.end()) spriteInfo.directed = iter->get<bool>();
-		else spriteInfo.directed = false;
+		if (iter != sprite_config.end()) {
+			if (iter->is_boolean()) {
+				spriteInfo.directed = iter->get<bool>();
+			} else {
+				if (iter->get<std::string>() == "pure") {
+					spriteInfo.directed = true;
+					spriteInfo.pureDirections = true;
+				}
+			}
+		}
 
 		spriteInfo.firstFrame = firstFrame;
 		if (mobState_texture)
