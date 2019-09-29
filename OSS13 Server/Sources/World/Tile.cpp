@@ -112,9 +112,9 @@ bool Tile::MoveTo(Object *obj) {
 	uf::Direction direction = uf::VectToDirection(delta);
 
 	if (obj->GetDensity()) {
-		auto bumpedTo = lastTile->GetDenseObject(DirectionSet({ direction }));
+		auto bumpedTo = lastTile->GetDenseObject(uf::DirectionSet({ direction }));
 		if (!bumpedTo)
-			bumpedTo = GetDenseObject(DirectionSet({uf::InvertDirection(direction), uf::Direction::CENTER}));
+			bumpedTo = GetDenseObject(uf::DirectionSet({uf::InvertDirection(direction), uf::Direction::CENTER}));
 		if (bumpedTo) {
 			obj->BumpedTo(bumpedTo);
 			return false;
@@ -200,7 +200,7 @@ const std::list<Object *> &Tile::Content() const {
     return content;
 }
 
-Object *Tile::GetDenseObject(DirectionSet directions) const
+Object *Tile::GetDenseObject(uf::DirectionSet directions) const
 {
     for (auto &obj : content)
         if (obj->GetSolidity().DoesExistOne(directions)) return obj;

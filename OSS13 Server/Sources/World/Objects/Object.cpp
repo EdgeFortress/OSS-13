@@ -89,25 +89,25 @@ void Object::Move(uf::vec2i order) {
 		if (order.y) moveIntent.y = order.y;
 
 		Tile *newTileX = tile->GetMap()->GetTile({ tile->GetPos().x + moveIntent.x, tile->GetPos().y, tile->GetPos().z });
-		Direction xDirection = newTileX ? uf::VectToDirection(newTileX->GetPos() - tile->GetPos()) : uf::Direction::NONE;
+		uf::Direction xDirection = newTileX ? uf::VectToDirection(newTileX->GetPos() - tile->GetPos()) : uf::Direction::NONE;
 
 		Tile *newTileY = tile->GetMap()->GetTile({ tile->GetPos().x, tile->GetPos().y + moveIntent.y, tile->GetPos().z });
-		Direction yDirection = newTileY ? uf::VectToDirection(newTileY->GetPos() - tile->GetPos()) : uf::Direction::NONE;
+		uf::Direction yDirection = newTileY ? uf::VectToDirection(newTileY->GetPos() - tile->GetPos()) : uf::Direction::NONE;
 
 		Tile *newTileDiag = tile->GetMap()->GetTile(tile->GetPos() + rpos(moveIntent, 0));
 
 		if (GetDensity()) {
 			auto moveDirection = uf::VectToDirection(moveIntent);
 
-			if (tile->IsDense(DirectionSet({moveDirection}))) { // exit from current tile
+			if (tile->IsDense(uf::DirectionSet({moveDirection}))) { // exit from current tile
 				moveIntent = GetMoveIntent();
 			} else {
-				if (!newTileDiag || newTileDiag->IsDense((DirectionSet({uf::InvertDirection(moveDirection), uf::Direction::CENTER})))) {
+				if (!newTileDiag || newTileDiag->IsDense((uf::DirectionSet({uf::InvertDirection(moveDirection), uf::Direction::CENTER})))) {
 					return;
 				}
 				else {
-					if (!newTileX || newTileX != tile && newTileX->IsDense((DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })))) return;
-					if (!newTileY || newTileY != tile && newTileY->IsDense((DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })))) return;
+					if (!newTileX || newTileX != tile && newTileX->IsDense((uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })))) return;
+					if (!newTileY || newTileY != tile && newTileY->IsDense((uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })))) return;
 				}
 			}
 		}

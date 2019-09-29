@@ -8,7 +8,6 @@
 #include "Shared/Grid.hpp"
 
 using std::vector;
-using namespace uf;
 
 class Map {
 public:
@@ -19,10 +18,10 @@ public:
 
     apos GetSize() const;
     Atmos *GetAtmos() const;
-    Tile *GetTile(vec3i) const;
+    Tile *GetTile(uf::vec3i) const;
 
 private:
     uptr<Atmos> atmos;
 
-    Grid<uptr<Tile>> tiles;
+    uf::Grid<uptr<Tile>> tiles;
 };
