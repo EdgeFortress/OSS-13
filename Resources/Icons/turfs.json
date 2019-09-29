@@ -47,12 +47,12 @@
         {
             "sprite": "window",
             "frames": 1,
-            "directed": false
+            "directed": "pure"
         },
         {
             "sprite": "reinforced_window",
             "frames": 1,
-            "directed": false
+            "directed": "pure"
         }
     ]
 }
