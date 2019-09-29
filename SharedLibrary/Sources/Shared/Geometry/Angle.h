@@ -15,6 +15,11 @@ public:
 	double Cos() const { return std::cos(radians); }
 	double Sin() const { return std::sin(radians); }
 
+	Angle operator-() { return Angle::Radians(-radians); }
+
+	Angle operator+(const Angle &other) { return Angle::Radians(radians + other.radians); }
+	Angle operator-(const Angle &other) { return Angle::Radians(radians - other.radians); }
+
 	Angle operator+=(const Angle &other) { radians += other.radians; return *this; }
 	Angle operator-=(const Angle &other) { radians -= other.radians; return *this; }
 
@@ -32,10 +37,5 @@ private:
 
 	double radians;
 };
-
-inline auto operator-(const Angle& angle) { return Angle::Radians(-angle.GetRadians()); }
-
-inline auto operator+(const Angle& left, const Angle& right) { return Angle::Radians(left.GetRadians() + right.GetRadians()); }
-inline auto operator-(const Angle& left, const Angle& right) { return Angle::Radians(left.GetRadians() - right.GetRadians()); }
 
 }

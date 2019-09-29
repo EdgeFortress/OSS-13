@@ -58,8 +58,6 @@ void TileGrid::drawContainer() const {
 	buffer.clear();
 	const int border = fov + Global::MIN_PADDING;
 
-	uf::vec2i cursorTilePosition;
-
     // Firstly, fill layers buffer by objects
     uf::vec2i tilePos; // tiles positions relative to camera
     for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
@@ -85,7 +83,6 @@ void TileGrid::drawContainer() const {
             object->Draw(&buffer, pixel);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
 				underCursorTile = tile;
-				cursorTilePosition = cursorPosition - pixel;
                 if (!object->PixelTransparent(cursorPosition - pixel))
                     underCursorObject = object;
             }
