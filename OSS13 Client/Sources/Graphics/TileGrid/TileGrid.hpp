@@ -33,7 +33,7 @@ public:
 	bool OnMouseWheelScrolled(float delta, uf::vec2i position) final;
 	bool OnKeyPressed(sf::Event::KeyEvent keyEvent) final;
 
-	void AdjustSize(const uf::vec2i &windowSize);
+	void SetSize(const uf::vec2i &windowSize) final;
 
     //// FOR NETWORK
 
@@ -84,9 +84,6 @@ private:
 
 	int fov{0};
 	int fovZ{0};
-
-    // TileGrid padding
-    uf::vec2i padding;
 
     apos firstTile;
     int visibleTilesSide;

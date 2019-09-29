@@ -64,20 +64,27 @@ void GameProcessUI::Receive(const std::string &message) {
 
 
 void GameProcessUI::Resize(const int width, const int height) {
-    tileGrid->AdjustSize(uf::vec2i(width, height));
-    infoLabel->CountPosition(width, height);
+	TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();
 
-    TileGrid *tileGrid = reinterpret_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->GetTileGrid();
+	auto tileGridNumOfTiles = tileGrid->GetFOV() * 2 + 1;
+	auto tileSize = height / tileGridNumOfTiles;
+	auto tileGridSize = tileSize * tileGridNumOfTiles;
+	auto tileGridHeightPadding = (height - tileGridSize) / 2;
 
-    container->SetSize(sf::Vector2f(width - tileGrid->GetTileSize() * float(tileGrid->GetFOV()*2+1), height * 0.5f));
-    entry->SetSize({ container->GetSize().x, int(container->GetSize().y * 0.1f) });
-    formattedTextField->SetSize(uf::vec2i(container->GetSize().x, container->GetSize().y - entry->GetSize().y));
+	tileGrid->SetPosition({0, tileGridHeightPadding});
+	tileGrid->SetSize({tileGridSize, tileGridSize});
 
-    entry->SetPosition(0, float(formattedTextField->GetSize().y));
-    container->SetPosition({ width - container->GetSize().x, height - entry->GetSize().y - formattedTextField->GetSize().y });
+	infoLabel->CountPosition(width, height);
 
-    functionWindow->SetPosition(tileGrid->GetTileSize() * float(tileGrid->GetFOV()*2+1), 0);
-    functionWindow->SetSize({width - functionWindow->GetAbsolutePosition().x, container->GetPosition().y});
+	container->SetSize({width - tileGridSize, height / 2});
+	entry->SetSize({container->GetSize().x, container->GetSize().y / 10});
+	formattedTextField->SetSize(uf::vec2i{container->GetSize().x, container->GetSize().y - entry->GetSize().y});
+
+	container->SetPosition({ tileGridSize, height - entry->GetSize().y - formattedTextField->GetSize().y });
+	entry->SetPosition(0, float(formattedTextField->GetSize().y));
+
+	functionWindow->SetPosition(static_cast<float>(tileGridSize), 0);
+	functionWindow->SetSize({width - functionWindow->GetAbsolutePosition().x, container->GetPosition().y});
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {

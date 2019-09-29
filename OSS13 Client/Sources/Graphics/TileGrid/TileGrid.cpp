@@ -16,32 +16,36 @@
 #include "Object.hpp"
 #include "Tile.hpp"
 
+#include <imgui.h>
+
 using namespace network::protocol;
 
 TileGrid::TileGrid() :
-	tileSize(0), overlayToggled(false),
+	tileSize(32), overlayToggled(false),
 	controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
 	underCursorObject(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
 {
-    //
-    // Count num of visible blocks by tile padding and FOV
-    //
-    // num * size - (2 * pad + fov) >= size
-    // num >= (size + 2 * pad + fov) / size
-    // We need minimal num, so add 1 if not divided
-    fov = Global::FOV;
-    fovZ = Global::Z_FOV;
-    visibleTilesSide = (fov*2+1) + 2 * Global::MIN_PADDING;
-    visibleTilesHeight = (fovZ*2+1);
+	//
+	// Count num of visible blocks by tile padding and FOV
+	//
+	// num * size - (2 * pad + fov) >= size
+	// num >= (size + 2 * pad + fov) / size
+	// We need minimal num, so add 1 if not divided
+	fov = Global::FOV;
+	fovZ = Global::Z_FOV;
+	visibleTilesSide = (fov*2+1) + 2 * Global::MIN_PADDING;
+	visibleTilesHeight = (fovZ*2+1);
 
-    // Allocate memory for blocks
-    blocks.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
-    blocks.SetMovedCallback(std::bind(&TileGrid::updatePos, this, std::placeholders::_1, std::placeholders::_2));
+	// Allocate memory for blocks
+	blocks.SetSize(visibleTilesSide, visibleTilesSide, visibleTilesHeight);
+	blocks.SetMovedCallback(std::bind(&TileGrid::updatePos, this, std::placeholders::_1, std::placeholders::_2));
+
+	CustomWidget::SetSize(uf::vec2i(fov * 2 + 1) * GetTileSize());
 
 	canBeActive = true;
 
-    layersBuffer.resize(101);
+	layersBuffer.resize(101);
 
 	movementPredictionDisabled = CC::Get()->RM.Config()->GetBool("Debug.MovementPredictionDisabled");
 
@@ -54,13 +58,15 @@ void TileGrid::drawContainer() const {
 	buffer.clear();
 	const int border = fov + Global::MIN_PADDING;
 
+	uf::vec2i cursorTilePosition;
+
     // Firstly, fill layers buffer by objects
     uf::vec2i tilePos; // tiles positions relative to camera
     for (tilePos.y = -border; tilePos.y <= border; tilePos.y++)
         for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
             Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
             if (tile) {
-                tile->Draw(&buffer, padding + (tilePos + uf::vec2i(fov) - shift) * tileSize);
+                tile->Draw(&buffer, (tilePos + uf::vec2i(fov) - shift) * tileSize);
                 for (auto &obj : tile->content) {
                     uint layer = obj->GetLayer();
                     if (layer) layersBuffer[obj->GetLayer()].push_back(obj); // if layer is 0, then object will not be drawn
@@ -76,9 +82,10 @@ void TileGrid::drawContainer() const {
 				continue;
 			}
             uf::vec2i pixel = (uf::vec2i(fov) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
-            object->Draw(&buffer, pixel + padding);
+            object->Draw(&buffer, pixel);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
 				underCursorTile = tile;
+				cursorTilePosition = cursorPosition - pixel;
                 if (!object->PixelTransparent(cursorPosition - pixel))
                     underCursorObject = object;
             }
@@ -93,32 +100,18 @@ void TileGrid::drawContainer() const {
 			for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
 				Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
 				if (tile) {
-					tile->DrawOverlay(&buffer, padding + (tilePos + uf::vec2i(fov) - shift) * tileSize);
+					tile->DrawOverlay(&buffer, (tilePos + uf::vec2i(fov) - shift) * tileSize);
 				}
 			}
 	}
 
 	buffer.display();
+
 }
 
-void TileGrid::AdjustSize(const uf::vec2i &windowSize) {
-    tileSize = int(windowSize.y) / (fov*2+1);
-    numOfTiles = { (fov*2+1), (fov*2+1) };
-    padding.x = 0;
-    padding.y = (int(windowSize.y) - tileSize * numOfTiles.y) / 2;
-
-    for (auto &object : objects) object.second->Resize(tileSize);
-	for (auto &block : blocks.Get()) {
-		if (block) block->Resize(tileSize);
-	}
-
-	auto actualSize = uf::vec2i(tileSize) * (fov*2+1);
-
-	CustomWidget::SetSize(actualSize);
-	CustomWidget::SetPosition(padding);
-
-	controlUI->AdjustSize(actualSize);
-	controlUI->SetPosition(padding);
+void TileGrid::SetSize(const uf::vec2i &size) {
+	CustomWidget::SetScale(size / buffer.getSize().x);
+	controlUI->AdjustSize(size);
 }
 
 bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
@@ -148,7 +141,8 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 
 bool TileGrid::OnMouseMoved(uf::vec2i position) {
 	cursorPosition = position;
-	cursorPosition -= GetAbsolutePosition() + padding;
+	cursorPosition -= GetAbsolutePosition();
+	cursorPosition = uf::vec2f(cursorPosition) / GetScale().x;
 	if (cursorPosition <= GetSize()) return true;
 	else {
 		cursorPosition = { -1, -1 };
