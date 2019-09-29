@@ -1,49 +1,50 @@
 #pragma once
 
+#include <Shared/Global.hpp>
+#include <Shared/Types.hpp>
+#include <Shared/IFaces/ICopyable.h>
+
 #include "Texture.hpp"
-#include "Shared/Types.hpp"
+#include "SpriteInfo.h"
 
-class SpriteFactory;
-
-class Sprite {
+class Sprite : public ICopyable {
 public:
-    friend SpriteFactory;
+	Sprite() = default;
+	Sprite(const SpriteInfo &recipe, Global::ItemSpriteState state);
 
-    Sprite();
-    Sprite(const Sprite &) = default;
-    Sprite &operator=(const Sprite &) = default;
-    Sprite(Sprite &&) = default;
-    Sprite &operator=(Sprite &&) = default;
+	void Draw(sf::RenderTarget *, uf::vec2i pos, sf::RenderStates rs = sf::RenderStates::Default) const;
+	// true if frame changed to the first
+	bool Update(sf::Time timeElapsed);
+	void Resize(int tileSize);
 
-    void Draw(sf::RenderTarget *, uf::vec2i pos, sf::RenderStates rs = sf::RenderStates::Default) const;
-    // true if frame changed to the first
-    bool Update(sf::Time timeElapsed);
-    void Resize(int tileSize);
-    
-    void SetDirection(uf::Direction direction);
+	void SetDirection(uf::Direction direction);
 
-    const std::string &GetKey() const;
-    // true if sprite has few frames
-    bool IsValid() const;
-    bool IsAnimated() const;
-    bool PixelTransparent(uf::vec2u pixel) const;
+	const std::string &GetKey() const;
+	// true if sprite has few frames
+	bool IsValid() const;
+	bool IsAnimated() const;
+	bool PixelTransparent(uf::vec2u pixel) const;
 	const sf::Sprite &GetSfmlSprite() const;
 
 private:
-    mutable sf::Sprite sfSprite;
+	void initializeFromRecipe(const SpriteInfo &recipe, Global::ItemSpriteState state);
+	void updateSpriteVariables();
 
-    const Texture *texture;
-    std::string key;
-    uint firstFrame;
-    uint frames;
-    sf::Time frameTime;
-    bool directed;
+private:
+	const Texture *texture{};
+	std::string key;
+	uint firstFrame{};
+	uint frames{1};
+	sf::Time frameTime;
+	bool directed{};
+	bool pureDirections{};
 
-    uint curFrame;
-    uf::Direction direction;
-    float scale;
-    sf::Rect<int> rect;
-    sf::Time curFrameTime;
+	uint curFrame{};
+	uf::Direction direction{uf::Direction::NONE};
+	float scale{1};
+	sf::Rect<int> rect;
+	uf::vec2f origin;
+	sf::Time curFrameTime;
 
-    void updateSpriteVariables();
+	mutable sf::Sprite sfSprite;
 };

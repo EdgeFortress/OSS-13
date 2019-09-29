@@ -28,7 +28,7 @@ vec2<double> vec2<T>::unit() const {
 
 template <typename T>
 vec2<double> vec2<T>::rotate(Angle angle) const {
-	return vec2<double>(angle) * magnitude();
+	return vec2<double>::unit(angle + this->angle()) * magnitude();
 }
 
 template <typename T>

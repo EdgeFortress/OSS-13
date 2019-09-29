@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Angle.h"
 #include "Vec2.hpp"
 #include "Vec3.hpp"
 
@@ -21,6 +22,7 @@ enum class Direction : int {
 Direction VectToDirection(vec2f);
 Direction VectToDirection(vec3f);
 vec2i DirectionToVect(Direction);
+Angle DirectionToAngle(Direction);
 
 Direction InvertDirection(Direction);
 bool SplitDirection(const Direction &input, Direction &first, Direction &second);

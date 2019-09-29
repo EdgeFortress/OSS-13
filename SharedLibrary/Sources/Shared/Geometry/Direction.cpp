@@ -50,6 +50,10 @@ vec2i DirectionToVect(Direction direction) {
 	}
 }
 
+Angle DirectionToAngle(Direction direction) {
+	return (DirectionToVect(direction) * -1).angle();
+}
+
 Direction InvertDirection(Direction direction) {
 	switch (direction) {
 		case Direction::SOUTH:

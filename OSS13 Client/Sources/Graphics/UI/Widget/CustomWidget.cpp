@@ -107,7 +107,7 @@ uf::vec2i CustomWidget::GetAbsolutePosition() const {
 	return parent ? uf::vec2i(getPosition()) + parent->GetAbsolutePosition() : uf::vec2i(getPosition());
 }
 
-uf::vec2i CustomWidget::GetSize() const { return size; }
+uf::vec2i CustomWidget::GetSize() const { return size * GetScale().x; }
 
 uf::vec2i CustomWidget::GetAbsoluteSize() const { 
 	const Widget *widget = this;
