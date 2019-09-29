@@ -261,7 +261,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
     }
 
     if (actionSendPause == sf::Time::Zero) {
-		if (stun == sf::Time::Zero && moveCommand) {
+		if (stun == sf::Time::Zero && !moveCommand.isZero()) {
 			auto *p = new client::MoveCommand();
 			p->direction = uf::VectToDirection(moveCommand);
 			Connection::commandQueue.Push(p);
@@ -362,7 +362,7 @@ void TileGrid::RemoveObject(uint id) {
 void TileGrid::RelocateObject(uint id, apos toVec, int toObjectNum) {
     Tile *tile = GetTileAbs(toVec);
     if (!tile) {
-        LOGE << "Wrong tile absolute coords (" << toVec << ")";
+        LOGE << "Wrong tile absolute coords " << toVec.toString();
         return;
     }
 

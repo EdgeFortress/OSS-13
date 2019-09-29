@@ -55,6 +55,8 @@
     <ClInclude Include="Sources\Shared\ConfigController.h" />
     <ClInclude Include="Sources\Shared\CRC32.h" />
     <ClInclude Include="Sources\Shared\ErrorHandling.h" />
+    <ClInclude Include="Sources\Shared\Geometry\Angle.h" />
+    <ClInclude Include="Sources\Shared\Geometry\Detail\AngleConverters.h" />
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp" />
     <ClInclude Include="Sources\Shared\Geometry\DirectionSet.h" />
     <ClInclude Include="Sources\Shared\Geometry\Vec2.hpp" />

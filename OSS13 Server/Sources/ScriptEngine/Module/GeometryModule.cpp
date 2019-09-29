@@ -19,19 +19,7 @@ void RegistratePlaneVector(py::module m, const char *name) {
 		.def(py::init<T, T>())
 		.def(py::init<T>())
 		.def_readwrite("x", &uf::vec2<T>::x)
-		.def_readwrite("y", &uf::vec2<T>::y)
-		.def("Length", &uf::vec2<T>::length)
-		.def("Normalize", &uf::vec2<T>::normalize)
-		.def("GetAngle", &uf::vec2<T>::GetAngle)
-		.def("GetDirection", [](const uf::vec2<T> &v) { return VectToDirection(v); })
-		.def(py::self + py::self)
-		.def(py::self - py::self)
-		.def(py::self * int())
-		.def(py::self * float())
-		.def(py::self / int())
-		.def(py::self / float())
-		.def("__repr__", &uf::vec2<T>::toString)
-		.def("__bool__", &uf::vec2<T>::operator bool);
+		.def_readwrite("y", &uf::vec2<T>::y);
 }
 
 template<typename T>
@@ -43,19 +31,7 @@ void RegistrateSpaceVector(py::module m, const char *name) {
 		.def(py::init<T>())
 		.def_readwrite("x", &uf::vec3<T>::x)
 		.def_readwrite("y", &uf::vec3<T>::y)
-		.def_readwrite("z", &uf::vec3<T>::z)
-		.def_property_readonly("xy", &uf::vec3<T>::xy)
-		.def("Length", &uf::vec3<T>::length)
-		.def("Normalize", &uf::vec3<T>::normalize)
-		.def("GetDirection", [](const uf::vec3<T> &v) { return VectToDirection(v); })
-		.def(py::self + py::self)
-		.def(py::self - py::self)
-		.def(py::self * int())
-		.def(py::self * float())
-		.def(py::self / int())
-		.def(py::self / float())
-		.def("__repr__", &uf::vec3<T>::toString)
-		.def("__bool__", &uf::vec3<T>::operator bool);
+		.def_readwrite("z", &uf::vec3<T>::z);
 }
 
 PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {

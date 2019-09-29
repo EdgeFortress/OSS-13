@@ -1,15 +1,9 @@
 #pragma once
 
+#include "Vec2.hpp"
+#include "Vec3.hpp"
+
 namespace uf {
-
-template<typename T>
-struct vec2;
-template<typename T>
-struct vec3;
-
-typedef vec2<int> vec2i;
-typedef vec2<float> vec2f;
-typedef vec3<int> rpos;
 
 enum class Direction : int {
 	NONE = -1,
@@ -25,7 +19,7 @@ enum class Direction : int {
 };
 
 Direction VectToDirection(vec2f);
-Direction VectToDirection(rpos);
+Direction VectToDirection(vec3f);
 vec2i DirectionToVect(Direction);
 
 Direction InvertDirection(Direction);
