@@ -259,5 +259,11 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\CommandsProcessor.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\Geometry\Angle.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Shared\Geometry\Detail\AngleConverters.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace uf {
         uf::vec2f countDeltaShift(sf::Time timeElapsed, uf::vec2f shift, float moveSpeed, uf::vec2i moveIntent, uf::vec2f speed) {
             uf::vec2f deltaShift;
 
-            if (speed) {
+            if (!speed.isZero()) {
                 deltaShift += speed * timeElapsed.asSeconds();
                 return deltaShift;
             } 
@@ -22,7 +22,7 @@ namespace uf {
 
                 shift += deltaShift;
                 //// Stop moving if shift > moveIntent
-                if (moveIntent) {
+                if (!moveIntent.isZero()) {
                     if (moveIntent.x && uf::abs(shift.x) > uf::abs(moveIntent.x) && shift.x * moveIntent.x > 0)
                         deltaShift.x += moveIntent.x - shift.x;
                     if (moveIntent.y && uf::abs(shift.y) > uf::abs(moveIntent.y) && shift.y * moveIntent.y > 0)
@@ -30,7 +30,7 @@ namespace uf {
                 }
 
                 //// Aligning by tile boundaries if no intention to moving
-                if (shift) {
+                if (!shift.isZero()) {
                     float delta = timeElapsed.asSeconds() * moveSpeed;
 
                     // X

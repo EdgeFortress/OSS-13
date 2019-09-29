@@ -15,7 +15,8 @@ using wptr = std::weak_ptr<T>;
 
 #include "Geometry/Vec2.hpp"
 #include "Geometry/Vec3.hpp"
-#include "Geometry/Direction.hpp"
 
 typedef uf::vec3u apos;
 typedef uf::vec3i rpos;
+
+#include "Geometry/Direction.hpp"

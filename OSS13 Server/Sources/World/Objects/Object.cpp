@@ -34,7 +34,7 @@ void Object::Update(std::chrono::microseconds timeElapsed) {
 	uf::vec2f deltaShift = uf::phys::countDeltaShift(sf::microseconds(timeElapsed.count()), shift, moveSpeed, moveIntent, speed);
 	shift += deltaShift;
 
-	if (shift) {
+	if (!shift.isZero()) {
 		int dx, dy;
 		dy = dx = 0;
 		uf::vec2f shiftChange;
@@ -76,7 +76,7 @@ void Object::Update(std::chrono::microseconds timeElapsed) {
 }
 
 void Object::Move(uf::vec2i order) {
-	if (!order)
+	if (order.isZero())
 		return;
 
 	SetDirection(uf::VectToDirection(order));
@@ -233,7 +233,7 @@ const uf::DirectionSetFractional &Object::GetAirtightness() const { return airti
 
 void Object::SetPosition(uf::vec2i newPos) {
 	if (newPos > uf::vec2i(0, 0)) {
-		auto tile = GGame->GetWorld()->GetMap()->GetTile(apos(newPos));
+		auto tile = GGame->GetWorld()->GetMap()->GetTile(apos(newPos, 0));
 		if (tile) {
 			tile->PlaceTo(this);
 			return;
@@ -273,7 +273,7 @@ bool Object::IsMovable() const { return movable; }
 bool Object::IsCloseTo(Object *other) const {
     auto pos = GetTile()->GetPos();
     auto otherPos = other->GetTile()->GetPos();
-    if (uf::length(pos - otherPos) < 2)
+    if ((pos - otherPos).magnitude() < 2)
         return true;
 	return false;
 }
