@@ -61,7 +61,7 @@ struct vec2<T> {
 	template<typename U>
 	operator sf::Vector2<U>() const;
 
-	std::string toString() { return "(" + std::to_string(x) + ", " + std::to_string(y) + ")"; }
+	std::string toString() const { return "(" + std::to_string(x) + ", " + std::to_string(y) + ")"; }
 };
 
 template<typename T>
