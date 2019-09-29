@@ -294,7 +294,7 @@ uf::vec3i Camera::getVisibleAreaDimensions() {
 }
 
 uf::vec3i Camera::getFirstTilePos() {
-	return tile->GetPos() - vec3i(fov + Global::MIN_PADDING, fov + Global::MIN_PADDING, fovZ);
+	return tile->GetPos() - uf::vec3i(fov + Global::MIN_PADDING, fov + Global::MIN_PADDING, fovZ);
 }
 
 void Camera::fullRecountVisibleBlocks() {
@@ -320,7 +320,7 @@ void Camera::refreshVisibleBlocks() {
 	}
 
 	if (lastTile) {
-		GridTransformation transformation;
+		uf::GridTransformation transformation;
 		transformation.originDelta = tile->GetPos() - lastTile->GetPos();
 
 		visibleTiles.Transform(transformation);
@@ -332,7 +332,7 @@ void Camera::updateFOV() {
 	int diff = (visibleTiles.GetSize().x - Global::MIN_PADDING) / 2 - fov;
 	int diff_z = visibleTiles.GetSize().z / 2 - fovZ;
 
-	GridTransformation transformation;
+	uf::GridTransformation transformation;
 	transformation.originDelta = {diff, diff, diff_z};
 	transformation.sizeDelta = -(transformation.originDelta * 2);
 
