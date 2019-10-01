@@ -128,7 +128,7 @@ void FormattedTextField::draw() const {
     buffer.display();
 }
 
-bool FormattedTextField::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+bool FormattedTextField::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i position) {
 	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize())
 		return true;
 	return false;
@@ -148,7 +148,7 @@ bool FormattedTextField::OnKeyPressed(sf::Event::KeyEvent keyEvent) {
 	return false;
 }
 
-void FormattedTextField::Update(sf::Time timeElapsed) {
+void FormattedTextField::Update(sf::Time /*timeElapsed*/) {
     sf::Text tempText;
     tempText.setFont(*style.font);
     tempText.setCharacterSize(style.fontSize);
@@ -188,7 +188,7 @@ void FormattedTextField::Update(sf::Time timeElapsed) {
 }
 
 void FormattedTextField::SetSize(const sf::Vector2f &size) {
-    if (size.x != this->GetSize().x)
-        resized = true;
+	if (size.x != this->GetSize().x)
+		resized = true;
 	CustomWidget::SetSize(size);
 }

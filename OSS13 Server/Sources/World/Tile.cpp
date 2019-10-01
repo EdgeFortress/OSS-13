@@ -23,7 +23,7 @@ Tile::Tile(Map *map, apos pos) :
     totalPressure = 0;
 }
 
-void Tile::Update(std::chrono::microseconds timeElapsed) {
+void Tile::Update(std::chrono::microseconds /*timeElapsed*/) {
     // Update locale, if wall/floor state was changed
     if (needToUpdateLocale) {
         // Atmos-available tile
@@ -32,7 +32,7 @@ void Tile::Update(std::chrono::microseconds timeElapsed) {
                 for (int dy = -1; dy <= 1; dy++) {
                     Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                     if (!neighbour ||
-                        dx == 0 && dy == 0 ||
+                    	(dx == 0 && dy == 0) ||
                         dx * dy != 0) // diag tiles
                         continue;
                     if (neighbour->locale) {
@@ -53,7 +53,7 @@ void Tile::Update(std::chrono::microseconds timeElapsed) {
                     for (int dy = -1; dy <= 1; dy++) {
                         Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                         if (!neighbour ||
-                            dx == 0 && dy == 0 ||
+                        	(dx == 0 && dy == 0) ||
                             dx * dy != 0) // diag tiles
                             continue;
                         if (neighbour->locale) {
@@ -72,7 +72,7 @@ void Tile::Update(std::chrono::microseconds timeElapsed) {
                     for (int dy = -1; dy <= 1; dy++) {
                         Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
                         if (!neighbour ||
-                            dx == 0 && dy == 0 ||
+                        	(dx == 0 && dy == 0) ||
                             dx * dy != 0) // diag tiles
                             continue;
                         if (neighbour->locale) {
@@ -121,10 +121,12 @@ bool Tile::MoveTo(Object *obj) {
 		}
 	}
 
-	if (abs(delta.x) > 1 || abs(delta.y) > 1)
+	if (abs(delta.x) > 1 || abs(delta.y) > 1) {
 		LOGW << "Warning! Moving more than a one tile. (Tile::MoveTo)";
-	if (delta.z)
+	}
+	if (delta.z) {
 		LOGW << "Warning! Moving between Z-levels. (Tile::MoveTo)";
+	}
 
 	auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>(); // TODO: MoveAway???
 	relocateAwayDiff->objId = obj->ID();

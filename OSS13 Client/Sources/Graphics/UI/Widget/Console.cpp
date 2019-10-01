@@ -21,7 +21,7 @@ Console::Console()
 	commands["help"] = std::bind(&Console::command_help, this);
 }
 
-void Console::Update(sf::Time timeElapsed) {
+void Console::Update(sf::Time /*timeElapsed*/) {
 	loadMessages();
 
 	ImGui::SetNextWindowPos(ImVec2(855, 0));

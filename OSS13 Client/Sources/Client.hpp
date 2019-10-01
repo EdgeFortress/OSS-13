@@ -39,7 +39,7 @@ public:
 	Player *GetClient();
 	Window *GetWindow();
 	UI *GetUI();
-	static ClientController *const Get();
+	static ClientController *Get();
 };
 
 using CC = ClientController;

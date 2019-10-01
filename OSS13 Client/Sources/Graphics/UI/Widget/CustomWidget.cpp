@@ -40,13 +40,13 @@ bool CustomWidget::HandleEvent(sf::Event event) {
 	return false;
 }
 
-bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) { return false; }
-bool CustomWidget::OnMouseMoved(uf::vec2i position) { return false; }
+bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i /*position*/) { return false; }
+bool CustomWidget::OnMouseMoved(uf::vec2i /*position*/) { return false; }
 bool CustomWidget::OnMouseLeft() { return false; }
-bool CustomWidget::OnMouseWheelScrolled(float delta, uf::vec2i position) { return false; }
-bool CustomWidget::OnKeyPressed(sf::Event::KeyEvent keyEvent) { return false; }
-bool CustomWidget::OnKeyReleased(sf::Keyboard::Key button) { return false; }
-bool CustomWidget::OnTextEntered(uint32_t unicodeChar) { return false; }
+bool CustomWidget::OnMouseWheelScrolled(float /*delta*/, uf::vec2i /*position*/) { return false; }
+bool CustomWidget::OnKeyPressed(sf::Event::KeyEvent) { return false; }
+bool CustomWidget::OnKeyReleased(sf::Keyboard::Key) { return false; }
+bool CustomWidget::OnTextEntered(uint32_t /*unicodeChar*/) { return false; }
 
 void CustomWidget::Hide() { hiding = true; }
 void CustomWidget::Show() { hiding = false; }
@@ -73,8 +73,9 @@ void CustomWidget::SetPosition(const float x, const float y) {
 void CustomWidget::SetSize(const uf::vec2i &size) {
 	this->size = size;
 	if (size.x && size.y) {
-		if (!buffer.create(unsigned(size.x), unsigned(size.y)))
+		if (!buffer.create(unsigned(size.x), unsigned(size.y))) {
 			LOGE << "Cannot create Widget buffer" << std::endl;
+		}
 		bufferSprite.setTextureRect(sf::IntRect(0, 0, int(size.x), int(size.y)));
 	}
 }
@@ -125,7 +126,7 @@ bool CustomWidget::IsActive() const { return active; }
 
 bool CustomWidget::IsVisible() const { return !hiding; }
 
-void CustomWidget::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void CustomWidget::draw(sf::RenderTarget &target, sf::RenderStates /*states*/) const {
 	Draw(target);
 }
 

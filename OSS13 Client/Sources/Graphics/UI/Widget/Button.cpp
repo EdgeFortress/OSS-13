@@ -26,7 +26,7 @@ void Button::draw() const {
     buffer.display();
 }
 
-void Button::Update(sf::Time timeElapsed) {
+void Button::Update(sf::Time /*timeElapsed*/) {
 	Style &tmpstyle = underCursor ? underCursor_style : this->style;
 	if (tmpstyle.updated) {
 		text.setFont(*tmpstyle.font);
@@ -37,7 +37,7 @@ void Button::Update(sf::Time timeElapsed) {
 	}
 }
 
-bool Button::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+bool Button::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i position) {
 	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()) {
 		onPressFunc();
 		return true;

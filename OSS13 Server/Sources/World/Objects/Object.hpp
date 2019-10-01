@@ -33,7 +33,7 @@ public:
 	virtual bool BumpedTo(Object *) = 0;
 
 	virtual void Move(uf::vec2i order);
-	virtual void MoveZ(int order) {};
+	virtual void MoveZ(int /*order*/) {};
 
 	void AddComponent(Component *);
 	void AddComponent(const std::string &componentId);

@@ -14,7 +14,8 @@ UsersDB::UsersDB() : adr(Global::DatabaseName),
                      loaded(false) {
     adr = Global::DatabaseName;
     loaded = load();
-    if (!loaded) LOGE << "Database reading error!";
+    if (!loaded) { LOGE << "Database reading error!"; }
+
 }
 
 bool UsersDB::load() {

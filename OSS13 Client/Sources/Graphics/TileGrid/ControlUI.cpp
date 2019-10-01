@@ -21,7 +21,7 @@ void ControlUIElement::Update(sf::Time /*timeElapsed*/) {
 	}
 }
 
-bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+bool ControlUIElement::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i position) {
 	position = uf::vec2f(position.x / GetScale().x, position.y / GetScale().y);
 
 	if (!(position >= GetPosition() && position < GetPosition() + GetSize()))

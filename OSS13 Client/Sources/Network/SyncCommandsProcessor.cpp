@@ -31,25 +31,25 @@ void SyncCommandsProcessor::ProcessCommand(network::protocol::Command &generalCo
 	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.Id() << ") was not processed!";
 }
 
-void SyncCommandsProcessor::commandProcessor_AuthorizationSuccessCommand(network::protocol::server::AuthorizationSuccessCommand &command) {
+void SyncCommandsProcessor::commandProcessor_AuthorizationSuccessCommand(network::protocol::server::AuthorizationSuccessCommand &) {
 	AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(authUI);
 	authUI->SetServerAnswer(true);
 }
 
-void SyncCommandsProcessor::commandProcessor_AuthorizationFailedCommand(network::protocol::server::AuthorizationFailedCommand &command) {
+void SyncCommandsProcessor::commandProcessor_AuthorizationFailedCommand(network::protocol::server::AuthorizationFailedCommand &) {
 	AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(authUI);
 	authUI->SetServerAnswer(false);
 }
 
-void SyncCommandsProcessor::commandProcessor_RegistrationSuccessCommand(network::protocol::server::RegistrationSuccessCommand &command) {
+void SyncCommandsProcessor::commandProcessor_RegistrationSuccessCommand(network::protocol::server::RegistrationSuccessCommand &) {
 	AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(authUI);
 	authUI->SetServerAnswer(true);
 }
 
-void SyncCommandsProcessor::commandProcessor_RegistrationFailedCommand(network::protocol::server::RegistrationFailedCommand &command) {
+void SyncCommandsProcessor::commandProcessor_RegistrationFailedCommand(network::protocol::server::RegistrationFailedCommand &) {
 	AuthUI *authUI = dynamic_cast<AuthUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(authUI);
 	authUI->SetServerAnswer(false);
@@ -120,7 +120,7 @@ void SyncCommandsProcessor::commandProcessor_OverlayUpdateCommand(network::proto
 	tileGrid->UpdateOverlay(command.overlayInfo);
 }
 
-void SyncCommandsProcessor::commandProcessor_OverlayResetCommand(network::protocol::server::OverlayResetCommand &command) {
+void SyncCommandsProcessor::commandProcessor_OverlayResetCommand(network::protocol::server::OverlayResetCommand &) {
 	GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(gameProcessUI);
 	TileGrid *tileGrid = gameProcessUI->GetTileGrid();
@@ -134,7 +134,7 @@ void SyncCommandsProcessor::commandProcessor_OpenWindowCommand(network::protocol
 	uiModule->OpenWindow(command.id.c_str(), command.data);
 }
 
-void SyncCommandsProcessor::commandProcessor_OpenSpawnWindowCommand(network::protocol::server::OpenSpawnWindowCommand &command) {
+void SyncCommandsProcessor::commandProcessor_OpenSpawnWindowCommand(network::protocol::server::OpenSpawnWindowCommand &) {
 	GameProcessUI *gameProcessUI = dynamic_cast<GameProcessUI *>(CC::Get()->GetWindow()->GetUI()->GetCurrentUIModule());
 	EXPECT(gameProcessUI);
 	gameProcessUI->OpenSpawnWindow();

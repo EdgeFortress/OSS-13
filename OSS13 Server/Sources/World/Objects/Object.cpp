@@ -106,8 +106,8 @@ void Object::Move(uf::vec2i order) {
 					return;
 				}
 				else {
-					if (!newTileX || newTileX != tile && newTileX->IsDense((uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })))) return;
-					if (!newTileY || newTileY != tile && newTileY->IsDense((uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })))) return;
+					if (!newTileX || (newTileX != tile && newTileX->IsDense((uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER }))))) return;
+					if (!newTileY || (newTileY != tile && newTileY->IsDense((uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER }))))) return;
 				}
 			}
 		}
@@ -271,10 +271,10 @@ Object *Object::GetHolder() const { return holder; }
 
 bool Object::IsMovable() const { return movable; }
 bool Object::IsCloseTo(Object *other) const {
-    auto pos = GetTile()->GetPos();
-    auto otherPos = other->GetTile()->GetPos();
-    if ((pos - otherPos).magnitude() < 2)
-        return true;
+	auto pos = GetTile()->GetPos();
+	auto otherPos = other->GetTile()->GetPos();
+	if ((pos - otherPos).magnitude() < 2)
+		return true;
 	return false;
 }
 

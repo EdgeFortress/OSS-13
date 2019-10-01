@@ -40,7 +40,7 @@ Player *ClientController::GetClient() { return player.get(); }
 Window *ClientController::GetWindow() { return window.get(); }
 UI *ClientController::GetUI() { return window->GetUI(); }
 
-ClientController * const ClientController::Get() { return instance; }
+ClientController *ClientController::Get() { return instance; }
 
 int main() {
     ClientController clientController;

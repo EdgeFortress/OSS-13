@@ -116,7 +116,7 @@ std::vector<network::protocol::ObjectType *> ScriptEngine::GetTypesInfo(const st
 	std::function<bool(const ObjectType &type)> selector;
 
 	if (searchString.empty()) {
-		selector = [&searchString](const ObjectType &type) { return true; };
+		selector = [&searchString](const ObjectType &) { return true; };
 	} else {
 		selector = [&searchString](const ObjectType &type) {
 			if (isStringIncludeCaseInsensitive(type.GetTypeKey(), searchString))

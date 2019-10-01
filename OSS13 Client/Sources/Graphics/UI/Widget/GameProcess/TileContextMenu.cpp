@@ -7,7 +7,7 @@
 
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
-void TileContextMenu::Update(sf::Time timeElapsed) {
+void TileContextMenu::Update(sf::Time /*timeElapsed*/) {
 	openPopupIfNeeded();
 	drawContent();
 }

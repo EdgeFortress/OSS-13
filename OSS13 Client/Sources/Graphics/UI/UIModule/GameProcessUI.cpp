@@ -172,7 +172,7 @@ void InfoLabel::Draw(sf::RenderWindow *renderWindow) const {
     renderWindow->draw(text);
 }
 
-void InfoLabel::CountPosition(int width, int height) {
+void InfoLabel::CountPosition(int /*width*/, int height) {
     rectangle.setPosition(0, height - rectangle.getSize().y);
     text.setPosition(5, height - rectangle.getSize().y - 2);
 }
