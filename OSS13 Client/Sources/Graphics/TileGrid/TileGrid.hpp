@@ -86,8 +86,8 @@ private:
 	int fovZ{0};
 
     apos firstTile;
-    int visibleTilesSide;
-    int visibleTilesHeight;
+    uint32_t visibleTilesSide;
+    uint32_t visibleTilesHeight;
 
     uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;

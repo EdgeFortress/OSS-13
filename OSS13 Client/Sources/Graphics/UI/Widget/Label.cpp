@@ -10,7 +10,7 @@ Label::Label(const sf::String &string) {
     text.setString(string);
 }
 
-void Label::Update(sf::Time timeElapsed) {
+void Label::Update(sf::Time /*timeElapsed*/) {
 	if (style.updated) {
         text.setFont(*style.font);
         text.setCharacterSize(style.fontSize);

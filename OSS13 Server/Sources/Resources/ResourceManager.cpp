@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 bool ResourceManager::Initialize() {
 	try {
 		loadIcons();
-	} catch (std::filesystem::filesystem_error e) {
+	} catch (const std::filesystem::filesystem_error &e) {
 		LOGE << e.what();
 		return false;
 	}

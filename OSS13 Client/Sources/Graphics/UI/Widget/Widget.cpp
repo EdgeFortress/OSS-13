@@ -1,6 +1,6 @@
 #include "Widget.hpp"
 
-Widget::Widget(uf::vec2i size) : 
+Widget::Widget(uf::vec2i /*size*/) :
 	isClosed(false) 
 { }
 

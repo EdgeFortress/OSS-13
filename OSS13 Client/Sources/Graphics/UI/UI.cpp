@@ -8,8 +8,9 @@
 using std::string; 
 
 UI::UI() {
-    if (!font.loadFromFile("Arialuni.ttf"))
-        LOGE << "Failed to load font!";
+    if (!font.loadFromFile("Arialuni.ttf")) {
+		LOGE << "Failed to load font!";
+	}
 
     background.loadFromFile("Resources/Pictures/MenuBackground.jpg");
     background_sprite.setTexture(background);

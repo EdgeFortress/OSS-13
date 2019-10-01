@@ -92,20 +92,17 @@ void Entry::setSymbol(wchar_t c) {
 }
 
 void Entry::deleteSymbol() {
-    if (cursorPos < 0)
-        return;
     moveCursorLeft(entryString[cursorPos]);
     entryString.erase(entryString.begin() + cursorPos);
 	if (hidingSymbols)
 		hidingString.erase(hidingString.begin() + cursorPos);
     text.setString(std::wstring(entryString.c_str() + showPos));
 
-    cursorPos--;
-    if (cursorPos < 0)
-        return;
+    if (cursorPos--)
+    	return;
 
     int shift_size = 15;
-    if (cursorPos + 1 <= int(showPos) && showPos) {
+    if (cursorPos + 1 <= showPos && showPos) {
         if (int(showPos) >= shift_size)
             showPos -= shift_size;
         else {
@@ -120,13 +117,11 @@ void Entry::deleteSymbol() {
 }
 
 void Entry::moveLeft() {
-    if (cursorPos < 0)
-        return;
     moveCursorLeft(entryString[cursorPos]);
     std::vector<float> letter_sizes = getLetterSizes(entryString[cursorPos]);
     cursorPos--;
 
-    if (cursorPos + 1 < int(showPos)) {
+    if (cursorPos + 1 < showPos) {
         showPos--;
         text.setString(std::wstring(entryString.c_str() + showPos));
         cursor.setPosition(cursor.getPosition().x + letter_sizes[0], cursor.getPosition().y);
@@ -193,7 +188,7 @@ void Entry::ShowSymbols() {
     std::swap(hidingString, entryString);
 }
 
-bool Entry::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
+bool Entry::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i position) {
 	if (position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()) {
 		//SetActive(true);
 		return true;

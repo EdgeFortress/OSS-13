@@ -35,7 +35,7 @@ public:
 	void TrackObject(Object *obj);
 
 	void SetPosition(const Tile * const tile);
-	const Tile * const GetPosition() const { return tile; }
+	const Tile *GetPosition() { return tile; }
 
 	void Suspend();
 	bool IsSuspense() const { return suspense; }

@@ -20,8 +20,8 @@ public:
 	ResourceManager *GetRM() const;
 
 private:
-	uptr<UsersDB> udb;
-	uptr<ResourceManager> rm;
 	uptr<NetworkController> networkController;
+	uptr<ResourceManager> rm;
+	uptr<UsersDB> udb;
 	uptr<Game> game;
 };

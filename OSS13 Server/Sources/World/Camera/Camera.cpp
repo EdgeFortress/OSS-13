@@ -23,7 +23,7 @@ Camera::Camera(const Tile * const tile)
 	SetPosition(tile);
 }
 
-void Camera::Update(std::chrono::microseconds timeElapsed) {
+void Camera::Update(std::chrono::microseconds /*timeElapsed*/) {
 	updateContextMenu();
 	if (trackingObject)
 		if (tile != trackingObject->GetTile())
@@ -83,8 +83,9 @@ void Camera::updateContextMenu() {
 }
 
 void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
-	if (unsuspended && cameraMoved) 
+	if (unsuspended && cameraMoved) {
 		LOGE << "Logic error: camera unsuspended and moved at one time";
+	}
 
 	using namespace network::protocol;
 

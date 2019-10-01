@@ -32,7 +32,7 @@ private:
 	sf::RectangleShape cursor;
 
 	unsigned showPos;
-	int cursorPos;
+	size_t cursorPos;
 	sf::Time cursorTime;
 
 	std::vector<float> getLetterSizes(wchar_t);

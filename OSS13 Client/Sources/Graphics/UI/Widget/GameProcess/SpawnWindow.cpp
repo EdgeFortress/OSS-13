@@ -13,7 +13,7 @@
 #include <Shared/Network/Protocol/ClientToServer/Commands.h>
 
 
-void SpawnWindow::Update(sf::Time timeElapsed) {
+void SpawnWindow::Update(sf::Time /*timeElapsed*/) {
 	ImGui::SetNextWindowPos(ImVec2(60, 60), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Once);
 
@@ -65,9 +65,9 @@ void drawTypesListItemTooltip(const network::protocol::ObjectType &type) {
 	}
 
 	ImGui::BeginGroup();
-	ImGui::Text(type.name.c_str());
-	ImGui::Text(type.typeKey.c_str());
-	ImGui::Text(type.description.c_str());
+	ImGui::Text("%s", type.name.c_str());
+	ImGui::Text("%s", type.typeKey.c_str());
+	ImGui::Text("%s", type.description.c_str());
 	ImGui::EndGroup();
 }
 

@@ -22,7 +22,7 @@ void WindowSink::Initialize() {
 	player->AddCommandToClient(command.release());
 }
 
-void WindowSink::Update(std::chrono::microseconds elapsed) { }
+void WindowSink::Update(std::chrono::microseconds /*elapsed*/) { }
 
 void WindowSink::OnTrigger(const std::string &trigger) {
 	if (trigger == "Close") {

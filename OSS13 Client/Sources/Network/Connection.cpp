@@ -126,10 +126,10 @@ bool Connection::parsePacket(sf::Packet &packet) {
 		return false;
 	}
 
-	if (auto *command = dynamic_cast<server::GameJoinSuccessCommand *>(generalCommand.get())) {
+	if (dynamic_cast<server::GameJoinSuccessCommand *>(generalCommand.get())) {
 		return true;
 	}
-	if (auto *command = dynamic_cast<server::GameJoinErrorCommand *>(generalCommand.get())) {
+	if (dynamic_cast<server::GameJoinErrorCommand *>(generalCommand.get())) {
 		return true;
 	}
 

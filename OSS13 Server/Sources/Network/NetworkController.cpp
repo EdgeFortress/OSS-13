@@ -85,6 +85,8 @@ void NetworkController::working(std::unique_ptr<sf::TcpListener> listener) {
                                 selector.remove(*socket);
                                 iter = connections.erase(iter);
                                 continue;
+                        	default:
+                        		EXPECT(false);
                         }
 
                     }
@@ -151,7 +153,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::JoinGameCommand *>(generalCommand.get())) {
+	if (dynamic_cast<client::JoinGameCommand *>(generalCommand.get())) {
 		if (connection->player) {
 			if (GServer->JoinGame(connection->player)) {
 				connection->commandsToClient.Push(new network::protocol::server::GameJoinSuccessCommand());
@@ -162,9 +164,10 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 		return true;
 	}
 
-	if (auto *command = dynamic_cast<client::DisconnectionCommand *>(generalCommand.get())) {
-		if (connection->player)
+	if (dynamic_cast<client::DisconnectionCommand *>(generalCommand.get())) {
+		if (connection->player) {
 			LOGI << "Client " << connection->player->GetCKey() << " disconnected";
+		}
 		return false;
 	}
 

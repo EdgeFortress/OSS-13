@@ -6,10 +6,10 @@
 
 struct Style {
     const sf::Font *font;
+	sf::Color backgroundColor;
     sf::Color textColor;
     uint fontSize;
 
-    sf::Color backgroundColor;
     sf::Color borderColor;
 
     //sf::Color underCursor_textColor;

@@ -107,14 +107,14 @@ void DynamicWidget::sendUpdates() {
 	}
 }
 
-void DynamicWidget::renderTest(json &layout) {
+void DynamicWidget::renderTest(json &/*layout*/) {
 	
 }
 
 void DynamicWidget::renderText(json &layout) {
 	auto fmt = layout["fmt"].get<std::string>();
 
-	ImGui::TextWrapped(fmt.c_str());
+	ImGui::TextWrapped("%s", fmt.c_str());
 }
 
 void DynamicWidget::renderButton(json &layout) {

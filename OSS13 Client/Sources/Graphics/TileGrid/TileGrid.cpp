@@ -76,7 +76,7 @@ void TileGrid::drawContainer() const {
 	for (auto &layerObjects : layersBuffer) {
         for (auto &object: layerObjects) {
             Tile *tile = object->GetTile();
-            if ((tile->GetRelPos() - cameraRelPos).z != cameraZ) {
+            if ((rpos(tile->GetRelPos()) - rpos(cameraRelPos)).z != cameraZ) {
 				continue;
 			}
             uf::vec2i pixel = (uf::vec2i(fov) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
@@ -152,7 +152,7 @@ bool TileGrid::OnMouseLeft() {
 	return true;
 }
 
-bool TileGrid::OnMouseWheelScrolled(float delta, uf::vec2i position) {
+bool TileGrid::OnMouseWheelScrolled(float delta, uf::vec2i /*position*/) {
 	int newCameraZ = cameraZ + static_cast<int>(delta) % 2;
 	if (GetTileRel(cameraRelPos + rpos(0, 0, newCameraZ))) {
 		cameraZ = newCameraZ;
@@ -234,8 +234,8 @@ void MovementPrediction(Object *controllable, uf::vec2i moveCommand) {
 			if (!newTileDiag || newTileDiag->IsBlocked(uf::DirectionSet({ uf::InvertDirection(moveDirection), uf::Direction::CENTER }))) {
 				return;
 			} else {
-				if (!newTileX || newTileX != lastTile && newTileX->IsBlocked(uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER }))) return;
-				if (!newTileY || newTileY != lastTile && newTileY->IsBlocked(uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER }))) return;
+				if (!newTileX || (newTileX != lastTile && newTileX->IsBlocked(uf::DirectionSet({ uf::InvertDirection(xDirection), yDirection, uf::Direction::CENTER })))) return;
+				if (!newTileY || (newTileY != lastTile && newTileY->IsBlocked(uf::DirectionSet({ uf::InvertDirection(yDirection), xDirection, uf::Direction::CENTER })))) return;
 			}
 		}
 	}
@@ -489,7 +489,11 @@ void TileGrid::SetFOV(int fov, int fovZ) {
 
 	uf::GridTransformation transformation;
 	transformation.originDelta = {diff, diff, diff_z};
-	transformation.sizeDelta = {newSide - visibleTilesSide, newSide - visibleTilesSide, newHeight - visibleTilesHeight};
+	transformation.sizeDelta = {
+			newSide - static_cast<int>(visibleTilesSide),
+			newSide - static_cast<int>(visibleTilesSide),
+			newHeight - static_cast<int>(visibleTilesHeight)
+	};
 
 	blocks.Transform(transformation);
 
