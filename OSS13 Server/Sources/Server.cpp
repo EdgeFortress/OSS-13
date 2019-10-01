@@ -37,11 +37,16 @@ Server::Server() :
 	plog::init(plog::verbose, &appender);
 
 	ASSERT_WITH_MSG(rm->Initialize(), "Failed to Initialize ResourceManager!");
-	networkController->Start();
-	game = std::make_unique<Game>();
-	GGame = game.get();
-	while (true) {
-		sleep(seconds(1));
+
+	try {
+		networkController->Start();
+		game = std::make_unique<Game>();
+		GGame = game.get();
+		while (true) {
+			sleep(seconds(1));
+		}
+	} catch (const std::exception &e) {
+		MANAGE_EXCEPTION(e);
 	}
 }
 

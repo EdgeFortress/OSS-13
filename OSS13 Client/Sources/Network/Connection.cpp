@@ -25,11 +25,9 @@
 using namespace std::string_literals;
 using namespace network::protocol;
 
-bool Connection::Start(const std::string &ip, int port) {
+bool Connection::Start() {
 	status = Status::WAITING;
 
-	serverIp = ip;
-	serverPort = port;
 	Connection::thread = std::make_unique<std::thread>(&session);
 	Connection::syncCommandsProcessor = std::make_unique<network::SyncCommandsProcessor>();
 
@@ -56,10 +54,33 @@ void Connection::ProcessSyncCommands() {
 Connection::Status Connection::GetStatus() { return status; }
 
 void Connection::session() {
-	if (socket.connect(serverIp, serverPort, sf::seconds(5)) != sf::Socket::Done)
-		status = Status::NOT_CONNECTED;
-	else
+	sf::IpAddress ip = "localhost";
+	sf::Socket::Status socketStatus = sf::Socket::Disconnected;
+
+	const int maxAttempts = 2;
+	for (int fails = 0; fails < maxAttempts; fails++) {
+		for (auto port = Global::PORT_FIRST; port <= Global::PORT_LAST; port++) {
+			socketStatus = socket.connect(ip, port, sf::seconds(1));
+			if (socketStatus == sf::Socket::Done) {
+				LOGI << "Connected to server with address " << ip << ":" << port;
+				status = Status::CONNECTED;
+				break;
+			}
+		}
+		if (socketStatus == sf::Socket::Status::Done) {
+			break;
+		} else {
+			LOGE << "Failed to find listening server port! (ip: " << ip << ")."
+				 << (fails != maxAttempts - 1 ? " Check all ports again..." : "");
+		}
+	}
+
+	if (socketStatus == sf::Socket::Done)
 		status = Status::CONNECTED;
+	else {
+		status = Status::NOT_CONNECTED;
+		return;
+	}
 
 	socket.setBlocking(false);
 
@@ -116,8 +137,6 @@ bool Connection::parsePacket(sf::Packet &packet) {
 	return true;
 }
 
-sf::IpAddress Connection::serverIp;
-int Connection::serverPort;
 Connection::Status Connection::status = Connection::Status::INACTIVE;
 uptr<std::thread> Connection::thread;
 sf::TcpSocket Connection::socket;
