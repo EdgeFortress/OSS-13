@@ -21,7 +21,7 @@ void ClientController::Run() {
 
 	RM.Initialize();
 
-    if (!Connection::Start("localhost", Global::PORT)) {
+    if (!Connection::Start()) {
 		LOGE << "No connection established!";
     } else {
         LOGI << "Successfully connected to server.";

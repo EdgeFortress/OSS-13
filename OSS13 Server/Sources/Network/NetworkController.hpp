@@ -18,7 +18,7 @@ private:
     uptr<std::thread> thread;
 	std::list< sptr<Connection> > connections;
 
-    void working();
+    void working(std::unique_ptr<sf::TcpListener> listener);
 	// return false if received "disconnect" packet
     bool parsePacket(sf::Packet &, sptr<Connection> &connection);
 

@@ -4,7 +4,8 @@
 
 namespace Global {
 
-const int PORT = 55700;
+constexpr uint16_t PORT_FIRST = 55700;
+constexpr uint16_t PORT_LAST = 55710;
 
 const int FOV = 7; // Field Of View
 const int MIN_PADDING = 3;

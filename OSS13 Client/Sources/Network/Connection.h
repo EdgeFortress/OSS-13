@@ -20,7 +20,7 @@ public:
 
 	static uf::ThreadSafeQueue<network::protocol::Command *> commandQueue;
 
-	static bool Start(const std::string &ip, int port);
+	static bool Start();
 	static void Stop();
 
 	static void ProcessSyncCommands();
@@ -34,9 +34,6 @@ private:
 
 private:
 	static Status status;
-
-	static sf::IpAddress serverIp;
-	static int serverPort;
 
 	static uptr<std::thread> thread;
 	static sf::TcpSocket socket;

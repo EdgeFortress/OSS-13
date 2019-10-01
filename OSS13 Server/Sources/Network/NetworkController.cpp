@@ -18,20 +18,42 @@
 
 using namespace network::protocol;
 
-void NetworkController::working() {
-    sf::TcpListener listener;
-    listener.listen(Global::PORT);
+namespace {
 
+std::unique_ptr<sf::TcpListener> createListener(uint16_t portFirst, uint16_t portLast) {
+	auto listener = std::make_unique<sf::TcpListener>();
+
+	sf::Socket::Status listenerStatus = sf::Socket::Status::Error;
+
+	for (auto port = portFirst; port <= portLast; port++) {
+		listenerStatus = listener->listen(port);
+
+		if (listenerStatus == sf::Socket::Status::Done) {
+			LOGI << "Listening port is " << port;
+			break;
+		} else {
+			LOGI << "Failed to create listener at port " << port << "! SFML Socket status: " << listenerStatus;
+		}
+	}
+
+	EXPECT_WITH_MSG(listenerStatus == sf::Socket::Status::Done, "Failed to create listening socket! No available ports.");
+
+	return listener;
+}
+
+} // namespace
+
+void NetworkController::working(std::unique_ptr<sf::TcpListener> listener) {
     sf::SocketSelector selector;
 
-    selector.add(listener);
+    selector.add(*listener);
 
     while (active) {
         if (selector.wait(sf::microseconds(TIMEOUT.count()))) {
             // Receiving from client
-            if (selector.isReady(listener)) {
+            if (selector.isReady(*listener)) {
                 sf::TcpSocket *socket = new sf::TcpSocket;
-                if (listener.accept(*socket) == sf::TcpSocket::Done) {
+                if (listener->accept(*socket) == sf::TcpSocket::Done) {
                     selector.add(*socket);
 					Connection *new_connection = new Connection();
 					new_connection->socket.reset(socket);
@@ -158,7 +180,8 @@ NetworkController::NetworkController() {
 void NetworkController::Start() {
     if (active) return;
     active = true;
-    thread.reset(new std::thread(&NetworkController::working, this));
+	auto listener = createListener(Global::PORT_FIRST, Global::PORT_LAST);
+	thread = std::make_unique<std::thread>(&NetworkController::working, this, std::move(listener));
 }
 
 void NetworkController::Stop() {
