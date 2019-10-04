@@ -1,6 +1,7 @@
 #include "Direction.hpp"
 
-#include "Shared/Types.hpp"
+#include <Shared/ErrorHandling.h>
+#include <Shared/Types.hpp>
 
 namespace uf {
 
@@ -51,6 +52,7 @@ vec2i DirectionToVect(Direction direction) {
 }
 
 Angle DirectionToAngle(Direction direction) {
+	EXPECT(direction != Direction::NONE);
 	return (DirectionToVect(direction) * -1).angle();
 }
 
