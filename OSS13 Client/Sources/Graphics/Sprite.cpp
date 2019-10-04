@@ -12,6 +12,8 @@
 namespace {
 
 uf::Angle getSpriteAngle(uf::Direction direction) {
+	if (direction == uf::Direction::NONE)
+		direction = uf::Direction::SOUTH;
 	// for uf::Direction::SOUTH should return zero angle
 	return uf::DirectionToAngle(direction) + uf::Angle::Degrees(90);
 }
@@ -61,9 +63,10 @@ bool Sprite::IsValid() const { return texture; }
 bool Sprite::IsAnimated() const { return frames > 1; }
 
 bool Sprite::PixelTransparent(uf::vec2u pixel) const {
-	auto real_pixel = pixel / scale;
-	auto rotated_pixel = (real_pixel - origin).rotate(-getSpriteAngle(direction)) + origin;
-	if (texture->IsFramePixelTransparent(rotated_pixel, curFrame + firstFrame)) return true;
+	pixel = pixel / scale;
+	if (directed && pureDirections)
+		pixel = (pixel - origin).rotate(-getSpriteAngle(direction)) + origin;
+	if (texture->IsFramePixelTransparent(pixel, curFrame + firstFrame)) return true;
 	return false;
 }
 
