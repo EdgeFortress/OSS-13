@@ -631,6 +631,12 @@ class Control(eControl, Component):
 
 	def GetAndDropClickedObject(self) -> Object:
 		return self._impl.GetAndDropClickedObject()
+	
+	def GetAndDropClickedTilePos(self):
+		try:
+			return Vector2D._FromEngineVec(self._impl.GetAndDropClickedTilePos())
+		except:
+			return None
 
 
 class ControlUI(eControlUI):

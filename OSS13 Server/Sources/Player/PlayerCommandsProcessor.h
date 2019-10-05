@@ -15,6 +15,7 @@ private:
 	void commandProcessor_MoveCommand(network::protocol::client::MoveCommand &command);
 	void commandProcessor_MoveZCommand(network::protocol::client::MoveZCommand &command);
 	void commandProcessor_ClickObjectCommand(network::protocol::client::ClickObjectCommand &command);
+	void commandProcessor_ClickTileCommand(network::protocol::client::ClickTileCommand &command);
 	void commandProcessor_ClickControlUICommand(network::protocol::client::ClickControlUICommand &command);
 	void commandProcessor_SendChatMessageCommand(network::protocol::client::SendChatMessageCommand &command);
 	void commandProcessor_UIInputCommand(network::protocol::client::UIInputCommand &command);

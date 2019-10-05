@@ -11,7 +11,7 @@
 
 Control::Control() : 
 	Component("Control"),
-	ui(std::make_unique<ControlUI>(this))
+	ui(std::make_unique<ControlUI>(this)), isTileClicked(false)
 { }
 
 void Control::Update(std::chrono::microseconds timeElapsed) {
@@ -29,6 +29,11 @@ void Control::MoveZCommand(bool order) {
 
 void Control::ClickObjectCommand(uint id) {
     clickedObjectID = id;
+}
+
+void Control::ClickTileCommand(uf::vec2i pos) {
+	clickedTilePos = pos;
+	isTileClicked = true;
 }
 
 void Control::ClickUICommand(const std::string &key) {
@@ -59,4 +64,14 @@ Object *Control::GetAndDropClickedObject() {
 		clickedObjectID = 0;
 	}
 	return obj;
+}
+
+uf::vec2i *Control::GetAndDropClickedTilePos() {
+	uf::vec2i *result = nullptr;
+	if (isTileClicked) {
+		result = &clickedTilePos;
+		clickedTilePos = {};
+		isTileClicked = false;
+	}
+	return result;
 }

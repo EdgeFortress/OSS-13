@@ -16,6 +16,12 @@ class Taser(Item):
 		self.CreateProjectile(object.position - self.position)
 		return True
 
+	def InteractWithTile(self, pos):
+		if not pos:
+			return False
+		self.CreateProjectile(pos - self.position)
+		return True
+
 	def CreateProjectile(self, direction):
 		projectile = CreateObject("Objects.Projectile.Projectile", self.tile)
 		projectile.SetShotDirection(direction)

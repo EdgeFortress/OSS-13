@@ -45,6 +45,9 @@ class Creature(Object, IHasOrgans):
 		clickedObject = self.control.GetAndDropClickedObject()
 		if clickedObject: self.OnObjectClick(clickedObject)
 
+		clickedTilePos = self.control.GetAndDropClickedTilePos()
+		if clickedTilePos: self.OnTileClick(clickedTilePos)
+
 	def OnMoveOrder(self, order):
 		self.Move(order)
 
@@ -53,6 +56,9 @@ class Creature(Object, IHasOrgans):
 
 	def OnObjectClick(self, object):
 		self.TryInteractWith(object)
+
+	def OnTileClick(self, pos):
+		self.TryInteractWithTile(pos)
 
 	def InteractedBy(self, object) -> bool:
 		print("InteractedBy " + object.name)
@@ -87,6 +93,13 @@ class Creature(Object, IHasOrgans):
 
 		object.InteractedBy(self)
 		return False
+
+	def TryInteractWithTile(self, pos):
+		if self.activeHand:
+			if not self.activeHand.isEmpty:
+				if self.activeHand.holdedItem.InteractWithTile(pos):
+					return True
+			return True
 
 	def Take(self, object) -> bool:
 		if not self.activeHand:

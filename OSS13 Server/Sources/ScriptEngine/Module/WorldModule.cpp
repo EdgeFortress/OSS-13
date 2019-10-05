@@ -101,5 +101,6 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("seeInvisibleAbility", &Control::GetSeeInvisibleAbility, &Control::SetSeeInvisibleAbility)
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
 		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder)
-		.def("GetAndDropClickedObject", &Control::GetAndDropClickedObject, py::return_value_policy::reference);
+		.def("GetAndDropClickedObject", &Control::GetAndDropClickedObject, py::return_value_policy::reference)
+		.def("GetAndDropClickedTilePos", &Control::GetAndDropClickedTilePos, py::return_value_policy::reference);
 }

@@ -70,6 +70,15 @@ DEFINE_SERIALIZABLE(ClickObjectCommand, Command)
 	}
 DEFINE_SERIALIZABLE_END
 
+DEFINE_SERIALIZABLE(ClickTileCommand, Command)
+uf::vec2i pos;
+
+void Serialize(uf::Archive &ar) override {
+	Command::Serialize(ar);
+	ar & pos;
+}
+DEFINE_SERIALIZABLE_END
+
 DEFINE_SERIALIZABLE(ClickControlUICommand, Command)
 	std::string id; // PERF: can be optimized (int id)
 	
