@@ -1,5 +1,5 @@
 from Engine.Server import gRM, ItemSpriteState
-from Engine.World import Object
+from Engine.World import Object, Tile
 from Objects.Item import Item
 from Objects.Items.Clothing import Clothing, MobSlot
 from Objects.Creatures.IHasOrgans import IHasOrgans
@@ -43,7 +43,11 @@ class Creature(Object, IHasOrgans):
 		if moveZOrder: self.OnMoveZOrder(moveZOrder)
 
 		clickedObject = self.control.GetAndDropClickedObject()
-		if clickedObject: self.OnObjectClick(clickedObject)
+		clickedTile = self.control.GetAndDropClickedTile()
+		if clickedObject: 
+			self.OnObjectClick(clickedObject)
+		elif clickedTile: 
+			self.OnTileClick(clickedTile)
 
 	def OnMoveOrder(self, order):
 		self.Move(order)
@@ -53,6 +57,16 @@ class Creature(Object, IHasOrgans):
 
 	def OnObjectClick(self, object):
 		self.TryInteractWith(object)
+	
+	def OnTileClick(self, tile) -> bool:
+		if not isinstance(tile, Tile):
+			return False
+
+		if self.activeHand:
+			if not self.activeHand.isEmpty:
+				if self.activeHand.holdedItem.ClickTile(Tile(tile)):
+					return True
+		return False
 
 	def InteractedBy(self, object) -> bool:
 		print("InteractedBy " + object.name)

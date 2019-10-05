@@ -22,6 +22,7 @@ void PlayerCommandsProcessor::ProcessCommand(network::protocol::Command &general
 	_REGISTRATE_COMMAND_PROCESSOR(MoveCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(MoveZCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(ClickObjectCommand);
+	_REGISTRATE_COMMAND_PROCESSOR(ClickTileCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(ClickControlUICommand);
 	_REGISTRATE_COMMAND_PROCESSOR(SendChatMessageCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(UIInputCommand);
@@ -54,6 +55,13 @@ void PlayerCommandsProcessor::commandProcessor_ClickObjectCommand(network::proto
 	auto control = player->GetControl();
 	if (control) {
 		control->ClickObjectCommand(command.id);
+	}
+}
+
+void PlayerCommandsProcessor::commandProcessor_ClickTileCommand(network::protocol::client::ClickTileCommand &command) {
+	auto control = player->GetControl();
+	if (control) {
+		control->ClickTileCommand(player->camera->ViewCoordsToWorldCoords(command.pos));
 	}
 }
 

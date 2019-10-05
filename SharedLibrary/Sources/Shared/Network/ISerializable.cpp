@@ -31,6 +31,7 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(MoveCommand)
 		DECLARE_SER(MoveZCommand)
 		DECLARE_SER(ClickObjectCommand)
+		DECLARE_SER(ClickTileCommand)
 		DECLARE_SER(ClickControlUICommand)
 		DECLARE_SER(SendChatMessageCommand)
 		DECLARE_SER(UIInputCommand)

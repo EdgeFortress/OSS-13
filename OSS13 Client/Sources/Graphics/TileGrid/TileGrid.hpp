@@ -127,6 +127,7 @@ private:
 	mutable Tile *underCursorTile{};
 
 	bool objectClicked;
+	bool tileClicked;
 	bool rmbClicked{false};
 	bool dropButtonPressed;
     bool buildButtonPressed;

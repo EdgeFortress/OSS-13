@@ -23,7 +23,7 @@ using namespace network::protocol;
 TileGrid::TileGrid() :
 	tileSize(32), overlayToggled(false),
 	controllable(nullptr), controllableSpeed(0), cursorPosition({-1, -1}),
-	underCursorObject(nullptr), dropButtonPressed(false),
+	underCursorObject(nullptr), underCursorTile(nullptr), dropButtonPressed(false),
 	buildButtonPressed(false), ghostButtonPressed(false)
 {
 	//
@@ -166,6 +166,10 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 		case sf::Mouse::Left: {
 			if (underCursorObject) {
 				objectClicked = true;
+				return true;
+			}
+			else if (underCursorTile) {
+				tileClicked = true;
 				return true;
 			}
 			break;
@@ -332,6 +336,12 @@ void TileGrid::Update(sf::Time timeElapsed) {
 			Connection::commandQueue.Push(p);
 		}
 
+		if (stun == sf::Time::Zero && tileClicked && underCursorTile) {
+			auto *p = new client::ClickTileCommand();
+			p->pos = static_cast<uf::vec3i>(underCursorTile->GetRelPos());
+			Connection::commandQueue.Push(p);
+		}
+
 		if (rmbClicked) {
 			rmbClicked = false;
 			dynamic_cast<GameProcessUI *>(CC::Get()->GetUI()->GetCurrentUIModule())->OpenContextMenu();
@@ -353,6 +363,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 		}
 
 		objectClicked = false;
+		tileClicked = false;
 		dropButtonPressed = false;
 		buildButtonPressed = false;
 		ghostButtonPressed = false;

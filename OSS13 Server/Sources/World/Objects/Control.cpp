@@ -31,6 +31,11 @@ void Control::ClickObjectCommand(uint id) {
     clickedObjectID = id;
 }
 
+void Control::ClickTileCommand(uf::vec3i pos) {
+	clickedTilePos = pos;
+	isTileClicked = true;
+}
+
 void Control::ClickUICommand(const std::string &key) {
 	ui->OnClick(key);
 }
@@ -59,4 +64,14 @@ Object *Control::GetAndDropClickedObject() {
 		clickedObjectID = 0;
 	}
 	return obj;
+}
+
+Tile *Control::GetAndDropClickedTile() {
+	Tile *tile = nullptr;
+	if (isTileClicked) {
+		tile = GGame->GetWorld()->GetMap()->GetTile(clickedTilePos);
+		clickedTilePos = {};
+		isTileClicked = false;
+	}
+	return tile;
 }

@@ -619,6 +619,12 @@ class Control(eControl, Component):
 
 	def GetAndDropClickedObject(self) -> Object:
 		return self._impl.GetAndDropClickedObject()
+	
+	def GetAndDropClickedTile(self) -> Tile:
+		tile = self._impl.GetAndDropClickedTile()
+		if not tile:
+			return tile
+		return Tile(tile)
 
 
 class ControlUI(eControlUI):
