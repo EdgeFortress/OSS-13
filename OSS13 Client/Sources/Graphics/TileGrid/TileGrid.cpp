@@ -82,7 +82,6 @@ void TileGrid::drawContainer() const {
             uf::vec2i pixel = (uf::vec2i(fov) + rpos(tile->GetRelPos() - cameraRelPos).xy() - shift) * tileSize;
             object->Draw(&buffer, pixel);
             if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
-				underCursorTile = tile;
                 if (!object->PixelTransparent(cursorPosition - pixel))
                     underCursorObject = object;
             }
@@ -103,7 +102,6 @@ void TileGrid::drawContainer() const {
 	}
 
 	buffer.display();
-
 }
 
 void TileGrid::SetSize(const uf::vec2i &size) {
@@ -140,13 +138,21 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 	return false;
 }
 
+Tile *TileGrid::countTileUnderCursor(uf::vec2i mousePosition) {
+	auto coords = mousePosition / tileSize - uf::vec2i(shift) + uf::vec2i(Global::MIN_PADDING);
+	return GetTileRel(uf::vec3i(coords, cameraRelPos.z));
+}
+
 bool TileGrid::OnMouseMoved(uf::vec2i position) {
 	cursorPosition = position;
 	cursorPosition -= GetAbsolutePosition();
 	cursorPosition = uf::vec2f(cursorPosition) / GetScale().x;
-	if (cursorPosition <= GetSize()) return true;
-	else {
+	if (cursorPosition <= GetSize()) {
+		underCursorTile = countTileUnderCursor(cursorPosition);
+		return true;
+	} else {
 		cursorPosition = { -1, -1 };
+		underCursorTile = nullptr;
 		return false;
 	}
 }

@@ -70,7 +70,10 @@ public:
 	std::unordered_map< uint, uptr<Object> > &GetObjects(); // TODO: remove this
 
 protected:
-    void drawContainer() const override final;
+	void drawContainer() const override final;
+
+private:
+	Tile *countTileUnderCursor(uf::vec2i mousePosition);
 
 private:
     uf::vec2i numOfTiles;
@@ -108,8 +111,8 @@ private:
 	sf::Time stun;
 
     uf::vec2i cursorPosition;
-    mutable Object *underCursorObject;
-	mutable Tile *underCursorTile;
+	mutable Object *underCursorObject{};
+	mutable Tile *underCursorTile{};
 
 	bool objectClicked;
 	bool tileClicked;
