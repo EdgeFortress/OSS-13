@@ -117,7 +117,7 @@ bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connec
 	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 
 	if (!generalCommand) {
-		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->Id() << ") is received from "
+		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->SerID() << ") is received from "
 			<< (connection->player ? connection->player->GetCKey() : "unknown client")
 			<< "!";
 		return false;

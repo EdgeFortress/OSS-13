@@ -6,13 +6,13 @@
 #include <Shared/CRC32.h>
 #include <Shared/IFaces/ICopyable.h>
 
-#define _DEFINE_SERID(id)                  \
-	uint32_t Id() override {               \
-		constexpr uint32_t _id = id;       \
-		return _id;                        \
-	}                                      \
-	constexpr static uint32_t StaticId() { \
-		return id;                         \
+#define _DEFINE_SERID(id)                     \
+	uint32_t SerID() override {               \
+		constexpr uint32_t _id = id;          \
+		return _id;                           \
+	}                                         \
+	constexpr static uint32_t StaticSerID() { \
+		return id;                            \
 	}
 
 namespace uf {
@@ -21,10 +21,8 @@ class Archive;
 
 class ISerializable : public ICopyable {
 public:
-	virtual uint32_t Id() = 0;
+	virtual uint32_t SerID() = 0;
 	virtual void Serialize(Archive &archive);
-
-	virtual ~ISerializable() = default;
 };
 
 std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id);

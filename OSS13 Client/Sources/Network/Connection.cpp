@@ -122,7 +122,7 @@ bool Connection::parsePacket(sf::Packet &packet) {
 	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 
 	if (!generalCommand) {
-		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->Id() << ") is received!";
+		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->SerID() << ") is received!";
 		return false;
 	}
 

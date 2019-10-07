@@ -28,7 +28,7 @@ void SyncCommandsProcessor::ProcessCommand(network::protocol::Command &generalCo
 	_REGISTRATE_COMMAND_PROCESSOR(UpdateWindowCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(AddChatMessageCommand);
 
-	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.Id() << ") was not processed!";
+	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.SerID() << ") was not processed!";
 }
 
 void SyncCommandsProcessor::commandProcessor_AuthorizationSuccessCommand(network::protocol::server::AuthorizationSuccessCommand &) {

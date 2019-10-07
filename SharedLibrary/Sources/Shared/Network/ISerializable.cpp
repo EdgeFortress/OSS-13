@@ -14,7 +14,7 @@ using namespace network::protocol;
 namespace uf {
 
 void ISerializable::Serialize(Archive &archive) {
-	archive << sf::Int32(Id());
+	archive << sf::Int32(SerID());
 }
 
 #define DECLARE_SER(name) \

@@ -287,7 +287,7 @@ bool Tile::removeObject(Object *obj) {
 }
 
 void Tile::AddDiff(std::shared_ptr<network::protocol::Diff> diff, Object *obj) {
-	EXPECT(uf::CreateSerializableById(diff->Id())); // debug
+	EXPECT_WITH_MSG(uf::CreateSerializableById(diff->SerID()), "Send unknown diff!");
 	differencesWithObject.push_back({diff, obj->GetOwnershipPointer()});
 }
 
