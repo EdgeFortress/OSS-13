@@ -12,7 +12,7 @@ uf::Archive &operator&(uf::Archive &ar, long int &li);
 
 template<class T>
 uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		EXPECT_WITH_MSG(vector.size() == 0, "Try unpack Archive to non-empty vector");
 		sf::Int32 size;
 		ar >> size;
@@ -28,7 +28,7 @@ uf::Archive &operator&(uf::Archive &ar, std::vector<T> &vector) {
 
 template<size_t size>
 uf::Archive &operator&(uf::Archive &ar, std::bitset<size> &set) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		sf::Int32 buffer;
 		ar >> buffer;
 		set = unsigned(buffer);
@@ -67,7 +67,7 @@ uf::Archive &operator&(uf::Archive &ar, uf::vec3<T> &vec) {
 
 template<class RepType, class Ratio>
 uf::Archive &operator&(uf::Archive &ar, std::chrono::duration<RepType, Ratio> &duration) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		RepType buf;
 		ar >> buf;
 		duration = std::chrono::duration<RepType, Ratio>(buf);

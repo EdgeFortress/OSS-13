@@ -30,7 +30,7 @@ public:
 private:
 	static void session();
 	static void sendCommands();
-	static bool parsePacket(sf::Packet &);
+	static bool parsePacket(std::unique_ptr<sf::Packet> packet);
 
 private:
 	static Status status;

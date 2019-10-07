@@ -90,10 +90,10 @@ void Connection::session() {
 			sendCommands();
 			working = true;
 		}
-		sf::Packet packet;
-		if (socket.receive(packet) == sf::Socket::Done) {
+		auto packet = std::make_unique<sf::Packet>();
+		if (socket.receive(*packet) == sf::Socket::Done) {
 			try {
-				parsePacket(packet);
+				parsePacket(std::move(packet));
 			} catch (const std::exception &e) {
 				MANAGE_EXCEPTION(e);
 			}
@@ -107,17 +107,16 @@ void Connection::session() {
 
 void Connection::sendCommands() {
 	while (!commandQueue.Empty()) {
-		sf::Packet packet;
-		uf::InputArchive ar(packet);
+		uf::Archive ar;
 		Command *temp = commandQueue.Pop();
 		ar << *temp;
 		if (temp) delete temp;
-		while (socket.send(packet) == sf::Socket::Partial);
+		while (socket.send(ar.GetPacket()) == sf::Socket::Partial);
 	}
 }
 
-bool Connection::parsePacket(sf::Packet &packet) {
-	uf::OutputArchive ar(packet);
+bool Connection::parsePacket(std::unique_ptr<sf::Packet> packet) {
+	uf::Archive ar(std::move(packet));
 	auto serializable = ar.UnpackSerializable();
 	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 

@@ -6,18 +6,21 @@
 
 using namespace uf;
 
-// Archive
-
-Archive::Archive(sf::Packet &packet) :
-	packet(packet)
+Archive::Archive() :
+	mode(Mode::Input),
+	packet(std::make_unique<sf::Packet>())
 { }
 
-#define DECLARE_SER(name) \
-	case #name##_crc32: { uptr<ISerializable> p = std::make_unique<name>(); p->Serialize(*this); return p; }
+Archive::Archive(std::unique_ptr<sf::Packet> packet) :
+	mode(Mode::Output),
+	packet(std::move(packet))
+{ }
 
 uptr<ISerializable> Archive::UnpackSerializable() {
-	sf::Int32 id;
-	packet >> id;
+	EXPECT(mode == Mode::Output);
+
+	sf::Int32 id{};
+	serializeSimple(id);
 
 	auto serializable = CreateSerializableById(id);
 	serializable->Serialize(*this);
@@ -25,19 +28,7 @@ uptr<ISerializable> Archive::UnpackSerializable() {
 	return serializable;
 }
 
+Archive::Mode Archive::GetMode() const { return mode; }
+void Archive::SetMode(Archive::Mode mode) { this->mode = mode; }
 
-// InputArchive
-
-InputArchive::InputArchive(sf::Packet &packet) :
-	Archive(packet)
-{ 
-	isOut = false;
-}
-
-// OutputArchive
-
-OutputArchive::OutputArchive(sf::Packet &packet) :
-	Archive(packet)
-{ 
-	isOut = true;
-}
+sf::Packet &Archive::GetPacket() { return *packet; }
