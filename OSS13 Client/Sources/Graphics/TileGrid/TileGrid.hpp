@@ -10,6 +10,7 @@
 
 #include <Shared/Types.hpp>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
 #include <Shared/Grid.hpp>
 
@@ -40,6 +41,7 @@ public:
 		// Differences commiting
 		void AddObject(Object *object);
 		void RemoveObject(uint id);
+		void AmendObjectChanges(network::protocol::FieldsDiff &&diff);
 		void RelocateObject(uint id, apos toVec, int toObjectNum);
 		void SetMoveIntentObject(uint id, uf::Direction direction);
 		void MoveObject(uint id, uf::Direction direction, float speed);

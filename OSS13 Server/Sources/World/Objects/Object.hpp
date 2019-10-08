@@ -14,12 +14,13 @@
 #include <Shared/Timer.h>
 #include <Shared/IFaces/INonCopyable.h>
 #include <Shared/Geometry/DirectionSet.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class ObjectHolder;
 class Tile;
 
-class Object : public VerbsHolder, public INonCopyable {
+class Object : public network::sync::ObjectSyncFields, public VerbsHolder, public INonCopyable {
 	friend ObjectHolder;
 	friend Tile;
 
@@ -128,7 +129,6 @@ private:
 	void setTile(Tile *);
 
 protected:
-    std::string name;
     bool movable;
     std::string sprite;
 	Global::ItemSpriteState spriteState; // TODO: move it to Item? Also there is need to reimplement packing???

@@ -20,7 +20,7 @@ namespace sf {
 class Tile : public INonCopyable {
 public:
 	explicit Tile(TileGrid *tileGrid);
-	Tile(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
+	Tile(TileGrid *tileGrid, network::protocol::TileInfo &&tileInfo);
 	Tile(Tile &&) = default;
 	Tile &operator=(Tile &&) = default;
 	~Tile();

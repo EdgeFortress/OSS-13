@@ -10,13 +10,14 @@
 #include <Graphics/Sprite.hpp>
 #include <Graphics/TileGrid/TileGrid.hpp>
 
-Object::Object(const network::protocol::ObjectInfo &objectInfo) {
+Object::Object(network::protocol::ObjectInfo &&objectInfo) {
 	for (auto &sprite : objectInfo.spriteIds) {
 		AddSprite(uint(sprite));
 	}
 
+	static_cast<network::sync::ObjectSyncFields &>(*this) = std::move(objectInfo.fields);
+
 	id = objectInfo.id;
-	name = objectInfo.name;
 	layer = objectInfo.layer;
 	direction = objectInfo.direction;
 	density = objectInfo.density;

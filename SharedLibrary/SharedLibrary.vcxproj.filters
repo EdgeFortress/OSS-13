@@ -271,5 +271,8 @@
     <ClInclude Include="Sources\Shared\Network\Syncable.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Shared\Network\Syncable\ObjectSyncFields.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

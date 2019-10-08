@@ -86,6 +86,7 @@
     <ClInclude Include="Sources\Shared\Network\Protocol\Command.h" />
     <ClInclude Include="Sources\Shared\Network\Protocol\ServerToClient\WorldInfo.h" />
     <ClInclude Include="Sources\Shared\Network\Syncable.h" />
+    <ClInclude Include="Sources\Shared\Network\Syncable\ObjectSyncFields.h" />
     <ClInclude Include="Sources\Shared\OS.hpp" />
     <ClInclude Include="Sources\Shared\Physics\MovePhysics.hpp" />
     <ClInclude Include="Sources\Shared\ThreadSafeQueue.hpp" />

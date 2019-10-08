@@ -90,6 +90,13 @@ void Tile::CheckLocale() {
 }
 
 bool Tile::RemoveObject(Object *obj) {
+	if (obj->IsChanged()) {
+		auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+		fieldsDiff->objId = obj->ID();
+		fieldsDiff->fieldsChanges = obj->GetChanges();
+		AddDiff(std::move(fieldsDiff), obj);
+	}
+	obj->DropUpdateState();
 	if (removeObject(obj)) {
 		auto diff = std::make_shared<network::protocol::RemoveDiff>();
 		diff->objId = obj->ID();
@@ -182,14 +189,19 @@ void Tile::PlaceTo(Object *obj) {
 		CheckLocale();
 	}
 
-	auto objInfo = obj->GetObjectInfo();
-
 	if (lastTile) {
+		if (obj->IsChanged()) {
+			auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+			fieldsDiff->objId = obj->ID();
+			fieldsDiff->fieldsChanges = obj->GetChanges();
+			lastTile->AddDiff(std::move(fieldsDiff), obj);
+		}
 		auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>();
 		relocateAwayDiff->objId = obj->ID();
 		relocateAwayDiff->newCoords = pos;
 		lastTile->AddDiff(relocateAwayDiff, obj);
 	}
+	obj->DropUpdateState();
 	addObject(obj);
 
 	auto relocateDiff = std::make_shared<network::protocol::RelocateDiff>();
