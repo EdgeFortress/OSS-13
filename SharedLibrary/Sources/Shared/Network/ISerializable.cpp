@@ -14,7 +14,8 @@ using namespace network::protocol;
 namespace uf {
 
 void ISerializable::Serialize(Archive &archive) {
-	archive << sf::Int32(Id());
+	if (archive.GetMode() == Archive::Mode::Input)
+		archive << sf::Int32(SerID());
 }
 
 #define DECLARE_SER(name) \
@@ -75,6 +76,7 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(RelocateAwayDiff)
 		DECLARE_SER(AddDiff)
 		DECLARE_SER(RemoveDiff)
+		DECLARE_SER(FieldsDiff)
 		DECLARE_SER(MoveIntentDiff)
 		DECLARE_SER(MoveDiff)
 		DECLARE_SER(UpdateIconsDiff)

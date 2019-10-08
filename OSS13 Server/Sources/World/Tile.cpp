@@ -90,6 +90,13 @@ void Tile::CheckLocale() {
 }
 
 bool Tile::RemoveObject(Object *obj) {
+	if (obj->IsChanged()) {
+		auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+		fieldsDiff->objId = obj->ID();
+		fieldsDiff->fieldsChanges = obj->PopChanges();
+		AddDiff(std::move(fieldsDiff), obj);
+	}
+
 	if (removeObject(obj)) {
 		auto diff = std::make_shared<network::protocol::RemoveDiff>();
 		diff->objId = obj->ID();
@@ -182,14 +189,21 @@ void Tile::PlaceTo(Object *obj) {
 		CheckLocale();
 	}
 
-	auto objInfo = obj->GetObjectInfo();
-
 	if (lastTile) {
+		if (obj->IsChanged()) {
+			auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+			fieldsDiff->objId = obj->ID();
+			fieldsDiff->fieldsChanges = obj->PopChanges();
+			lastTile->AddDiff(std::move(fieldsDiff), obj);
+		}
 		auto relocateAwayDiff = std::make_shared<network::protocol::RelocateAwayDiff>();
 		relocateAwayDiff->objId = obj->ID();
 		relocateAwayDiff->newCoords = pos;
 		lastTile->AddDiff(relocateAwayDiff, obj);
+	} else {
+		obj->ResetChanges();
 	}
+
 	addObject(obj);
 
 	auto relocateDiff = std::make_shared<network::protocol::RelocateDiff>();
@@ -287,7 +301,7 @@ bool Tile::removeObject(Object *obj) {
 }
 
 void Tile::AddDiff(std::shared_ptr<network::protocol::Diff> diff, Object *obj) {
-	EXPECT(uf::CreateSerializableById(diff->Id())); // debug
+	EXPECT_WITH_MSG(uf::CreateSerializableById(diff->SerID()), "Send unknown diff!");
 	differencesWithObject.push_back({diff, obj->GetOwnershipPointer()});
 }
 

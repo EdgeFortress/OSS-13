@@ -1,7 +1,7 @@
 #include "ArchiveConverters.h"
 
 uf::Archive &operator&(uf::Archive &ar, long int &li) {
-    if (ar.IsOutput()) {
+    if (ar.GetMode() == uf::Archive::Mode::Output) {
         sf::Int32 buf;
         ar >> buf;
         li = buf;
@@ -12,7 +12,7 @@ uf::Archive &operator&(uf::Archive &ar, long int &li) {
 }
 
 uf::Archive &operator&(uf::Archive &ar, uf::Direction &d) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		sf::Int8 buf;
 		ar >> buf;
 		d = static_cast<uf::Direction>(buf);
@@ -23,7 +23,7 @@ uf::Archive &operator&(uf::Archive &ar, uf::Direction &d) {
 }
 
 uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		auto buf = directionSet.GetBuffer();
 		ar >> buf;
 		directionSet.SetBuffer(buf);
@@ -34,7 +34,7 @@ uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
 }
 
 uf::Archive &operator&(uf::Archive &ar, uf::DirectionSetFractional &directionSetFractional) {
-	if (ar.IsOutput()) {
+	if (ar.GetMode() == uf::Archive::Mode::Output) {
 		std::array<float, 5> buf;
 		ar >> buf;
 		directionSetFractional.SetFractions(std::move(buf));

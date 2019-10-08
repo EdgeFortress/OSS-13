@@ -144,8 +144,12 @@ void Object::AddObject(Object *obj) {
 	if (obj->GetHolder()) {
         if (!obj->GetHolder()->RemoveObject(obj))
             return;
-    } else if (obj->GetTile())
+    } else if (obj->GetTile()) {
 		obj->GetTile()->RemoveObject(obj);
+	} else {
+		obj->ResetChanges();
+	}
+	
 
 	content.push_back(obj);
 	obj->holder = this;
@@ -155,16 +159,23 @@ void Object::AddObject(Object *obj) {
 }
 
 bool Object::RemoveObject(Object *obj) {
-    for (auto iter = content.begin(); iter != content.end(); iter++) {
-        if (*iter == obj) {
-            obj->setTile(nullptr);
-            obj->holder = nullptr;
-            content.erase(iter);
+	for (auto iter = content.begin(); iter != content.end(); iter++) {
+		if (*iter == obj) {
+			if (obj->IsChanged()) {
+				auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+				fieldsDiff->objId = obj->ID();
+				fieldsDiff->fieldsChanges = obj->PopChanges();
+				GetTile()->AddDiff(std::move(fieldsDiff), obj);
+			}
+
+			obj->setTile(nullptr);
+			obj->holder = nullptr;
+			content.erase(iter);
 			askToUpdateIcons();
-            return true;
-        }
-    }
-    return false;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Object::Delete() {
@@ -316,7 +327,7 @@ void Object::SetIsWall(bool value) { isWall = value; }
 network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	network::protocol::ObjectInfo objectInfo;
 	objectInfo.id = id;
-	objectInfo.name = name;
+	objectInfo.fields = *this;
 	objectInfo.layer = layer;
 	objectInfo.direction = direction;
 	objectInfo.density = density;

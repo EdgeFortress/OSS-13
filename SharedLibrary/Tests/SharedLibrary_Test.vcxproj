@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Sources\main.cpp" />
     <ClCompile Include="Sources\MovePhysics_Tests.cpp" />
+    <ClCompile Include="Sources\Syncable_Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedLibrary.vcxproj">

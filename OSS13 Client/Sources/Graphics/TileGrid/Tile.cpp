@@ -15,7 +15,7 @@ Tile::Tile(TileGrid *tileGrid) :
 	overlay.setCharacterSize(10);
 }
 
-Tile::Tile(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo) :
+Tile::Tile(TileGrid *tileGrid, network::protocol::TileInfo &&tileInfo) :
 	Tile(tileGrid)
 {
 	sprite = CC::Get()->RM.CreateSprite(uint(tileInfo.sprite));
@@ -23,12 +23,14 @@ Tile::Tile(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo) :
 	for (auto &objInfo : tileInfo.content) {
 		auto &objects = GetTileGrid()->GetObjects();
 
-		auto iter = objects.find(objInfo.id);
+		auto id = objInfo.id;
+
+		auto iter = objects.find(id);
 		if (iter == objects.end()) {
-			objects[objInfo.id] = std::make_unique<Object>(objInfo);
+			objects[id] = std::make_unique<Object>(std::forward<network::protocol::ObjectInfo>(objInfo));
 		}
 
-		AddObject(objects[objInfo.id].get());
+		AddObject(objects[id].get());
 	}
 	Resize(GetTileGrid()->GetTileSize());
 }

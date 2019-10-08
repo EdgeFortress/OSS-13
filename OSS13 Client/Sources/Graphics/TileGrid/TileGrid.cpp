@@ -356,6 +356,13 @@ void TileGrid::RemoveObject(uint id) {
     LOGE << "Error: object with id " << id << " doesn't exist (TileGrid::RemoveObject)";
 }
 
+void TileGrid::AmendObjectChanges(network::protocol::FieldsDiff &&diff) {
+	auto iter = objects.find(diff.objId);
+	EXPECT(iter != objects.end());
+	auto &obj = iter->second;
+	obj->AmendChanges(std::forward<uf::SyncableChanges>(diff.fieldsChanges));
+}
+
 void TileGrid::RelocateObject(uint id, apos toVec, int toObjectNum) {
     Tile *tile = GetTileAbs(toVec);
     if (!tile) {

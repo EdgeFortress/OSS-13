@@ -4,6 +4,7 @@
 
 #include <Shared/Network/ISerializable.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 #include <Shared/Types.hpp>
 
 namespace network {
@@ -27,18 +28,6 @@ private:
 	static uint32_t diffCounter;
 DEFINE_SERIALIZABLE_END
 
-DEFINE_SERIALIZABLE(RelocateDiff, Diff)
-	uf::vec3i newCoords;
-	uint32_t layer;
-	void Serialize(uf::Archive &ar) override {
-		Diff::Serialize(ar);
-		ar & newCoords;
-		ar & layer;
-	}
-DEFINE_SERIALIZABLE_END
-
-DEFINE_PURE_SERIALIZABLE(RelocateAwayDiff, RelocateDiff)
-
 DEFINE_SERIALIZABLE(AddDiff, Diff)
 	ObjectInfo objectInfo;
 	uf::vec3i coords;
@@ -52,6 +41,27 @@ DEFINE_SERIALIZABLE(AddDiff, Diff)
 DEFINE_SERIALIZABLE_END
 
 DEFINE_PURE_SERIALIZABLE(RemoveDiff, Diff)
+	
+DEFINE_SERIALIZABLE(FieldsDiff, Diff)
+	uf::SyncableChanges fieldsChanges;
+
+	void Serialize(uf::Archive &ar) override {
+		Diff::Serialize(ar);
+		ar & fieldsChanges;
+	}
+DEFINE_SERIALIZABLE_END
+
+DEFINE_SERIALIZABLE(RelocateDiff, Diff)
+	uf::vec3i newCoords;
+	uint32_t layer;
+	void Serialize(uf::Archive &ar) override {
+		Diff::Serialize(ar);
+		ar & newCoords;
+		ar & layer;
+	}
+DEFINE_SERIALIZABLE_END
+
+DEFINE_PURE_SERIALIZABLE(RelocateAwayDiff, RelocateDiff)
 
 DEFINE_SERIALIZABLE(MoveIntentDiff, Diff)
 	uf::Direction direction;

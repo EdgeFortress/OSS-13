@@ -28,7 +28,7 @@ class Game(eGame):
 	def world() -> Engine.World.World:
 		return Engine.World.World(eGGame.world)
 
-class Player(ePlayer, Engine.World.VerbsHolder):
+class Player(ePlayer):
 	"""
 	Player class is persistent until restart. When player re-logins, existed Player instance is used.
 
@@ -47,10 +47,18 @@ class Player(ePlayer, Engine.World.VerbsHolder):
 	IsConnected() -> bool
 		returns True when player is online
 
+	AddVerb(name: str, action: Callable[[Player], None])
+		add new verb
+
+		Parametres
+		----------
+		name: str
+			verb's key. Use name to call verb from console
+
 	"""
 
 	def __init__(self, impl):
-		Engine.World.VerbsHolder.__init__(self, impl)
+		self._impl = impl
 
 	@property
 	def ckey(self) -> str:
@@ -65,6 +73,10 @@ class Player(ePlayer, Engine.World.VerbsHolder):
 
 	def IsConnected(self) -> bool:
 		return self._impl.IsConnected()
+
+	def AddVerb(self, name: str, action: Callable[[Engine.Server.Player], None]):
+		wrapper = lambda player: action(Engine.Server.Player(player))
+		self._impl.AddVerb(name, wrapper)
 
 
 class ResourceManager(eResourceManager):

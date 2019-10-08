@@ -67,11 +67,11 @@ void NetworkController::working(std::unique_ptr<sf::TcpListener> listener) {
                         sf::TcpSocket *socket = iter->get()->socket.get();
                         sptr<Player> player = (*iter)->player;
 
-                        sf::Packet packet;
-                        sf::Socket::Status status = socket->receive(packet);
+						auto packet = std::make_unique<sf::Packet>();
+                        sf::Socket::Status status = socket->receive(*packet);
                         switch (status) {
                             case sf::Socket::Done:
-								if (!parsePacket(packet, *iter)) {
+								if (!parsePacket(std::move(packet), *iter)) {
 									selector.remove(*socket);
 									iter = connections.erase(iter);
 									continue;
@@ -99,25 +99,24 @@ void NetworkController::working(std::unique_ptr<sf::TcpListener> listener) {
         // Sending to client
         for (auto &connection : connections) {
 			while (!connection->commandsToClient.Empty()) {
-				sf::Packet packet;
-				uf::InputArchive ar(packet);
+				uf::Archive ar;
 				network::protocol::Command *command = connection->commandsToClient.Pop();
 				EXPECT(command);
 				ar << *command;
 				delete command;
-				connection->socket->send(packet);
+				connection->socket->send(ar.GetPacket());
 			}
         }
     }
 }
 
-bool NetworkController::parsePacket(sf::Packet &packet, sptr<Connection> &connection) {
-	uf::OutputArchive ar(packet);
+bool NetworkController::parsePacket(std::unique_ptr<sf::Packet> packet, sptr<Connection> &connection) {
+	uf::Archive ar(std::move(packet));
 	auto serializable = ar.UnpackSerializable();
 	auto generalCommand = uptr<network::protocol::Command>(dynamic_cast<network::protocol::Command *>(serializable.release()));
 
 	if (!generalCommand) {
-		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->Id() << ") is received from "
+		LOGE << "Unknown serializable (id is 0x" << std::hex << serializable->SerID() << ") is received from "
 			<< (connection->player ? connection->player->GetCKey() : "unknown client")
 			<< "!";
 		return false;

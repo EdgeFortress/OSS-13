@@ -20,7 +20,7 @@ private:
 
     void working(std::unique_ptr<sf::TcpListener> listener);
 	// return false if received "disconnect" packet
-    bool parsePacket(sf::Packet &, sptr<Connection> &connection);
+    bool parsePacket(std::unique_ptr<sf::Packet> packet, sptr<Connection> &connection);
 
 public:
     NetworkController();

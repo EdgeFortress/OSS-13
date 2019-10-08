@@ -32,7 +32,7 @@ void PlayerCommandsProcessor::ProcessCommand(network::protocol::Command &general
 	_REGISTRATE_COMMAND_PROCESSOR(ContextMenuUpdateCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(ContextMenuClickCommand);
 
-	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.Id() << ") was not processed! "
+	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.SerID() << ") was not processed! "
 		<< "Player: " << player->GetCKey();
 }
 

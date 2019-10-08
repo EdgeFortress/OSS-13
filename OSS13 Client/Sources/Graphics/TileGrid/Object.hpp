@@ -10,6 +10,7 @@
 #include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 
 class Sprite;
 class Tile;
@@ -22,9 +23,9 @@ namespace sf {
 
 #include "iostream"
 
-class Object {
+class Object : public network::sync::ObjectSyncFields {
 public:
-	explicit Object(const network::protocol::ObjectInfo &objectInfo);
+	explicit Object(network::protocol::ObjectInfo &&objectInfo);
 
     Object &operator=(Object &) = default;
     ~Object();
@@ -62,7 +63,6 @@ public:
 
 private:
 	uint id{};
-    std::string name;
 	std::vector<::Sprite> sprites;
     ::Sprite animation;
 	bool animationProcess{};
