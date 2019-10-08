@@ -76,8 +76,7 @@ protected:
 			reinterpret_cast<uf::ISerializable *>(ser.get())->Serialize(*this);
 	}
 
-	template<>
-	void serializeSimple<Archive>(Archive &ser) {
+	void serializeSimple(Archive &ser) {
 		auto lastSetMode = ser.GetMode();
 		if (mode == Mode::Output) {
 			ser.SetMode(Mode::Input);
