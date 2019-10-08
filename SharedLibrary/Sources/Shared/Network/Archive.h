@@ -30,7 +30,9 @@ public:
 	template<class T>
 	Archive &operator&(T &ser) {
 		if constexpr (std::is_base_of_v<ISerializable, T>) {
-			sf::Int32 id; *this >> id; // we know type, so drop excess id
+			if (mode == Mode::Output) {
+				sf::Int32 id; *this >> id; // we know type, so drop excess id
+			}
 			reinterpret_cast<uf::ISerializable&>(ser).Serialize(*this);
 		} else {
 			serializeSimple(ser);
@@ -41,14 +43,14 @@ public:
 
 	template<class T>
 	Archive &operator>>(T &ser) {
-		if (mode == Mode::Output) *this & ser;
-		return *this;
+		EXPECT(mode == Mode::Output);
+		return *this & ser;
 	}
 
 	template<class T>
 	Archive &operator<<(const T &ser) {
-		if (mode == Mode::Input) *this & const_cast<T&>(ser);
-		return *this;
+		EXPECT(mode == Mode::Input);
+		return *this & const_cast<T&>(ser);
 	}
 
 protected:
