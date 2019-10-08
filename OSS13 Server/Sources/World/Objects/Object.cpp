@@ -144,9 +144,12 @@ void Object::AddObject(Object *obj) {
 	if (obj->GetHolder()) {
         if (!obj->GetHolder()->RemoveObject(obj))
             return;
-    } else if (obj->GetTile())
+    } else if (obj->GetTile()) {
 		obj->GetTile()->RemoveObject(obj);
-	obj->DropUpdateState();
+	} else {
+		obj->ResetChanges();
+	}
+	
 
 	content.push_back(obj);
 	obj->holder = this;
@@ -161,10 +164,9 @@ bool Object::RemoveObject(Object *obj) {
 			if (obj->IsChanged()) {
 				auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
 				fieldsDiff->objId = obj->ID();
-				fieldsDiff->fieldsChanges = obj->GetChanges();
+				fieldsDiff->fieldsChanges = obj->PopChanges();
 				GetTile()->AddDiff(std::move(fieldsDiff), obj);
 			}
-			obj->DropUpdateState();
 
 			obj->setTile(nullptr);
 			obj->holder = nullptr;

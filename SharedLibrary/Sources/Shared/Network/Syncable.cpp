@@ -9,7 +9,7 @@ void GeneralSyncField::setChanged() { changed = true; syncable->changed = true; 
 
 } // namespace detail
 
-SyncableChanges Syncable::GetChanges() {
+SyncableChanges Syncable::PopChanges() {
 	SyncableChanges changes;
 	changes.archive.SetMode(Archive::Mode::Input);
 	std::size_t changedCount = 0;
@@ -17,15 +17,16 @@ SyncableChanges Syncable::GetChanges() {
 		if (getField(i)->changed)
 			changedCount++;
 	}
-	EXPECT_WITH_MSG(changedCount, "Empty SyncableChanges are created!");
 	changes.archive << sf::Int32(changedCount);
 
 	for (std::size_t i = 0; i < fieldsOffsets.size(); i++) {
 		if (getField(i)->changed) {
 			changes.archive << sf::Int32(i);
 			getField(i)->Serialize(changes.archive);
+			getField(i)->changed = false;
 		}
 	}
+	changed = false;
 	return changes;
 }
 
@@ -33,27 +34,21 @@ void Syncable::AmendChanges(SyncableChanges &&changes) {
 	changes.archive.SetMode(Archive::Mode::Output);
 	sf::Int32 changedCount;
 	changes.archive >> changedCount;
-	do {
+	while (changedCount--) {
 		sf::Int32 fieldNumber;
 		changes.archive >> fieldNumber;
 		changes.archive >> *getField(std::size_t(fieldNumber));
-	} while (--changedCount);
+	};
 }
 
-void Syncable::DropUpdateState() {
+void Syncable::ResetChanges() {
 	for (std::size_t i = 0; i < fieldsOffsets.size(); i++)
 		getField(i)->changed = false;
 	changed = false;
 }
 
 bool Syncable::IsChanged() {
-	bool t = false;
-	for (std::size_t i = 0; i < fieldsOffsets.size(); i++) {
-		if (getField(i)->changed)
-			t = true;
-	}
-	EXPECT(t || !changed);
-	return changed; 
+	return changed;
 }
 
 void Syncable::Serialize(Archive &ar) {

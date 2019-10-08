@@ -12,12 +12,31 @@ DEFINE_SYNCABLE(TestSyncable)
 	}
 DEFINE_SYNCABLE_END
 
-TEST(Syncable, test) {
+TEST(Syncable, IsChangedReturnsTrueAfterFieldChange) {
+	TestSyncable testSyncable;
+	testSyncable.a = 12345;
+
+	CHECK(testSyncable.IsChanged());
+}
+
+TEST(Syncable, CorrectValuesAfterAmend) {
 	TestSyncable testSyncable;
 	testSyncable.a = 12345;
 	testSyncable.b = "test string";
 
-	auto changes = testSyncable.GetChanges();
+	auto changes = testSyncable.PopChanges();
+
+	TestSyncable otherSyncable;
+	otherSyncable.AmendChanges(std::move(changes));
+
+	CHECK(testSyncable.a.GetValue() == otherSyncable.a.GetValue());
+	CHECK(testSyncable.b.GetValue() == otherSyncable.b.GetValue());
+}
+
+TEST(Syncable, AmendDefaultValues) {
+	TestSyncable testSyncable;
+
+	auto changes = testSyncable.PopChanges();
 
 	TestSyncable otherSyncable;
 	otherSyncable.AmendChanges(std::move(changes));

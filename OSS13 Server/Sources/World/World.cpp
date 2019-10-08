@@ -58,9 +58,8 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 		if (object && object->GetTile() && object->IsChanged()) {
 			auto diff = std::make_shared<network::protocol::FieldsDiff>();
 			diff->objId = object->ID();
-			diff->fieldsChanges = object->GetChanges();
+			diff->fieldsChanges = object->PopChanges();
 			object->GetTile()->AddDiff(std::move(diff), object.get());
-			object->DropUpdateState();
 		}
 	}
 }

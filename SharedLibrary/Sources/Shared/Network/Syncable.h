@@ -46,7 +46,7 @@ public:
 	SyncField &operator=(const T &value) { this->value = value; setChanged(); return *this; }
 	operator const T &() const { return value; }
 
-	T &GetValue() { return value; };
+	const T &GetValue() { return value; };
 
 	void Serialize(Archive &ar) final {
 		uf::ISerializable::Serialize(ar);
@@ -74,10 +74,10 @@ DEFINE_SERIALIZABLE_END
 struct Syncable : public uf::ISerializable {
 	friend detail::GeneralSyncField;
 
-	SyncableChanges GetChanges();
+	SyncableChanges PopChanges();
 	void AmendChanges(SyncableChanges &&changes);
+	void ResetChanges();
 
-	void DropUpdateState();
 	bool IsChanged();
 
 	void Serialize(Archive &ar) final;
