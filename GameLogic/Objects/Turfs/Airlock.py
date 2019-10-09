@@ -1,4 +1,4 @@
-from Engine.Geometry import Direction
+from Engine.Geometry import Direction, DirectionSet
 from Objects.Turf import Turf
 
 class Airlock(Turf):
@@ -7,12 +7,15 @@ class Airlock(Turf):
 
 	def __init__(self):
 		super().__init__()
-		self.__closedSolidity = [Direction.CENTER]
 
-		self.solidity.Add(self.__closedSolidity)
+		self.__closedSolidity = DirectionSet()
+		self.__closedSolidity.Add([Direction.CENTER])
+		
+		self.solidity = self.__closedSolidity
+
 		self.opened = False
 		self.locked = False
-		
+
 	def InteractedBy(self, object):
 		if not self.IsCloseTo(object):
 			return False
@@ -30,7 +33,7 @@ class Airlock(Turf):
 				return
 			self.sprite = "airlock"
 			self.opened = False
-			self.solidity.Add(self.__closedSolidity)
+			self.solidity = self.__closedSolidity
 		else:
 			if not self.PlayAnimation("airlock_opening", lambda: self.__animationOpeningCallback()):
 				return
@@ -44,7 +47,7 @@ class Airlock(Turf):
 
 	def __animationOpeningCallback(self):
 		self.opened = True
-		self.solidity.Reset()
+		self.solidity = DirectionSet()
 
 	def __autocloseCallback(self):
 		if self.opened:

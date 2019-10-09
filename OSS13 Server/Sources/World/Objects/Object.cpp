@@ -16,8 +16,7 @@
 Object::Object() :
     movable(true),
 	spriteState(Global::ItemSpriteState::DEFAULT),
-    layer(0), 
-    direction(uf::Direction::NONE),
+    layer(0),
     tile(nullptr),
 	holder(nullptr),
     moveSpeed(0)
@@ -201,12 +200,6 @@ void Object::SetDirection(uf::Direction direction) {
 	if (direction > uf::Direction::EAST)
 		direction = uf::Direction(char(direction) % 4);
 	this->direction = direction;
-	if (tile) {
-		auto changeDirectionDiff = std::make_shared<network::protocol::ChangeDirectionDiff>();
-		changeDirectionDiff->objId = ID();
-		changeDirectionDiff->direction = direction;
-		tile->AddDiff(std::move(changeDirectionDiff), this);
-	}
 }
 uf::Direction Object::GetDirection() { return direction; }
 
@@ -234,7 +227,7 @@ bool Object::GetDensity() const { return density; }
 void Object::SetDensity(bool density) { this->density = density; }
 
 void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
-const uf::DirectionSet &Object::GetSolidity() const { return solidity; }
+uf::DirectionSet Object::GetSolidity() const { return solidity; }
 
 void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
 const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; }
@@ -329,9 +322,7 @@ network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	objectInfo.id = id;
 	objectInfo.fields = *this;
 	objectInfo.layer = layer;
-	objectInfo.direction = direction;
 	objectInfo.density = density;
-	objectInfo.solidity = solidity;
 	objectInfo.opacity = opacity;
 	objectInfo.moveSpeed = moveSpeed;
 	objectInfo.speed = speed;

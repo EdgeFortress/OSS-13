@@ -69,7 +69,7 @@ public:
 	bool GetDensity() const;
 
 	void SetSolidity(uf::DirectionSet directions);
-	const uf::DirectionSet &GetSolidity() const;
+	uf::DirectionSet GetSolidity() const;
 
 	void SetOpacity(uf::DirectionSetFractional fractionalDirections);
 	const uf::DirectionSetFractional &GetOpacity() const;
@@ -135,10 +135,8 @@ protected:
 	uf::Timer animationTimer;
     // Object layer 0-100. The smaller layer is lower.
     uint layer;
-    uf::Direction direction;
 
 	bool density{false}; // object can't pass through solid objects
-	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 	uf::DirectionSetFractional airtightness;
 

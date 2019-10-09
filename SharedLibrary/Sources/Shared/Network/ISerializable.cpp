@@ -81,7 +81,6 @@ std::unique_ptr<ISerializable> CreateSerializableById(uint32_t id) {
 		DECLARE_SER(MoveDiff)
 		DECLARE_SER(UpdateIconsDiff)
 		DECLARE_SER(PlayAnimationDiff)
-		DECLARE_SER(ChangeDirectionDiff)
 		DECLARE_SER(StunnedDiff)
 	}
 

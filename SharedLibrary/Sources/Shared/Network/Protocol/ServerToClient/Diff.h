@@ -97,14 +97,6 @@ DEFINE_SERIALIZABLE(PlayAnimationDiff, Diff)
 	}
 DEFINE_SERIALIZABLE_END
 
-DEFINE_SERIALIZABLE(ChangeDirectionDiff, Diff)
-	uf::Direction direction;
-	void Serialize(uf::Archive &ar) override {
-		Diff::Serialize(ar);
-		ar & direction;
-	}
-DEFINE_SERIALIZABLE_END
-
 DEFINE_SERIALIZABLE(StunnedDiff, Diff)
 	std::chrono::microseconds duration;
 	void Serialize(uf::Archive &ar) override {

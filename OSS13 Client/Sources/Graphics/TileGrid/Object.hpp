@@ -66,11 +66,9 @@ private:
 	std::vector<::Sprite> sprites;
     ::Sprite animation;
 	bool animationProcess{};
-	uf::Direction direction{uf::Direction::NONE};
 	uint layer{};
 
 	bool density{};
-	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 
     uf::vec2f shift;
