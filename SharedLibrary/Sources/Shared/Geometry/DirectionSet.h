@@ -6,19 +6,15 @@
 #include <list>
 
 #include <Shared/ErrorHandling.h>
+#include <Shared/IFaces/ICopyable.h>
 #include <Shared/Geometry/Direction.hpp>
 
 namespace uf {
 
-class DirectionSet {
+class DirectionSet : public ICopyable {
 public:
-	DirectionSet() = default;
+	DirectionSet() { };
 	DirectionSet(std::list<Direction> directions);
-
-	DirectionSet(const DirectionSet &) = default;
-	DirectionSet(DirectionSet &&) = default;
-	DirectionSet &operator=(const DirectionSet &) = default;
-	DirectionSet &operator=(DirectionSet &&) = default;
 
 	void Add(DirectionSet directions);
 	void Add(const std::list<Direction> &directions);
@@ -31,6 +27,8 @@ public:
 
 	bool DoExistAll(DirectionSet directions) const;
 	bool DoExistAll(const std::list<Direction> &directions) const;
+
+	DirectionSet Rotate(Direction direction) const;
 
 	void Reset();
 

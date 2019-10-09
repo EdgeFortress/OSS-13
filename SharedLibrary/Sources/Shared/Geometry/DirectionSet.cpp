@@ -55,6 +55,31 @@ bool DirectionSet::DoExistAll(const std::list<Direction> &directions) const {
 	return DoExistAll(DirectionSet(directions));
 }
 
+DirectionSet DirectionSet::Rotate(Direction direction) const {
+	size_t shift;
+	switch (direction) {
+		case Direction::WEST:
+			shift = 1;
+			break;
+		case Direction::NORTH:
+			shift = 2;
+			break;
+		case Direction::EAST:
+			shift = 3;
+			break;
+		default:
+			return *this;
+	}
+
+	DirectionSet result;
+
+	for (size_t i = 0; i < 3; i++)
+		result.buffer[(i + shift) % 4] = buffer[i];
+	result.buffer[4] = buffer[4];
+
+	return result;
+}
+
 void DirectionSet::Reset() {
 	buffer.reset();
 }

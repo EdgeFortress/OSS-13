@@ -19,9 +19,7 @@ Object::Object(network::protocol::ObjectInfo &&objectInfo) {
 
 	id = objectInfo.id;
 	layer = objectInfo.layer;
-	direction = objectInfo.direction;
 	density = objectInfo.density;
-	solidity = objectInfo.solidity;
 	opacity = objectInfo.opacity;
 	moveSpeed = objectInfo.moveSpeed;
 	speed = objectInfo.speed;
@@ -49,6 +47,13 @@ void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
 }
 
 void Object::Update(sf::Time timeElapsed) {
+	if (direction.PopChangedState()) {
+		for (auto &sprite : sprites) {
+			if (sprite.IsValid()) sprite.SetDirection(direction);
+		}
+		if (animation.IsValid()) animation.SetDirection(direction);
+	}
+
     // Movement
 
 	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, speed);
@@ -95,13 +100,8 @@ void Object::PlayAnimation(uint id) {
 void Object::SetDirection(const uf::Direction newdirection) {
 	if (newdirection == uf::Direction::NONE)
 		return;
-
-    // cut the diagonal directions
+	// cut the diagonal directions
 	direction = uf::Direction(char(newdirection) % 4);
-	for (auto &sprite : sprites) {
-		if (sprite.IsValid()) sprite.SetDirection(direction);
-	}
-    if (animation.IsValid()) animation.SetDirection(direction);
 }
 
 void Object::SetMoveSpeed(float moveSpeed) {

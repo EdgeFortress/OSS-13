@@ -29,6 +29,8 @@ public:
 	GeneralSyncField(GeneralSyncField &&other) : changed(std::move(other.changed)) { }
 	GeneralSyncField &operator=(GeneralSyncField &&other) { this->changed = std::move(other.changed); return *this; }
 
+	bool PopChangedState() { bool temp = changed; changed = false; return temp; }
+
 protected:
 	void setChanged();
 

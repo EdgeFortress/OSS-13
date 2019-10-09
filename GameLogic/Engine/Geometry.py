@@ -280,7 +280,7 @@ def NextDirection(dir: Direction) -> Direction:
 	raise TypeError("Bad direction type!")
 
 
-class DirectionSet(eDirectionSet):
+class DirectionSet():
 	"""
 	A class used to represent a set of directions. You can add directions and check which are already added.
 	Any composite direction will be broken to its components.
@@ -304,8 +304,14 @@ class DirectionSet(eDirectionSet):
 
 	"""
 
-	def __init__(self, impl = eDirectionSet()):
-		self._impl = impl
+	def __init__(self, *args):
+		if len(args) > 0 and isinstance(args[0], eDirectionSet):
+			self._impl = args[0]
+		else:
+			self._impl = eDirectionSet()
+
+		if len(args) > 0 and isinstance(args[0], list):
+			self.Add(args[0])
 
 	def Add(self, directions: List[Direction]):
 		self._impl.Add(directions)

@@ -443,14 +443,6 @@ void TileGrid::PlayAnimation(uint id, uint animation_id) {
     }
 }
 
-void TileGrid::ChangeObjectDirection(uint id, uf::Direction direction) {
-    auto iter = objects.find(id);
-    if (iter != objects.end()) {
-        Object *obj = iter->second.get();
-        obj->SetDirection(direction);
-    }
-}
-
 void TileGrid::Stunned(uint id, sf::Time duration) {
 	if (id == controllable->GetID())
 		stun = duration;

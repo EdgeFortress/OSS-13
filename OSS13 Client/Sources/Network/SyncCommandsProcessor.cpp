@@ -91,8 +91,6 @@ void SyncCommandsProcessor::commandProcessor_GraphicsUpdateCommand(network::prot
 				tileGrid->UpdateObjectIcons(diff->objId, diff->iconsIds);
 			} else if (auto *diff = dynamic_cast<network::protocol::PlayAnimationDiff *>(generalDiff.get())) {
 				tileGrid->PlayAnimation(diff->objId, diff->animationId);
-			} else if (auto *diff = dynamic_cast<network::protocol::ChangeDirectionDiff *>(generalDiff.get())) {
-				tileGrid->ChangeObjectDirection(diff->objId, diff->direction);
 			} else if (auto *diff = dynamic_cast<network::protocol::StunnedDiff *>(generalDiff.get())) {
 				tileGrid->Stunned(diff->objId, sf::microseconds(diff->duration.count()));
 			};
