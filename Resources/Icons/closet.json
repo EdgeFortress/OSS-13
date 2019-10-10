@@ -1,0 +1,16 @@
+{
+    "title": "closet",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "closet",
+            "frames": 1,
+            "directed": false
+        },
+        {
+            "sprite": "closet_opened",
+            "frames": 1,
+            "directed": false
+        }
+    ]
+}

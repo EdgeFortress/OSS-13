@@ -53,6 +53,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Objects\Creatures\__init__.py" />
+    <Compile Include="Objects\Furniture.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Furnitures\Closet.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Objects\Furnitures\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\Items\Clothes\Uniform.py" />
     <Compile Include="Objects\Item.py" />
     <Compile Include="Objects\Items\Clothes\__init__.py" />
@@ -102,6 +111,7 @@
     <Folder Include="Objects\Items\Clothes\" />
     <Folder Include="Objects\" />
     <Folder Include="Objects\Items\Organs\" />
+    <Folder Include="Objects\Furnitures\" />
     <Folder Include="Objects\Turfs\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
