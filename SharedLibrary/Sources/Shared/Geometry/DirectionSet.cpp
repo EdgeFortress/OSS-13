@@ -86,7 +86,7 @@ DirectionSet DirectionSet::Rotate(Direction direction) const {
 
 	DirectionSet result = *this;
 
-	for (size_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < 4; i++)
 		result.buffer[(i + shift) % 4] = buffer[i];
 
 	return result;
