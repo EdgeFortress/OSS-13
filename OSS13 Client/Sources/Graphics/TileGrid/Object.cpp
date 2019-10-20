@@ -31,17 +31,17 @@ Object::~Object() {
     }
 }
 
-void Object::Draw(sf::RenderTarget *target, uf::vec2f pos) {
+void Object::Draw(sf::RenderTarget *target, uf::vec2f pos, float brightness) {
     TileGrid *tileGrid = tile->GetTileGrid();
     if (!tileGrid) {
         std::exception(); // Where is this tile!? 
     }
     uint tileSize = tileGrid->GetTileSize();
     if (animationProcess) {
-        animation.Draw(target, pos + shift * tileSize);
+        animation.Draw(target, pos + shift * tileSize, brightness);
     } else {
 		for (auto &sprite : sprites) {
-			if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize);
+			if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize, brightness);
 		}
     }
 }

@@ -32,9 +32,9 @@ TileGrid::TileGrid() :
 	// num * size - (2 * pad + fov) >= size
 	// num >= (size + 2 * pad + fov) / size
 	// We need minimal num, so add 1 if not divided
-	fov = Global::FOV;
-	fovZ = Global::Z_FOV;
-	visibleTilesSide = (fov*2+1) + 2 * Global::MIN_PADDING;
+	fov = Global::tilegrid::FOV;
+	fovZ = Global::tilegrid::Z_FOV;
+	visibleTilesSide = (fov*2+1) + 2 * Global::tilegrid::MIN_PADDING;
 	visibleTilesHeight = (fovZ*2+1);
 
 	// Allocate memory for blocks
@@ -51,10 +51,8 @@ TileGrid::TileGrid() :
 	AddItem(controlUI, {0, 0});
 }
 
-std::vector<TileGrid::LayerObjects> TileGrid::drawAreaAndGatherObjectsByLayers() const {
-	std::vector<TileGrid::LayerObjects> layers(101);
-
-	const int border = fov + Global::MIN_PADDING;
+void TileGrid::drawArea() const {
+	const int border = fov + Global::tilegrid::MIN_PADDING;
 
 	uf::vec2i tilePos;
 	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++) {
@@ -62,6 +60,21 @@ std::vector<TileGrid::LayerObjects> TileGrid::drawAreaAndGatherObjectsByLayers()
 			Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, cameraZ));
 			if (tile) {
 				tile->Draw(&buffer, (tilePos + uf::vec2i(fov) - shift) * tileSize);
+			}
+		}
+	}
+}
+
+std::vector<TileGrid::LayerObjects> TileGrid::gatherZLevelObjectsByLayers(int zLevel) const {
+	std::vector<TileGrid::LayerObjects> layers(101);
+
+	const int border = fov + Global::tilegrid::MIN_PADDING;
+
+	uf::vec2i tilePos;
+	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++) {
+		for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
+			Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, zLevel));
+			if (tile) {
 				for (auto &obj : tile->content) {
 					uint layer = obj->GetLayer();
 					if (layer > 0 && layer <= 100)
@@ -74,28 +87,39 @@ std::vector<TileGrid::LayerObjects> TileGrid::drawAreaAndGatherObjectsByLayers()
 	return layers;
 }
 
-void TileGrid::drawObjects(const std::vector<TileGrid::LayerObjects> &layers) const {
+void TileGrid::drawZLevelObjects(const std::vector<TileGrid::LayerObjects> &layers, float brightness, bool updateCursor) const {
 	underCursorObject = nullptr;
 
 	for (auto &layerObjects : layers) {
 		for (auto &object : layerObjects) {
 			auto objectPos = static_cast<uf::vec3i>(object->GetTile()->GetRelPos());
-			EXPECT((objectPos - static_cast<uf::vec3i>(cameraRelPos)).z == cameraZ);
-
 			uf::vec2f pixel = (uf::vec2i(fov) + rpos(objectPos - static_cast<uf::vec3i>(cameraRelPos)).xy() - shift) * tileSize;
 
-			object->Draw(&buffer, pixel);
+			object->Draw(&buffer, pixel, brightness);
 
-			if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
-				if (!object->PixelTransparent(cursorPosition - pixel))
-					underCursorObject = object;
+			if (updateCursor) {
+				if (cursorPosition >= pixel && cursorPosition < pixel + uf::vec2i(tileSize)) {
+					if (!object->PixelTransparent(cursorPosition - pixel))
+						underCursorObject = object;
+				}
 			}
 		}
 	}
 }
 
+void TileGrid::drawObjects() const {
+	std::list<int> zLevelsBrightness = Global::tilegrid::Z_LEVELS_BRIGHTNESS;
+
+	auto zLevel = cameraZ - static_cast<int>(zLevelsBrightness.size()) + 1;
+	for (auto brightness = zLevelsBrightness.rbegin(); brightness != zLevelsBrightness.rend(); brightness++, zLevel++) {
+		auto objectsByLayers = gatherZLevelObjectsByLayers(zLevel);
+		bool updateCursor = zLevel == cameraZ;
+		drawZLevelObjects(objectsByLayers, *brightness / 100.f, updateCursor);
+	}
+}
+
 void TileGrid::drawOverlay() const {
-	const int border = fov + Global::MIN_PADDING;
+	const int border = fov + Global::tilegrid::MIN_PADDING;
 
 	uf::vec2i tilePos;
 	if (overlayToggled) {
@@ -112,8 +136,8 @@ void TileGrid::drawOverlay() const {
 void TileGrid::drawContainer() const {
 	buffer.clear();
 
-	auto objectsByLayers = drawAreaAndGatherObjectsByLayers();
-	drawObjects(objectsByLayers);
+	drawArea();
+	drawObjects();
 	drawOverlay();
 
 	buffer.display();
@@ -149,7 +173,7 @@ bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position
 }
 
 Tile *TileGrid::countTileUnderCursor(uf::vec2i mousePosition) {
-	auto coords = mousePosition / tileSize - uf::vec2i(shift) + uf::vec2i(Global::MIN_PADDING);
+	auto coords = mousePosition / tileSize - uf::vec2i(shift) + uf::vec2i(Global::tilegrid::MIN_PADDING);
 	return GetTileRel(uf::vec3i(coords, cameraRelPos.z));
 }
 
@@ -501,7 +525,7 @@ void TileGrid::SetControllable(uint id, float speed) {
 }
 
 void TileGrid::SetFOV(int fov, int fovZ) {
-	int newSide = fov * 2 + 1 + 2 * Global::MIN_PADDING;
+	int newSide = fov * 2 + 1 + 2 * Global::tilegrid::MIN_PADDING;
 	int newHeight = fovZ * 2 + 1;
 	int diff = (visibleTilesSide - newSide) / 2;
 	int diff_z = (visibleTilesHeight - newHeight) / 2;

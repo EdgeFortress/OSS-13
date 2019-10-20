@@ -72,8 +72,11 @@ public:
 
 protected:
 	using LayerObjects = std::vector<Object *>;
-	std::vector<LayerObjects> drawAreaAndGatherObjectsByLayers() const;
-	void drawObjects(const std::vector<LayerObjects> &layers) const;
+
+	void drawArea() const;
+	std::vector<LayerObjects> gatherZLevelObjectsByLayers(int zLevel) const;
+	void drawZLevelObjects(const std::vector<LayerObjects> &layers, float brightness, bool updateCursor) const;
+	void drawObjects() const;
 	void drawOverlay() const;
 
 	void drawContainer() const override final;

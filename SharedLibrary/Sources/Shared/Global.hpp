@@ -1,15 +1,21 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 
 namespace Global {
 
 constexpr uint16_t PORT_FIRST = 55700;
 constexpr uint16_t PORT_LAST = 55710;
 
-const int FOV = 7; // Field Of View
-const int MIN_PADDING = 3;
-const int Z_FOV = 1;
+namespace tilegrid {
+
+inline const int FOV = 7; // Field Of View
+inline const int MIN_PADDING = 3;
+inline const int Z_FOV = 2;
+inline const auto Z_LEVELS_BRIGHTNESS = { 100, 60, 30 };
+
+}
 
 namespace control_ui {
 
