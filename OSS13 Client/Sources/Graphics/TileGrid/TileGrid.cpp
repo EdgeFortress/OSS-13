@@ -121,7 +121,6 @@ void TileGrid::drawContainer() const {
 
 void TileGrid::SetSize(const uf::vec2i &size) {
 	CustomWidget::SetScale(size / buffer.getSize().x);
-	controlUI->AdjustSize(size);
 }
 
 bool TileGrid::OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position) {
