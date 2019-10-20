@@ -34,7 +34,7 @@ public:
 	virtual bool BumpedTo(Object *) = 0;
 
 	virtual void Move(uf::vec2i order);
-	virtual void MoveZ(int /*order*/) {};
+	virtual void MoveZ(int order);
 
 	void AddComponent(Component *);
 	void AddComponent(const std::string &componentId);
@@ -44,7 +44,6 @@ public:
 
 	void AddObject(Object *);
 	virtual bool RemoveObject(Object *);
-    void SetConstSpeed(uf::vec2f speed);
     virtual void Delete();
 
     uint ID() const;

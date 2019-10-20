@@ -115,6 +115,17 @@ void Object::Move(uf::vec2i order) {
 	}
 }
 
+void Object::MoveZ(int order) {
+	if (!order) {
+		return;
+	}
+	Tile *tile = GetTile();
+	Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(0, 0, order));
+	if (dest_tile) {
+		dest_tile->PlaceTo(this);
+	}
+}
+
 void Object::AddComponent(Component *new_component) {
 	if (!new_component) return;
 	new_component->SetOwner(this);
