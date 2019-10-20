@@ -120,10 +120,20 @@ void Object::MoveZ(int order) {
 		return;
 	}
 	Tile *tile = GetTile();
-	Tile *dest_tile = tile->GetMap()->GetTile(tile->GetPos() + rpos(0, 0, order));
-	if (dest_tile) {
-		dest_tile->PlaceTo(this);
+	Tile *destTile = tile->GetMap()->GetTile(tile->GetPos() + rpos(0, 0, order));
+
+	if (!destTile)
+		return;
+
+	if (density) {
+		auto direction = order > 0 ? uf::Direction::TOP : uf::Direction::BOTTOM;
+		if (tile->IsDense(uf::DirectionSet({ direction })))
+			return;
+		if (destTile->IsDense(uf::DirectionSet({ uf::InvertDirection(direction), uf::Direction::CENTER })))
+			return;
 	}
+
+	destTile->PlaceTo(this);
 }
 
 void Object::AddComponent(Component *new_component) {
