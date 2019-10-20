@@ -12,6 +12,8 @@
 namespace uf {
 
 class DirectionSet : public ICopyable {
+	using BufferType = std::bitset<uf::DIRECTION_PURE_COUNT>;
+
 public:
 	DirectionSet() { };
 	DirectionSet(std::list<Direction> directions);
@@ -32,11 +34,11 @@ public:
 
 	void Reset();
 
-	const std::bitset<5> &GetBuffer() const;
-	void SetBuffer(std::bitset<5> buffer);
+	const BufferType &GetBuffer() const;
+	void SetBuffer(BufferType buffer);
 
 private:
-	std::bitset<5> buffer;
+	BufferType buffer;
 };
 
 struct DirectionFractional {

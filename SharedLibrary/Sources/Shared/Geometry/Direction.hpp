@@ -16,8 +16,15 @@ enum class Direction : int {
 	NORTH_WEST,
 	NORTH_EAST,
 	SOUTH_EAST,
-	CENTER
+	TOP,
+	BOTTOM,
+	CENTER,
+	/// ...
+	Count
 };
+
+constexpr int DIRECTION_COMPOSITE_COUNT = static_cast<int>(Direction::SOUTH_EAST) - static_cast<int>(Direction::SOUTH_WEST) + 1;
+constexpr int DIRECTION_PURE_COUNT = static_cast<int>(Direction::Count) - DIRECTION_COMPOSITE_COUNT;
 
 Direction VectToDirection(vec2f);
 Direction VectToDirection(vec3f);
