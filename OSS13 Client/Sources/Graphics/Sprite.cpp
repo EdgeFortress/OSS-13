@@ -25,7 +25,7 @@ Sprite::Sprite(const SpriteInfo &recipe, Global::ItemSpriteState state) {
 	updateSpriteVariables();
 }
 
-void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos, sf::RenderStates rs) const {
+void Sprite::Draw(sf::RenderTarget *target, uf::vec2f pos, sf::RenderStates rs) const {
 	sfSprite.setPosition(pos + origin);
 	target->draw(sfSprite, rs);
 }

@@ -41,11 +41,12 @@ Tile::~Tile() {
 	}
 }
 
-void Tile::Draw(sf::RenderTarget *target, uf::vec2i screenPos) const {
-	if (sprite.IsValid()) sprite.Draw(target, screenPos);
+void Tile::Draw(sf::RenderTarget *target, uf::vec2f screenPos) const {
+	if (sprite.IsValid()) 
+		sprite.Draw(target, screenPos);
 }
 
-void Tile::DrawOverlay(sf::RenderTarget *target, uf::vec2i screenPos) const {
+void Tile::DrawOverlay(sf::RenderTarget *target, uf::vec2f screenPos) const {
 	overlay.setPosition(screenPos);
 	target->draw(overlay);
 }
