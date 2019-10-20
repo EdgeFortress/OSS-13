@@ -71,6 +71,11 @@ public:
 	std::unordered_map< uint, uptr<Object> > &GetObjects(); // TODO: remove this
 
 protected:
+	using LayerObjects = std::vector<Object *>;
+	std::vector<LayerObjects> drawAreaAndGatherObjectsByLayers() const;
+	void drawObjects(const std::vector<LayerObjects> &layers) const;
+	void drawOverlay() const;
+
 	void drawContainer() const override final;
 
 private:
@@ -95,8 +100,6 @@ private:
 
     uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
-
-    mutable std::vector< std::vector<Object *> > layersBuffer;
 
 	bool overlayToggled;
 

@@ -31,7 +31,7 @@ Object::~Object() {
     }
 }
 
-void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
+void Object::Draw(sf::RenderTarget *target, uf::vec2f pos) {
     TileGrid *tileGrid = tile->GetTileGrid();
     if (!tileGrid) {
         std::exception(); // Where is this tile!? 
