@@ -30,7 +30,7 @@ public:
     Object &operator=(Object &) = default;
     ~Object();
 
-	void Draw(sf::RenderTarget *target, uf::vec2f windowPos);
+	void Draw(sf::RenderTarget *target, uf::vec2f windowPos, float brightness = 1);
 	void Update(sf::Time timeElapsed);
     void Resize(uint tileSize);
 

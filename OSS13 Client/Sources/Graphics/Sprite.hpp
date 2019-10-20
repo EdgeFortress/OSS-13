@@ -12,7 +12,7 @@ public:
 	Sprite() = default;
 	Sprite(const SpriteInfo &recipe, Global::ItemSpriteState state);
 
-	void Draw(sf::RenderTarget *, uf::vec2f pos, sf::RenderStates rs = sf::RenderStates::Default) const;
+	void Draw(sf::RenderTarget *, uf::vec2f pos, float brightness = 1, sf::RenderStates rs = sf::RenderStates::Default) const;
 	// true if frame changed to the first
 	bool Update(sf::Time timeElapsed);
 	void Resize(int tileSize);
