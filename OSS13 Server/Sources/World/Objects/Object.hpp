@@ -108,6 +108,9 @@ public:
         uf::vec2i GetMoveIntent() const;
 	//
 
+	bool IsDrawAtTop() const;
+	void SetDrawAtTop(bool value);
+
 	bool IsFloor() const;
 	void SetIsFloor(bool value);
 
