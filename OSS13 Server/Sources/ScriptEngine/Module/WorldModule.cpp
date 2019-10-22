@@ -55,6 +55,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
 		.def_property("speed", &Object::GetSpeed, &Object::SetSpeed)
 		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
+		.def_property("drawAtTop", &Object::IsDrawAtTop, &Object::SetDrawAtTop)
 		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
 		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
 		.def("AddVerb", &Object::AddVerb)

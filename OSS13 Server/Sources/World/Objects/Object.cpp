@@ -332,6 +332,9 @@ uf::vec2i Object::GetMoveIntent() const {
 //    delta_shift += shift;
 //}
 
+bool Object::IsDrawAtTop() const { return drawAtTop; }
+void Object::SetDrawAtTop(bool value) { drawAtTop = value; }
+
 bool Object::IsFloor() const { return isFloor; }
 void Object::SetIsFloor(bool value) { isFloor = value; }
 

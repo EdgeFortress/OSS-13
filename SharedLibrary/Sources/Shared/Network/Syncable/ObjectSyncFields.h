@@ -12,12 +12,14 @@ protected:
 	uf::SyncField<std::string> name;
 	uf::SyncField<uf::Direction> direction;
 	uf::SyncField<uf::DirectionSet> solidity;
+	uf::SyncField<bool> drawAtTop;
 
 public:
 	ObjectSyncFields() { 
 		DECLARE_SYNCABLE_FIELD(&ObjectSyncFields::name);
 		DECLARE_SYNCABLE_FIELD(&ObjectSyncFields::direction);
 		DECLARE_SYNCABLE_FIELD(&ObjectSyncFields::solidity);
+		DECLARE_SYNCABLE_FIELD(&ObjectSyncFields::drawAtTop);
 	};
 DEFINE_SYNCABLE_END 
 

@@ -189,6 +189,10 @@ class Object(eObject):
 	moveSpeed: float
 		moving speed. If object can move, it will move with this speed
 
+	drawAtTop: bool
+		should the object be drawn as ceiling
+		if true, then object will not be drawn on its z-level, but will be drawn when camera is above
+
 	isWall: bool
 		True if object is wall. Used for atmosphere subsystem
 
@@ -412,6 +416,13 @@ class Object(eObject):
 	@rotatable.setter
 	def rotatable(self, value: bool):
 		self.__rotatable = value
+
+	@property
+	def drawAtTop(self) -> bool:
+		return super().drawAtTop
+	@drawAtTop.setter
+	def drawAtTop(self, value: bool):
+		super(Object, self.__class__).drawAtTop.fset(self, value)
 
 	@property
 	def isFloor(self) -> bool:
