@@ -53,6 +53,11 @@
             "sprite": "reinforced_window",
             "frames": 1,
             "directed": "pure"
+        },
+        {
+            "sprite": "ceiling",
+            "frames": 1,
+            "directed": false
         }
     ]
 }
