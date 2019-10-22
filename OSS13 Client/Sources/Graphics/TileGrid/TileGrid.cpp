@@ -65,8 +65,9 @@ void TileGrid::drawArea() const {
 	}
 }
 
-std::vector<TileGrid::LayerObjects> TileGrid::gatherZLevelObjectsByLayers(int zLevel) const {
-	std::vector<TileGrid::LayerObjects> layers(101);
+void TileGrid::gatherZLevelObjectsByLayers(int zLevel, TileGrid::ZLevelContent &zLevelContent) const {
+	zLevelContent.layers.resize(101);
+	zLevelContent.topLayers.resize(101);
 
 	const int border = fov + Global::tilegrid::MIN_PADDING;
 
@@ -74,24 +75,28 @@ std::vector<TileGrid::LayerObjects> TileGrid::gatherZLevelObjectsByLayers(int zL
 	for (tilePos.y = -border; tilePos.y <= border; tilePos.y++) {
 		for (tilePos.x = -border; tilePos.x <= border; tilePos.x++) {
 			Tile *tile = GetTileAbs(cameraPos + rpos(tilePos, zLevel));
-			if (tile) {
-				for (auto &obj : tile->content) {
-					uint layer = obj->GetLayer();
-					if (layer > 0 && layer <= 100)
-						layers[layer].push_back(obj); // if layer is 0, then object will not be drawn
-				}
+
+			if (!tile) continue;
+
+			for (auto &obj : tile->content) {
+				uint layer = obj->GetLayer();
+
+				if (layer <= 0 || layer > 100) // if layer is 0, then object will not be drawn
+					continue;
+
+				auto &specificLayers = !obj->IsDrawAtTop() ? zLevelContent.layers : zLevelContent.topLayers;
+				specificLayers[layer].content.push_back(obj);
 			}
 		}
 	}
-
-	return layers;
 }
 
-void TileGrid::drawZLevelObjects(const std::vector<TileGrid::LayerObjects> &layers, float brightness, bool updateCursor) const {
-	underCursorObject = nullptr;
+void TileGrid::drawZLevelObjects(const TileGrid::ZLevelContent &zLevelContent, float brightness, bool updateCursor) const {
+	if (updateCursor)
+		underCursorObject = nullptr;
 
-	for (auto &layerObjects : layers) {
-		for (auto &object : layerObjects) {
+	for (auto &layer : zLevelContent.layers) {
+		for (auto &object : layer.content) {
 			auto objectPos = static_cast<uf::vec3i>(object->GetTile()->GetRelPos());
 			uf::vec2f pixel = (uf::vec2i(fov) + rpos(objectPos - static_cast<uf::vec3i>(cameraRelPos)).xy() - shift) * tileSize;
 
@@ -110,11 +115,17 @@ void TileGrid::drawZLevelObjects(const std::vector<TileGrid::LayerObjects> &laye
 void TileGrid::drawObjects() const {
 	std::list<int> zLevelsBrightness = Global::tilegrid::Z_LEVELS_BRIGHTNESS;
 
+	TileGrid::ZLevelContent zLevelContent;
+
 	auto zLevel = cameraZ - static_cast<int>(zLevelsBrightness.size()) + 1;
 	for (auto brightness = zLevelsBrightness.rbegin(); brightness != zLevelsBrightness.rend(); brightness++, zLevel++) {
-		auto objectsByLayers = gatherZLevelObjectsByLayers(zLevel);
+		gatherZLevelObjectsByLayers(zLevel, zLevelContent);
+
 		bool updateCursor = zLevel == cameraZ;
-		drawZLevelObjects(objectsByLayers, *brightness / 100.f, updateCursor);
+		drawZLevelObjects(zLevelContent, *brightness / 100.f, updateCursor);
+
+		zLevelContent.layers = std::move(zLevelContent.topLayers);
+		zLevelContent.topLayers.clear();
 	}
 }
 

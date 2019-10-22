@@ -148,3 +148,4 @@ sf::Vector2f Object::GetShift() const { return shift; }
 sf::Vector2i Object::GetMoveIntent() const { return moveIntent; }
 bool Object::IsDense() const { return density; }
 uf::DirectionSet Object::GetSolidity() const { return solidity; }
+bool Object::IsDrawAtTop() const { return drawAtTop; }

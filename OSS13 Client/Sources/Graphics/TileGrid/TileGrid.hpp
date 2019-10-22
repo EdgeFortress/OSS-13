@@ -71,11 +71,16 @@ public:
 	std::unordered_map< uint, uptr<Object> > &GetObjects(); // TODO: remove this
 
 protected:
-	using LayerObjects = std::vector<Object *>;
+	struct ZLevelContent {
+		struct Layer { std::vector<Object *> content; };
+
+		std::vector<Layer> layers;
+		std::vector<Layer> topLayers;
+	};
 
 	void drawArea() const;
-	std::vector<LayerObjects> gatherZLevelObjectsByLayers(int zLevel) const;
-	void drawZLevelObjects(const std::vector<LayerObjects> &layers, float brightness, bool updateCursor) const;
+	void gatherZLevelObjectsByLayers(int zLevel, TileGrid::ZLevelContent &zLevelContent) const;
+	void drawZLevelObjects(const ZLevelContent &layers, float brightness, bool updateCursor) const;
 	void drawObjects() const;
 	void drawOverlay() const;
 

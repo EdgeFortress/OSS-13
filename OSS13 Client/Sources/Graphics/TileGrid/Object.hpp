@@ -58,6 +58,7 @@ public:
 	//sf::Vector2i GetShiftingDirection() const;
 	bool IsDense() const;
 	uf::DirectionSet GetSolidity() const;
+	bool IsDrawAtTop() const;
 
 	friend Tile;
 
