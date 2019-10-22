@@ -74,6 +74,9 @@
     <Compile Include="Objects\Turfs\Airlock.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Objects\Turfs\Ceiling.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Objects\Turfs\Floor.py">
       <SubType>Code</SubType>
     </Compile>
