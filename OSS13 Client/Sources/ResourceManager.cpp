@@ -115,7 +115,7 @@ void ResourceManager::generateSprites(
 		if (rhandState_texture)
 			spriteInfo.rhandState_firstFrame = rhandState_firstFrame;
 
-		firstFrame += spriteInfo.frames * (int(spriteInfo.directed) * 3 + 1);
+		firstFrame += spriteInfo.frames * (int(spriteInfo.directed && !spriteInfo.pureDirections) * 3 + 1);
 		if (mobState_texture)
 			mobState_firstFrame += 4;
 		if (lhandState_texture)
