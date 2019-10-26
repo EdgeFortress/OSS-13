@@ -68,5 +68,10 @@ PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
 		.def("Reset", &uf::DirectionSet::Reset);
 
 	py::class_<uf::DirectionSetFractional>(m, "eDirectionSetFractional")
-		.def("Add", &uf::DirectionSetFractional::Add);
+		.def(py::init<>())
+		.def("Set", (void (uf::DirectionSetFractional::*)(const std::list<uf::DirectionFractional> &fractDirections)) &uf::DirectionSetFractional::Set)
+		.def("Remove", (void (uf::DirectionSetFractional::*)(const std::list<uf::Direction> &fractDirections)) &uf::DirectionSetFractional::Remove)
+		.def("GetFraction", &uf::DirectionSetFractional::GetFraction)
+		.def("GetCumulativeFraction", &uf::DirectionSetFractional::GetCumulativeFraction)
+		.def("Reset", &uf::DirectionSetFractional::Reset);
 }
