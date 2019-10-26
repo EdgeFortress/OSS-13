@@ -12,8 +12,8 @@
 
 Camera::Camera(const Tile * const tile)
 {
-	fov = Global::FOV;
-	fovZ = Global::Z_FOV;
+	fov = Global::tilegrid::FOV;
+	fovZ = Global::tilegrid::Z_FOV;
 	int side = getVisibleAreaSide();
 	int height = getVisibleAreaHeight();
 
@@ -290,7 +290,7 @@ void Camera::ResetOverlay() {
 }
 
 int Camera::getVisibleAreaSide() {
-	return fov * 2 + 1 + 2 * Global::MIN_PADDING;
+	return fov * 2 + 1 + 2 * Global::tilegrid::MIN_PADDING;
 }
 
 int Camera::getVisibleAreaHeight() {
@@ -302,7 +302,7 @@ uf::vec3i Camera::getVisibleAreaDimensions() {
 }
 
 uf::vec3i Camera::getFirstTilePos() {
-	return tile->GetPos() - uf::vec3i(fov + Global::MIN_PADDING, fov + Global::MIN_PADDING, fovZ);
+	return tile->GetPos() - uf::vec3i(fov + Global::tilegrid::MIN_PADDING, fov + Global::tilegrid::MIN_PADDING, fovZ);
 }
 
 void Camera::fullRecountVisibleBlocks() {
@@ -337,7 +337,7 @@ void Camera::refreshVisibleBlocks() {
 }
 
 void Camera::updateFOV() {
-	int diff = (visibleTiles.GetSize().x - Global::MIN_PADDING) / 2 - fov;
+	int diff = (visibleTiles.GetSize().x - Global::tilegrid::MIN_PADDING) / 2 - fov;
 	int diff_z = visibleTiles.GetSize().z / 2 - fovZ;
 
 	uf::GridTransformation transformation;

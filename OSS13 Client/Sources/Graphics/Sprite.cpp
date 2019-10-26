@@ -25,8 +25,10 @@ Sprite::Sprite(const SpriteInfo &recipe, Global::ItemSpriteState state) {
 	updateSpriteVariables();
 }
 
-void Sprite::Draw(sf::RenderTarget *target, uf::vec2i pos, sf::RenderStates rs) const {
+void Sprite::Draw(sf::RenderTarget *target, uf::vec2f pos, float brightness, sf::RenderStates rs) const {
 	sfSprite.setPosition(pos + origin);
+	auto absoluteBrightness = static_cast<int>(255 * brightness);
+	sfSprite.setColor(sf::Color(absoluteBrightness, absoluteBrightness, absoluteBrightness));
 	target->draw(sfSprite, rs);
 }
 

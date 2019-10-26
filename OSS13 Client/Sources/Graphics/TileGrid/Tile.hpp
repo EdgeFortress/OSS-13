@@ -20,13 +20,13 @@ namespace sf {
 class Tile : public INonCopyable {
 public:
 	explicit Tile(TileGrid *tileGrid);
-	Tile(TileGrid *tileGrid, const network::protocol::TileInfo &tileInfo);
+	Tile(TileGrid *tileGrid, network::protocol::TileInfo &&tileInfo);
 	Tile(Tile &&) = default;
 	Tile &operator=(Tile &&) = default;
 	~Tile();
 
-	void Draw(sf::RenderTarget *, uf::vec2i windowPos) const;
-	void DrawOverlay(sf::RenderTarget *, uf::vec2i windowPos) const;
+	void Draw(sf::RenderTarget *, uf::vec2f windowPos) const;
+	void DrawOverlay(sf::RenderTarget *, uf::vec2f windowPos) const;
 	void Update(sf::Time timeElapsed);
     void Resize(uint tileSize);
 

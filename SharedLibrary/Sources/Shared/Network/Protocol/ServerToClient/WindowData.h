@@ -13,7 +13,7 @@ DEFINE_SERIALIZABLE(WindowData, uf::ISerializable)
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
 
-		if (ar.IsOutput()) {
+		if (ar.GetMode() == uf::Archive::Mode::Output) {
 			sf::Int32 size;
 			ar >> size;
 			for (int i = 0; i < size; i++)

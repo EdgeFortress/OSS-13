@@ -74,6 +74,10 @@ Direction InvertDirection(Direction direction) {
 			return Direction::SOUTH_WEST;
 		case Direction::SOUTH_EAST:
 			return Direction::NORTH_WEST;
+		case Direction::TOP:
+			return Direction::BOTTOM;
+		case Direction::BOTTOM:
+			return Direction::TOP;
 		default:
 			return direction;
 	}

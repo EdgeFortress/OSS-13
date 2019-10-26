@@ -10,6 +10,7 @@
 
 #include <Shared/Types.hpp>
 #include <Shared/Network/Protocol/ServerToClient/OverlayInfo.h>
+#include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
 #include <Shared/Grid.hpp>
 
@@ -40,12 +41,12 @@ public:
 		// Differences commiting
 		void AddObject(Object *object);
 		void RemoveObject(uint id);
+		void AmendObjectChanges(network::protocol::FieldsDiff &&diff);
 		void RelocateObject(uint id, apos toVec, int toObjectNum);
 		void SetMoveIntentObject(uint id, uf::Direction direction);
 		void MoveObject(uint id, uf::Direction direction, float speed);
 		void UpdateObjectIcons(uint id, const std::vector<uint32_t> &icons);
 		void PlayAnimation(uint id, uint animation_id);
-		void ChangeObjectDirection(uint id, uf::Direction direction);
 		void Stunned(uint id, sf::Time duration);
 
 		void ShiftBlocks(apos newFirst);
@@ -70,6 +71,19 @@ public:
 	std::unordered_map< uint, uptr<Object> > &GetObjects(); // TODO: remove this
 
 protected:
+	struct ZLevelContent {
+		struct Layer { std::vector<Object *> content; };
+
+		std::vector<Layer> layers;
+		std::vector<Layer> topLayers;
+	};
+
+	void drawArea() const;
+	void gatherZLevelObjectsByLayers(int zLevel, TileGrid::ZLevelContent &zLevelContent) const;
+	void drawZLevelObjects(const ZLevelContent &layers, float brightness, bool updateCursor) const;
+	void drawObjects() const;
+	void drawOverlay() const;
+
 	void drawContainer() const override final;
 
 private:
@@ -94,8 +108,6 @@ private:
 
     uf::Grid< sptr<Tile> > blocks;
     std::unordered_map< uint, uptr<Object> > objects;
-
-    mutable std::vector< std::vector<Object *> > layersBuffer;
 
 	bool overlayToggled;
 

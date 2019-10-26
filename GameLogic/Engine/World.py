@@ -129,37 +129,7 @@ class Tile(eTile):
 		return self._impl.GetDenseObject(directions._impl)
 
 
-class VerbsHolder(eVerbsHolder):
-	"""
-	Inheritance from this class allow to define special actions without
-	arguments which can be called with command from console
-
-	VerbsHolder is registrated with unique name, so player can call it's verbs.
-
-	For example, class Player registrated with name "Player".
-	So player's verb "Drop" can be called with next command: "Player.Drop"
-
-	Methods
-	-------
-	AddVerb(name: str, action: Callable[[Player], None])
-		add new verb
-
-		Parametres
-		----------
-		name: str
-			verb's key. Use name to call verb from console
-
-	"""
-
-	def __init__(self, impl):
-		self._impl = impl
-
-	def AddVerb(self, name: str, action: Callable[[Engine.Server.Player], None]):
-		wrapper = lambda player: action(Engine.Server.Player(player))
-		eVerbsHolder.AddVerb(self._impl, name, wrapper)
-
-
-class Object(eObject, VerbsHolder):
+class Object(eObject):
 	"""
 	Any game object
 
@@ -222,6 +192,10 @@ class Object(eObject, VerbsHolder):
 
 	moveSpeed: float
 		moving speed. If object can move, it will move with this speed
+
+	drawAtTop: bool
+		should the object be drawn as ceiling
+		if true, then object will not be drawn on its z-level, but will be drawn when camera is above
 
 	isWall: bool
 		True if object is wall. Used for atmosphere subsystem
@@ -317,6 +291,14 @@ class Object(eObject, VerbsHolder):
 
 		Note: "animation" is animated sprite. Thus "id" is sprite id.
 
+	AddVerb(name: str, action: Callable[[Player], None])
+		add new verb
+
+		Parametres
+		----------
+		name: str
+			verb's key. Use name to call verb from console
+
 	Delete(self):
 		delete object
 
@@ -347,7 +329,6 @@ class Object(eObject, VerbsHolder):
 
 	def __init__(self):
 		eObject.__init__(self)
-		VerbsHolder.__init__(self, self)
 		self.name = str(self.defName)
 		self.sprite = str(self.defSprite)
 		self.description = str(self.defDescription)
@@ -441,6 +422,13 @@ class Object(eObject, VerbsHolder):
 		self.__rotatable = value
 
 	@property
+	def drawAtTop(self) -> bool:
+		return super().drawAtTop
+	@drawAtTop.setter
+	def drawAtTop(self, value: bool):
+		super(Object, self.__class__).drawAtTop.fset(self, value)
+
+	@property
 	def isFloor(self) -> bool:
 		return super().isFloor
 	@isFloor.setter
@@ -493,6 +481,10 @@ class Object(eObject, VerbsHolder):
 
 	def PlayAnimation(self, id: str, callback: Callable[[], None] = None) -> bool:
 		return super().PlayAnimation(id, callback)
+
+	def AddVerb(self, name: str, action: Callable[[Engine.Server.Player], None]):
+		wrapper = lambda player: action(Engine.Server.Player(player))
+		super().AddVerb(name, wrapper)
 
 	def Delete(self):
 		super().Delete()

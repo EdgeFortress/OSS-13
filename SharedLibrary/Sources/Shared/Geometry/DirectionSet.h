@@ -6,19 +6,17 @@
 #include <list>
 
 #include <Shared/ErrorHandling.h>
+#include <Shared/IFaces/ICopyable.h>
 #include <Shared/Geometry/Direction.hpp>
 
 namespace uf {
 
-class DirectionSet {
-public:
-	DirectionSet() = default;
-	DirectionSet(std::list<Direction> directions);
+class DirectionSet : public ICopyable {
+	using BufferType = std::bitset<uf::DIRECTION_PURE_COUNT>;
 
-	DirectionSet(const DirectionSet &) = default;
-	DirectionSet(DirectionSet &&) = default;
-	DirectionSet &operator=(const DirectionSet &) = default;
-	DirectionSet &operator=(DirectionSet &&) = default;
+public:
+	DirectionSet() { };
+	DirectionSet(std::list<Direction> directions);
 
 	void Add(DirectionSet directions);
 	void Add(const std::list<Direction> &directions);
@@ -32,13 +30,15 @@ public:
 	bool DoExistAll(DirectionSet directions) const;
 	bool DoExistAll(const std::list<Direction> &directions) const;
 
+	DirectionSet Rotate(Direction direction) const;
+
 	void Reset();
 
-	const std::bitset<5> &GetBuffer() const;
-	void SetBuffer(std::bitset<5> buffer);
+	const BufferType &GetBuffer() const;
+	void SetBuffer(BufferType buffer);
 
 private:
-	std::bitset<5> buffer;
+	BufferType buffer;
 };
 
 struct DirectionFractional {

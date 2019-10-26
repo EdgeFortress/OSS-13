@@ -10,6 +10,7 @@
 #include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Global.hpp>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 
 class Sprite;
 class Tile;
@@ -22,14 +23,14 @@ namespace sf {
 
 #include "iostream"
 
-class Object {
+class Object : public network::sync::ObjectSyncFields {
 public:
-	explicit Object(const network::protocol::ObjectInfo &objectInfo);
+	explicit Object(network::protocol::ObjectInfo &&objectInfo);
 
     Object &operator=(Object &) = default;
     ~Object();
 
-	void Draw(sf::RenderTarget *, uf::vec2i windowPos);
+	void Draw(sf::RenderTarget *target, uf::vec2f windowPos, float brightness = 1);
 	void Update(sf::Time timeElapsed);
     void Resize(uint tileSize);
 
@@ -57,20 +58,18 @@ public:
 	//sf::Vector2i GetShiftingDirection() const;
 	bool IsDense() const;
 	uf::DirectionSet GetSolidity() const;
+	bool IsDrawAtTop() const;
 
 	friend Tile;
 
 private:
 	uint id{};
-    std::string name;
 	std::vector<::Sprite> sprites;
     ::Sprite animation;
 	bool animationProcess{};
-	uf::Direction direction{uf::Direction::NONE};
 	uint layer{};
 
 	bool density{};
-	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 
     uf::vec2f shift;

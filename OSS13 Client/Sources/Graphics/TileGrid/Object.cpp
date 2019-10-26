@@ -10,17 +10,16 @@
 #include <Graphics/Sprite.hpp>
 #include <Graphics/TileGrid/TileGrid.hpp>
 
-Object::Object(const network::protocol::ObjectInfo &objectInfo) {
+Object::Object(network::protocol::ObjectInfo &&objectInfo) {
 	for (auto &sprite : objectInfo.spriteIds) {
 		AddSprite(uint(sprite));
 	}
 
+	static_cast<network::sync::ObjectSyncFields &>(*this) = std::move(objectInfo.fields);
+
 	id = objectInfo.id;
-	name = objectInfo.name;
 	layer = objectInfo.layer;
-	direction = objectInfo.direction;
 	density = objectInfo.density;
-	solidity = objectInfo.solidity;
 	opacity = objectInfo.opacity;
 	moveSpeed = objectInfo.moveSpeed;
 	speed = objectInfo.speed;
@@ -32,22 +31,29 @@ Object::~Object() {
     }
 }
 
-void Object::Draw(sf::RenderTarget *target, uf::vec2i pos) {
+void Object::Draw(sf::RenderTarget *target, uf::vec2f pos, float brightness) {
     TileGrid *tileGrid = tile->GetTileGrid();
     if (!tileGrid) {
         std::exception(); // Where is this tile!? 
     }
     uint tileSize = tileGrid->GetTileSize();
     if (animationProcess) {
-        animation.Draw(target, pos + shift * tileSize);
+        animation.Draw(target, pos + shift * tileSize, brightness);
     } else {
 		for (auto &sprite : sprites) {
-			if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize);
+			if (sprite.IsValid()) sprite.Draw(target, pos + shift * tileSize, brightness);
 		}
     }
 }
 
 void Object::Update(sf::Time timeElapsed) {
+	if (direction.PopChangedState()) {
+		for (auto &sprite : sprites) {
+			if (sprite.IsValid()) sprite.SetDirection(direction);
+		}
+		if (animation.IsValid()) animation.SetDirection(direction);
+	}
+
     // Movement
 
 	uf::vec2f deltaShift = uf::phys::countDeltaShift(timeElapsed, shift, moveSpeed, moveIntent, speed);
@@ -94,13 +100,8 @@ void Object::PlayAnimation(uint id) {
 void Object::SetDirection(const uf::Direction newdirection) {
 	if (newdirection == uf::Direction::NONE)
 		return;
-
-    // cut the diagonal directions
+	// cut the diagonal directions
 	direction = uf::Direction(char(newdirection) % 4);
-	for (auto &sprite : sprites) {
-		if (sprite.IsValid()) sprite.SetDirection(direction);
-	}
-    if (animation.IsValid()) animation.SetDirection(direction);
 }
 
 void Object::SetMoveSpeed(float moveSpeed) {
@@ -147,3 +148,4 @@ sf::Vector2f Object::GetShift() const { return shift; }
 sf::Vector2i Object::GetMoveIntent() const { return moveIntent; }
 bool Object::IsDense() const { return density; }
 uf::DirectionSet Object::GetSolidity() const { return solidity; }
+bool Object::IsDrawAtTop() const { return drawAtTop; }

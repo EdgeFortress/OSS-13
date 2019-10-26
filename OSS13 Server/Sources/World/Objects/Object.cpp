@@ -16,8 +16,7 @@
 Object::Object() :
     movable(true),
 	spriteState(Global::ItemSpriteState::DEFAULT),
-    layer(0), 
-    direction(uf::Direction::NONE),
+    layer(0),
     tile(nullptr),
 	holder(nullptr),
     moveSpeed(0)
@@ -116,6 +115,27 @@ void Object::Move(uf::vec2i order) {
 	}
 }
 
+void Object::MoveZ(int order) {
+	if (!order) {
+		return;
+	}
+	Tile *tile = GetTile();
+	Tile *destTile = tile->GetMap()->GetTile(tile->GetPos() + rpos(0, 0, order));
+
+	if (!destTile)
+		return;
+
+	if (density) {
+		auto direction = order > 0 ? uf::Direction::TOP : uf::Direction::BOTTOM;
+		if (tile->IsDense(uf::DirectionSet({ direction })))
+			return;
+		if (destTile->IsDense(uf::DirectionSet({ uf::InvertDirection(direction), uf::Direction::CENTER })))
+			return;
+	}
+
+	destTile->PlaceTo(this);
+}
+
 void Object::AddComponent(Component *new_component) {
 	if (!new_component) return;
 	new_component->SetOwner(this);
@@ -144,8 +164,12 @@ void Object::AddObject(Object *obj) {
 	if (obj->GetHolder()) {
         if (!obj->GetHolder()->RemoveObject(obj))
             return;
-    } else if (obj->GetTile())
+    } else if (obj->GetTile()) {
 		obj->GetTile()->RemoveObject(obj);
+	} else {
+		obj->ResetChanges();
+	}
+	
 
 	content.push_back(obj);
 	obj->holder = this;
@@ -155,16 +179,23 @@ void Object::AddObject(Object *obj) {
 }
 
 bool Object::RemoveObject(Object *obj) {
-    for (auto iter = content.begin(); iter != content.end(); iter++) {
-        if (*iter == obj) {
-            obj->setTile(nullptr);
-            obj->holder = nullptr;
-            content.erase(iter);
+	for (auto iter = content.begin(); iter != content.end(); iter++) {
+		if (*iter == obj) {
+			if (obj->IsChanged()) {
+				auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
+				fieldsDiff->objId = obj->ID();
+				fieldsDiff->fieldsChanges = obj->PopChanges();
+				GetTile()->AddDiff(std::move(fieldsDiff), obj);
+			}
+
+			obj->setTile(nullptr);
+			obj->holder = nullptr;
+			content.erase(iter);
 			askToUpdateIcons();
-            return true;
-        }
-    }
-    return false;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Object::Delete() {
@@ -190,12 +221,6 @@ void Object::SetDirection(uf::Direction direction) {
 	if (direction > uf::Direction::EAST)
 		direction = uf::Direction(char(direction) % 4);
 	this->direction = direction;
-	if (tile) {
-		auto changeDirectionDiff = std::make_shared<network::protocol::ChangeDirectionDiff>();
-		changeDirectionDiff->objId = ID();
-		changeDirectionDiff->direction = direction;
-		tile->AddDiff(std::move(changeDirectionDiff), this);
-	}
 }
 uf::Direction Object::GetDirection() { return direction; }
 
@@ -223,7 +248,7 @@ bool Object::GetDensity() const { return density; }
 void Object::SetDensity(bool density) { this->density = density; }
 
 void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
-const uf::DirectionSet &Object::GetSolidity() const { return solidity; }
+uf::DirectionSet Object::GetSolidity() const { return solidity; }
 
 void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
 const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; }
@@ -307,6 +332,9 @@ uf::vec2i Object::GetMoveIntent() const {
 //    delta_shift += shift;
 //}
 
+bool Object::IsDrawAtTop() const { return drawAtTop; }
+void Object::SetDrawAtTop(bool value) { drawAtTop = value; }
+
 bool Object::IsFloor() const { return isFloor; }
 void Object::SetIsFloor(bool value) { isFloor = value; }
 
@@ -316,11 +344,9 @@ void Object::SetIsWall(bool value) { isWall = value; }
 network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	network::protocol::ObjectInfo objectInfo;
 	objectInfo.id = id;
-	objectInfo.name = name;
+	objectInfo.fields = *this;
 	objectInfo.layer = layer;
-	objectInfo.direction = direction;
 	objectInfo.density = density;
-	objectInfo.solidity = solidity;
 	objectInfo.opacity = opacity;
 	objectInfo.moveSpeed = moveSpeed;
 	objectInfo.speed = speed;

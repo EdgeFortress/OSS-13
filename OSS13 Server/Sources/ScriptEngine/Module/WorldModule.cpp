@@ -38,12 +38,9 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 
-	py::class_<VerbsHolder> verbsHolder(m, "eVerbsHolder");
-	verbsHolder.def("AddVerb", &VerbsHolder::AddVerb);
-
 	m.def("eCreateObject", &CreateObject);
 
-	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "eObject", verbsHolder)
+	py::class_<Object, se::PyObject, PyObjectPtr<Object>>(m, "eObject", py::multiple_inheritance())
 		.def(py::init<>())
 		.def_property("name", &Object::GetName, &Object::SetName)
 		.def_property("sprite", &Object::GetSprite, &Object::SetSprite)
@@ -58,8 +55,10 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("position", &Object::GetPosition, &Object::SetPosition)
 		.def_property("speed", &Object::GetSpeed, &Object::SetSpeed)
 		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
+		.def_property("drawAtTop", &Object::IsDrawAtTop, &Object::SetDrawAtTop)
 		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
 		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
+		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)
 		.def("IsCloseTo", &Object::IsCloseTo)

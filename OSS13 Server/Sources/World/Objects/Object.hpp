@@ -14,12 +14,13 @@
 #include <Shared/Timer.h>
 #include <Shared/IFaces/INonCopyable.h>
 #include <Shared/Geometry/DirectionSet.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 class ObjectHolder;
 class Tile;
 
-class Object : public VerbsHolder, public INonCopyable {
+class Object : public network::sync::ObjectSyncFields, public VerbsHolder, public INonCopyable {
 	friend ObjectHolder;
 	friend Tile;
 
@@ -33,7 +34,7 @@ public:
 	virtual bool BumpedTo(Object *) = 0;
 
 	virtual void Move(uf::vec2i order);
-	virtual void MoveZ(int /*order*/) {};
+	virtual void MoveZ(int order);
 
 	void AddComponent(Component *);
 	void AddComponent(const std::string &componentId);
@@ -43,7 +44,6 @@ public:
 
 	void AddObject(Object *);
 	virtual bool RemoveObject(Object *);
-    void SetConstSpeed(uf::vec2f speed);
     virtual void Delete();
 
     uint ID() const;
@@ -68,7 +68,7 @@ public:
 	bool GetDensity() const;
 
 	void SetSolidity(uf::DirectionSet directions);
-	const uf::DirectionSet &GetSolidity() const;
+	uf::DirectionSet GetSolidity() const;
 
 	void SetOpacity(uf::DirectionSetFractional fractionalDirections);
 	const uf::DirectionSetFractional &GetOpacity() const;
@@ -108,6 +108,9 @@ public:
         uf::vec2i GetMoveIntent() const;
 	//
 
+	bool IsDrawAtTop() const;
+	void SetDrawAtTop(bool value);
+
 	bool IsFloor() const;
 	void SetIsFloor(bool value);
 
@@ -128,17 +131,14 @@ private:
 	void setTile(Tile *);
 
 protected:
-    std::string name;
     bool movable;
     std::string sprite;
 	Global::ItemSpriteState spriteState; // TODO: move it to Item? Also there is need to reimplement packing???
 	uf::Timer animationTimer;
     // Object layer 0-100. The smaller layer is lower.
     uint layer;
-    uf::Direction direction;
 
 	bool density{false}; // object can't pass through solid objects
-	uf::DirectionSet solidity;
 	uf::DirectionSetFractional opacity;
 	uf::DirectionSetFractional airtightness;
 

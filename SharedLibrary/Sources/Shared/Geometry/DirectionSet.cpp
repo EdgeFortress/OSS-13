@@ -2,11 +2,24 @@
 
 namespace uf {
 
-constexpr size_t directionToIndex(Direction direction) {
-	if (direction == Direction::CENTER)
-		return 4;
-	EXPECT(char(direction) < 5);
-	return char(direction);
+constexpr size_t index(Direction direction) {
+	switch (direction) {
+		case Direction::SOUTH:
+		case Direction::WEST:
+		case Direction::NORTH:
+		case Direction::EAST:
+			return static_cast<size_t>(direction);
+
+		case Direction::TOP:
+		case Direction::BOTTOM:
+		case Direction::CENTER:
+			return static_cast<size_t>(direction) - DIRECTION_COMPOSITE_COUNT;
+
+		default:
+			break;
+	}
+
+	EXPECT_WITH_MSG(false, "Wrong direction received: " + std::to_string(static_cast<int>(direction)));
 }
 
 DirectionSet::DirectionSet(std::list<Direction> directions) {
@@ -23,10 +36,10 @@ void DirectionSet::Add(const std::list<Direction> &directions) {
 			continue;
 		Direction first, second;
 		if (SplitDirection(direction, first, second)) {
-			buffer[directionToIndex(first)] = true;
-			buffer[directionToIndex(second)] = true;
+			buffer[index(first)] = true;
+			buffer[index(second)] = true;
 		} else {
-			buffer[directionToIndex(direction)] = true;
+			buffer[index(direction)] = true;
 		}
 	}
 }
@@ -55,12 +68,36 @@ bool DirectionSet::DoExistAll(const std::list<Direction> &directions) const {
 	return DoExistAll(DirectionSet(directions));
 }
 
+DirectionSet DirectionSet::Rotate(Direction direction) const {
+	size_t shift;
+	switch (direction) {
+		case Direction::WEST:
+			shift = 1;
+			break;
+		case Direction::NORTH:
+			shift = 2;
+			break;
+		case Direction::EAST:
+			shift = 3;
+			break;
+		default:
+			return *this;
+	}
+
+	DirectionSet result = *this;
+
+	for (size_t i = 0; i < 4; i++)
+		result.buffer[(i + shift) % 4] = buffer[i];
+
+	return result;
+}
+
 void DirectionSet::Reset() {
 	buffer.reset();
 }
 
-const std::bitset<5> &DirectionSet::GetBuffer() const { return buffer; }
-void DirectionSet::SetBuffer(std::bitset<5> buffer) { this->buffer = buffer; }
+const DirectionSet::BufferType &DirectionSet::GetBuffer() const { return buffer; }
+void DirectionSet::SetBuffer(DirectionSet::BufferType buffer) { this->buffer = buffer; }
 
 
 
@@ -71,21 +108,21 @@ DirectionSetFractional::DirectionSetFractional(std::initializer_list<DirectionFr
 
 void DirectionSetFractional::Add(std::initializer_list<DirectionFractional> fractDirections) {
 	for (auto fractDirection : fractDirections) {
-		fractions[directionToIndex(fractDirection.direction)] = fractDirection.fraction;
+		fractions[index(fractDirection.direction)] = fractDirection.fraction;
 	}
 }
 
 void DirectionSetFractional::Remove(std::initializer_list<Direction> directions) {
 	for (auto direction : directions) {
-		fractions[directionToIndex(direction)] = 0.f;
+		fractions[index(direction)] = 0.f;
 	}
 }
 
 double DirectionSetFractional::GetMaxFraction(std::initializer_list<Direction> directions) const {
 	float max = 0.f;
 	for (auto direction : directions) {
-		if (max < fractions[directionToIndex(direction)])
-			max = fractions[directionToIndex(direction)];
+		if (max < fractions[index(direction)])
+			max = fractions[index(direction)];
 	}
 	return max;
 }

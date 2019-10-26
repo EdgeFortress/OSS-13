@@ -3,6 +3,7 @@
 #include <Shared/Network/ISerializable.h>
 #include <Shared/Network/Archive.h>
 #include <Shared/Network/ArchiveConverters.h>
+#include <Shared/Network/Syncable/ObjectSyncFields.h>
 #include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Types.hpp>
 
@@ -28,7 +29,7 @@ DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 	uint32_t id;
-	std::string name;
+	sync::ObjectSyncFields fields;
 	std::vector<uint32_t> spriteIds;
 	uint32_t layer;
 	uf::Direction direction;
@@ -42,7 +43,7 @@ DEFINE_SERIALIZABLE(ObjectInfo, uf::ISerializable)
 	void Serialize(uf::Archive &ar) override {
 		uf::ISerializable::Serialize(ar);
 		ar & id;
-		ar & name;
+		ar & fields;
 		ar & spriteIds;
 		ar & layer;
 		ar & direction;

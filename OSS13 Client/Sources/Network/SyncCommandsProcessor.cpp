@@ -28,7 +28,7 @@ void SyncCommandsProcessor::ProcessCommand(network::protocol::Command &generalCo
 	_REGISTRATE_COMMAND_PROCESSOR(UpdateWindowCommand);
 	_REGISTRATE_COMMAND_PROCESSOR(AddChatMessageCommand);
 
-	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.Id() << ") was not processed!";
+	LOGE << __FUNCTION__ << ": unknown command (ser id is 0x" << std::hex << generalCommand.SerID() << ") was not processed!";
 }
 
 void SyncCommandsProcessor::commandProcessor_AuthorizationSuccessCommand(network::protocol::server::AuthorizationSuccessCommand &) {
@@ -65,7 +65,7 @@ void SyncCommandsProcessor::commandProcessor_GraphicsUpdateCommand(network::prot
 		tileGrid->ShiftBlocks(command.firstTile);
 
 		for (auto &tileInfo : command.tilesInfo) {
-			tileGrid->SetBlock(tileInfo.coords, std::make_shared<Tile>(tileGrid, tileInfo));
+			tileGrid->SetBlock(tileInfo.coords, std::make_shared<Tile>(tileGrid, std::move(tileInfo)));
 		}
 	}
 	if (command.options & server::GraphicsUpdateCommand::Option::CAMERA_MOVE) {
@@ -74,11 +74,13 @@ void SyncCommandsProcessor::commandProcessor_GraphicsUpdateCommand(network::prot
 	if (command.options & server::GraphicsUpdateCommand::Option::DIFFERENCES) {
 		for (auto &generalDiff : command.diffs) {
 			if (auto *diff = dynamic_cast<network::protocol::AddDiff *>(generalDiff.get())) {
-				auto obj = std::make_unique<Object>(diff->objectInfo);
+				auto obj = std::make_unique<Object>(std::move(diff->objectInfo));
 				tileGrid->AddObject(obj.release());
 				tileGrid->RelocateObject(diff->objId, diff->coords, diff->layer);
 			} else if (auto *diff = dynamic_cast<network::protocol::RemoveDiff *>(generalDiff.get())) {
 				tileGrid->RemoveObject(diff->objId);
+			} else if (auto *diff = dynamic_cast<network::protocol::FieldsDiff *>(generalDiff.get())) {
+				tileGrid->AmendObjectChanges(std::forward<network::protocol::FieldsDiff>(*diff));
 			} else if (auto *diff = dynamic_cast<network::protocol::RelocateDiff *>(generalDiff.get())) {
 				tileGrid->RelocateObject(diff->objId, diff->newCoords, diff->layer);
 			} else if (auto *diff = dynamic_cast<network::protocol::MoveIntentDiff *>(generalDiff.get())) {
@@ -89,8 +91,6 @@ void SyncCommandsProcessor::commandProcessor_GraphicsUpdateCommand(network::prot
 				tileGrid->UpdateObjectIcons(diff->objId, diff->iconsIds);
 			} else if (auto *diff = dynamic_cast<network::protocol::PlayAnimationDiff *>(generalDiff.get())) {
 				tileGrid->PlayAnimation(diff->objId, diff->animationId);
-			} else if (auto *diff = dynamic_cast<network::protocol::ChangeDirectionDiff *>(generalDiff.get())) {
-				tileGrid->ChangeObjectDirection(diff->objId, diff->direction);
 			} else if (auto *diff = dynamic_cast<network::protocol::StunnedDiff *>(generalDiff.get())) {
 				tileGrid->Stunned(diff->objId, sf::microseconds(diff->duration.count()));
 			};

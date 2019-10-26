@@ -1,4 +1,4 @@
-from Engine.Geometry import Direction
+from Engine.Geometry import Direction, DirectionSet
 from Objects.Turf import Turf
 
 class Wall(Turf):
@@ -8,4 +8,4 @@ class Wall(Turf):
 	def __init__(self):
 		super().__init__()
 		self.isWall = True
-		self.solidity.Add([Direction.CENTER])
+		self.solidity = DirectionSet([Direction.CENTER])

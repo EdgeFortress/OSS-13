@@ -30,6 +30,8 @@ vec2<double> vec2<T>::unit() const {
 
 template <typename T>
 vec2<double> vec2<T>::rotate(Angle angle) const {
+	if (isZero()) 
+		return {};
 	return vec2<double>::unit(angle + this->angle()) * magnitude();
 }
 
