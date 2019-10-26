@@ -15,7 +15,7 @@ class DirectionSet : public ICopyable {
 	using BufferType = std::bitset<uf::DIRECTION_PURE_COUNT>;
 
 public:
-	DirectionSet() { };
+	DirectionSet() = default;
 	DirectionSet(std::list<Direction> directions);
 
 	void Add(DirectionSet directions);
@@ -41,32 +41,40 @@ private:
 	BufferType buffer;
 };
 
-struct DirectionFractional {
-	Direction direction;
-	float fraction;
-};
 
+using DirectionFractional = std::tuple<Direction, float>;
 
 class DirectionSetFractional {
+	using BufferType = std::array<float, uf::DIRECTION_PURE_COUNT>;
+
 public:
-	DirectionSetFractional() = default;
-	DirectionSetFractional(std::initializer_list<DirectionFractional> fractDirections);
+	DirectionSetFractional();
+	DirectionSetFractional(const std::list<DirectionFractional> &fractDirections);
 
-	DirectionSetFractional(const DirectionSetFractional &) = default;
-	DirectionSetFractional(DirectionSetFractional &&) = default;
-	DirectionSetFractional &operator=(const DirectionSetFractional &) = default;
-	DirectionSetFractional &operator=(DirectionSetFractional &&) = default;
+	void Set(DirectionFractional fractDirection);
+	void Set(const std::list<DirectionFractional> &fractDirections);
 
-	void Add(std::initializer_list<DirectionFractional> fractDirections);
-	void Remove(std::initializer_list<Direction> directions);
-	double GetMaxFraction(std::initializer_list<Direction> directions) const;
+	void Remove(Direction direction);
+	void Remove(const std::list<Direction> &directions);
+
+	float GetFraction(Direction direction) const;
+	float GetCumulativeFraction(const std::list<Direction> &directions) const;
+	bool IsDefault() const;
+
+	DirectionSetFractional Rotate(Direction direction) const;
+
 	void Reset();
 
-	const std::array<float, 5> &GetFractions() const;
-	void SetFractions(std::array<float, 5> &&fractions);
+	const BufferType &GetFractions() const;
+	void SetFractions(BufferType fractions);
+
+	DirectionSetFractional operator+(const DirectionSetFractional &other) const;
+	DirectionSetFractional operator+=(const DirectionSetFractional &other);
+	DirectionSetFractional operator-(const DirectionSetFractional &other) const;
+	DirectionSetFractional operator-=(const DirectionSetFractional &other);
 
 private:
-	std::array<float, 5> fractions;
+	BufferType fractions;
 };
 
 }
