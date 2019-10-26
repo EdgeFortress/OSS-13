@@ -1,5 +1,6 @@
 from Engine.Server import gRM, ItemSpriteState
 from Engine.World import Object
+from Engine.World import Tile, eTile
 from Objects.Item import Item
 from Objects.Items.Clothing import Clothing, MobSlot
 from Objects.Creatures.IHasOrgans import IHasOrgans
@@ -43,10 +44,11 @@ class Creature(Object, IHasOrgans):
 		if moveZOrder: self.OnMoveZOrder(moveZOrder)
 
 		clickedObject = self.control.GetAndDropClickedObject()
-		if clickedObject: self.OnObjectClick(clickedObject)
-
-		clickedTilePos = self.control.GetAndDropClickedTilePos()
-		if clickedTilePos: self.OnTileClick(clickedTilePos)
+		clickedTile = self.control.GetAndDropClickedTile()
+		if clickedObject: 
+			self.OnObjectClick(clickedObject)
+		elif clickedTile: 
+			self.OnTileClick(clickedTile)
 
 	def OnMoveOrder(self, order):
 		self.Move(order)
@@ -56,9 +58,16 @@ class Creature(Object, IHasOrgans):
 
 	def OnObjectClick(self, object):
 		self.TryInteractWith(object)
+	
+	def OnTileClick(self, tile) -> bool:
+		if not isinstance(tile, eTile):
+			return False
 
-	def OnTileClick(self, pos):
-		self.TryInteractWithTile(pos)
+		if self.activeHand:
+			if not self.activeHand.isEmpty:
+				if self.activeHand.holdedItem.InteractWith(Tile(tile)):
+					return True
+		return False
 
 	def InteractedBy(self, object) -> bool:
 		print("InteractedBy " + object.name)
@@ -92,14 +101,9 @@ class Creature(Object, IHasOrgans):
 				return True
 
 		object.InteractedBy(self)
-		return False
+		return True
 
-	def TryInteractWithTile(self, pos):
-		if self.activeHand:
-			if not self.activeHand.isEmpty:
-				if self.activeHand.holdedItem.InteractWithTile(pos):
-					return True
-			return True
+		return False
 
 	def Take(self, object) -> bool:
 		if not self.activeHand:

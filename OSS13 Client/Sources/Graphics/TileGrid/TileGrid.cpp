@@ -289,7 +289,7 @@ void TileGrid::Update(sf::Time timeElapsed) {
 
 		if (stun == sf::Time::Zero && tileClicked && underCursorTile) {
 			auto *p = new client::ClickTileCommand();
-			p->pos = static_cast<uf::vec2i>(underCursorTile->GetRelPos().xy());
+			p->pos = static_cast<uf::vec3i>(underCursorTile->GetRelPos());
 			Connection::commandQueue.Push(p);
 		}
 

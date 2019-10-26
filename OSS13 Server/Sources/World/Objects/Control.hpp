@@ -6,6 +6,7 @@
 
 #include "Component.hpp"
 #include "ControlUI.h"
+#include "../Tile.hpp"
 
 class Player;
 
@@ -20,7 +21,7 @@ public:
 	void MoveCommand(uf::vec2i order);
 	void MoveZCommand(bool order);
 	void ClickObjectCommand(uint id);
-	void ClickTileCommand(uf::vec2i pos);
+	void ClickTileCommand(uf::vec3i pos);
 	void ClickUICommand(const std::string &key);
 
 	virtual void SetOwner(Object *owner) override;
@@ -35,7 +36,7 @@ public:
 	uf::vec2i GetAndDropMoveOrder();
 	int GetAndDropMoveZOrder();
 	Object *GetAndDropClickedObject();
-	uf::vec2i *GetAndDropClickedTilePos();
+	Tile *GetAndDropClickedTile();
 
 private:
 	float speed{4};
@@ -45,7 +46,7 @@ private:
 	uf::vec2i moveOrder; 
 	int moveZOrder{};
 	uint clickedObjectID{};
-	uf::vec2i clickedTilePos;
+	uf::vec3i clickedTilePos;
 	bool isTileClicked;
 
 	Player *player{nullptr};

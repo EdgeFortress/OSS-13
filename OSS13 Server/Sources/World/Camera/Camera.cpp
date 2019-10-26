@@ -253,6 +253,13 @@ void Camera::SetPosition(const Tile * const newTile) {
 	tile = newTile;
 }
 
+uf::vec3i Camera::ViewCoordsToWorldCoords(uf::vec3i viewCoords)
+{
+	//This const consist value of shift from camera position to first tile on view
+	static const uf::vec3i CAMERA_POS_ON_SCREEN = { 10, 10, 0 };
+	return GetPosition()->GetPos() - CAMERA_POS_ON_SCREEN + viewCoords;
+}
+
 void Camera::Suspend() {
 	tile = nullptr;
 	lastTile = nullptr;

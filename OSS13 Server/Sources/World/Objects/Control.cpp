@@ -31,7 +31,7 @@ void Control::ClickObjectCommand(uint id) {
     clickedObjectID = id;
 }
 
-void Control::ClickTileCommand(uf::vec2i pos) {
+void Control::ClickTileCommand(uf::vec3i pos) {
 	clickedTilePos = pos;
 	isTileClicked = true;
 }
@@ -66,12 +66,12 @@ Object *Control::GetAndDropClickedObject() {
 	return obj;
 }
 
-uf::vec2i *Control::GetAndDropClickedTilePos() {
-	uf::vec2i *result = nullptr;
+Tile *Control::GetAndDropClickedTile() {
+	Tile *tile = nullptr;
 	if (isTileClicked) {
-		result = &clickedTilePos;
+		tile = GGame->GetWorld()->GetMap()->GetTile(clickedTilePos);
 		clickedTilePos = {};
 		isTileClicked = false;
 	}
-	return result;
+	return tile;
 }

@@ -61,7 +61,7 @@ void PlayerCommandsProcessor::commandProcessor_ClickObjectCommand(network::proto
 void PlayerCommandsProcessor::commandProcessor_ClickTileCommand(network::protocol::client::ClickTileCommand &command) {
 	auto control = player->GetControl();
 	if (control) {
-		control->ClickTileCommand(command.pos);
+		control->ClickTileCommand(player->camera->ViewCoordsToWorldCoords(command.pos));
 	}
 }
 

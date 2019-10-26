@@ -7,6 +7,3 @@ class Item(Object):
 	
 	def InteractWith(self, object):
 		return False
-	
-	def InteractWithTile(self, pos):
-		return False

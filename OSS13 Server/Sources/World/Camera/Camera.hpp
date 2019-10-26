@@ -36,6 +36,8 @@ public:
 
 	void SetPosition(const Tile * const tile);
 	const Tile *GetPosition() { return tile; }
+	
+	uf::vec3i Camera::ViewCoordsToWorldCoords(uf::vec3i viewCoords);
 
 	void Suspend();
 	bool IsSuspense() const { return suspense; }

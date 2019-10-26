@@ -71,7 +71,7 @@ DEFINE_SERIALIZABLE(ClickObjectCommand, Command)
 DEFINE_SERIALIZABLE_END
 
 DEFINE_SERIALIZABLE(ClickTileCommand, Command)
-uf::vec2i pos;
+uf::vec3i pos;
 
 void Serialize(uf::Archive &ar) override {
 	Command::Serialize(ar);

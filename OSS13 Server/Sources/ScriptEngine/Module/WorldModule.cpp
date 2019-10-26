@@ -102,5 +102,5 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def("GetAndDropMoveOrder", &Control::GetAndDropMoveOrder)
 		.def("GetAndDropMoveZOrder", &Control::GetAndDropMoveZOrder)
 		.def("GetAndDropClickedObject", &Control::GetAndDropClickedObject, py::return_value_policy::reference)
-		.def("GetAndDropClickedTilePos", &Control::GetAndDropClickedTilePos, py::return_value_policy::reference);
+		.def("GetAndDropClickedTile", &Control::GetAndDropClickedTile, py::return_value_policy::reference);
 }
