@@ -22,14 +22,23 @@ public:
 	typedef typename std::vector<T>::reference       reference;
 	typedef typename std::vector<T>::const_reference const_reference;
 
-	class iterator {
-		Grid<T>& grid;
-		vec3u dataPos;
+	class const_iterator {
 	public:
-		iterator(Grid<T>& _grid): grid(_grid) {};
-		iterator(Grid<T>& _grid, vec3u _dataPos): grid(_grid), dataPos(_dataPos) {};
+		const_iterator(const Grid<T>& grid, vec3u dataPos = {});
+		const_iterator& operator++();
+		std::pair<const_reference, vec3u> operator*() const;
+		bool operator!=(const const_iterator& it) const;
+	protected:
+		const Grid<T>& grid;
+		vec3u dataPos;
+	};
+
+	class iterator : public const_iterator {
+	public:
+		using const_iterator::const_iterator;
+
 		iterator& operator++();
-		std::pair<reference, vec3u> operator*();
+		std::pair<reference, vec3u> operator*() const;
 		bool operator!=(const iterator& it) const;
 	};
 
@@ -39,6 +48,8 @@ public:
 
 	iterator begin();
 	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 
 	const Range<flat_iterator> Items();
 	const Range<const_flat_iterator> Items() const;
