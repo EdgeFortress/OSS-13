@@ -1,12 +1,18 @@
 namespace uf {
 
-// Grid::iterator
+// Grid::const_iterator
 
 template<typename T>
-typename Grid<T>::iterator& Grid<T>::iterator::operator++() {
+Grid<T>::const_iterator::const_iterator(const Grid<T>& grid, vec3u dataPos) : 
+	grid(grid), 
+	dataPos(dataPos) 
+{ }
+
+template<typename T>
+typename Grid<T>::const_iterator& Grid<T>::const_iterator::operator++() {
 	vec3u dataSize = grid.GetSize();
-	if(++dataPos.x == dataSize.x) {
-		if(++dataPos.y == dataSize.y) {
+	if (++dataPos.x == dataSize.x) {
+		if (++dataPos.y == dataSize.y) {
 			++dataPos.z;
 			dataPos.y = 0;
 		}
@@ -16,13 +22,38 @@ typename Grid<T>::iterator& Grid<T>::iterator::operator++() {
 }
 
 template<typename T>
-std::pair<typename Grid<T>::reference, vec3u> Grid<T>::iterator::operator*() {
+std::pair<typename Grid<T>::const_reference, vec3u> Grid<T>::const_iterator::operator*() const {
 	return {grid.At(dataPos), dataPos};
 }
 
 template<typename T>
-bool Grid<T>::iterator::operator!=(const iterator& it) const {
+bool Grid<T>::const_iterator::operator!=(const const_iterator& it) const {
 	return it.dataPos != dataPos;
+}
+
+// Grid::iterator
+
+template<typename T>
+typename Grid<T>::iterator& Grid<T>::iterator::operator++() {
+	vec3u dataSize = this->grid.GetSize();
+	if(++this->dataPos.x == dataSize.x) {
+		if(++this->dataPos.y == dataSize.y) {
+			++this->dataPos.z;
+			this->dataPos.y = 0;
+		}
+		this->dataPos.x = 0;
+	}
+	return *this;
+}
+
+template<typename T>
+std::pair<typename Grid<T>::reference, vec3u> Grid<T>::iterator::operator*() const {
+	return {const_cast<Grid<T>::reference>(this->grid.At(this->dataPos)), this->dataPos};
+}
+
+template<typename T>
+bool Grid<T>::iterator::operator!=(const iterator& it) const {
+	return it.dataPos != this->dataPos;
 }
 
 // Grid
@@ -51,6 +82,16 @@ typename Grid<T>::iterator Grid<T>::begin() {
 template<typename T>
 typename Grid<T>::iterator Grid<T>::end() {
 	return iterator(*this, vec3u(0, 0, dataSize.z));
+}
+
+template<typename T>
+typename Grid<T>::const_iterator Grid<T>::begin() const {
+	return const_iterator(*this);
+}
+
+template<typename T>
+typename Grid<T>::const_iterator Grid<T>::end() const {
+	return const_iterator(*this, vec3u(0, 0, dataSize.z));
 }
 
 template<typename T>

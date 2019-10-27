@@ -3,7 +3,7 @@ from __future__ import annotations
 from Engine_Geometry import *
 
 from math import atan2, cos, sin
-from typing import List
+from typing import List, Tuple
 
 class Vector2D:
 	"""
@@ -324,6 +324,60 @@ class DirectionSet():
 
 	def DoExistAll(self, directions: List[Direction]) -> bool:
 		return self._impl.DoExistAll(directions)
+
+	def Reset(self):
+		self._impl.Reset()
+
+
+class DirectionSetFractional():
+	"""
+	A class used to represent a set of directions with fractions. You can set specific fraction from 0 to 1 for each direction and check them.
+	You shouldn't use composite directions with this class.
+	
+	Default value for each direction is 1.
+
+	Methods
+	-------
+	Set(List[Tuple[Direction, float]])
+		Set fractions for specific directions.
+
+	Remove(List[Direction])
+		Set fractions of specified directions to default value.
+
+	GetFraction(Direction) -> float:
+		Get fraction for specific direction.
+
+	GetCumulativeFraction(List[Direction]) -> float:
+		Get cumulative fractions for few directions
+
+		Example:
+			result = 1 * GetFraction(direction1) * GetFraction(direction2) * ...
+
+	Reset()
+		Reset all directions fractions to default value.
+
+	"""
+
+	def __init__(self, *args):
+		if len(args) > 0 and isinstance(args[0], eDirectionSetFractional):
+			self._impl = args[0]
+		else:
+			self._impl = eDirectionSetFractional()
+
+		if len(args) > 0 and isinstance(args[0], list):
+			self.Set(args[0])
+
+	def Set(self, directions: List[Tuple[Direction, float]]):
+		self._impl.Set(directions)
+
+	def Remove(self, directions: List[Direction]):
+		self._impl.Remove(directions)
+
+	def GetFraction(self, direction: Direction) -> float:
+		return self._impl.GetFraction(direction)
+
+	def GetCumulativeFraction(self, directions: List[Direction]) -> float:
+		return self._impl.GetCumulativeFraction(directions)
 
 	def Reset(self):
 		self._impl.Reset()

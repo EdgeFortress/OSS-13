@@ -2,6 +2,8 @@
 
 namespace uf {
 
+namespace {
+
 constexpr size_t index(Direction direction) {
 	switch (direction) {
 		case Direction::SOUTH:
@@ -21,6 +23,33 @@ constexpr size_t index(Direction direction) {
 
 	EXPECT_WITH_MSG(false, "Wrong direction received: " + std::to_string(static_cast<int>(direction)));
 }
+
+template<class BufferType>
+BufferType rotate(const BufferType &buffer, Direction direction) {
+	size_t shift;
+	switch (direction) {
+		case Direction::WEST:
+			shift = 1;
+			break;
+		case Direction::NORTH:
+			shift = 2;
+			break;
+		case Direction::EAST:
+			shift = 3;
+			break;
+		default:
+			return buffer;
+	}
+
+	BufferType result = buffer;
+
+	for (size_t i = 0; i < 4; i++)
+		result[(i + shift) % 4] = buffer[i];
+
+	return result;
+}
+
+} // namespace
 
 DirectionSet::DirectionSet(std::list<Direction> directions) {
 	Add(directions);
@@ -69,26 +98,8 @@ bool DirectionSet::DoExistAll(const std::list<Direction> &directions) const {
 }
 
 DirectionSet DirectionSet::Rotate(Direction direction) const {
-	size_t shift;
-	switch (direction) {
-		case Direction::WEST:
-			shift = 1;
-			break;
-		case Direction::NORTH:
-			shift = 2;
-			break;
-		case Direction::EAST:
-			shift = 3;
-			break;
-		default:
-			return *this;
-	}
-
-	DirectionSet result = *this;
-
-	for (size_t i = 0; i < 4; i++)
-		result.buffer[(i + shift) % 4] = buffer[i];
-
+	DirectionSet result;
+	result.buffer = std::move(rotate<DirectionSet::BufferType>(buffer, direction));
 	return result;
 }
 
@@ -100,38 +111,91 @@ const DirectionSet::BufferType &DirectionSet::GetBuffer() const { return buffer;
 void DirectionSet::SetBuffer(DirectionSet::BufferType buffer) { this->buffer = buffer; }
 
 
+// DirectionSetFractional
 
-
-DirectionSetFractional::DirectionSetFractional(std::initializer_list<DirectionFractional> fractDirections) {
-	Add(fractDirections);
+DirectionSetFractional::DirectionSetFractional() {
+	Reset();
 }
 
-void DirectionSetFractional::Add(std::initializer_list<DirectionFractional> fractDirections) {
-	for (auto fractDirection : fractDirections) {
-		fractions[index(fractDirection.direction)] = fractDirection.fraction;
-	}
+DirectionSetFractional::DirectionSetFractional(const std::list<DirectionFractional> &fractDirections) {
+	DirectionSetFractional();
+	Set(fractDirections);
 }
 
-void DirectionSetFractional::Remove(std::initializer_list<Direction> directions) {
-	for (auto direction : directions) {
-		fractions[index(direction)] = 0.f;
-	}
+void DirectionSetFractional::Set(DirectionFractional fractDirection) {
+	fractions[index(std::get<0>(fractDirection))] = std::get<1>(fractDirection);
 }
 
-double DirectionSetFractional::GetMaxFraction(std::initializer_list<Direction> directions) const {
-	float max = 0.f;
-	for (auto direction : directions) {
-		if (max < fractions[index(direction)])
-			max = fractions[index(direction)];
-	}
-	return max;
+void DirectionSetFractional::Set(const std::list<DirectionFractional> &fractDirections) {
+	for (auto &fractDirection : fractDirections)
+		Set(fractDirection);
+}
+
+void DirectionSetFractional::Remove(Direction direction) {
+	fractions[index(direction)] = 1.f;
+}
+
+void DirectionSetFractional::Remove(const std::list<Direction> &directions) {
+	for (auto &direction : directions)
+		Remove(direction);
+}
+
+float DirectionSetFractional::GetFraction(Direction direction) const {
+	return fractions.at(index(direction));
+}
+
+float DirectionSetFractional::GetCumulativeFraction(const std::list<Direction> &directions) const {
+	float cumulative = 1.f;
+	for (auto &direction : directions)
+		cumulative *= GetFraction(direction);
+	return cumulative;
+}
+
+bool DirectionSetFractional::IsDefault() const {
+	return fractions == DirectionSetFractional().fractions;
+}
+
+DirectionSetFractional DirectionSetFractional::Rotate(Direction direction) const {
+	DirectionSetFractional result;
+	result.fractions = std::move(rotate<DirectionSetFractional::BufferType>(fractions, direction));
+	return result;
 }
 
 void DirectionSetFractional::Reset() {
-	std::fill(fractions.begin(), fractions.end(), 0.f);
+	fractions.fill(1.f);
 }
 
-const std::array<float, 5> &DirectionSetFractional::GetFractions() const { return fractions; }
-void DirectionSetFractional::SetFractions(std::array<float, 5> &&fractions) { this->fractions = std::forward<std::array<float, 5>>(fractions); }
+const DirectionSetFractional::BufferType &DirectionSetFractional::GetFractions() const { return fractions; }
+void DirectionSetFractional::SetFractions(DirectionSetFractional::BufferType fractions) { this->fractions = fractions; }
 
+DirectionSetFractional DirectionSetFractional::operator+(const DirectionSetFractional &other) const {
+	DirectionSetFractional result;
+	for (size_t i = 0; i < fractions.size(); i++)
+		result.fractions[i] = fractions[i] * other.fractions[i];
+	return result;
 }
+
+DirectionSetFractional DirectionSetFractional::operator+=(const DirectionSetFractional &other) {
+	for (size_t i = 0; i < fractions.size(); i++)
+		fractions[i] *= other.fractions[i];
+	return *this;
+}
+
+DirectionSetFractional DirectionSetFractional::operator-(const DirectionSetFractional &other) const {
+	DirectionSetFractional result;
+	for (size_t i = 0; i < fractions.size(); i++) {
+		result.fractions[i] = fractions[i] / other.fractions[i];
+		EXPECT(result.fractions[i] <= 1.f);
+	}
+	return result;
+}
+
+DirectionSetFractional DirectionSetFractional::operator-=(const DirectionSetFractional &other) {
+	for (size_t i = 0; i < fractions.size(); i++) {
+		fractions[i] /= other.fractions[i];
+		EXPECT(fractions[i] <= 1.f);
+	}
+	return *this;
+}
+
+} // namespace uf

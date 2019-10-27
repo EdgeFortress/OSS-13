@@ -35,7 +35,7 @@ uf::Archive &operator&(uf::Archive &ar, uf::DirectionSet &directionSet) {
 
 uf::Archive &operator&(uf::Archive &ar, uf::DirectionSetFractional &directionSetFractional) {
 	if (ar.GetMode() == uf::Archive::Mode::Output) {
-		std::array<float, 5> buf;
+		auto buf = directionSetFractional.GetFractions();
 		ar >> buf;
 		directionSetFractional.SetFractions(std::move(buf));
 	} else {
