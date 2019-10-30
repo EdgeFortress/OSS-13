@@ -10,6 +10,7 @@
 #include <World/Map.hpp>
 #include <World/Objects/Object.hpp>
 #include <World/Objects/Control.hpp>
+#include <World/Subsystems/Atmos/AtmosOverlayWindowSink.h>
 #include <ClientUI/WelcomeWindowSink.h>
 
 #include "PlayerCommandsProcessor.h"
@@ -24,6 +25,7 @@ Player::Player(std::string ckey) :
 {
 	control = nullptr;
 	AddVerb("spawn", &Player::OpenSpawnWindow);
+	AddVerb("toggleoverlay", &Player::ToggleAtmosOverlayVerb);
 }
 
 void Player::SetConnection(sptr<Connection> &connection) {
@@ -52,7 +54,6 @@ void Player::Update(std::chrono::microseconds timeElapsed) {
 
 		SetControl(GGame->GetStartControl(this));
 		verbsHolders["player"] = this;
-		verbsHolders["atmos"] = GGame->GetWorld()->GetMap()->GetAtmos();
 		verbsHolders["creature"] = GetControl()->GetOwner();
 	}
 
@@ -67,6 +68,10 @@ void Player::SendGraphicsUpdates(std::chrono::microseconds timeElapsed) {
 
 void Player::OpenSpawnWindow() {
 	AddCommandToClient(new network::protocol::server::OpenSpawnWindowCommand());
+}
+
+void Player::ToggleAtmosOverlayVerb() {
+	OpenWindow<AtmosOverlayWindowSink>();
 }
 
 void Player::Suspend() {

@@ -1,7 +1,6 @@
 #include "AtmosCameraOverlay.h"
 
 #include <World/Tile.hpp>
-#include <World/Atmos/Locale.hpp>
 
 using namespace std::chrono_literals;
 
@@ -30,7 +29,8 @@ OverlayInfo AtmosCameraOverlay::GetOverlayInfo(Tile tile) const {
 	OverlayInfo result;
 
 	switch (mode) {
-		case AtmosCameraOverlayMode::Locale: {
+		case AtmosCameraOverlayMode::Locale:
+		{
 			auto locale = tile.GetLocale();
 			if (locale) {
 				auto localeID = tile.GetLocale()->ID();
@@ -40,7 +40,8 @@ OverlayInfo AtmosCameraOverlay::GetOverlayInfo(Tile tile) const {
 			}
 			break;
 		}
-		default: {
+		default:
+		{
 			result.text = "NULL";
 			break;
 		}

@@ -21,9 +21,10 @@ Game::Game() :
 
 void Game::gameProcess() {
 	scriptEngine = std::make_unique<ScriptEngine>();
-	world.reset(new World());
-	scriptEngine->FillMap(world->GetMap());
-	world->CreateTestItems();
+	world = std::make_unique<World>();
+
+	world->Initialize();
+
 	auto lastTime = std::chrono::steady_clock::now();
 	while (active) {
 		auto curTime = std::chrono::steady_clock::now();

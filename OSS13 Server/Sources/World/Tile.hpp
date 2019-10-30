@@ -1,84 +1,63 @@
 #pragma once
 
-#include <list>
 #include <vector>
 
 #include <SFML/System.hpp>
 
-#include <World/Atmos/Gases.hpp>
 #include <Resources/IconInfo.h>
+#include <World/ITile.h>
+#include <World/Subsystems/IAtmos.h>
+#include <World/Subsystems/Atmos/AtmosTile.h>
 
 #include <Shared/Global.hpp>
 #include <Shared/Types.hpp>
-#include <Shared/Geometry/DirectionSet.h>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 #include <Shared/Network/Protocol/ServerToClient/Diff.h>
 
-class Object;
-class Map;
-class Locale;
-
-class Tile {
+class Tile : public subsystem::atmos::AtmosTile {
 public:
-    friend Locale;
-    Tile(Map *map, apos pos);
+	Tile(Map *map, apos pos);
 
-    void Update(std::chrono::microseconds timeElapsed);
+	void Update(std::chrono::microseconds timeElapsed) final;
 
-    // Call it when atmos initialized or tile atmos properties changed (floor or wall status updated)
-    void CheckLocale();
+	bool RemoveObject(Object *obj) final;
+	bool MoveTo(Object *) final;
+	void PlaceTo(Object *) final;
 
-    // Removing object from tile content, but not deleting it, and change object.tile pointer
-    // Also generate DeleteDiff
-    bool RemoveObject(Object *obj);
-	// Smooth moving from one tile to another
-    bool MoveTo(Object *);
-	// Teleport or add to tile from nowhere
-    void PlaceTo(Object *);
+	const std::list<Object *> &Content() const final;
 
-    const std::list<Object *> &Content() const;
-    Object *GetDenseObject(uf::DirectionSet directions) const;
+	uf::vec3i GetPos() const final;
+	ITile *StepTo(uf::Direction direction) const final;
+	Map *GetMap() const final;
 
-	uf::vec3i GetPos() const;
-    Map *GetMap() const;
 	bool IsDense(uf::DirectionSet directions) const;
-    bool IsSpace() const;
-	Locale *GetLocale() const;
+	Object *GetDenseObject(uf::DirectionSet directions) const final;
+
+	uf::DirectionSetFractional GetOpacity() const;
+	float GetOpacityTo(uf::Direction direction) const;
 
 	network::protocol::TileInfo GetTileInfo(uint viewerId, uint visibility) const;
 
 	void AddDiff(std::shared_ptr<network::protocol::Diff> diff, Object *object);
-    const std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> &GetDifferencesWithObject() const { return differencesWithObject; }
-    void ClearDiffs();
+	const std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> &GetDifferencesWithObject() const { return differencesWithObject; }
+	void ClearDiffs();
 
-    int X() const { return pos.x; }
-    int Y() const { return pos.y; }
-    int Z() const { return pos.z; }
+	int X() const { return pos.x; }
+	int Y() const { return pos.y; }
+	int Z() const { return pos.z; }
 
 private:
-    Map *map;
-    uf::vec3i pos;
-    IconInfo icon;
+	void addObject(Object *obj) final;
+	bool removeObject(Object *obj) final;
 
-    std::list<Object *> content;
-    bool hasFloor;
-    // true if has wall
-    bool fullBlocked;
-    // for thin walls
-    std::vector<bool> directionsBlocked;
+private:
+	Map *map;
+	uf::vec3i pos;
 
+	IconInfo icon;
 
-    Locale *locale;
-    bool needToUpdateLocale;
-    // Partional pressures of gases by index
-    std::vector<pressure> gases;
-    pressure totalPressure;
+	std::list<Object *> content;
+	uf::DirectionSetFractional opacity;
 
-    std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObject;
-
-    // Add object to the tile, and change object.tile pointer
-    // For moving use MoveTo, for placing PlaceTo
-    void addObject(Object *obj);
-    // Not generate Diff
-    bool removeObject(Object *obj);
+	std::vector<std::pair<std::shared_ptr<network::protocol::Diff>, sptr<Object>>> differencesWithObject;
 };

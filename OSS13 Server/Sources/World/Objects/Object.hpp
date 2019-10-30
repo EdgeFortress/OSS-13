@@ -71,10 +71,10 @@ public:
 	uf::DirectionSet GetSolidity() const;
 
 	void SetOpacity(uf::DirectionSetFractional fractionalDirections);
-	const uf::DirectionSetFractional &GetOpacity() const;
+	uf::DirectionSetFractional GetOpacity() const;
 
 	void SetAirtightness(uf::DirectionSetFractional fractionalDirections);
-	const uf::DirectionSetFractional &GetAirtightness() const;
+	uf::DirectionSetFractional GetAirtightness() const;
 
 	void SetPosition(uf::vec2i);
 	uf::vec2i GetPosition() const;
@@ -110,12 +110,6 @@ public:
 
 	bool IsDrawAtTop() const;
 	void SetDrawAtTop(bool value);
-
-	bool IsFloor() const;
-	void SetIsFloor(bool value);
-
-	bool IsWall() const;
-	void SetIsWall(bool value);
 
 	network::protocol::ObjectInfo GetObjectInfo() const;
 
@@ -161,10 +155,6 @@ private:
 	float moveSpeed;
 	uf::vec2i moveIntent;
 	uf::vec2f speed;
-
-	// atmos
-	bool isFloor{false};
-	bool isWall{false};
 
     uf::vec2f shift;
 
