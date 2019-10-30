@@ -184,7 +184,7 @@ DirectionSetFractional DirectionSetFractional::operator+=(const DirectionSetFrac
 DirectionSetFractional DirectionSetFractional::operator-(const DirectionSetFractional &other) const {
 	DirectionSetFractional result;
 	for (size_t i = 0; i < fractions.size(); i++) {
-		result.fractions[i] = fractions[i] / other.fractions[i];
+		result.fractions[i] = other.fractions[i] == 0 ? 1.f : fractions[i] / other.fractions[i];
 		EXPECT(result.fractions[i] <= 1.f);
 	}
 	return result;
@@ -192,7 +192,7 @@ DirectionSetFractional DirectionSetFractional::operator-(const DirectionSetFract
 
 DirectionSetFractional DirectionSetFractional::operator-=(const DirectionSetFractional &other) {
 	for (size_t i = 0; i < fractions.size(); i++) {
-		fractions[i] /= other.fractions[i];
+		other.fractions[i] == 0 ? fractions[i] = 1.f : fractions[i] /= other.fractions[i];
 		EXPECT(fractions[i] <= 1.f);
 	}
 	return *this;
