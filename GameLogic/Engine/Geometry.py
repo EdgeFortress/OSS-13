@@ -209,16 +209,18 @@ class Direction(eDirection):
 	Direction enumeration
 	8 existing world directions, Center and None
 	"""
-	NONE		= eDirection.NONE
-	SOUTH		= eDirection.SOUTH
-	WEST		= eDirection.WEST
-	NORTH		= eDirection.NORTH
-	EAST		= eDirection.EAST
-	SOUTH_WEST	= eDirection.SOUTH_WEST
-	NORTH_WEST	= eDirection.NORTH_WEST
-	NORTH_EAST	= eDirection.NORTH_EAST
-	SOUTH_EAST	= eDirection.SOUTH_EAST
-	CENTER		= eDirection.CENTER
+	NONE        = eDirection.NONE
+	SOUTH       = eDirection.SOUTH
+	WEST        = eDirection.WEST
+	NORTH       = eDirection.NORTH
+	EAST        = eDirection.EAST
+	SOUTH_WEST  = eDirection.SOUTH_WEST
+	NORTH_WEST  = eDirection.NORTH_WEST
+	NORTH_EAST  = eDirection.NORTH_EAST
+	SOUTH_EAST  = eDirection.SOUTH_EAST
+	TOP         = eDirection.TOP
+	BOTTOM      = eDirection.BOTTOM
+	CENTER      = eDirection.CENTER
 
 
 def DirectionToVect(dir: Direction) -> Vector2D:

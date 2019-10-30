@@ -1,4 +1,4 @@
-from Engine.Geometry import Direction, DirectionSet
+from Engine.Geometry import Direction, DirectionSet, DirectionSetFractional
 from Objects.Turf import Turf
 
 class Airlock(Turf):
@@ -12,6 +12,9 @@ class Airlock(Turf):
 		self.__closedSolidity.Add([Direction.CENTER])
 		
 		self.solidity = self.__closedSolidity
+
+		self.opacity = DirectionSetFractional([(Direction.CENTER, 0)])
+		self.airtightness = DirectionSetFractional([(Direction.CENTER, 0)])
 
 		self.opened = False
 		self.locked = False
