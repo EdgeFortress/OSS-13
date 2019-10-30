@@ -41,32 +41,36 @@ Direction VectToDirectionDetail(vec2<T> vector) {
 Direction VectToDirection(vec2f vector) { return VectToDirectionDetail(vector); }
 Direction VectToDirection(vec3f vector) { return VectToDirectionDetail(vector.xy()); }
 
-vec2i DirectionToVect(Direction direction) {
+vec3i DirectionToVect(Direction direction) {
 	switch (direction) {
 		case Direction::SOUTH:
-			return {0, 1};
+			return {0, 1, 0};
 		case Direction::WEST:
-			return {-1, 0};
+			return {-1, 0, 0};
 		case Direction::NORTH:
-			return {0, -1};
+			return {0, -1, 0};
 		case Direction::EAST:
-			return {1, 0};
+			return {1, 0, 0};
 		case Direction::SOUTH_WEST:
-			return {-1, 1};
+			return {-1, 1, 0};
 		case Direction::NORTH_WEST:
-			return {-1, -1};
+			return {-1, -1, 0};
 		case Direction::NORTH_EAST:
-			return {1, -1};
+			return {1, -1, 0};
 		case Direction::SOUTH_EAST:
-			return {1, 1};
+			return {1, 1, 0};
+		case Direction::BOTTOM:
+			return {0, 0, -1};
+		case Direction::TOP:
+			return {0, 0, 1};
 		default:
-			return {0, 0};
+			return {0, 0, 0};
 	}
 }
 
 Angle DirectionToAngle(Direction direction) {
 	EXPECT(direction != Direction::NONE);
-	return (DirectionToVect(direction) * -1).angle();
+	return (DirectionToVect(direction).xy() * -1).angle();
 }
 
 Direction InvertDirection(Direction direction) {

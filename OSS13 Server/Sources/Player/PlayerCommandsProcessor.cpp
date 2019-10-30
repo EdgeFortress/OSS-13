@@ -39,7 +39,7 @@ void PlayerCommandsProcessor::ProcessCommand(network::protocol::Command &general
 void PlayerCommandsProcessor::commandProcessor_MoveCommand(network::protocol::client::MoveCommand &command) {
 	auto control = player->GetControl();
 	if (control) {
-		control->MoveCommand(uf::DirectionToVect(command.direction));
+		control->MoveCommand(uf::DirectionToVect(command.direction).xy());
 	}
 }
 

@@ -157,7 +157,7 @@ void Camera::UpdateView(std::chrono::microseconds timeElapsed) {
 			visibleObjects.insert(diff->objId);
 		} else if (auto *diff = dynamic_cast<network::protocol::MoveDiff *>(generalDiff.get())) {
 			if (visibleObjects.find(diff->objId) == visibleObjects.end()) {
-				apos to = apos(object->GetPosition() + DirectionToVect(diff->direction), 0);
+				apos to = apos(object->GetPosition() + DirectionToVect(diff->direction).xy(), 0);
 				auto addDiff = std::make_shared<network::protocol::AddDiff>();
 				addDiff->objId = diff->objId;
 				addDiff->objectInfo = object->GetObjectInfo();

@@ -32,7 +32,7 @@ bool IsPureDirection(Direction direction);
 
 Direction VectToDirection(vec2f);
 Direction VectToDirection(vec3f);
-vec2i DirectionToVect(Direction);
+vec3i DirectionToVect(Direction);
 Angle DirectionToAngle(Direction);
 
 Direction InvertDirection(Direction);
