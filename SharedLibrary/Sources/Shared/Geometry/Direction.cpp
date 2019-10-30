@@ -5,6 +5,19 @@
 
 namespace uf {
 
+bool IsPureDirection(Direction direction) {
+	switch (direction) {
+		case Direction::SOUTH_WEST:
+		case Direction::NORTH_WEST:
+		case Direction::NORTH_EAST:
+		case Direction::SOUTH_EAST:
+			return false;
+		default:
+			break;
+	}
+	return true;
+}
+
 template<class T>
 Direction VectToDirectionDetail(vec2<T> vector) {
 	if (vector.x > 0) {
