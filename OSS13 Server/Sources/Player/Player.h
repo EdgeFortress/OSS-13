@@ -36,6 +36,8 @@ public:
 	}
 	void OpenSpawnWindow();
 
+	void ToggleAtmosOverlayVerb();
+
 	const std::string &GetCKey() const { return ckey; }
 
 	void Suspend();

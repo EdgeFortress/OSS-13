@@ -1,15 +1,15 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
-#include "Shared/Types.hpp"
+#include <Shared/Types.hpp>
+#include <Shared/Grid.hpp>
+#include <Shared/IFaces/INonCopyable.h>
+
 #include "Tile.hpp"
-#include "Atmos/Atmos.hpp"
-#include "Shared/Grid.hpp"
 
-using std::vector;
-
-class Map {
+class Map : public INonCopyable {
 public:
     explicit Map(const uint sizeX, const uint sizeY, const uint sizeZ);
 
@@ -17,11 +17,9 @@ public:
     void Update(std::chrono::microseconds timeElapsed);
 
     apos GetSize() const;
-    Atmos *GetAtmos() const;
     Tile *GetTile(uf::vec3i) const;
+	const uf::Grid<std::unique_ptr<Tile>> &GetTiles() const;
 
 private:
-    uptr<Atmos> atmos;
-
-    uf::Grid<uptr<Tile>> tiles;
+    uf::Grid<std::unique_ptr<Tile>> tiles;
 };

@@ -1,21 +1,50 @@
 #include "World.hpp"
 
+#include <IGame.h>
+#include <IScriptEngine.h>
+
 #include "Map.hpp"
 #include "Tile.hpp"
 #include "Objects.hpp"
 #include "Objects/Control.hpp"
 #include "Player/Player.h"
+#include "Subsystems/Atmos/Atmos.h"
 
 #include <Shared/ErrorHandling.h>
 
 using namespace std::string_literals;
 
-World::World() : 
-	map(new Map(100, 100, 3))
+World::World() 
 { }
 
+void World::Initialize() {
+	generateWorld();
+	createTestItems();
+
+	subsystems.push_back(std::make_unique<subsystem::atmos::Atmos>(this));
+}
+
+void World::generateWorld() {
+	maps.push_back(std::make_unique<Map>(100, 100, 3));
+	GGame->GetScriptEngine()->FillMap(maps[0].get());
+}
+
+void World::createTestItems() {
+	CreateScriptObject("Objects.Items.Taser.Taser", { 50, 51, 0 });
+	CreateScriptObject("Objects.Turfs.Window.Window", { 50, 52, 0 });
+
+	testMob = CreateScriptObject("Objects.Creatures.Ghost.Ghost", { 49, 49, 0 });
+	testMob_lastPosition = nullptr;
+
+	test_dx = 1;
+	test_dy = 0;
+}
+
 void World::Update(std::chrono::microseconds timeElapsed) {
-	map->ClearDiffs();
+	for (auto &map : maps) {
+		map->ClearDiffs();
+		map->Update(timeElapsed);
+	}
 
 	// Simple walking mob AI for moving testing
 	if (testMob) {
@@ -31,8 +60,6 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 			dynamic_cast<Control *>(testMob->GetComponent("Control"))->MoveCommand(sf::Vector2i(test_dx, test_dy));
 		}
 	}
-    
-    map->Update(timeElapsed);
 
     // update objects
     for (uint i = 0; i < objects.size(); i++) {
@@ -62,17 +89,9 @@ void World::Update(std::chrono::microseconds timeElapsed) {
 			object->GetTile()->AddDiff(std::move(diff), object.get());
 		}
 	}
-}
 
-void World::CreateTestItems() {
-	CreateScriptObject("Objects.Items.Taser.Taser", {50, 51, 0});
-	CreateScriptObject("Objects.Turfs.Window.Window", {50, 52, 0});
-
-	testMob = CreateScriptObject("Objects.Creatures.Ghost.Ghost", { 49, 49, 0 });
-	testMob_lastPosition = nullptr;
-
-	test_dx = 1;
-	test_dy = 0;
+	for (auto &subsystem : subsystems)
+		subsystem->Update(timeElapsed);
 }
 
 Object *World::CreateNewPlayerCreature() {
@@ -92,5 +111,5 @@ Object *World::GetObject(uint id) const {
 }
 
 Map *World::GetMap() const {
-	return map.get();
+	return maps[0].get();
 }

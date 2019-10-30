@@ -22,7 +22,7 @@ namespace se = script_engine;
 PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 	py::class_<World>(m, "eWorld")
 		.def("GetObjectById", &World::GetObject)
-		.def("GetMap", &World::GetMap);
+		.def("GetMap", &World::GetMap, py::return_value_policy::reference);
 
 	py::class_<Map>(m, "eMap")
 		.def_property_readonly("size", &Map::GetSize)
@@ -35,7 +35,6 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property_readonly("pos", &Tile::GetPos)
 		.def_property_readonly("map", &Tile::GetMap)
 		.def("IsDense", &Tile::IsDense)
-		.def("IsSpace", &Tile::IsSpace)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 
 	m.def("eCreateObject", &CreateObject);
@@ -56,8 +55,6 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("speed", &Object::GetSpeed, &Object::SetSpeed)
 		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
 		.def_property("drawAtTop", &Object::IsDrawAtTop, &Object::SetDrawAtTop)
-		.def_property("isFloor", &Object::IsFloor, &Object::SetIsFloor)
-		.def_property("isWall", &Object::IsWall, &Object::SetIsWall)
 		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)

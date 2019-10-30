@@ -251,10 +251,10 @@ void Object::SetSolidity(uf::DirectionSet directions) { solidity = directions; }
 uf::DirectionSet Object::GetSolidity() const { return solidity; }
 
 void Object::SetOpacity(uf::DirectionSetFractional fractionalDirections) { opacity = fractionalDirections; }
-const uf::DirectionSetFractional &Object::GetOpacity() const { return opacity; }
+uf::DirectionSetFractional Object::GetOpacity() const { return opacity; }
 
 void Object::SetAirtightness(uf::DirectionSetFractional fractionalDirections) {airtightness = fractionalDirections; }
-const uf::DirectionSetFractional &Object::GetAirtightness() const { return airtightness; }
+uf::DirectionSetFractional Object::GetAirtightness() const { return airtightness; }
 
 void Object::SetPosition(uf::vec2i newPos) {
 	if (newPos > uf::vec2i(0, 0)) {
@@ -334,12 +334,6 @@ uf::vec2i Object::GetMoveIntent() const {
 
 bool Object::IsDrawAtTop() const { return drawAtTop; }
 void Object::SetDrawAtTop(bool value) { drawAtTop = value; }
-
-bool Object::IsFloor() const { return isFloor; }
-void Object::SetIsFloor(bool value) { isFloor = value; }
-
-bool Object::IsWall() const { return isWall; }
-void Object::SetIsWall(bool value) { isWall = value; }
 
 network::protocol::ObjectInfo Object::GetObjectInfo() const {
 	network::protocol::ObjectInfo objectInfo;

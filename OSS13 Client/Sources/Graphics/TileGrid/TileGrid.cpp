@@ -434,7 +434,7 @@ void TileGrid::SetMoveIntentObject(uint id, uf::Direction direction) {
     auto iter = objects.find(id);
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
-        uf::vec2i dir = uf::DirectionToVect(direction);
+        uf::vec2i dir = uf::DirectionToVect(direction).xy();
         obj->SetMoveIntent(dir, true);
         return;
     }
@@ -445,7 +445,7 @@ void TileGrid::MoveObject(uint id, uf::Direction direction, float speed) {
     auto iter = objects.find(id);
     if (objects.find(id) != objects.end()) {
         Object *obj = iter->second.get();
-        uf::vec2i dir = uf::DirectionToVect(direction);
+        uf::vec2i dir = uf::DirectionToVect(direction).xy();
 
         Tile *lastTile = obj->GetTile();
         if (!lastTile) {
@@ -569,7 +569,7 @@ void TileGrid::UpdateOverlay(std::vector<network::protocol::OverlayInfo> &overla
 	overlayToggled = true;
 	auto tileOverlayInfo = overlayInfo.begin();
 	for (auto &tile : blocks.Items()) {
-		EXPECT(tileOverlayInfo != overlayInfo.end());
+		//EXPECT(tileOverlayInfo != overlayInfo.end()); TODO: fix overlays, for now they are shit :(
 		if (tile) {
 			tile->SetOverlay(tileOverlayInfo->text);
 			tileOverlayInfo++;

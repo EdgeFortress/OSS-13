@@ -147,10 +147,9 @@
     <ClCompile Include="Sources\ScriptEngine\ScriptEngine.cpp" />
     <ClCompile Include="Sources\Server.cpp" />
     <ClCompile Include="Sources\VerbsHolder.cpp" />
-    <ClCompile Include="Sources\World\Atmos\Atmos.cpp" />
-    <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp" />
-    <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp" />
-    <ClCompile Include="Sources\World\Atmos\Locale.cpp" />
+    <ClCompile Include="Sources\World\Subsystems\Atmos\Atmos.cpp" />
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosCameraOverlay.cpp" />
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosOverlayWindowSink.cpp" />
     <ClCompile Include="Sources\World\Camera\Camera.cpp" />
     <ClCompile Include="Sources\World\Map.cpp" />
     <ClCompile Include="Sources\World\Objects\Component.cpp" />
@@ -159,6 +158,7 @@
     <ClCompile Include="Sources\World\Objects\CreateObject.cpp" />
     <ClCompile Include="Sources\World\Objects\Object.cpp" />
     <ClCompile Include="Sources\World\Objects\ObjectHolder.cpp" />
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosTile.cpp" />
     <ClCompile Include="Sources\World\Tile.cpp" />
     <ClCompile Include="Sources\World\World.cpp" />
   </ItemGroup>
@@ -167,6 +167,10 @@
     <ClInclude Include="Include\IScriptEngine.h" />
     <ClInclude Include="Include\IServer.h" />
     <ClInclude Include="Include\IVerbsHolder.h" />
+    <ClInclude Include="Include\World\ISubsystem.h" />
+    <ClInclude Include="Include\World\ITile.h" />
+    <ClInclude Include="Include\World\Subsystems\IAtmosTile.h" />
+    <ClInclude Include="Include\World\Subsystems\IAtmos.h" />
     <ClInclude Include="Sources\Chat.h" />
     <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h" />
     <ClInclude Include="Sources\Database\UsersDB.hpp" />
@@ -186,11 +190,11 @@
     <ClInclude Include="Sources\ScriptEngine\Trampoline\PyObject.h" />
     <ClInclude Include="Sources\Server.hpp" />
     <ClInclude Include="Sources\VerbsHolder.h" />
-    <ClInclude Include="Sources\World\Atmos\Atmos.hpp" />
-    <ClInclude Include="Sources\World\Atmos\AtmosCameraOverlay.h" />
-    <ClInclude Include="Sources\World\Atmos\AtmosOverlayWindowSink.h" />
-    <ClInclude Include="Sources\World\Atmos\Gases.hpp" />
-    <ClInclude Include="Sources\World\Atmos\Locale.hpp" />
+    <ClInclude Include="Sources\World\Subsystems\Atmos\Atmos.h" />
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosCameraOverlay.h" />
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosOverlayWindowSink.h" />
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosTile.h" />
+    <ClInclude Include="Sources\World\Subsystems\Atmos\Gases.hpp" />
     <ClInclude Include="Sources\World\Block.hpp" />
     <ClInclude Include="Sources\World\Camera\Camera.hpp" />
     <ClInclude Include="Sources\World\Camera\ICameraOverlay.h" />

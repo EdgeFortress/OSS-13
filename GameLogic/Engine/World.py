@@ -4,7 +4,7 @@ from Engine_World import *
 from Engine_Geometry import *
 
 import Engine.Server
-from Engine.Geometry import Vector, Vector2D, Direction, DirectionSet, NextDirection
+from Engine.Geometry import Vector, Vector2D, Direction, DirectionSet, NextDirection, DirectionSetFractional
 
 from datetime import timedelta
 from typing import Callable
@@ -174,6 +174,12 @@ class Object(eObject):
 			then no one dense object can walk in this tile from any direction
 		- any composite direction is breaks down to main directions
 
+	opacity: DirectionSetFractional
+		object opacity by directions. Used by lighting subsystem
+
+	aitrtightness: DirectionSetFractional
+		object aitrtightness by directions. Used by atmos subsystem
+
 	invisibility: int
 		invisibility flags of object (each bit is different type of invisibility)
 
@@ -192,16 +198,6 @@ class Object(eObject):
 	drawAtTop: bool
 		should the object be drawn as ceiling
 		if true, then object will not be drawn on its z-level, but will be drawn when camera is above
-
-	isWall: bool
-		True if object is wall. Used for atmosphere subsystem
-
-		Note: don't use it! Will be remove in next builds.
-
-	isFloor: bool
-		True if object is floor. Used for atmosphere subsystem
-
-		Note: don't use it! Will be remove in next builds.
 
 
 	Methods
@@ -376,6 +372,20 @@ class Object(eObject):
 		super(Object, self.__class__).solidity.fset(self, value._impl)
 
 	@property
+	def opacity(self) -> DirectionSetFractional:
+		return DirectionSetFractional(super().opacity)
+	@opacity.setter
+	def opacity(self, value: DirectionSetFractional):
+		super(Object, self.__class__).opacity.fset(self, value._impl)
+
+	@property
+	def airtightness(self) -> DirectionSetFractional:
+		return DirectionSetFractional(super().airtightness)
+	@airtightness.setter
+	def airtightness(self, value: DirectionSetFractional):
+		super(Object, self.__class__).airtightness.fset(self, value._impl)
+
+	@property
 	def invisibility(self) -> int:
 		return super().invisibility
 	@invisibility.setter
@@ -423,20 +433,6 @@ class Object(eObject):
 	@drawAtTop.setter
 	def drawAtTop(self, value: bool):
 		super(Object, self.__class__).drawAtTop.fset(self, value)
-
-	@property
-	def isFloor(self) -> bool:
-		return super().isFloor
-	@isFloor.setter
-	def isFloor(self, value: bool):
-		super(Object, self.__class__).isFloor.fset(self, value)
-
-	@property
-	def isWall(self) -> bool:
-		return super().isWall
-	@isWall.setter
-	def isWall(self, value: bool):
-		super(Object, self.__class__).isWall.fset(self, value)
 
 	def Update(self, timeElapsed: timedelta):
 		pass

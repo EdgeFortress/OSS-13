@@ -54,6 +54,8 @@ PYBIND11_EMBEDDED_MODULE(Engine_Geometry, m) {
 		.value("NORTH_WEST", uf::Direction::NORTH_WEST)
 		.value("NORTH_EAST", uf::Direction::NORTH_EAST)
 		.value("SOUTH_EAST", uf::Direction::SOUTH_EAST)
+		.value("TOP", uf::Direction::TOP)
+		.value("BOTTOM", uf::Direction::BOTTOM)
 		.value("CENTER", uf::Direction::CENTER);
 
 	m.def("eDirectionToVect", &uf::DirectionToVect);

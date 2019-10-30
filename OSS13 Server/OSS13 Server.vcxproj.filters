@@ -24,12 +24,6 @@
     <ClCompile Include="Sources\Resources\ResourceManager.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\World\Atmos\Atmos.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Atmos\Locale.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\World\Objects\Component.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -57,16 +51,10 @@
     <ClCompile Include="Sources\World\Camera\Camera.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\World\Atmos\AtmosCameraOverlay.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\ClientUI\WelcomeWindowSink.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\ClientUI\WindowSink.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\World\Atmos\AtmosOverlayWindowSink.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Game.cpp">
@@ -105,6 +93,18 @@
     <ClCompile Include="Sources\Player\Player.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosCameraOverlay.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosOverlayWindowSink.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\World\Subsystems\Atmos\Atmos.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosTile.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp">
@@ -120,15 +120,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Resources\ResourceManager.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Atmos\Atmos.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Atmos\Gases.hpp">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Atmos\Locale.hpp">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\World\Objects\Component.hpp">
@@ -170,9 +161,6 @@
     <ClInclude Include="Sources\World\Camera\ICameraOverlay.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\World\Atmos\AtmosCameraOverlay.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\ClientUI\WelcomeWindowSink.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -180,9 +168,6 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\VerbsHolder.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\World\Atmos\AtmosOverlayWindowSink.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Game.h">
@@ -228,6 +213,33 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Player\Player.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\Subsystems\IAtmos.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosCameraOverlay.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosOverlayWindowSink.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\Gases.hpp">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\Atmos.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\ISubsystem.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosTile.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\ITile.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\Subsystems\IAtmosTile.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

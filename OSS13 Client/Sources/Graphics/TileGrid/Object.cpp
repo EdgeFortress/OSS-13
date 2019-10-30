@@ -125,7 +125,7 @@ void Object::ResetShiftingState() {
 }
 
 void Object::ReverseShifting(uf::Direction direction) {
-	uf::vec2i directionVect = uf::DirectionToVect(direction);
+	uf::vec2i directionVect = uf::DirectionToVect(direction).xy();
 	if (directionVect.x) moveIntent.x = 0, moveIntentApproved.x = 0;
 	if (directionVect.y) moveIntent.y = 0, moveIntentApproved.y = 0;
 	shift -= directionVect;

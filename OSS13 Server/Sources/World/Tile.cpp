@@ -7,86 +7,19 @@
 #include <World/World.hpp>
 #include <World/Map.hpp>
 #include <World/Objects.hpp>
-#include <World/Atmos/Atmos.hpp>
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
 
 Tile::Tile(Map *map, apos pos) :
-    map(map), pos(pos),
-    hasFloor(false), fullBlocked(false), directionsBlocked(4, false),
-    locale(nullptr), needToUpdateLocale(false), gases(int(Gas::Count), 0)
+    map(map), pos(pos)
 {
     uint ux = uint(pos.x);
     uint uy = uint(pos.y);
 	icon = IServer::RM()->GetIconInfo("space");
 	icon.id += ((ux + uy) ^ ~(ux * uy)) % 25;
-
-    totalPressure = 0;
 }
 
 void Tile::Update(std::chrono::microseconds /*timeElapsed*/) {
-    // Update locale, if wall/floor state was changed
-    if (needToUpdateLocale) {
-        // Atmos-available tile
-        if (hasFloor && !fullBlocked) {
-            for (int dx = -1; dx <= 1; dx++)
-                for (int dy = -1; dy <= 1; dy++) {
-                    Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
-                    if (!neighbour ||
-                    	(dx == 0 && dy == 0) ||
-                        dx * dy != 0) // diag tiles
-                        continue;
-                    if (neighbour->locale) {
-                        if (locale) {
-                            locale->Merge(neighbour->locale);
-                        } else {
-                            neighbour->locale->AddTile(this);
-                            locale = neighbour->locale;
-                        }
-                    }
-                }
-            if (!locale) {
-                map->GetAtmos()->CreateLocale(this);
-            }
-        } else { // Space
-            if (!hasFloor && !fullBlocked) {
-                for (int dx = -1; dx <= 1; dx++)
-                    for (int dy = -1; dy <= 1; dy++) {
-                        Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
-                        if (!neighbour ||
-                        	(dx == 0 && dy == 0) ||
-                            dx * dy != 0) // diag tiles
-                            continue;
-                        if (neighbour->locale) {
-                            neighbour->locale->Open();
-                        }
-                    }
-                if (locale) locale->RemoveTile(this);
-            } else { // fullBlocked
-                // if here was locale then remove it
-                if (locale) { 
-                    map->GetAtmos()->RemoveLocale(locale);
-                }
-                // if here was a space then we need to update neighbors locals 
-                // so we delete them, after that Atmos::Update recreate them
-                for (int dx = -1; dx <= 1; dx++)
-                    for (int dy = -1; dy <= 1; dy++) {
-                        Tile *neighbour = map->GetTile(pos + rpos(dx, dy, 0));
-                        if (!neighbour ||
-                        	(dx == 0 && dy == 0) ||
-                            dx * dy != 0) // diag tiles
-                            continue;
-                        if (neighbour->locale) {
-                            neighbour->locale->CheckCloseness();
-                        }
-                    }
-            }
-        }
-        needToUpdateLocale = false;
-    }
-}
 
-void Tile::CheckLocale() {
-    needToUpdateLocale = true;
 }
 
 bool Tile::RemoveObject(Object *obj) {
@@ -158,37 +91,6 @@ void Tile::PlaceTo(Object *obj) {
 		return;
 
 	Tile *lastTile = obj->GetTile();
-
-	// If obj is wall or floor - remove previous and change status
-	if (obj->IsFloor()) {
-		if (hasFloor) {
-			for (auto iter = content.begin(); iter != content.end(); iter++) {
-				if ((*iter)->IsFloor()) {
-					content.erase(iter);
-					break;
-				}
-			}
-		}
-		hasFloor = true;
-		CheckLocale();
-	} else if (obj->IsWall()) {
-		if (!hasFloor) {
-			LOGW << "Warning! Try to place wall without floor";
-			return;
-		}
-		if (fullBlocked) {
-			for (auto iter = content.begin(); iter != content.end(); iter++) {
-				if ((*iter)->IsWall()) {
-					content.erase(iter);
-					break;
-				}
-			}
-            
-		}
-		fullBlocked = true;
-		CheckLocale();
-	}
-
 	if (lastTile) {
 		if (obj->IsChanged()) {
 			auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
@@ -227,6 +129,10 @@ uf::vec3i Tile::GetPos() const {
     return pos;
 }
 
+ITile *Tile::StepTo(uf::Direction direction) const {
+	return map->GetTile(GetPos() + uf::DirectionToVect(direction));
+}
+
 Map *Tile::GetMap() const { return map; }
 
 bool Tile::IsDense(uf::DirectionSet directions) const {
@@ -235,12 +141,13 @@ bool Tile::IsDense(uf::DirectionSet directions) const {
 	return false;
 }
 
-bool Tile::IsSpace() const {
-    return !hasFloor && !fullBlocked;
-}
+uf::DirectionSetFractional Tile::GetOpacity() const { return opacity; }
+float Tile::GetOpacityTo(uf::Direction direction) const {
+	if (!uf::IsPureDirection(direction))
+		return 0;
 
-Locale *Tile::GetLocale() const {
-	return locale;
+	auto neighbour = map->GetTile(GetPos() + uf::DirectionToVect(direction));
+	return GetOpacity().GetCumulativeFraction({direction, uf::Direction::CENTER }) * neighbour->GetOpacity().GetCumulativeFraction({uf::InvertDirection(direction), uf::Direction::CENTER});
 }
 
 network::protocol::TileInfo Tile::GetTileInfo(uint viewerId, uint visibility) const {
@@ -276,6 +183,9 @@ void Tile::addObject(Object *obj) {
 		iter++;
 	content.insert(iter, obj);
 
+	opacity += obj->GetOpacity();
+	subsystem::atmos::AtmosTile::addObject(obj);
+
 	obj->setTile(this);
 	obj->SetSpriteState(Global::ItemSpriteState::DEFAULT);
 }
@@ -285,15 +195,12 @@ bool Tile::removeObject(Object *obj) {
 		return false;
 	for (auto iter = content.begin(); iter != content.end(); iter++) {
 		if (*iter == obj) {
-			if (obj->IsFloor()) {
-				hasFloor = false;
-				CheckLocale();
-			} else if (obj->IsWall()) {
-				fullBlocked = false;
-				CheckLocale();
-			}
+			if (!subsystem::atmos::AtmosTile::removeObject(obj))
+				return false;
+
 			obj->setTile(nullptr);
 			content.erase(iter);
+			opacity -= obj->GetOpacity();
 			return true;
 		}
 	}
