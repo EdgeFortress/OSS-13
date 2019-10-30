@@ -68,6 +68,8 @@ public:
 	const BufferType &GetFractions() const;
 	void SetFractions(BufferType fractions);
 
+	bool operator==(const DirectionSetFractional &other) const;
+	bool operator!=(const DirectionSetFractional &other) const;
 	DirectionSetFractional operator+(const DirectionSetFractional &other) const;
 	DirectionSetFractional operator+=(const DirectionSetFractional &other);
 	DirectionSetFractional operator-(const DirectionSetFractional &other) const;

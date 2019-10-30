@@ -168,6 +168,17 @@ void DirectionSetFractional::Reset() {
 const DirectionSetFractional::BufferType &DirectionSetFractional::GetFractions() const { return fractions; }
 void DirectionSetFractional::SetFractions(DirectionSetFractional::BufferType fractions) { this->fractions = fractions; }
 
+bool DirectionSetFractional::operator==(const DirectionSetFractional &other) const {
+	for (size_t i = 0; i < fractions.size(); i++)
+		if (fractions[i] != other.fractions[i])
+			return false;
+	return true;
+}
+
+bool DirectionSetFractional::operator!=(const DirectionSetFractional &other) const {
+	return !(*this == other);
+}
+
 DirectionSetFractional DirectionSetFractional::operator+(const DirectionSetFractional &other) const {
 	DirectionSetFractional result;
 	for (size_t i = 0; i < fractions.size(); i++)
