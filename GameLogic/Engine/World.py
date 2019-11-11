@@ -108,10 +108,6 @@ class Tile(eTile):
 		return self._impl.z
 
 	@property
-	def position(self) -> Vector2D:
-		return Vector2D._FromEngineVec(self._impl.pos)
-
-	@property
 	def pos(self) -> Vector:
 		return Vector._FromEngineVec(self._impl.pos)
 
@@ -629,7 +625,10 @@ class Control(eControl, Component):
 		return self._impl.GetAndDropClickedObject()
 	
 	def GetAndDropClickedTile(self) -> Tile:
-		return self._impl.GetAndDropClickedTile()
+		tile = self._impl.GetAndDropClickedTile()
+		if not tile:
+			return tile
+		return Tile(tile)
 
 
 class ControlUI(eControlUI):

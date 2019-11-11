@@ -11,7 +11,7 @@
 
 Control::Control() : 
 	Component("Control"),
-	isTileClicked(false), ui(std::make_unique<ControlUI>(this))
+	ui(std::make_unique<ControlUI>(this))
 { }
 
 void Control::Update(std::chrono::microseconds timeElapsed) {

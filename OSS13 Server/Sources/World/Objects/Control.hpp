@@ -47,7 +47,7 @@ private:
 	int moveZOrder{};
 	uint clickedObjectID{};
 	uf::vec3i clickedTilePos;
-	bool isTileClicked;
+	bool isTileClicked{};
 
 	Player *player{nullptr};
 	std::unique_ptr<ControlUI> ui;

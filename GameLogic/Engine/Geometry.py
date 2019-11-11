@@ -137,7 +137,10 @@ class Vector:
 		self.x = x
 		self.y = y
 		self.z = z
-
+	
+	def xy(self) -> Vector2D:
+		return Vector2D(self.x, self.y)
+	
 	def Magnitude(self) -> float:
 		"""Returns the magnitude of this vector"""
 		return (self.x**2 + self.y**2 + self.z**2)**0.5
@@ -201,7 +204,7 @@ class Vector:
 		return '<{:}, {:}, {:}>'.format(self.x, self.y, self.z)
 
 	@classmethod
-	def __FromEngineVec(cls, engineVec):
+	def _FromEngineVec(cls, engineVec):
 		return cls(engineVec.x, engineVec.y, engineVec.z)
 
 class Direction(eDirection):

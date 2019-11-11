@@ -7,3 +7,6 @@ class Item(Object):
 	
 	def InteractWith(self, object):
 		return False
+
+	def ClickTile(self, tile):
+		return False
