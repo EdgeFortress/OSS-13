@@ -35,6 +35,7 @@ install:
 
     - vcpkg install "python3:%platform%-windows"
     - vcpkg install "python3:%platform%-windows-static"
+    - vcpkg install "liblemon:&platform%-windows-static"
     - vcpkg install "sfml:%platform%-windows-static"
     - vcpkg install "gtest:%platform%-windows-static"
 
