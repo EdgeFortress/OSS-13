@@ -2,7 +2,7 @@
 
 #include <Shared/IFaces/INonCopyable.h>
 
-#include <World/Subsystems/IAtmos.h>
+#include <World/ISubsystem.h>
 #include <World/Objects/ObjectHolder.h>
 #include <World/Objects/Object.hpp>
 

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <World/Subsystems/IAtmosTile.h>
+#include <World/Subsystems/Atmos/IAtmosTile.h>
+#include <World/Subsystems/Atmos/ILocale.h>
 
 #include <Shared/Geometry/DirectionSet.h>
 
@@ -11,6 +12,7 @@ namespace atmos {
 
 class AtmosTile : public IAtmosTile {
 public:
+	void RecountAirtightness();
 	bool SynchronizeAtmos() final;
 
 	ILocale *GetLocale() final;
@@ -20,14 +22,15 @@ public:
 	float GetAirtightnessTo(uf::Direction direction) const final;
 
 protected:
-	virtual void addObject(Object *);
-	virtual bool removeObject(Object *);
+	void addObject(Object *);
+	void removeObject(Object *);
 
 	void recountAirtightness();
 
 private:
 	ILocale *locale{};
 
+	bool needToRecoundAirtightness{false};
 	uf::DirectionSetFractional airtightness;
 	uf::DirectionSetFractional airtightnessChanged;
 };

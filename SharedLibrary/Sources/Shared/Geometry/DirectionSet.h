@@ -5,7 +5,6 @@
 #include <array>
 #include <list>
 
-#include <Shared/ErrorHandling.h>
 #include <Shared/IFaces/ICopyable.h>
 #include <Shared/Geometry/Direction.hpp>
 

@@ -1,4 +1,4 @@
-from Engine.Geometry import Direction, DirectionSet
+from Engine.Geometry import Direction, DirectionSet, DirectionSetFractional
 from Engine.World import Object
 
 from Objects.Turf import Turf
@@ -12,3 +12,4 @@ class Window(Turf):
 		super().__init__()
 		self.layer = 80
 		self.solidity = DirectionSet([Direction.SOUTH])
+		self.airtightness = DirectionSetFractional([(Direction.SOUTH, 0)])
