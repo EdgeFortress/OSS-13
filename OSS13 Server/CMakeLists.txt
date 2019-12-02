@@ -14,7 +14,6 @@ add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 target_link_libraries(${EXECUTABLE_NAME} Shared)
 target_link_libraries(${EXECUTABLE_NAME} pthread)
 target_link_libraries(${EXECUTABLE_NAME} ${PYTHON_LIBRARIES})
-target_link_libraries(${EXECUTABLE_NAME} emon) #liblemon
 
 include_directories(Sources)
 include_directories(Include)
@@ -26,3 +25,7 @@ find_package(SFML REQUIRED system window graphics network) #audio
 
 target_compile_options(${EXECUTABLE_NAME} PRIVATE -fvisibility=hidden)
 target_link_libraries(${EXECUTABLE_NAME} sfml-system sfml-window sfml-graphics sfml-network)
+
+find_package(LEMON REQUIRED)
+include_directories(${LEMON_INCLUDE_DIRS})
+target_link_libraries(${EXECUTABLE_NAME} ${LEMON_LIBRARIES})
