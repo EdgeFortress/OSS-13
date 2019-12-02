@@ -28,10 +28,11 @@ private:
 	void divideByConnectedComponents();
 
 private:
+	ILocaleFactory *factory;
+
 	std::unique_ptr<Graph<IAtmosTile *>> graph;
 
 	bool connectivityCheckIsNeeded{ false };
-	ILocaleFactory *factory;
 };
 
 } // namespace subsystem::atmos

@@ -74,7 +74,7 @@ public:
 		auto componentsCount = lemon::connectedComponents(*this, componentsMap);
 
 		std::vector<std::unique_ptr<Graph<LogicNode>>> components;
-		for (size_t i = 0; i < componentsCount; i++)
+		for (int i = 0; i < componentsCount; i++)
 			components.push_back(std::make_unique<Graph<LogicNode>>());
 
 		for (auto &[logicNode, rawNode] : logicNodesToRaw) {
@@ -151,9 +151,9 @@ public:
 	public:
 		using const_iterator::const_iterator;
 
-		iterator& operator++() { iter++; return *this; };
-		LogicNode &operator*() const { return const_cast<LogicNode &>(iter->first); }
-		bool operator!=(const iterator& it) const { return iter != it.iter; }
+		iterator& operator++() { const_iterator::iter++; return *this; };
+		LogicNode &operator*() const { return const_cast<LogicNode &>(const_iterator::iter->first); }
+		bool operator!=(const iterator& it) const { return const_iterator::iter != it.iter; }
 	};
 
 

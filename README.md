@@ -83,7 +83,7 @@ git clone https://github.com/EdgeFortress/OSS-13 --recurse-submodules
 
 ### Linux
 
-For Linux [CMake](https://cmake.org/) is provided. You should manually install [SFML](https://www.sfml-dev.org/), GTest and Python 3 For Development by your package manager and run cmake as usual.
+For Linux [CMake](https://cmake.org/) is provided. You should manually install [SFML](https://www.sfml-dev.org/), [Lemon](https://lemon.cs.elte.hu/), GTest and Python 3 For Development by your package manager and run cmake as usual.
 
 When cloning don't forget to init submodules:
 
