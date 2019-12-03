@@ -6,7 +6,6 @@
 
 #include <Resources/IconInfo.h>
 #include <World/ITile.h>
-#include <World/Subsystems/IAtmos.h>
 #include <World/Subsystems/Atmos/AtmosTile.h>
 
 #include <Shared/Global.hpp>
@@ -47,8 +46,8 @@ public:
 	int Z() const { return pos.z; }
 
 private:
-	void addObject(Object *obj) final;
-	bool removeObject(Object *obj) final;
+	void addObject(Object *obj);
+	bool removeObject(Object *obj);
 
 private:
 	Map *map;

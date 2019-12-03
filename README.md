@@ -27,13 +27,15 @@ In order to compile OSS-13 on Windows the simplest way is to use Visual Studio 2
 For now the only dependencies you need to install manually are SFML, Python 3 and GTest. The most convenient way to do it is using VCPKG:
 
 1. Install [vcpkg](https://github.com/Microsoft/vcpkg) according their readme. Don't forget to integrate it!
-2. Install [SFML](https://www.sfml-dev.org/), Python 3 and [GTest](https://github.com/google/googletest) with following instructions:
+2. Install [SFML](https://www.sfml-dev.org/), Python 3, [Lemon](https://lemon.cs.elte.hu/) and [GTest](https://github.com/google/googletest) with following instructions:
 
 ```
 vcpkg install sfml:x64-windows-static
 vcpkg install sfml:x86-windows-static
 vcpkg install python3:x64-windows-static
 vcpkg install python3:x86-windows-static
+vcpkg install liblemon:x64-windows-static
+vcpkg install liblemon:x86-windows-static
 vcpkg install gtest:x64-windows-static
 vcpkg install gtest:x86-windows-static
 ```
@@ -81,7 +83,7 @@ git clone https://github.com/EdgeFortress/OSS-13 --recurse-submodules
 
 ### Linux
 
-For Linux [CMake](https://cmake.org/) is provided. You should manually install [SFML](https://www.sfml-dev.org/), GTest and Python 3 For Development by your package manager and run cmake as usual.
+For Linux [CMake](https://cmake.org/) is provided. You should manually install [SFML](https://www.sfml-dev.org/), [Lemon](https://lemon.cs.elte.hu/), GTest and Python 3 For Development by your package manager and run cmake as usual.
 
 When cloning don't forget to init submodules:
 

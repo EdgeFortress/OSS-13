@@ -3,8 +3,8 @@
 #include <iostream>
 #include <list>
 #include <mutex>
+#include <ctime>
 
-#include <plog/Log.h>
 #include <plog/Appenders/ConsoleAppender.h>
 #include <plog/Formatters/MessageOnlyFormatter.h>
 
@@ -19,6 +19,7 @@
 #include <World/Objects.hpp>
 #include <World/Objects/Control.hpp>
 
+#include <Shared/Log.h>
 #include <Shared/ErrorHandling.h>
 
 #include "Game.h"
@@ -35,6 +36,14 @@ Server::Server() :
 
 	plog::ConsoleAppender<plog::MessageOnlyFormatter> appender;
 	plog::init(plog::verbose, &appender);
+
+	auto now = std::chrono::system_clock::now();
+	auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+	std::stringstream ss;
+	ss << std::put_time(std::localtime(&in_time_t), "logs/%Y-%m-%d %H-%M-%S.log");
+
+	//plog::init<LogType::File>(plog::verbose, ss.str().c_str());
 
 	ASSERT_WITH_MSG(rm->Initialize(), "Failed to Initialize ResourceManager!");
 

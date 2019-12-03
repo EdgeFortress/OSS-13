@@ -25,3 +25,7 @@ find_package(SFML REQUIRED system window graphics network) #audio
 
 target_compile_options(${EXECUTABLE_NAME} PRIVATE -fvisibility=hidden)
 target_link_libraries(${EXECUTABLE_NAME} sfml-system sfml-window sfml-graphics sfml-network)
+
+find_package(LEMON REQUIRED)
+include_directories(${LEMON_INCLUDE_DIRS})
+target_link_libraries(${EXECUTABLE_NAME} ${LEMON_LIBRARIES})

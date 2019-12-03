@@ -105,6 +105,9 @@
     <ClCompile Include="Sources\World\Subsystems\Atmos\AtmosTile.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\World\Subsystems\Atmos\Locale.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Database\UsersDB.hpp">
@@ -215,9 +218,6 @@
     <ClInclude Include="Sources\Player\Player.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Include\World\Subsystems\IAtmos.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\World\Subsystems\Atmos\AtmosCameraOverlay.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -239,7 +239,22 @@
     <ClInclude Include="Include\World\ITile.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Include\World\Subsystems\IAtmosTile.h">
+    <ClInclude Include="Sources\World\Subsystems\Atmos\Locale.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\World\Subsystems\Atmos\ILocaleFactory.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\Subsystems\Atmos\ILocale.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\Subsystems\Atmos\IAtmos.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World\Subsystems\Atmos\IAtmosTile.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Algorithms\Graph.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

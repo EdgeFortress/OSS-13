@@ -221,6 +221,8 @@ void Object::SetDirection(uf::Direction direction) {
 	if (direction > uf::Direction::EAST)
 		direction = uf::Direction(char(direction) % 4);
 	this->direction = direction;
+	if (!airtightness.IsDefault() && tile)
+		tile->RecountAirtightness();
 }
 uf::Direction Object::GetDirection() { return direction; }
 

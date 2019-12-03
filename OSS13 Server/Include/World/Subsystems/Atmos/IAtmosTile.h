@@ -1,7 +1,7 @@
 #pragma once
 
 #include <World/ITile.h>
-#include <World/Subsystems/IAtmos.h>
+#include <World/Subsystems/Atmos/ILocale.h>
 
 namespace subsystem {
 namespace atmos {

@@ -195,12 +195,10 @@ bool Tile::removeObject(Object *obj) {
 		return false;
 	for (auto iter = content.begin(); iter != content.end(); iter++) {
 		if (*iter == obj) {
-			if (!subsystem::atmos::AtmosTile::removeObject(obj))
-				return false;
-
 			obj->setTile(nullptr);
 			content.erase(iter);
 			opacity -= obj->GetOpacity();
+			subsystem::atmos::AtmosTile::removeObject(obj);
 			return true;
 		}
 	}

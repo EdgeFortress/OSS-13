@@ -5,7 +5,12 @@
 
 using namespace subsystem::atmos;
 
+void AtmosTile::RecountAirtightness() {
+	needToRecoundAirtightness = true;
+}
+
 bool AtmosTile::SynchronizeAtmos() {
+	recountAirtightness();
 	if (airtightness != airtightnessChanged) {
 		airtightness = airtightnessChanged;
 		return true;
@@ -35,18 +40,20 @@ float AtmosTile::GetAirtightnessTo(uf::Direction direction) const {
 
 void AtmosTile::addObject(Object *object) {
 	if (!object->GetAirtightness().IsDefault())
-		recountAirtightness();
+		RecountAirtightness();
 }
 
-bool AtmosTile::removeObject(Object *object) {
+void AtmosTile::removeObject(Object *object) {
 	if (!object->GetAirtightness().IsDefault())
-		recountAirtightness();
-	return true;
+		RecountAirtightness();
 }
 
 void AtmosTile::recountAirtightness() {
+	if (!needToRecoundAirtightness)
+		return;
+	needToRecoundAirtightness = false;
 	airtightnessChanged.Reset();
 	for (auto &object : Content()) {
-		airtightnessChanged += object->GetAirtightness();
+		airtightnessChanged += object->GetAirtightness().Rotate(object->GetDirection());
 	}
 }
