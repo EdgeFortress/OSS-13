@@ -7,7 +7,7 @@ import Engine.Server
 from Engine.Geometry import Vector, Vector2D, Direction, DirectionSet, NextDirection, DirectionSetFractional
 
 from datetime import timedelta
-from typing import Callable
+from typing import Callable, List
 
 class World(eWorld):
 	"""
@@ -82,6 +82,9 @@ class Tile(eTile):
 	map: Map
 		Read-only
 
+	content: list[objects]
+		Read-only
+
 	Methods
 	-------
 	IsDense(directions: DirectionSet) -> bool
@@ -114,6 +117,10 @@ class Tile(eTile):
 	@property
 	def map(self) -> Map:
 		return Map(self._impl.map)
+
+	@property
+	def content(self) -> List[Object]:
+		return self._impl.content
 
 	def IsDense(self, directions: DirectionSet) -> bool:
 		return self._impl.IsDense(directions._impl)
@@ -198,6 +205,9 @@ class Object(eObject):
 	drawAtTop: bool
 		should the object be drawn as ceiling
 		if true, then object will not be drawn on its z-level, but will be drawn when camera is above
+
+	content: list[objects]
+		Read-only
 
 
 	Methods
@@ -433,6 +443,10 @@ class Object(eObject):
 	@drawAtTop.setter
 	def drawAtTop(self, value: bool):
 		super(Object, self.__class__).drawAtTop.fset(self, value)
+
+	@property
+	def content(self) -> List[Object]:
+		return super().content
 
 	def Update(self, timeElapsed: timedelta):
 		pass
