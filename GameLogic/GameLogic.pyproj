@@ -72,6 +72,7 @@
     <Compile Include="Objects\Items\Organs\Hand.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Objects\Items\Organs\__init__.py" />
     <Compile Include="Objects\Items\Taser.py" />
     <Compile Include="Objects\Items\__init__.py" />
     <Compile Include="Objects\Projectile.py">
