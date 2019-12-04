@@ -34,6 +34,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property_readonly("z", &Tile::Z)
 		.def_property_readonly("pos", &Tile::GetPos)
 		.def_property_readonly("map", &Tile::GetMap)
+		.def_property_readonly("content", &Tile::Content)
 		.def("IsDense", &Tile::IsDense)
 		.def("GetDenseObject", &Tile::GetDenseObject, py::return_value_policy::reference);
 
@@ -55,6 +56,7 @@ PYBIND11_EMBEDDED_MODULE(Engine_World, m) {
 		.def_property("speed", &Object::GetSpeed, &Object::SetSpeed)
 		.def_property("moveSpeed", &Object::GetMoveSpeed, &Object::SetMoveSpeed)
 		.def_property("drawAtTop", &Object::IsDrawAtTop, &Object::SetDrawAtTop)
+		.def_property_readonly("content", &Object::Content)
 		.def("AddVerb", &Object::AddVerb)
 		.def("Update", &Object::Update)
 		.def("InteractedBy", &Object::InteractedBy)

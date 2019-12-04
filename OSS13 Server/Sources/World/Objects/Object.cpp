@@ -203,6 +203,10 @@ void Object::Delete() {
     markedToBeDeleted = true;
 }
 
+const std::vector<Object *> &Object::Content() const {
+	return content;
+}
+
 uint Object::ID() const { return id; }
 
 const std::string &Object::GetName() const { return name; }

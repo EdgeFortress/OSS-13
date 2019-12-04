@@ -44,11 +44,12 @@ public:
 
 	void AddObject(Object *);
 	virtual bool RemoveObject(Object *);
-    virtual void Delete();
+	virtual void Delete();
+	const std::vector<Object *> &Content() const;
 
-    uint ID() const;
+	uint ID() const;
 
-    const std::string &GetName() const;
+	const std::string &GetName() const;
 	void SetName(const std::string& name);
 
 	const std::string &GetSprite() const;
@@ -148,7 +149,7 @@ private:
 	uint id;
     Tile *tile;
 	Object *holder;
-	std::list<Object *> content;
+	std::vector<Object *> content;
 	std::unordered_map<std::string, uptr<Component>> components;
 
 	// Movement
