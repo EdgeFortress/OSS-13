@@ -91,7 +91,7 @@ void Tile::PlaceTo(Object *obj) {
 		return;
 
 	Tile *lastTile = obj->GetTile();
-	if (lastTile) {
+	if (lastTile && !obj->GetHolder()) { // if object has holder then it wasn't visible by itself => we don't need to create remove diff
 		if (obj->IsChanged()) {
 			auto fieldsDiff = std::make_shared<network::protocol::FieldsDiff>();
 			fieldsDiff->objId = obj->ID();
