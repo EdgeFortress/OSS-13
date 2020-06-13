@@ -45,7 +45,7 @@ bool WildCompare(const std::string &string, const std::string &wild) {
 	return (wild_ch == wild.end());
 }
 
-FileInfo ParseFilePath(const std::wstring &filePath) {
+FileInfo ParseFilePath(const std::string &filePath) {
 	auto dot = filePath.end();
 	auto slash = filePath.end();
 
@@ -59,16 +59,16 @@ FileInfo ParseFilePath(const std::wstring &filePath) {
 			break;
 		}
 	}
-    
+
 	// Form result
 	FileInfo result;
 	if (slash != filePath.end()) {
-		result.path = std::wstring(filePath.begin(), slash);
-		result.name = std::wstring(slash + 1, dot);
+		result.path = std::string(filePath.begin(), slash);
+		result.name = std::string(slash + 1, dot);
 	} else {
-		result.name = std::wstring(filePath.begin(), dot);
+		result.name = std::string(filePath.begin(), dot);
 	}
-	result.extension = std::wstring(dot, filePath.end());
+	result.extension = std::string(dot, filePath.end());
 
 	return result;
 }

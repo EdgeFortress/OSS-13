@@ -20,7 +20,7 @@ public:
 	const IConfig *Config() const;
 
 private:
-	void generateTexturesAndSprites(const std::wstring &configPath);
+	void generateTexturesAndSprites(const std::string &configPath);
 	void generateSprites(
 		const Texture *texture,
 		const Texture *mobState_texture,
@@ -31,7 +31,7 @@ private:
 private:
 	const char *IMAGE_CONFIGS_PATH = "Resources/Icons";
 	const char *IMAGE_CONFIG_MASK = "*.json";
-	const wchar_t *CONFIG_FILE = L"Resources/ClientConfig.json";
+	const char *CONFIG_FILE = "Resources/ClientConfig.json";
 
 	ConfigController configController;
 

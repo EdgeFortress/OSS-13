@@ -15,59 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-    <None Include="Sources\**\*.inl">
-      <Filter>Заголовочные файлы</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Sources\Shared\Geometry\Direction.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -277,5 +224,16 @@
     <ClInclude Include="Sources\Shared\Log.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sources\Shared\Geometry\Vec2.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="Sources\Shared\Geometry\Vec3.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
+    <None Include="Sources\Shared\Grid.inl">
+      <Filter>Заголовочные файлы</Filter>
+    </None>
   </ItemGroup>
 </Project>

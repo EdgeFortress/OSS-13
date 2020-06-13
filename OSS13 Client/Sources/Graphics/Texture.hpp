@@ -23,7 +23,7 @@ public:
     uint GetSizeOfTile() const;
 
 protected:
-	bool load(std::wstring path, uint32_t tileSize);
+	bool load(const std::string &path, uint32_t tileSize);
 
 private:
     sf::Texture texture;

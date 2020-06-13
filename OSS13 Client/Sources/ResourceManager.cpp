@@ -18,7 +18,7 @@ void ResourceManager::Initialize() {
 	// Load icons list
 	auto config_files = FindFilesRecursive(IMAGE_CONFIGS_PATH, IMAGE_CONFIG_MASK);
 	for (const auto &config_file_path : config_files) {
-		generateTexturesAndSprites(config_file_path.wstring());
+		generateTexturesAndSprites(config_file_path.string());
 	}
 }
 
@@ -26,7 +26,7 @@ const IConfig *ResourceManager::Config() const {
 	return &configController;
 }
 
-void ResourceManager::generateTexturesAndSprites(const std::wstring &configpath) {
+void ResourceManager::generateTexturesAndSprites(const std::string &configpath) {
 	FileInfo configPathParseResult = ParseFilePath(configpath);
 
 	json config;
@@ -39,14 +39,14 @@ void ResourceManager::generateTexturesAndSprites(const std::wstring &configpath)
 	Texture *lhandStateTexture = nullptr;
 	Texture *rhandStateTexture = nullptr;
 
-	texture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".png", tileSize);
+	texture = LoadTexture(configPathParseResult.path + "/" + configPathParseResult.name + ".png", tileSize);
 
 	if (config.find("mobState") != config.end())
-		mobStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".mob.png", tileSize);
+		mobStateTexture = LoadTexture(configPathParseResult.path + "/" + configPathParseResult.name + ".mob.png", tileSize);
 	if (config.find("lhandState") != config.end())
-		lhandStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".lhand.png", tileSize);
+		lhandStateTexture = LoadTexture(configPathParseResult.path + "/" + configPathParseResult.name + ".lhand.png", tileSize);
 	if (config.find("rhandState") != config.end())
-		rhandStateTexture = LoadTexture(configPathParseResult.path + L"/" + configPathParseResult.name + L".rhand.png", tileSize);
+		rhandStateTexture = LoadTexture(configPathParseResult.path + "/" + configPathParseResult.name + ".rhand.png", tileSize);
 
 	generateSprites(texture, mobStateTexture, lhandStateTexture, rhandStateTexture, config);
 }

@@ -1,6 +1,6 @@
 #include "TextureHolder.h"
 
-Texture *TextureHolder::LoadTexture(std::wstring path, uint32_t tileSize) {
+Texture *TextureHolder::LoadTexture(const std::string &path, uint32_t tileSize) {
 	textures.push_back(std::make_unique<Texture>());
 
 	Texture *texture = textures.back().get();
