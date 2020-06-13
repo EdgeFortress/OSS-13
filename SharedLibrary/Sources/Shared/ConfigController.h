@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 class ConfigController : public IConfig {
 public:
-	void Load(const std::wstring &configPath);
+	void Load(const std::string &configPath);
 
 	std::string GetString(const char *option) const final;
 	int GetInt(const char *option) const final;

@@ -13,14 +13,14 @@ In the future this project will be used as a basis for [Space Station 13](https:
 
 You can build OSS-13 for almost any modern OS, including Windows 7 (and newer), Linux and MacOS. Here you can find build instructions for Windows 10 and Linux (Ubuntu, Debian, Arch, etc.). We don't test compilation on MacOS but it should work too.
 
-The best way to work on OSS-13 is Visual Studio 2017/19 due to unique C++/Python mixed debug mode being very useful when you are coding Game Logic. 
+The best way to work on OSS-13 is Visual Studio 2019 due to unique C++/Python mixed debug mode being very useful when you are coding Game Logic. 
 You can use any other development tools but it would be much less convenient due to lack of such debugging tools.
 
 ### Windows
 
-Tip: branch 'windows' has latest version checked for building with Visual Studio 2017.
+Tip: branch 'windows' has latest version checked for building with Visual Studio 2019.
 
-In order to compile OSS-13 on Windows the simplest way is to use Visual Studio 2017 with [VCPKG](https://github.com/Microsoft/vcpkg) packet manager. This instruction should be suitable for Visual Studio 2019 too.
+In order to compile OSS-13 on Windows the simplest way is to use Visual Studio 2019 with [VCPKG](https://github.com/Microsoft/vcpkg) packet manager.
 
 **Step 1.** Install dependencies.
 
@@ -45,14 +45,14 @@ vcpkg install gtest:x86-windows-static
 In order to run built server, also you need install Python 3 (x64 or x86) manually via [official site](https://www.python.org/downloads/).
 You can add Pythons with different configurations to PATH in solution debug options (OSS13 Server/Properties/Debugging/Environment). Or just add python with one of configurations to system PATH.
 
-**Step 2.** Configure Visual Studio 2017 (not tested with VS2019, but should work too)
+**Step 2.** Configure Visual Studio 2019
 
-Install latest VS2017 with additional options (or update existing installation with VS Installer):
+Install latest VS2019 with additional options (or update existing installation with VS Installer):
 
 ```
 Desktop development with C++
     - Just-In-Time debugger
-    - VC++ 2017 latest tools (v141) (you should use it with VS2019 too)
+    - VC++ 2019 latest tools (v142)
     - Windows 10 SDK
 Python development
     - Python native development tools (for C++/Python mixed mode debugging)

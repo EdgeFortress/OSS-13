@@ -23,8 +23,8 @@ uf::vec2i Texture::GetNumOfTiles() const { return numOfTiles; }
 uint Texture::GetSizeOfTile() const { return sizeOfTile; }
 const sf::Texture *Texture::GetSFMLTexture() const { return &texture; }
 
-bool Texture::load(std::wstring path, uint32_t tileSize) {
-	if (!texture.loadFromFile(std::string(path.begin(), path.end())))
+bool Texture::load(const std::string &path, uint32_t tileSize) {
+	if (!texture.loadFromFile(path))
 		return false;
 
 	sizeOfTile = tileSize;

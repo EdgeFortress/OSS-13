@@ -8,13 +8,13 @@
 bool WildCompare(const std::string &string, const std::string &wild);
 
 struct FileInfo {
-    std::wstring name;
-    std::wstring path;
-    std::wstring extension;
+    std::string name;
+    std::string path;
+    std::string extension;
 };
 
 // Get FileInfo by file path
-FileInfo ParseFilePath(const std::wstring &filePath);
+FileInfo ParseFilePath(const std::string &filePath);
 
 // Find the files by mask in the directory and subdirectories
 // Return list of funded files

@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 clone_folder: c:\projects\oss13
 clone_depth: 10
@@ -9,7 +9,6 @@ configuration: Release
 
 environment:
     APPVEYOR_SAVE_CACHE_ON_ERROR: true
-    TOOLCHAIN: msvc15
 
 branches:
   only:
@@ -38,6 +37,8 @@ install:
     - vcpkg install "liblemon:&platform%-windows-static"
     - vcpkg install "sfml:%platform%-windows-static"
     - vcpkg install "gtest:%platform%-windows-static"
+
+    - vcpkg upgrade --no-dry-run
 
 after_build:
     - set BIN_FOLDER_SUFFIX=%platform%

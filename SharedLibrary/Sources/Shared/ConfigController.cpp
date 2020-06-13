@@ -3,8 +3,8 @@
 #include <fstream>
 #include <plog/Log.h>
 
-void ConfigController::Load(const std::wstring &configPath) {
-	std::ifstream(std::string(configPath.begin(), configPath.end())) >> config;
+void ConfigController::Load(const std::string &configPath) {
+	std::ifstream(configPath) >> config;
 
 	LOGD << "Config loaded:";
 
