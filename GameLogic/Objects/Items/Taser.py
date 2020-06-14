@@ -10,7 +10,7 @@ class Taser(Item):
 		if object is None:
 			return False
 
-		if not object.position:
+		if not object.position or object.position == self.position:
 			return False
 
 		self.CreateProjectile(object.position - self.position)
