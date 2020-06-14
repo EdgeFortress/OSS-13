@@ -104,6 +104,12 @@ class Vector2D:
 		y = self.y // obj
 		return Vector2D(x, y)
 
+	def __eq__(self, other):
+		return self.x == other.x and self.y == other.y
+
+	def __ne__(self, other):
+		return not self == other
+
 	def __repr__(self):
 		return '<Vector2D: {:}, {:}>'.format(self.x, self.y)
 
@@ -196,6 +202,12 @@ class Vector:
 		y = self.y // obj
 		z = self.z // obj
 		return Vector(x, y, z)
+
+	def __eq__(self, other):
+		return self.x == other.x and self.y == other.y and self.z == other.z
+
+	def __ne__(self, other):
+		return not self == other
 
 	def __repr__(self):
 		return '<Vector: {:}, {:}, {:}>'.format(self.x, self.y, self.z)
