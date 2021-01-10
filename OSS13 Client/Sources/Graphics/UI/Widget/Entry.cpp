@@ -12,7 +12,7 @@ Entry::Entry(const uf::vec2i &size) {
 	canBeActive = true;
 
     showPos = 0;
-    cursorPos = -1;
+    cursorPos = 0;
 
 	hidingSymbols = false;
 	hidingSymbol = '*';
@@ -74,10 +74,10 @@ void Entry::setSymbol(wchar_t c) {
         hidingString += c;
         c = hidingSymbol;
     }
-    if (cursorPos == entryString.size() - 1)
+    if (cursorPos == entryString.size())
         entryString += c;
     else
-        entryString.insert(entryString.begin() + 1 + cursorPos, c);
+        entryString.insert(entryString.begin() + cursorPos, c);
 
     cursorPos += 1;
     moveCursorRight(c);
@@ -92,17 +92,19 @@ void Entry::setSymbol(wchar_t c) {
 }
 
 void Entry::deleteSymbol() {
-    moveCursorLeft(entryString[cursorPos]);
-    entryString.erase(entryString.begin() + cursorPos);
+    if (cursorPos == 0)
+        return;
+    moveCursorLeft(entryString[cursorPos - 1]);
+    entryString.erase(entryString.begin() + cursorPos - 1);
 	if (hidingSymbols)
-		hidingString.erase(hidingString.begin() + cursorPos);
+		hidingString.erase(hidingString.begin() + cursorPos - 1);
     text.setString(std::wstring(entryString.c_str() + showPos));
 
-    if (cursorPos--)
+    if (--cursorPos == 0)
     	return;
 
     int shift_size = 15;
-    if (cursorPos + 1 <= showPos && showPos) {
+    if (cursorPos <= showPos && showPos) {
         if (int(showPos) >= shift_size)
             showPos -= shift_size;
         else {
@@ -117,11 +119,13 @@ void Entry::deleteSymbol() {
 }
 
 void Entry::moveLeft() {
-    moveCursorLeft(entryString[cursorPos]);
-    std::vector<float> letter_sizes = getLetterSizes(entryString[cursorPos]);
+    if (cursorPos == 0)
+        return;
+    moveCursorLeft(entryString[cursorPos - 1]);
+    std::vector<float> letter_sizes = getLetterSizes(entryString[cursorPos - 1]);
     cursorPos--;
 
-    if (cursorPos + 1 < showPos) {
+    if (cursorPos < showPos) {
         showPos--;
         text.setString(std::wstring(entryString.c_str() + showPos));
         cursor.setPosition(cursor.getPosition().x + letter_sizes[0], cursor.getPosition().y);
@@ -129,11 +133,11 @@ void Entry::moveLeft() {
 }
 
 void Entry::moveRight() {
-    if (cursorPos == entryString.size() - 1)
+    if (cursorPos == entryString.size())
         return;
 
     cursorPos++;
-    moveCursorRight(entryString[cursorPos]);
+    moveCursorRight(entryString[cursorPos - 1]);
 
     while (cursor.getPosition().x >= text.getGlobalBounds().left + GetSize().x * 0.96f) {
         showPos++;
@@ -147,7 +151,7 @@ void Entry::Clear() {
     entryString.erase(entryString.begin(), entryString.end());
     hidingString.erase(hidingString.begin(), hidingString.end());
     showPos = 0;
-    cursorPos = -1;
+    cursorPos = 0;
 
     cursor.setPosition(text.getGlobalBounds().width, cursor.getPosition().y);
 }
@@ -167,7 +171,7 @@ std::string Entry::GetText() {
     entryString.erase(entryString.begin(), entryString.end());
     hidingString.erase(hidingString.begin(), hidingString.end());
     showPos = 0;
-    cursorPos = -1;
+    cursorPos = 0;
 
     cursor.setPosition(text.getGlobalBounds().width, cursor.getPosition().y);
 
