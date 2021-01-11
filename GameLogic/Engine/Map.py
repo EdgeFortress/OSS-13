@@ -1,6 +1,7 @@
 from Engine.World import Map, CreateObject, Object
 from Engine.Geometry import Vector
 from Objects.Turfs.Airlock import Airlock
+from Objects.Furnitures import Table
 
 def FillMap(map):
 	"""
@@ -15,6 +16,8 @@ def FillMap(map):
 			CreateObject("Objects.Turfs.Floor.Floor", map.GetTile(Vector(i, j, z)))
 			if i < 52 or i > 53 or j < 47 or j > 48:
 				CreateObject("Objects.Turfs.Ceiling.Ceiling", map.GetTile(Vector(i, j, z)))
+			if i == 47 and j == 47:
+				CreateObject("Objects.Furnitures.Table.Table", map.GetTile(Vector(i, j, z)))
 			if i == 45 or i == 55 or j == 45 or j == 55:
 				if i == 50 or j == 50:
 					airlock = CreateObject("Objects.Turfs.Airlock.Airlock", map.GetTile(Vector(i, j, z)))

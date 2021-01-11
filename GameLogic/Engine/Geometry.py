@@ -311,10 +311,10 @@ class DirectionSet():
 		Remove list of directions from set. For composite direction, it's components will be removed.
 
 	DoesExistOne(List[Direction]) -> bool
-		Check if one of directions is exist in set.
+		Check if one of the directions exists in set.
 
 	DoExistAll(List[Direction]) -> bool
-		Check if all of directions are exist in set.
+		Check if all of the directions exist in set.
 
 	Reset()
 		Remove all directions from set.

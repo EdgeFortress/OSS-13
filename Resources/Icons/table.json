@@ -1,0 +1,11 @@
+{
+    "title": "table",
+    "tileSize": 32,
+    "sprites": [
+        {
+            "sprite": "table",
+            "frames": 1,
+            "directed": false
+        }
+    ]
+}
