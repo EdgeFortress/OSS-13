@@ -1,6 +1,10 @@
 #include "GameProcessUI.hpp"
 
 #include <memory>
+#include <regex>
+
+#include <imgui.h>
+#include <imgui_stdlib.h>
 
 #include <Client.hpp>
 #include <Graphics/Window.hpp>
@@ -23,23 +27,8 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 	tileGrid = new TileGrid();
 	widgets.push_back(uptr<TileGrid>(tileGrid));
 
-    container = new Container();
-    container->GetStyle().backgroundColor = sf::Color::Transparent;
-    container->SetPosition(0, 0);
-    widgets.push_back(uptr<Container>(container));
-
-    entry = new Entry(sf::Vector2f(0, 0));
-    entry->SetOnEnterFunc(std::bind(&GameProcessUI::send, this));
-    entry->GetStyle().backgroundColor = sf::Color(31, 31, 31);
-    entry->GetStyle().textColor = sf::Color(193, 205, 205);
-    entry->GetStyle().fontSize = 18;
-    container->AddItem(entry, sf::Vector2f(0, 0));
-
-    formattedTextField = new FormattedTextField(sf::Vector2f(0, 0));
-    formattedTextField->GetStyle().backgroundColor = sf::Color(60, 60, 60);
-    formattedTextField->GetStyle().textColor = sf::Color(193, 205, 205);
-    formattedTextField->GetStyle().fontSize = 18;
-    container->AddItem(formattedTextField, sf::Vector2f(0, 0));
+    chat = new Chat(uf::vec2i{ 800, 500 }, *CC::Get()->GetWindow()->GetBrowserController());
+    widgets.push_back(uptr<BrowserWidget>(chat));
 
 	auto tileContextMenu = std::make_unique<TileContextMenu>();
 	this->tileContextMenu = tileContextMenu.get();
@@ -50,16 +39,13 @@ GameProcessUI::GameProcessUI(UI *ui) : UIModule(ui),
 
 void GameProcessUI::Initialize() { }
 
-void GameProcessUI::send() {
-    if (!entry->Empty()) {
-		auto *p = new client::SendChatMessageCommand();
-		p->message = entry->GetText();
-        Connection::commandQueue.Push(p);
-	}
-}
-
 void GameProcessUI::Receive(const std::string &message) {
-    formattedTextField->AddInscription(message);
+    std::string html = message;
+    html = std::regex_replace(html, std::regex("<"), "#BOLD_BEGIN");
+    html = std::regex_replace(html, std::regex(">"), ":#BOLD_END ");
+    html = std::regex_replace(html, std::regex("#BOLD_BEGIN"), "<b>");
+    html = std::regex_replace(html, std::regex("#BOLD_END"), "</b>");
+    chat->AddToContent(html + "<br>");
 }
 
 
@@ -76,15 +62,11 @@ void GameProcessUI::Resize(const int width, const int height) {
 
 	infoLabel->CountPosition(width, height);
 
-	container->SetSize({width - tileGridSize, height / 2});
-	entry->SetSize({container->GetSize().x, container->GetSize().y / 10});
-	formattedTextField->SetSize(uf::vec2i{container->GetSize().x, container->GetSize().y - entry->GetSize().y});
-
-	container->SetPosition({ tileGridSize, height - entry->GetSize().y - formattedTextField->GetSize().y });
-	entry->SetPosition(0, float(formattedTextField->GetSize().y));
+    chat->SetSize({ width - tileGridSize, height / 2 });
+    chat->SetPosition({ tileGridSize, height - chat->GetSize().y});
 
 	functionWindow->SetPosition(static_cast<float>(tileGridSize), 0);
-	functionWindow->SetSize({width - functionWindow->GetAbsolutePosition().x, container->GetPosition().y});
+	functionWindow->SetSize({width - functionWindow->GetAbsolutePosition().x, chat->GetPosition().y});
 }
 
 void GameProcessUI::Draw(sf::RenderWindow *renderWindow) {
@@ -98,33 +80,40 @@ void GameProcessUI::Update(sf::Time timeElapsed) {
     Object *objectUnderCursor = tileGrid->GetObjectUnderCursor();
     if (!objectUnderCursor) infoLabel->SetText("");
     else infoLabel->SetText(objectUnderCursor->GetName());
-}
-
-void GameProcessUI::HandleEvent(sf::Event event) {
-    switch (event.type) {
-    case sf::Event::KeyPressed: {
-        switch (event.key.code) {
-        case sf::Keyboard::Tab: {
-            if (container->IsActive()) {
-                container->SetActive(false);
-                tileGrid->SetActive(true);
-                curInputWidget = tileGrid;
-            } else {
-                container->SetActive(true);
-                tileGrid->SetActive(false);
-                curInputWidget = container;
-            }
+    
+    if (showInput) { // TODO: make server-side verb
+        if (!ImGui::Begin("Say:")) {
+            ImGui::End();
             return;
         }
-        default:
-            break;
+
+        if (inputReclaimFocus) {
+            ImGui::SetKeyboardFocusHere();
+            inputReclaimFocus = false;
         }
-    default:
-        break;
+        if (ImGui::InputText("SayInput", &inputText, ImGuiInputTextFlags_EnterReturnsTrue)) {
+            auto* p = new client::SendChatMessageCommand();
+            std::swap(p->message, inputText);
+            Connection::commandQueue.Push(p);
+            showInput = false;
+        }
+            
+        ImGui::End();
     }
+}
+
+bool GameProcessUI::HandleEvent(sf::Event event) {
+    if (UIModule::HandleEvent(event))
+        return true;
+
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+        LOGD << "Open Input";
+        showInput = true;
+        inputReclaimFocus = true;
+        return true;
     }
 
-    UIModule::HandleEvent(event);
+    return false;
 }
 
 void GameProcessUI::OpenContextMenu() {

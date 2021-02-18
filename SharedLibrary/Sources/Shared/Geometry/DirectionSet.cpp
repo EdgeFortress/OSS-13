@@ -1,5 +1,7 @@
 #include "DirectionSet.h"
 
+#include <Shared/ErrorHandling.h>
+
 namespace uf {
 
 namespace {

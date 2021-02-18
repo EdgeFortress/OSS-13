@@ -2,8 +2,6 @@
 
 #include <cmath>
 
-#include <Shared/ErrorHandling.h>
-
 namespace uf {
 
 template <typename T>
@@ -48,7 +46,6 @@ bool vec2<T>::isZero() const {
 template <typename T>
 Angle vec2<T>::angle() const {
 	static_assert(std::is_signed_v<T>);
-	EXPECT(!isZero());
 	return Angle::Radians(std::atan2(y, x));
 }
 

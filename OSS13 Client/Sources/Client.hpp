@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 #include <plog/Formatters/MessageOnlyFormatter.h>
 
 #include <ResourceManager.hpp>
@@ -22,6 +23,8 @@ class ClientController :
 	public plog::LogRecordsHolder<plog::MessageOnlyFormatter>
 {
 private:
+    std::filesystem::path executablePath;
+
     uptr<Player> player;
     uptr<Window> window;
     static ClientController * instance;
@@ -29,7 +32,7 @@ private:
 public:
     ResourceManager RM;
 
-    ClientController();
+    ClientController(const std::filesystem::path &executablePath);
     void Run();
     
     ClientController(const ClientController &) = delete;
@@ -40,6 +43,8 @@ public:
 	Window *GetWindow();
 	UI *GetUI();
 	static ClientController *Get();
+
+    const std::filesystem::path& GetExecutablePath();
 };
 
 using CC = ClientController;

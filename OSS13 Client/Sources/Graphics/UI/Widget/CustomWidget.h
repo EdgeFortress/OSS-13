@@ -23,11 +23,12 @@ public:
 	virtual bool HandleEvent(sf::Event event) override;
 
 	virtual bool OnMouseButtonPressed(sf::Mouse::Button button, uf::vec2i position);
+	virtual bool OnMouseButtonReleased(sf::Mouse::Button button, uf::vec2i position);
 	virtual bool OnMouseMoved(uf::vec2i position);
 	virtual bool OnMouseLeft();
 	virtual bool OnMouseWheelScrolled(float delta, uf::vec2i position);
 	virtual bool OnKeyPressed(sf::Event::KeyEvent keyEvent);
-	virtual bool OnKeyReleased(sf::Keyboard::Key button);
+	virtual bool OnKeyReleased(sf::Event::KeyEvent keyEvent);
 	virtual bool OnTextEntered(uint32_t unicodeChar);
 
 	virtual void Hide() final;
@@ -55,11 +56,13 @@ public:
 	// Get style to change it. Set style.updated to true!
 	Style &GetStyle();
 
+	mutable sf::RenderTexture buffer;
+
 protected:
 	Style style;
 	bool canBeActive;
 
-	mutable sf::RenderTexture buffer;
+	
 	// method for drawing to buffer
 	virtual void draw() const = 0;
 

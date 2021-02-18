@@ -75,6 +75,9 @@
     <ClCompile Include="Sources\Shared\Network\Syncable.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="..\External\sfml-imgui\imgui_tables.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Shared\Geometry\Direction.hpp">

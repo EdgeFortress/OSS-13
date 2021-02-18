@@ -24,6 +24,7 @@ public:
     UI &operator=(const UI &) = delete;
     virtual ~UI() = default;
 
+    void Initialize();
     void Resize(int width, int height);
     void HandleEvent(sf::Event event);
     void Update(sf::Time timeElapsed);

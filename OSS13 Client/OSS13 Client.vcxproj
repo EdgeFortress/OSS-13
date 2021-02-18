@@ -54,11 +54,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="Shared">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Properties\vcpkg.props" />
-    <Import Project="..\Properties\common.props" />
+    <Import Project="$(SolutionDir)Properties\vcpkg.props" />
+    <Import Project="$(SolutionDir)Properties\common.props" />
+    <Import Project="$(SolutionDir)Properties\cef.props" />
   </ImportGroup>
   <ImportGroup Label="Shared Debug" Condition="'$(Configuration)'=='Debug'">
-    <Import Project="..\Properties\debug.props" />
+    <Import Project="$(SolutionDir)Properties\debug.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -80,24 +81,40 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -105,13 +122,20 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -119,7 +143,12 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharedLibrary\SharedLibrary.vcxproj">
@@ -127,7 +156,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sources\Browser\BrowserControllerHandlers.cpp" />
+    <ClCompile Include="Sources\Browser\BrowserImpl.cpp" />
     <ClCompile Include="Sources\Client.cpp" />
+    <ClCompile Include="Sources\Browser\BrowserControllerImpl.cpp" />
+    <ClCompile Include="Sources\Browser\BrowserHandlerImpl.cpp" />
     <ClCompile Include="Sources\Graphics\Sprite.cpp" />
     <ClCompile Include="Sources\Graphics\SpriteFactory.cpp" />
     <ClCompile Include="Sources\Graphics\Texture.cpp" />
@@ -141,13 +174,14 @@
     <ClCompile Include="Sources\Graphics\UI\UIModule\AuthUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\GameProcessUI.cpp" />
     <ClCompile Include="Sources\Graphics\UI\UIModule\UIModule.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\BrowserWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Button.cpp" />
+    <ClCompile Include="Sources\Graphics\UI\Widget\Chat.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Console.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Container.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\CustomWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\DynamicWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Entry.cpp" />
-    <ClCompile Include="Sources\Graphics\UI\Widget\FormattedTextField.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\GameProcess\TileContextMenu.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\ImGuiWidget.cpp" />
     <ClCompile Include="Sources\Graphics\UI\Widget\Label.cpp" />
@@ -159,7 +193,14 @@
     <ClCompile Include="Sources\ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sources\Browser\BrowserControllerHandlers.h" />
+    <ClInclude Include="Sources\Browser\BrowserImpl.h" />
     <ClInclude Include="Sources\Client.hpp" />
+    <ClInclude Include="Sources\Browser\BrowserController.h" />
+    <ClInclude Include="Sources\Browser\BrowserControllerImpl.h" />
+    <ClInclude Include="Sources\Browser\Browser.h" />
+    <ClInclude Include="Sources\Browser\BrowserUI.h" />
+    <ClInclude Include="Sources\Browser\BrowserHandlerImpl.h" />
     <ClInclude Include="Sources\Graphics\Sprite.hpp" />
     <ClInclude Include="Sources\Graphics\SpriteFactory.h" />
     <ClInclude Include="Sources\Graphics\SpriteInfo.h" />
@@ -176,13 +217,14 @@
     <ClInclude Include="Sources\Graphics\UI\UIModule\AuthUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\GameProcessUI.hpp" />
     <ClInclude Include="Sources\Graphics\UI\UIModule\UIModule.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\BrowserWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Button.hpp" />
+    <ClInclude Include="Sources\Graphics\UI\Widget\Chat.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Console.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Container.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\CustomWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\DynamicWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Entry.hpp" />
-    <ClInclude Include="Sources\Graphics\UI\Widget\FormattedTextField.hpp" />
     <ClInclude Include="Sources\Graphics\UI\Widget\GameProcess\TileContextMenu.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\ImGuiWidget.h" />
     <ClInclude Include="Sources\Graphics\UI\Widget\Label.hpp" />
@@ -194,7 +236,17 @@
     <ClInclude Include="Sources\Network\SyncCommandsProcessor.h" />
     <ClInclude Include="Sources\ResourceManager.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="OSS13 Client.exe.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
+  <ItemGroup>
+    <CefResources Include="$(SolutionDir)\External\cef\windows-bin\Resources\**\*.pak"/>
+  </ItemGroup>
+  <Target Name="Build">
+    <Copy SourceFiles="@(CefResources)" DestinationFiles="@(CefResources->'$(SolutionDir)\Resources\Browser\%(RecursiveDir)%(Filename)%(Extension)')"/>
+  </Target>
 </Project>

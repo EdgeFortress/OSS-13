@@ -211,7 +211,9 @@ bool TileGrid::OnMouseLeft() {
 	return true;
 }
 
-bool TileGrid::OnMouseWheelScrolled(float delta, uf::vec2i /*position*/) {
+bool TileGrid::OnMouseWheelScrolled(float delta, uf::vec2i position) {
+	if (!(position >= GetAbsolutePosition() && position < GetAbsolutePosition() + GetSize()))
+		return false;
 	int newCameraZ = cameraZ + static_cast<int>(delta) % 2;
 	if (GetTileRel(cameraRelPos + rpos(0, 0, newCameraZ))) {
 		cameraZ = newCameraZ;
