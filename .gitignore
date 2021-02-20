@@ -223,3 +223,5 @@ cmake-build-debug/
 OSS13 Client.exe
 OSS13 Server.exe
 python*.dll
+/Resources/Browser
+/External/cef/windows-bin

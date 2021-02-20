@@ -9,7 +9,8 @@
 #include <Graphics/Sprite.hpp>
 #include <Network/Connection.h>
 
-ClientController::ClientController() : 
+ClientController::ClientController(const std::filesystem::path& executablePath) :
+    executablePath(executablePath),
     player(new Player),
     window(new Window())
 {
@@ -27,7 +28,7 @@ void ClientController::Run() {
         LOGI << "Successfully connected to server.";
     };
 
-    window->Initialize();
+    window->Initialize(executablePath);
 
     while (window->isOpen()) {
 		Connection::ProcessSyncCommands();
@@ -42,9 +43,13 @@ UI *ClientController::GetUI() { return window->GetUI(); }
 
 ClientController *ClientController::Get() { return instance; }
 
-int main() {
-    ClientController clientController;
-    clientController.Run();
+const std::filesystem::path& ClientController::GetExecutablePath() { return executablePath; }
+
+int main(int argc, char **argv) {
+    auto executablePath = std::filesystem::weakly_canonical(std::filesystem::path(argv[0])).parent_path();
+
+    auto clientController = std::make_unique<ClientController>(executablePath);
+    clientController->Run();
 
     return 0;
 }

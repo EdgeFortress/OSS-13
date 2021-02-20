@@ -5,6 +5,7 @@ clone_depth: 10
 
 version: '0.0.{build}'
 
+platform: x64
 configuration: Release
 
 environment:
@@ -13,10 +14,6 @@ environment:
 branches:
   only:
     - never-build-branch-automatically-dont-use-this-name
-
-platform:
-    - x64
-    - x86
 
 matrix:
     fast_finish: true
@@ -39,6 +36,11 @@ install:
     - vcpkg install "gtest:%platform%-windows-static"
 
     - vcpkg upgrade --no-dry-run
+    
+    - CI\appveyor\install_cef.bat C:\Tools %APPVEYOR_BUILD_FOLDER%
+
+build:
+    project: OSS13.sln
 
 after_build:
     - set BIN_FOLDER_SUFFIX=%platform%
@@ -47,7 +49,7 @@ after_build:
     - 7z a "OSS13-%platform%-%appveyor_build_version%.zip" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Client.exe" "%APPVEYOR_BUILD_FOLDER%\bin\Release-%BIN_FOLDER_SUFFIX%\OSS13 Server.exe" "C:\Tools\vcpkg\installed\%platform%-windows\bin\python37.dll" Documentation Resources -ir!GameLogic\*.py Arialuni.ttf LICENSE README.md UsersDB
 
 artifacts:
-    - path: "OSS13-$(platform)-%appveyor_build_version%.zip"
+    - path: "OSS13-%appveyor_build_version%.zip"
 
 deploy:
     release: OSS13-v$(appveyor_build_version)

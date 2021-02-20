@@ -32,5 +32,10 @@ install:
     - vcpkg install gtest:x64-windows-static
 
     - vcpkg upgrade --no-dry-run
+    
+    - CI\appveyor\install_cef.bat C:\Tools %APPVEYOR_BUILD_FOLDER%
+
+build:
+    project: OSS13.sln
 
 cache: c:\tools\vcpkg\installed

@@ -13,9 +13,10 @@
 #include <Shared/JSON.hpp>
 #include <Shared/OS.hpp>
 
-Window::Window() {
-	ui.reset(new UI);
-}
+Window::Window() :
+	ui(new UI),
+	browserController(CreateBrowserConroller())
+{ }
 
 void setImGuiStyle(ImGuiStyle& style);
 
@@ -24,43 +25,59 @@ uf::vec2i GetResolution(const IConfig *config) {
 	return config->GetVec2i("Graphics.Resolution");
 }
 
-void Window::Initialize() {
+void Window::Initialize(const std::filesystem::path& executablePath) {
     resolution = GetResolution(CC::Get()->RM.Config());
     window.reset(new sf::RenderWindow(sf::VideoMode(resolution.x, resolution.y), "Open Space Station 13"));
+
     ui->ChangeModule<AuthUI>();
     resize(window->getSize().x, window->getSize().y);
 
+	browserController->Initialize(executablePath);
+	ui->Initialize();
+
 	ImGui::SFML::Init(*window);
 	setImGuiStyle(ImGui::GetStyle());
+	ImGui::GetIO().Fonts->Clear();
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("Arialuni.ttf", 16, NULL, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+	ImGui::SFML::UpdateFontTexture();
 }
 
 void Window::Update() {
-	// FPS Counter
-	//
-	////static int cur_FPS = 0;
-	////cur_FPS++;
-	////static sf::Time counter;
-	////counter += lastFrameTime;
-	////if (counter > sf::seconds(1)) {
-	////	CC::log << "FPS" << cur_FPS << std::endl;
-	////	cur_FPS = 0;
-	////	counter = sf::Time::Zero;
-	////}
+	browserController->Update();
+
+	if (isClosing) {
+		if (browserController->CanBeReleased()) {
+			browserController->Shutdown();
+			window->close();
+		}
+		return;
+	}
 
 	sf::Event event;
-
 	while (window->pollEvent(event)) {
+		// TODO: find the better way to obtain window's view coords (respecting window's titlebar and borders)
+		if (event.type == sf::Event::MouseButtonPressed) {
+			auto &mouseEvent = reinterpret_cast<sf::Event::MouseButtonEvent &>(event);
+			// (screen related coords) - (window related coords)
+			viewPosition = uf::vec2i(sf::Mouse::getPosition()) - uf::vec2i(event.mouseButton.x, event.mouseButton.y);
+		}
+
 		ui->HandleEvent(event);
 		if (event.type == sf::Event::Resized)
 			resize(event.size.width, event.size.height);
 		if (event.type == sf::Event::Closed)
-			window->close();
+		{
+			isClosing = true;
+			onClose();
+			return;
+		}
 	}
 
 	window->clear(sf::Color::Black);
 	ImGui::SFML::Update(*window, lastFrameTime);
 	ui->Update(lastFrameTime);
 	ui->Draw(window.get());
+
 	ImGui::SFML::Render(*window);
 	window->display();
 
@@ -70,23 +87,25 @@ void Window::Update() {
 bool Window::isOpen() const { return window->isOpen(); }
 int Window::GetWidth() const { return resolution.x; }
 int Window::GetHeight() const { return resolution.y; }
-sf::Vector2i Window::GetPosition() const { return window->getPosition(); }
+uf::vec2i Window::GetPosition() const { return viewPosition; }
+BrowserController* Window::GetBrowserController() const { return browserController.get(); }
 UI *Window::GetUI() const { return ui.get(); }
+sf::WindowHandle Window::GetSystemHandle() const { return window->getSystemHandle(); }
 
 void Window::fps_sleep() {
-    sf::Time timeElapsed = frame_clock.getElapsedTime();
+	sf::Time timeElapsed = frame_clock.getElapsedTime();
 
-    if (timeElapsed.asMicroseconds() < 1000 * 1000 / req_FPS)
-        sf::sleep(sf::microseconds(1000 * 1000 / req_FPS) - timeElapsed);
+	if (timeElapsed.asMicroseconds() < 1000 * 1000 / req_FPS)
+		sf::sleep(sf::microseconds(1000 * 1000 / req_FPS) - timeElapsed);
 
-    lastFrameTime = frame_clock.restart();
+	lastFrameTime = frame_clock.restart();
 }
 
 void Window::resize(const int newWidth, const int newHeight) {
 	resolution = {newWidth, newHeight};
-    const sf::FloatRect visibleArea(0, 0, float(newWidth), float(newHeight));
-    window->setView(sf::View(visibleArea));
-    ui->Resize(newWidth, newHeight);
+	const sf::FloatRect visibleArea(0, 0, float(newWidth), float(newHeight));
+	window->setView(sf::View(visibleArea));
+	ui->Resize(newWidth, newHeight);
 }
 
 void setImGuiStyle(ImGuiStyle& style) {
@@ -131,4 +150,8 @@ void setImGuiStyle(ImGuiStyle& style) {
 	style.Colors[ImGuiCol_PlotHistogram] = { 0.90f, 0.70f, 0.00f, 1.00f };
 	style.Colors[ImGuiCol_PlotHistogramHovered] = { 1.00f, 0.60f, 0.00f, 1.00f };
 	style.Colors[ImGuiCol_TextSelectedBg] = { 0.18431373f, 0.39607847f, 0.79215693f, 0.90f };
+}
+
+void Window::onClose() {
+	ui.reset();
 }

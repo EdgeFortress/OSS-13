@@ -5,7 +5,7 @@
 
 #include <Graphics/UI/UIModule/UIModule.hpp>
 #include <Graphics/UI/Widget/Container.hpp>
-#include <Graphics/UI/Widget/FormattedTextField.hpp>
+#include <Graphics/UI/Widget/Chat.h>
 #include <Graphics/UI/Widget/GameProcess/TileContextMenu.h>
 
 #include <Shared/Network/Protocol/ServerToClient/WorldInfo.h>
@@ -28,13 +28,13 @@ public:
     void Resize(int width, int height) override final;
     void Draw(sf::RenderWindow* renderWindow) override;
     void Update(sf::Time timeElapsed) override final;
-    void HandleEvent(sf::Event event) override;
+    bool HandleEvent(sf::Event event) override;
 
-	void OpenContextMenu();
-	void UpdateContextMenu(network::protocol::ContextMenuData &&data);
+    void OpenContextMenu();
+    void UpdateContextMenu(network::protocol::ContextMenuData &&data);
 
-	void OpenSpawnWindow();
-	void UpdateSpawnWindow(std::vector<network::protocol::ObjectType> &&types);
+    void OpenSpawnWindow();
+    void UpdateSpawnWindow(std::vector<network::protocol::ObjectType> &&types);
 
     InfoLabel *GetInfoLabel() const;
     TileGrid *GetTileGrid() const;
@@ -42,17 +42,16 @@ public:
 private:
     uptr<InfoLabel> infoLabel;
 
-	Container *functionWindow{nullptr};
-	TileGrid *tileGrid{nullptr};
-	TileContextMenu *tileContextMenu{nullptr};
-	Container *container{nullptr};
-	Entry *entry{nullptr};
-	FormattedTextField *formattedTextField{nullptr};
+    Container* functionWindow{ nullptr };
+    TileGrid* tileGrid{ nullptr };
+    TileContextMenu* tileContextMenu{ nullptr };
+
+    Chat* chat;
+    std::string inputText;
+    bool showInput{};
+    bool inputReclaimFocus{};
 
     void generateFunctionWindow();
-
-    // Event Handlers
-    void send();
 };
 
 class InfoLabel {

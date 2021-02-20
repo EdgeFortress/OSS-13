@@ -27,7 +27,7 @@ public:
     virtual void Resize(int width, int height) = 0;
     virtual void Draw(sf::RenderWindow *renderWindow);
     virtual void Update(sf::Time timeElapsed);
-    virtual void HandleEvent(sf::Event event);
+    virtual bool HandleEvent(sf::Event event);
 
 	void OpenWindow(const std::string &id, const network::protocol::WindowData &data);
 	void UpdateWindow(const std::string &window, const network::protocol::UIData &data);

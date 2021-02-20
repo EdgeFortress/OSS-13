@@ -83,7 +83,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgCurrentInstalledDir)\include\python3.8;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(SolutionDir)/External/pybind11/include;$(VcpkgRoot)/installed/$(VcpkgTriplet)/include/python3.9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -95,7 +95,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgCurrentInstalledDir)\include\python3.8;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(SolutionDir)/External/pybind11/include;$(VcpkgRoot)/installed/$(VcpkgTriplet)/include/python3.9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -108,7 +108,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgCurrentInstalledDir)\include\python3.8;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(SolutionDir)/External/pybind11/include;$(VcpkgRoot)/installed/$(VcpkgTriplet)/include/python3.9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -121,7 +121,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(VcpkgCurrentInstalledDir)\include\python3.8;$(SolutionDir)/External/pybind11/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Include;Sources;$(SolutionDir)/SharedLibrary/Sources;$(SolutionDir)/External/plog/include;$(SolutionDir)/External/sfml-imgui;$(SolutionDir)/External/pybind11/include;$(VcpkgRoot)/installed/$(VcpkgTriplet)/include/python3.9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;HAVE_SNPRINTF;_MBCS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>

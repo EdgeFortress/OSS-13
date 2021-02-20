@@ -30,7 +30,7 @@ void UIModule::Update(sf::Time timeElapsed) {
 	}
 }
 
-void UIModule::HandleEvent(sf::Event event) {
+bool UIModule::HandleEvent(sf::Event event) {
 	ImGuiIO& io = ImGui::GetIO();
 
 	bool imguiCapture = false;
@@ -61,27 +61,30 @@ void UIModule::HandleEvent(sf::Event event) {
 
 	ImGui::SFML::ProcessEvent(event);
 	if (imguiCapture)
-		return;
+		return true;
 
 	switch (event.type) {
-	case sf::Event::MouseButtonPressed: {
-        if (event.mouseButton.button == sf::Mouse::Left) {
-            for (auto &widget : widgets)
-				if (auto customWidget = dynamic_cast<CustomWidget *>(widget.get())) {
-					if (customWidget->HandleEvent(event)) {
-						if (customWidget->SetActive(true))
-							if (customWidget != curInputWidget) {
-								curInputWidget->SetActive(false);
-								curInputWidget = customWidget;
-							}
-						return;
-					}
+	case sf::Event::MouseWheelScrolled:
+	case sf::Event::MouseButtonPressed:
+	case sf::Event::MouseButtonReleased:
+	{
+		for (auto iter = widgets.rbegin(); iter != widgets.rend(); iter++) {
+			if (auto customWidget = dynamic_cast<CustomWidget *>(iter->get())) {
+				if (customWidget->HandleEvent(event)) {
+					if (event.mouseButton.button == sf::Mouse::Left && customWidget->SetActive(true))
+						if (customWidget != curInputWidget) {
+							curInputWidget->SetActive(false);
+							curInputWidget = customWidget;
+						}
+					return true;
 				}
-        }
+			}
+		}
 		break;
 	}
 	case sf::Event::MouseMoved: {
-		for (auto &widget : widgets) {
+		for (auto iter = widgets.rbegin(); iter != widgets.rend(); iter++) {
+			auto &widget = *iter;
 			if (widget->HandleEvent(event)) {
 				if (auto customWidget = dynamic_cast<CustomWidget *>(widget.get())) {
 					if (underCursorWidget && underCursorWidget != customWidget) {
@@ -91,7 +94,7 @@ void UIModule::HandleEvent(sf::Event event) {
 					}
 					underCursorWidget = customWidget;
 				}
-				return;
+				return true;
 			}
 		}
 		if (underCursorWidget) {
@@ -105,13 +108,14 @@ void UIModule::HandleEvent(sf::Event event) {
 	case sf::Event::MouseLeft: {
 		if (underCursorWidget)
 			underCursorWidget->HandleEvent(event);
-		return;
+		return true;
 	}
 	default:
-        break;
+		break;
 	}
-    if (curInputWidget)
-        curInputWidget->HandleEvent(event);
+	if (curInputWidget)
+		return curInputWidget->HandleEvent(event);
+	return false;
 }
 
 bool UIModule::SetCurActiveWidget(Widget *newInputWidget) {

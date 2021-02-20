@@ -1,5 +1,6 @@
 #include "Locale.h"
 
+#include <Shared/ErrorHandling.h>
 #include <Shared/Log.h>
 
 using namespace subsystem::atmos;

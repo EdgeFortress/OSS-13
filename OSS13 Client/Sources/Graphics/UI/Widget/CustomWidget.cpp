@@ -1,7 +1,8 @@
 #include "CustomWidget.h"
 
+#include <Shared/Log.h>
+
 #include "Graphics/Window.hpp"
-#include "Client.hpp"
 
 CustomWidget::CustomWidget(uf::vec2i size) : parent(nullptr) {
 	bufferSprite.setTexture(buffer.getTexture());
@@ -22,6 +23,8 @@ bool CustomWidget::HandleEvent(sf::Event event) {
 	switch (event.type) {
 		case sf::Event::MouseButtonPressed:
 			return OnMouseButtonPressed(event.mouseButton.button, { event.mouseButton.x, event.mouseButton.y });
+		case sf::Event::MouseButtonReleased:
+			return OnMouseButtonReleased(event.mouseButton.button, { event.mouseButton.x, event.mouseButton.y });
 		case sf::Event::MouseMoved:
 			return OnMouseMoved({ event.mouseMove.x, event.mouseMove.y });
 		case sf::Event::MouseLeft:
@@ -31,7 +34,7 @@ bool CustomWidget::HandleEvent(sf::Event event) {
 		case sf::Event::KeyPressed:
 			return OnKeyPressed(event.key);
 		case sf::Event::KeyReleased:
-			return OnKeyReleased(event.key.code);
+			return OnKeyReleased(event.key);
 		case sf::Event::TextEntered:
 			return OnTextEntered(event.text.unicode);
 		default:
@@ -41,11 +44,12 @@ bool CustomWidget::HandleEvent(sf::Event event) {
 }
 
 bool CustomWidget::OnMouseButtonPressed(sf::Mouse::Button, uf::vec2i /*position*/) { return false; }
+bool CustomWidget::OnMouseButtonReleased(sf::Mouse::Button, uf::vec2i /*position*/) { return false; }
 bool CustomWidget::OnMouseMoved(uf::vec2i /*position*/) { return false; }
 bool CustomWidget::OnMouseLeft() { return false; }
 bool CustomWidget::OnMouseWheelScrolled(float /*delta*/, uf::vec2i /*position*/) { return false; }
 bool CustomWidget::OnKeyPressed(sf::Event::KeyEvent) { return false; }
-bool CustomWidget::OnKeyReleased(sf::Keyboard::Key) { return false; }
+bool CustomWidget::OnKeyReleased(sf::Event::KeyEvent) { return false; }
 bool CustomWidget::OnTextEntered(uint32_t /*unicodeChar*/) { return false; }
 
 void CustomWidget::Hide() { hiding = true; }
